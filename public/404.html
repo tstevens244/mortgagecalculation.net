@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MortgageCalc</title>
+  </head>
+  <body>
+    <script>
+      // GitHub Pages SPA redirect
+      // https://github.com/rafgraph/spa-github-pages
+      (function () {
+        var l = window.location;
+        var base = "/mortgage-smart-calculator";
+        if (l.pathname.indexOf(base + "/") !== 0) return;
+        var redirect = base + "/?" +
+          "p=" + encodeURIComponent(l.pathname.slice(base.length)) +
+          "&q=" + encodeURIComponent(l.search.slice(1)) +
+          "&h=" + encodeURIComponent(l.hash.slice(1));
+        l.replace(redirect);
+      })();
+    </script>
+  </body>
+</html>
