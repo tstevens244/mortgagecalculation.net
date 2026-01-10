@@ -5,7 +5,9 @@ import { componentTagger } from "lovable-tagger";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
-  base: "/mortgage-smart-calculator/",
+  // In Lovable preview/dev we serve from "/".
+  // In GitHub Pages production we serve from the repository subpath.
+  base: mode === "production" ? "/mortgage-smart-calculator/" : "/",
   server: {
     host: "::",
     port: 8080,
