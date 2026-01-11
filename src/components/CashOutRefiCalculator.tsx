@@ -244,13 +244,13 @@ const CashOutRefiCalculator = () => {
         {/* Results Section */}
         <div className="space-y-6">
           {/* Main Result */}
-          <Card className="result-highlight">
-            <CardContent className="pt-6">
+          <Card className="bg-primary border-0 rounded-xl p-6 shadow-xl">
+            <CardContent className="p-0">
               <div className="text-center space-y-2">
-                <p className="text-primary-foreground/80 text-sm font-medium">
+                <p className="text-white/80 text-sm font-medium">
                   Estimated Max Cash-Out Amount
                 </p>
-                <p className="text-4xl md:text-5xl font-bold text-primary-foreground number-pop">
+                <p className="text-4xl md:text-5xl font-bold text-white number-pop">
                   {formatCurrency(results.maxCashOut)}
                 </p>
               </div>
