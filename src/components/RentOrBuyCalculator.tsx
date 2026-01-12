@@ -193,9 +193,9 @@ const RentOrBuyCalculator = () => {
         </p>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-3">
+      <div className="grid lg:grid-cols-2 gap-6">
         {/* Left Column - Inputs */}
-        <div className="lg:col-span-2 grid gap-6 sm:grid-cols-2">
+        <div className="space-y-6">
           {/* Rent Information */}
           <Card className="calculator-card">
             <CardHeader className="pb-4">
