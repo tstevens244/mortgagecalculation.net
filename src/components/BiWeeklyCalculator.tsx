@@ -213,57 +213,64 @@ const BiWeeklyCalculator = () => {
                 Loan Information
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-5">
-              <div className="input-group">
-                <Label className="input-label">Home Price</Label>
-                <CurrencyInput value={homePrice} onChange={setHomePrice} />
-              </div>
+            <CardContent>
+              <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2">
+                <div className="flex items-center gap-2">
+                  <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap min-w-[80px] sm:min-w-[100px]">
+                    Home Price
+                  </Label>
+                  <CurrencyInput value={homePrice} onChange={setHomePrice} />
+                </div>
 
-              <div className="input-group">
-                <Label className="input-label">Down Payment</Label>
-                <CurrencyInput value={downPayment} onChange={setDownPayment} />
-                <p className="text-xs text-muted-foreground mt-1">
-                  {((downPayment / homePrice) * 100).toFixed(1)}% down
-                </p>
-              </div>
+                <div className="flex items-center gap-2">
+                  <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap min-w-[80px] sm:min-w-[100px]">
+                    Down Payment
+                  </Label>
+                  <CurrencyInput value={downPayment} onChange={setDownPayment} />
+                </div>
 
-              <div className="input-group">
-                <Label className="input-label">Loan Amount</Label>
-                <div className="h-10 w-full rounded-md border border-input bg-muted/50 px-3 py-2 text-sm flex items-center">
-                  {formatCurrency(loanAmount)}
+                <div className="flex items-center gap-2">
+                  <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap min-w-[80px] sm:min-w-[100px]">
+                    Interest Rate
+                  </Label>
+                  <div className="flex gap-1 sm:gap-2 flex-1">
+                    <input
+                      type="number"
+                      value={interestRate}
+                      onChange={(e) => setInterestRate(parseFloat(e.target.value) || 0)}
+                      step="0.125"
+                      min="0"
+                      max="20"
+                      className="flex h-8 sm:h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                    />
+                    <span className="flex items-center text-muted-foreground text-xs sm:text-sm">%</span>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap min-w-[80px] sm:min-w-[100px]">
+                    Loan Term
+                  </Label>
+                  <Select value={loanTerm} onValueChange={setLoanTerm}>
+                    <SelectTrigger className="h-8 sm:h-10 text-sm flex-1">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="30">30 years</SelectItem>
+                      <SelectItem value="25">25 years</SelectItem>
+                      <SelectItem value="20">20 years</SelectItem>
+                      <SelectItem value="15">15 years</SelectItem>
+                      <SelectItem value="10">10 years</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
 
-              <div className="input-group">
-                <Label className="input-label">Interest Rate</Label>
-                <div className="relative">
-                  <input
-                    type="number"
-                    value={interestRate}
-                    onChange={(e) => setInterestRate(parseFloat(e.target.value) || 0)}
-                    step="0.125"
-                    min="0"
-                    max="20"
-                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                  />
-                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">%</span>
+              <div className="mt-4 pt-4 border-t border-border">
+                <div className="flex justify-between items-center text-sm">
+                  <span className="text-muted-foreground">Loan Amount</span>
+                  <span className="font-semibold">{formatCurrency(loanAmount)}</span>
                 </div>
-              </div>
-
-              <div className="input-group">
-                <Label className="input-label">Loan Term</Label>
-                <Select value={loanTerm} onValueChange={setLoanTerm}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="30">30 years</SelectItem>
-                    <SelectItem value="25">25 years</SelectItem>
-                    <SelectItem value="20">20 years</SelectItem>
-                    <SelectItem value="15">15 years</SelectItem>
-                    <SelectItem value="10">10 years</SelectItem>
-                  </SelectContent>
-                </Select>
               </div>
             </CardContent>
           </Card>
@@ -276,20 +283,20 @@ const BiWeeklyCalculator = () => {
                 Tax Information
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-5">
-              <div className="input-group">
-                <Label className="input-label">
-                  Marginal Tax Rate
+            <CardContent>
+              <div className="flex items-center gap-2">
+                <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
+                  Tax Rate
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <HelpCircle className="h-4 w-4 text-muted-foreground cursor-help" />
+                      <HelpCircle className="h-3 w-3 sm:h-4 sm:w-4 cursor-help" />
                     </TooltipTrigger>
                     <TooltipContent className="max-w-xs">
                       <p>Enter your combined state & federal marginal tax rate if you itemize deductions. Enter 0 if you take the standard deduction.</p>
                     </TooltipContent>
                   </Tooltip>
                 </Label>
-                <div className="relative">
+                <div className="flex gap-1 sm:gap-2 flex-1">
                   <input
                     type="number"
                     value={taxRate}
@@ -297,13 +304,13 @@ const BiWeeklyCalculator = () => {
                     step="1"
                     min="0"
                     max="50"
-                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                    className="flex h-8 sm:h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                   />
-                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">%</span>
+                  <span className="flex items-center text-muted-foreground text-xs sm:text-sm">%</span>
                 </div>
               </div>
 
-              <div className="p-3 bg-secondary/50 rounded-lg">
+              <div className="p-3 bg-secondary/50 rounded-lg mt-4">
                 <p className="text-xs text-muted-foreground">
                   <strong>Note:</strong> Most taxpayers use standard deductions. If you're not itemizing, enter 0% for an accurate comparison.
                 </p>

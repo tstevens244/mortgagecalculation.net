@@ -204,35 +204,39 @@ const RentOrBuyCalculator = () => {
                 Rent Information
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-5">
-              <div className="input-group">
-                <Label className="input-label">Monthly Rent</Label>
-                <CurrencyInput value={monthlyRent} onChange={setMonthlyRent} />
-              </div>
+            <CardContent>
+              <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2">
+                <div className="flex items-center gap-2">
+                  <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap min-w-[80px] sm:min-w-[100px]">
+                    Monthly Rent
+                  </Label>
+                  <CurrencyInput value={monthlyRent} onChange={setMonthlyRent} />
+                </div>
 
-              <div className="input-group">
-                <Label className="input-label">
-                  Annual Rent Increase
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <HelpCircle className="h-4 w-4 text-muted-foreground cursor-help" />
-                    </TooltipTrigger>
-                    <TooltipContent className="max-w-xs">
-                      <p>Expected average annual rent increase percentage.</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </Label>
-                <div className="relative">
-                  <input
-                    type="number"
-                    value={annualRentIncrease}
-                    onChange={(e) => setAnnualRentIncrease(parseFloat(e.target.value) || 0)}
-                    step="0.5"
-                    min="0"
-                    max="20"
-                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                  />
-                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">%</span>
+                <div className="flex items-center gap-2">
+                  <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
+                    Rent Increase
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <HelpCircle className="h-3 w-3 sm:h-4 sm:w-4 cursor-help" />
+                      </TooltipTrigger>
+                      <TooltipContent className="max-w-xs">
+                        <p>Expected average annual rent increase percentage.</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </Label>
+                  <div className="flex gap-1 sm:gap-2 flex-1">
+                    <input
+                      type="number"
+                      value={annualRentIncrease}
+                      onChange={(e) => setAnnualRentIncrease(parseFloat(e.target.value) || 0)}
+                      step="0.5"
+                      min="0"
+                      max="20"
+                      className="flex h-8 sm:h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                    />
+                    <span className="flex items-center text-muted-foreground text-xs sm:text-sm">%</span>
+                  </div>
                 </div>
               </div>
             </CardContent>
@@ -246,77 +250,83 @@ const RentOrBuyCalculator = () => {
                 Property Information
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-5">
-              <div className="input-group">
-                <Label className="input-label">Home Purchase Price</Label>
-                <CurrencyInput value={homePrice} onChange={setHomePrice} />
-              </div>
-
-              <div className="input-group">
-                <Label className="input-label">
-                  Annual Appreciation
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <HelpCircle className="h-4 w-4 text-muted-foreground cursor-help" />
-                    </TooltipTrigger>
-                    <TooltipContent className="max-w-xs">
-                      <p>Expected annual home value appreciation rate.</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </Label>
-                <div className="relative">
-                  <input
-                    type="number"
-                    value={annualAppreciation}
-                    onChange={(e) => setAnnualAppreciation(parseFloat(e.target.value) || 0)}
-                    step="0.5"
-                    min="-10"
-                    max="20"
-                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                  />
-                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">%</span>
+            <CardContent>
+              <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2">
+                <div className="flex items-center gap-2">
+                  <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap min-w-[80px] sm:min-w-[100px]">
+                    Home Price
+                  </Label>
+                  <CurrencyInput value={homePrice} onChange={setHomePrice} />
                 </div>
-              </div>
 
-              <div className="input-group">
-                <Label className="input-label">Years Before Selling</Label>
-                <Select value={yearsBeforeSell} onValueChange={setYearsBeforeSell}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25, 30].map((year) => (
-                      <SelectItem key={year} value={year.toString()}>
-                        {year} {year === 1 ? "year" : "years"}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
+                <div className="flex items-center gap-2">
+                  <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
+                    Appreciation
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <HelpCircle className="h-3 w-3 sm:h-4 sm:w-4 cursor-help" />
+                      </TooltipTrigger>
+                      <TooltipContent className="max-w-xs">
+                        <p>Expected annual home value appreciation rate.</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </Label>
+                  <div className="flex gap-1 sm:gap-2 flex-1">
+                    <input
+                      type="number"
+                      value={annualAppreciation}
+                      onChange={(e) => setAnnualAppreciation(parseFloat(e.target.value) || 0)}
+                      step="0.5"
+                      min="-10"
+                      max="20"
+                      className="flex h-8 sm:h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                    />
+                    <span className="flex items-center text-muted-foreground text-xs sm:text-sm">%</span>
+                  </div>
+                </div>
 
-              <div className="input-group">
-                <Label className="input-label">
-                  Selling Cost
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <HelpCircle className="h-4 w-4 text-muted-foreground cursor-help" />
-                    </TooltipTrigger>
-                    <TooltipContent className="max-w-xs">
-                      <p>Typical selling costs include agent commission (5-6%) and closing costs.</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </Label>
-                <div className="relative">
-                  <input
-                    type="number"
-                    value={sellingCost}
-                    onChange={(e) => setSellingCost(parseFloat(e.target.value) || 0)}
-                    step="0.5"
-                    min="0"
-                    max="15"
-                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                  />
-                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">%</span>
+                <div className="flex items-center gap-2">
+                  <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap min-w-[80px] sm:min-w-[100px]">
+                    Years to Sell
+                  </Label>
+                  <Select value={yearsBeforeSell} onValueChange={setYearsBeforeSell}>
+                    <SelectTrigger className="h-8 sm:h-10 text-sm flex-1">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25, 30].map((year) => (
+                        <SelectItem key={year} value={year.toString()}>
+                          {year} {year === 1 ? "year" : "years"}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
+                    Selling Cost
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <HelpCircle className="h-3 w-3 sm:h-4 sm:w-4 cursor-help" />
+                      </TooltipTrigger>
+                      <TooltipContent className="max-w-xs">
+                        <p>Typical selling costs include agent commission (5-6%) and closing costs.</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </Label>
+                  <div className="flex gap-1 sm:gap-2 flex-1">
+                    <input
+                      type="number"
+                      value={sellingCost}
+                      onChange={(e) => setSellingCost(parseFloat(e.target.value) || 0)}
+                      step="0.5"
+                      min="0"
+                      max="15"
+                      className="flex h-8 sm:h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                    />
+                    <span className="flex items-center text-muted-foreground text-xs sm:text-sm">%</span>
+                  </div>
                 </div>
               </div>
             </CardContent>
@@ -330,84 +340,96 @@ const RentOrBuyCalculator = () => {
                 Loan Information
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-5">
-              <div className="input-group">
-                <Label className="input-label">Down Payment</Label>
-                <div className="relative">
-                  <input
-                    type="number"
-                    value={downPaymentPercent}
-                    onChange={(e) => setDownPaymentPercent(parseFloat(e.target.value) || 0)}
-                    step="1"
-                    min="0"
-                    max="100"
-                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                  />
-                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">%</span>
-                </div>
-                <p className="text-xs text-muted-foreground mt-1">
-                  {formatCurrency(homePrice * downPaymentPercent / 100)}
-                </p>
-              </div>
-
-              <div className="input-group">
-                <Label className="input-label">Interest Rate</Label>
-                <div className="relative">
-                  <input
-                    type="number"
-                    value={interestRate}
-                    onChange={(e) => setInterestRate(parseFloat(e.target.value) || 0)}
-                    step="0.125"
-                    min="0"
-                    max="20"
-                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                  />
-                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">%</span>
-                </div>
-              </div>
-
-              <div className="input-group">
-                <Label className="input-label">Loan Term</Label>
-                <Select value={loanTerm} onValueChange={setLoanTerm}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="30">30 years</SelectItem>
-                    <SelectItem value="20">20 years</SelectItem>
-                    <SelectItem value="15">15 years</SelectItem>
-                    <SelectItem value="10">10 years</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {downPaymentPercent < 20 && (
-                <div className="input-group">
-                  <Label className="input-label">
-                    Annual PMI Rate
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <HelpCircle className="h-4 w-4 text-muted-foreground cursor-help" />
-                      </TooltipTrigger>
-                      <TooltipContent className="max-w-xs">
-                        <p>Private Mortgage Insurance is required when down payment is less than 20%.</p>
-                      </TooltipContent>
-                    </Tooltip>
+            <CardContent>
+              <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2">
+                <div className="flex items-center gap-2">
+                  <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap min-w-[80px] sm:min-w-[100px]">
+                    Down Payment
                   </Label>
-                  <div className="relative">
+                  <div className="flex gap-1 sm:gap-2 flex-1">
                     <input
                       type="number"
-                      value={annualPMIPercent}
-                      onChange={(e) => setAnnualPMIPercent(parseFloat(e.target.value) || 0)}
-                      step="0.1"
+                      value={downPaymentPercent}
+                      onChange={(e) => setDownPaymentPercent(parseFloat(e.target.value) || 0)}
+                      step="1"
                       min="0"
-                      max="3"
-                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                      max="100"
+                      className="flex h-8 sm:h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                     />
-                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">%</span>
+                    <span className="flex items-center text-muted-foreground text-xs sm:text-sm">%</span>
                   </div>
                 </div>
-              )}
+
+                <div className="flex items-center gap-2">
+                  <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap min-w-[80px] sm:min-w-[100px]">
+                    Interest Rate
+                  </Label>
+                  <div className="flex gap-1 sm:gap-2 flex-1">
+                    <input
+                      type="number"
+                      value={interestRate}
+                      onChange={(e) => setInterestRate(parseFloat(e.target.value) || 0)}
+                      step="0.125"
+                      min="0"
+                      max="20"
+                      className="flex h-8 sm:h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                    />
+                    <span className="flex items-center text-muted-foreground text-xs sm:text-sm">%</span>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap min-w-[80px] sm:min-w-[100px]">
+                    Loan Term
+                  </Label>
+                  <Select value={loanTerm} onValueChange={setLoanTerm}>
+                    <SelectTrigger className="h-8 sm:h-10 text-sm flex-1">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="30">30 years</SelectItem>
+                      <SelectItem value="20">20 years</SelectItem>
+                      <SelectItem value="15">15 years</SelectItem>
+                      <SelectItem value="10">10 years</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {downPaymentPercent < 20 && (
+                  <div className="flex items-center gap-2">
+                    <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
+                      PMI Rate
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <HelpCircle className="h-3 w-3 sm:h-4 sm:w-4 cursor-help" />
+                        </TooltipTrigger>
+                        <TooltipContent className="max-w-xs">
+                          <p>Private Mortgage Insurance is required when down payment is less than 20%.</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </Label>
+                    <div className="flex gap-1 sm:gap-2 flex-1">
+                      <input
+                        type="number"
+                        value={annualPMIPercent}
+                        onChange={(e) => setAnnualPMIPercent(parseFloat(e.target.value) || 0)}
+                        step="0.1"
+                        min="0"
+                        max="3"
+                        className="flex h-8 sm:h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                      />
+                      <span className="flex items-center text-muted-foreground text-xs sm:text-sm">%</span>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <div className="mt-4 pt-4 border-t border-border">
+                <div className="flex justify-between items-center text-sm">
+                  <span className="text-muted-foreground">Down Payment Amount</span>
+                  <span className="font-semibold">{formatCurrency(homePrice * downPaymentPercent / 100)}</span>
+                </div>
+              </div>
             </CardContent>
           </Card>
 
@@ -419,48 +441,50 @@ const RentOrBuyCalculator = () => {
                 Ownership Costs
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-5">
-              <div className="input-group">
-                <Label className="input-label">Annual Property Tax Rate</Label>
-                <div className="relative">
-                  <input
-                    type="number"
-                    value={annualPropertyTaxRate}
-                    onChange={(e) => setAnnualPropertyTaxRate(parseFloat(e.target.value) || 0)}
-                    step="0.1"
-                    min="0"
-                    max="5"
-                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                  />
-                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">%</span>
+            <CardContent>
+              <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2">
+                <div className="flex items-center gap-2">
+                  <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap min-w-[80px] sm:min-w-[100px]">
+                    Property Tax
+                  </Label>
+                  <div className="flex gap-1 sm:gap-2 flex-1">
+                    <input
+                      type="number"
+                      value={annualPropertyTaxRate}
+                      onChange={(e) => setAnnualPropertyTaxRate(parseFloat(e.target.value) || 0)}
+                      step="0.1"
+                      min="0"
+                      max="5"
+                      className="flex h-8 sm:h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                    />
+                    <span className="flex items-center text-muted-foreground text-xs sm:text-sm">%</span>
+                  </div>
                 </div>
-                <p className="text-xs text-muted-foreground mt-1">
-                  {formatCurrency(homePrice * annualPropertyTaxRate / 100)}/year
-                </p>
-              </div>
 
-              <div className="input-group">
-                <Label className="input-label">Annual Insurance Rate</Label>
-                <div className="relative">
-                  <input
-                    type="number"
-                    value={annualInsuranceRate}
-                    onChange={(e) => setAnnualInsuranceRate(parseFloat(e.target.value) || 0)}
-                    step="0.1"
-                    min="0"
-                    max="3"
-                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                  />
-                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">%</span>
+                <div className="flex items-center gap-2">
+                  <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap min-w-[80px] sm:min-w-[100px]">
+                    Insurance
+                  </Label>
+                  <div className="flex gap-1 sm:gap-2 flex-1">
+                    <input
+                      type="number"
+                      value={annualInsuranceRate}
+                      onChange={(e) => setAnnualInsuranceRate(parseFloat(e.target.value) || 0)}
+                      step="0.1"
+                      min="0"
+                      max="3"
+                      className="flex h-8 sm:h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                    />
+                    <span className="flex items-center text-muted-foreground text-xs sm:text-sm">%</span>
+                  </div>
                 </div>
-                <p className="text-xs text-muted-foreground mt-1">
-                  {formatCurrency(homePrice * annualInsuranceRate / 100)}/year
-                </p>
-              </div>
 
-              <div className="input-group">
-                <Label className="input-label">Annual Maintenance</Label>
-                <CurrencyInput value={annualMaintenance} onChange={setAnnualMaintenance} />
+                <div className="flex items-center gap-2 sm:col-span-2 sm:w-1/2">
+                  <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap min-w-[80px] sm:min-w-[100px]">
+                    Maintenance
+                  </Label>
+                  <CurrencyInput value={annualMaintenance} onChange={setAnnualMaintenance} />
+                </div>
               </div>
             </CardContent>
           </Card>

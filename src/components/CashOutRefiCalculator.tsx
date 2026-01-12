@@ -97,130 +97,120 @@ const CashOutRefiCalculator = () => {
               Loan Details
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-5">
-            {/* Home Value */}
-            <div className="input-group">
-              <Label className="input-label">
-                Home Value
-              </Label>
-              <CurrencyInput
-                value={homeValue}
-                onChange={setHomeValue}
-              />
-            </div>
+          <CardContent>
+            <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2">
+              {/* Home Value */}
+              <div className="flex items-center gap-2">
+                <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap min-w-[90px] sm:min-w-[110px]">
+                  Home Value
+                </Label>
+                <CurrencyInput value={homeValue} onChange={setHomeValue} />
+              </div>
 
-            {/* Current Mortgage Balance */}
-            <div className="input-group">
-              <Label className="input-label">
-                Current Mortgage Balance
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <HelpCircle className="h-4 w-4 text-muted-foreground cursor-help" />
-                  </TooltipTrigger>
-                  <TooltipContent className="max-w-xs">
-                    <p>The remaining balance on your current mortgage.</p>
-                  </TooltipContent>
-                </Tooltip>
-              </Label>
-              <CurrencyInput
-                value={currentMortgageBalance}
-                onChange={setCurrentMortgageBalance}
-              />
-            </div>
+              {/* Current Mortgage Balance */}
+              <div className="flex items-center gap-2">
+                <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[90px] sm:min-w-[110px]">
+                  Current Balance
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <HelpCircle className="h-3 w-3 sm:h-4 sm:w-4 cursor-help" />
+                    </TooltipTrigger>
+                    <TooltipContent className="max-w-xs">
+                      <p>The remaining balance on your current mortgage.</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </Label>
+                <CurrencyInput value={currentMortgageBalance} onChange={setCurrentMortgageBalance} />
+              </div>
 
-            {/* Loan Term */}
-            <div className="input-group">
-              <Label className="input-label">
-                New Loan Term
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <HelpCircle className="h-4 w-4 text-muted-foreground cursor-help" />
-                  </TooltipTrigger>
-                  <TooltipContent className="max-w-xs">
-                    <p>The length of your new refinanced mortgage.</p>
-                  </TooltipContent>
-                </Tooltip>
-              </Label>
-              <Select value={loanTerm} onValueChange={setLoanTerm}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="30">30-year fixed</SelectItem>
-                  <SelectItem value="20">20-year fixed</SelectItem>
-                  <SelectItem value="15">15-year fixed</SelectItem>
-                  <SelectItem value="10">10-year fixed</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+              {/* Loan Term */}
+              <div className="flex items-center gap-2">
+                <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[90px] sm:min-w-[110px]">
+                  Loan Term
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <HelpCircle className="h-3 w-3 sm:h-4 sm:w-4 cursor-help" />
+                    </TooltipTrigger>
+                    <TooltipContent className="max-w-xs">
+                      <p>The length of your new refinanced mortgage.</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </Label>
+                <Select value={loanTerm} onValueChange={setLoanTerm}>
+                  <SelectTrigger className="h-8 sm:h-10 text-sm flex-1">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="30">30-year fixed</SelectItem>
+                    <SelectItem value="20">20-year fixed</SelectItem>
+                    <SelectItem value="15">15-year fixed</SelectItem>
+                    <SelectItem value="10">10-year fixed</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
 
-            {/* Interest Rate */}
-            <div className="input-group">
-              <Label className="input-label">
-                New Interest Rate
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <HelpCircle className="h-4 w-4 text-muted-foreground cursor-help" />
-                  </TooltipTrigger>
-                  <TooltipContent className="max-w-xs">
-                    <p>The interest rate for your new refinanced loan.</p>
-                  </TooltipContent>
-                </Tooltip>
-              </Label>
-              <div className="relative">
-                <input
-                  type="number"
-                  value={interestRate}
-                  onChange={(e) => setInterestRate(parseFloat(e.target.value) || 0)}
-                  step="0.125"
-                  min="0"
-                  max="20"
-                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                />
-                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">%</span>
+              {/* Interest Rate */}
+              <div className="flex items-center gap-2">
+                <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[90px] sm:min-w-[110px]">
+                  Interest Rate
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <HelpCircle className="h-3 w-3 sm:h-4 sm:w-4 cursor-help" />
+                    </TooltipTrigger>
+                    <TooltipContent className="max-w-xs">
+                      <p>The interest rate for your new refinanced loan.</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </Label>
+                <div className="flex gap-1 sm:gap-2 flex-1">
+                  <input
+                    type="number"
+                    value={interestRate}
+                    onChange={(e) => setInterestRate(parseFloat(e.target.value) || 0)}
+                    step="0.125"
+                    min="0"
+                    max="20"
+                    className="flex h-8 sm:h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                  />
+                  <span className="flex items-center text-muted-foreground text-xs sm:text-sm">%</span>
+                </div>
+              </div>
+
+              {/* Desired Cash Out */}
+              <div className="flex items-center gap-2">
+                <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[90px] sm:min-w-[110px]">
+                  Cash-Out
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <HelpCircle className="h-3 w-3 sm:h-4 sm:w-4 cursor-help" />
+                    </TooltipTrigger>
+                    <TooltipContent className="max-w-xs">
+                      <p>The amount of cash you'd like to receive. Capped at 80% LTV.</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </Label>
+                <CurrencyInput value={desiredCashOut} onChange={setDesiredCashOut} />
+              </div>
+
+              {/* Refinance Fees */}
+              <div className="flex items-center gap-2">
+                <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[90px] sm:min-w-[110px]">
+                  Refi Fees
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <HelpCircle className="h-3 w-3 sm:h-4 sm:w-4 cursor-help" />
+                    </TooltipTrigger>
+                    <TooltipContent className="max-w-xs">
+                      <p>Closing costs and fees. Typically 2-5% of the loan amount.</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </Label>
+                <CurrencyInput value={refinanceFees} onChange={setRefinanceFees} />
               </div>
             </div>
 
-            {/* Desired Cash Out */}
-            <div className="input-group">
-              <Label className="input-label">
-                Desired Cash-Out Amount
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <HelpCircle className="h-4 w-4 text-muted-foreground cursor-help" />
-                  </TooltipTrigger>
-                  <TooltipContent className="max-w-xs">
-                    <p>The amount of cash you'd like to receive. This will be capped at your maximum available equity (80% LTV).</p>
-                  </TooltipContent>
-                </Tooltip>
-              </Label>
-              <CurrencyInput
-                value={desiredCashOut}
-                onChange={setDesiredCashOut}
-              />
-            </div>
-
-            {/* Refinance Fees */}
-            <div className="input-group">
-              <Label className="input-label">
-                Refinance Fees
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <HelpCircle className="h-4 w-4 text-muted-foreground cursor-help" />
-                  </TooltipTrigger>
-                  <TooltipContent className="max-w-xs">
-                    <p>Closing costs and fees associated with refinancing. Typically 2-5% of the loan amount.</p>
-                  </TooltipContent>
-                </Tooltip>
-              </Label>
-              <CurrencyInput
-                value={refinanceFees}
-                onChange={setRefinanceFees}
-              />
-            </div>
-
             {/* Roll Fees Checkbox */}
-            <div className="flex items-center space-x-3 pt-2">
+            <div className="flex items-center space-x-3 pt-4 mt-4 border-t border-border">
               <Checkbox
                 id="rollFees"
                 checked={rollFeesIntoLoan}
@@ -233,7 +223,7 @@ const CashOutRefiCalculator = () => {
                     <HelpCircle className="h-4 w-4 text-muted-foreground cursor-help" />
                   </TooltipTrigger>
                   <TooltipContent className="max-w-xs">
-                    <p>If checked, refinance fees will be added to your new loan balance instead of being paid upfront or deducted from your cash-out.</p>
+                    <p>If checked, fees will be added to your loan balance.</p>
                   </TooltipContent>
                 </Tooltip>
               </Label>
