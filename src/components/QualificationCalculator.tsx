@@ -113,26 +113,26 @@ const QualificationCalculator = () => {
                 Price & Down Payment
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-5">
-              {/* Home Value */}
-              <div className="input-group">
-                <Label className="input-label">Home Value</Label>
-                <CurrencyInput value={homeValue} onChange={setHomeValue} />
+            <CardContent>
+              <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2">
+                <div className="flex items-center gap-2">
+                  <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap min-w-[80px] sm:min-w-[100px]">
+                    Home Value
+                  </Label>
+                  <CurrencyInput value={homeValue} onChange={setHomeValue} />
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap min-w-[80px] sm:min-w-[100px]">
+                    Down Payment
+                  </Label>
+                  <CurrencyInput value={downPayment} onChange={setDownPayment} />
+                </div>
               </div>
 
-              {/* Down Payment */}
-              <div className="input-group">
-                <Label className="input-label">Down Payment</Label>
-                <CurrencyInput value={downPayment} onChange={setDownPayment} />
-                <p className="text-xs text-muted-foreground mt-1">
-                  {formatPercent(results.downPaymentPercent)} of home value
-                </p>
-              </div>
-
-              {/* Loan Amount Display */}
-              <div className="bg-secondary/50 rounded-lg p-3">
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-muted-foreground">Loan Amount</span>
+              <div className="mt-4 pt-4 border-t border-border">
+                <div className="flex justify-between items-center text-sm">
+                  <span className="text-muted-foreground">Loan Amount ({formatPercent(100 - results.downPaymentPercent)})</span>
                   <span className="font-semibold">{formatCurrency(results.loanAmount)}</span>
                 </div>
               </div>
@@ -146,66 +146,71 @@ const QualificationCalculator = () => {
                 Mortgage Terms
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-5">
-              {/* Loan Term */}
-              <div className="input-group">
-                <Label className="input-label">Loan Term</Label>
-                <Select value={loanTerm} onValueChange={setLoanTerm}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="30">30 years</SelectItem>
-                    <SelectItem value="20">20 years</SelectItem>
-                    <SelectItem value="15">15 years</SelectItem>
-                    <SelectItem value="10">10 years</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {/* Interest Rate */}
-              <div className="input-group">
-                <Label className="input-label">Interest Rate</Label>
-                <div className="relative">
-                  <input
-                    type="number"
-                    value={interestRate}
-                    onChange={(e) => setInterestRate(parseFloat(e.target.value) || 0)}
-                    step="0.125"
-                    min="0"
-                    max="20"
-                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                  />
-                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">%</span>
+            <CardContent>
+              <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2">
+                <div className="flex items-center gap-2">
+                  <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap min-w-[80px] sm:min-w-[100px]">
+                    Loan Term
+                  </Label>
+                  <Select value={loanTerm} onValueChange={setLoanTerm}>
+                    <SelectTrigger className="h-8 sm:h-10 text-sm flex-1">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="30">30 years</SelectItem>
+                      <SelectItem value="20">20 years</SelectItem>
+                      <SelectItem value="15">15 years</SelectItem>
+                      <SelectItem value="10">10 years</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
-              </div>
 
-              {/* Annual Taxes */}
-              <div className="input-group">
-                <Label className="input-label">Annual Property Taxes</Label>
-                <CurrencyInput value={annualTaxes} onChange={setAnnualTaxes} />
-              </div>
+                <div className="flex items-center gap-2">
+                  <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap min-w-[80px] sm:min-w-[100px]">
+                    Interest Rate
+                  </Label>
+                  <div className="flex gap-1 sm:gap-2 flex-1">
+                    <input
+                      type="number"
+                      value={interestRate}
+                      onChange={(e) => setInterestRate(parseFloat(e.target.value) || 0)}
+                      step="0.125"
+                      min="0"
+                      max="20"
+                      className="flex h-8 sm:h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                    />
+                    <span className="flex items-center text-muted-foreground text-xs sm:text-sm">%</span>
+                  </div>
+                </div>
 
-              {/* Annual Insurance */}
-              <div className="input-group">
-                <Label className="input-label">Annual Home Insurance</Label>
-                <CurrencyInput value={annualInsurance} onChange={setAnnualInsurance} />
-              </div>
+                <div className="flex items-center gap-2">
+                  <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap min-w-[80px] sm:min-w-[100px]">
+                    Property Tax
+                  </Label>
+                  <CurrencyInput value={annualTaxes} onChange={setAnnualTaxes} />
+                </div>
 
-              {/* Annual PMI */}
-              <div className="input-group">
-                <Label className="input-label">
-                  Annual PMI
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <HelpCircle className="h-4 w-4 text-muted-foreground cursor-help" />
-                    </TooltipTrigger>
-                    <TooltipContent className="max-w-xs">
-                      <p>Private Mortgage Insurance, typically required when down payment is less than 20%.</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </Label>
-                <CurrencyInput value={annualPMI} onChange={setAnnualPMI} />
+                <div className="flex items-center gap-2">
+                  <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap min-w-[80px] sm:min-w-[100px]">
+                    Insurance
+                  </Label>
+                  <CurrencyInput value={annualInsurance} onChange={setAnnualInsurance} />
+                </div>
+
+                <div className="flex items-center gap-2 sm:col-span-2 sm:w-1/2">
+                  <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
+                    Annual PMI
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <HelpCircle className="h-3 w-3 sm:h-4 sm:w-4 cursor-help" />
+                      </TooltipTrigger>
+                      <TooltipContent className="max-w-xs">
+                        <p>Private Mortgage Insurance, typically required when down payment is less than 20%.</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </Label>
+                  <CurrencyInput value={annualPMI} onChange={setAnnualPMI} />
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -217,81 +222,80 @@ const QualificationCalculator = () => {
                 DTI Limits & Debts
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-5">
-              {/* Front End Ratio */}
-              <div className="input-group">
-                <Label className="input-label">
-                  Front-End Ratio (Housing)
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <HelpCircle className="h-4 w-4 text-muted-foreground cursor-help" />
-                    </TooltipTrigger>
-                    <TooltipContent className="max-w-xs">
-                      <p>Maximum percentage of gross income for housing expenses (PITI). Conventional loans typically use 28%.</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </Label>
-                <div className="relative">
-                  <input
-                    type="number"
-                    value={frontEndRatio}
-                    onChange={(e) => setFrontEndRatio(parseFloat(e.target.value) || 0)}
-                    step="1"
-                    min="0"
-                    max="100"
-                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                  />
-                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">%</span>
+            <CardContent>
+              <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2">
+                <div className="flex items-center gap-2">
+                  <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
+                    Front-End
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <HelpCircle className="h-3 w-3 sm:h-4 sm:w-4 cursor-help" />
+                      </TooltipTrigger>
+                      <TooltipContent className="max-w-xs">
+                        <p>Maximum percentage of gross income for housing expenses (PITI). Conventional loans typically use 28%.</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </Label>
+                  <div className="flex gap-1 sm:gap-2 flex-1">
+                    <input
+                      type="number"
+                      value={frontEndRatio}
+                      onChange={(e) => setFrontEndRatio(parseFloat(e.target.value) || 0)}
+                      step="1"
+                      min="0"
+                      max="100"
+                      className="flex h-8 sm:h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                    />
+                    <span className="flex items-center text-muted-foreground text-xs sm:text-sm">%</span>
+                  </div>
                 </div>
-              </div>
 
-              {/* Back End Ratio */}
-              <div className="input-group">
-                <Label className="input-label">
-                  Back-End Ratio (Total Debt)
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <HelpCircle className="h-4 w-4 text-muted-foreground cursor-help" />
-                    </TooltipTrigger>
-                    <TooltipContent className="max-w-xs">
-                      <p>Maximum percentage of gross income for all debts including housing. Conventional loans typically use 36%.</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </Label>
-                <div className="relative">
-                  <input
-                    type="number"
-                    value={backEndRatio}
-                    onChange={(e) => setBackEndRatio(parseFloat(e.target.value) || 0)}
-                    step="1"
-                    min="0"
-                    max="100"
-                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                  />
-                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">%</span>
+                <div className="flex items-center gap-2">
+                  <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
+                    Back-End
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <HelpCircle className="h-3 w-3 sm:h-4 sm:w-4 cursor-help" />
+                      </TooltipTrigger>
+                      <TooltipContent className="max-w-xs">
+                        <p>Maximum percentage of gross income for all debts including housing. Conventional loans typically use 36%.</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </Label>
+                  <div className="flex gap-1 sm:gap-2 flex-1">
+                    <input
+                      type="number"
+                      value={backEndRatio}
+                      onChange={(e) => setBackEndRatio(parseFloat(e.target.value) || 0)}
+                      step="1"
+                      min="0"
+                      max="100"
+                      className="flex h-8 sm:h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                    />
+                    <span className="flex items-center text-muted-foreground text-xs sm:text-sm">%</span>
+                  </div>
                 </div>
-              </div>
 
-              {/* Monthly Other Debts */}
-              <div className="input-group">
-                <Label className="input-label">
-                  Other Monthly Debts
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <HelpCircle className="h-4 w-4 text-muted-foreground cursor-help" />
-                    </TooltipTrigger>
-                    <TooltipContent className="max-w-xs">
-                      <p>Monthly payments for car loans, student loans, credit cards, and other recurring debts.</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </Label>
-                <CurrencyInput value={monthlyDebts} onChange={setMonthlyDebts} />
+                <div className="flex items-center gap-2 sm:col-span-2 sm:w-1/2">
+                  <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
+                    Other Debts
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <HelpCircle className="h-3 w-3 sm:h-4 sm:w-4 cursor-help" />
+                      </TooltipTrigger>
+                      <TooltipContent className="max-w-xs">
+                        <p>Monthly payments for car loans, student loans, credit cards, and other recurring debts.</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </Label>
+                  <CurrencyInput value={monthlyDebts} onChange={setMonthlyDebts} />
+                </div>
               </div>
 
               {/* DTI Presets */}
-              <div className="pt-2">
-                <Label className="input-label mb-2">Quick DTI Presets</Label>
-                <div className="grid grid-cols-2 gap-2">
+              <div className="pt-4 mt-4 border-t border-border">
+                <Label className="text-xs sm:text-sm text-muted-foreground mb-2 block">Quick DTI Presets</Label>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                   <button
                     type="button"
                     onClick={() => { setFrontEndRatio(28); setBackEndRatio(36); }}
