@@ -232,8 +232,67 @@ const CashOutRefiCalculator = () => {
           </CardContent>
         </Card>
 
+        {/* Equity Breakdown Chart - Fills left column space */}
+        <Card className="calculator-card lg:col-span-3">
+          <CardHeader className="pb-4">
+            <CardTitle className="text-lg font-semibold">Equity Breakdown</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="h-[220px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={[
+                      { name: 'Cash Out', value: results.actualCashOut, color: 'hsl(var(--accent))' },
+                      { name: 'Remaining Equity', value: Math.max(0, results.equity - results.actualCashOut), color: 'hsl(var(--primary))' },
+                      { name: 'Current Mortgage', value: currentMortgageBalance, color: 'hsl(var(--muted))' },
+                    ].filter(item => item.value > 0)}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={60}
+                    outerRadius={85}
+                    paddingAngle={2}
+                    dataKey="value"
+                  >
+                    {[
+                      { name: 'Cash Out', value: results.actualCashOut, color: 'hsl(var(--accent))' },
+                      { name: 'Remaining Equity', value: Math.max(0, results.equity - results.actualCashOut), color: 'hsl(var(--primary))' },
+                      { name: 'Current Mortgage', value: currentMortgageBalance, color: 'hsl(var(--muted))' },
+                    ].filter(item => item.value > 0).map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.color} />
+                    ))}
+                  </Pie>
+                  <RechartsTooltip
+                    formatter={(value: number) => formatCurrency(value)}
+                    contentStyle={{
+                      backgroundColor: 'hsl(var(--card))',
+                      border: '1px solid hsl(var(--border))',
+                      borderRadius: '8px',
+                      fontSize: '12px',
+                    }}
+                  />
+                  <Legend 
+                    wrapperStyle={{ fontSize: '12px' }}
+                    formatter={(value) => <span className="text-foreground">{value}</span>}
+                  />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+            <div className="grid grid-cols-2 gap-4 text-center mt-4 pt-4 border-t border-border">
+              <div>
+                <p className="text-sm text-muted-foreground mb-1">Current Equity</p>
+                <p className="text-xl font-bold text-foreground">{formatCurrency(results.equity)}</p>
+              </div>
+              <div>
+                <p className="text-sm text-muted-foreground mb-1">Total Interest</p>
+                <p className="text-xl font-bold text-foreground">{formatCurrency(results.totalInterest)}</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
         {/* Results Section */}
-        <div className="space-y-6 lg:col-span-2">
+        <div className="space-y-6 lg:col-span-2 lg:row-span-2 lg:row-start-1 lg:col-start-4">
           {/* Main Result */}
           <Card className="bg-primary border-0 rounded-xl p-6 shadow-xl">
             <CardContent className="p-0">
@@ -304,65 +363,6 @@ const CashOutRefiCalculator = () => {
                     </Tooltip>
                   </span>
                   <span className="font-semibold text-lg text-accent">{formatCurrency(results.monthlyPayment)}</span>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Equity Breakdown Chart */}
-          <Card className="calculator-card">
-            <CardHeader className="pb-4">
-              <CardTitle className="text-lg font-semibold">Equity Breakdown</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="h-[200px]">
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                    <Pie
-                      data={[
-                        { name: 'Cash Out', value: results.actualCashOut, color: 'hsl(var(--accent))' },
-                        { name: 'Remaining Equity', value: Math.max(0, results.equity - results.actualCashOut), color: 'hsl(var(--primary))' },
-                        { name: 'Current Mortgage', value: currentMortgageBalance, color: 'hsl(var(--muted))' },
-                      ].filter(item => item.value > 0)}
-                      cx="50%"
-                      cy="50%"
-                      innerRadius={50}
-                      outerRadius={70}
-                      paddingAngle={2}
-                      dataKey="value"
-                    >
-                      {[
-                        { name: 'Cash Out', value: results.actualCashOut, color: 'hsl(var(--accent))' },
-                        { name: 'Remaining Equity', value: Math.max(0, results.equity - results.actualCashOut), color: 'hsl(var(--primary))' },
-                        { name: 'Current Mortgage', value: currentMortgageBalance, color: 'hsl(var(--muted))' },
-                      ].filter(item => item.value > 0).map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.color} />
-                      ))}
-                    </Pie>
-                    <RechartsTooltip
-                      formatter={(value: number) => formatCurrency(value)}
-                      contentStyle={{
-                        backgroundColor: 'hsl(var(--card))',
-                        border: '1px solid hsl(var(--border))',
-                        borderRadius: '8px',
-                        fontSize: '12px',
-                      }}
-                    />
-                    <Legend 
-                      wrapperStyle={{ fontSize: '11px' }}
-                      formatter={(value) => <span className="text-foreground">{value}</span>}
-                    />
-                  </PieChart>
-                </ResponsiveContainer>
-              </div>
-              <div className="grid grid-cols-2 gap-4 text-center mt-4 pt-4 border-t border-border">
-                <div>
-                  <p className="text-sm text-muted-foreground mb-1">Current Equity</p>
-                  <p className="text-xl font-bold text-foreground">{formatCurrency(results.equity)}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground mb-1">Total Interest</p>
-                  <p className="text-xl font-bold text-foreground">{formatCurrency(results.totalInterest)}</p>
                 </div>
               </div>
             </CardContent>
