@@ -18,10 +18,8 @@ const BiWeeklyPayments = () => {
       <div className="min-h-screen bg-background flex flex-col">
         <Header />
         
-        <main className="flex-1">
-          <div className="container py-8 md:py-12">
-            <div className="max-w-5xl mx-auto">
-              <header className="mb-8">
+        <main className="flex-1 container py-8 md:py-12">
+          <header className="mb-8">
                 <h1 className="text-3xl md:text-4xl font-display font-bold text-foreground mb-3">
                   Bi-Weekly Mortgage Payment Calculator
                 </h1>
@@ -60,9 +58,7 @@ const BiWeeklyPayments = () => {
                     <li><strong>Tax Implications:</strong> Paying less interest means a smaller mortgage interest deduction if you itemize.</li>
                   </ul>
                 </div>
-              </section>
-            </div>
-          </div>
+          </section>
         </main>
 
         <Footer />

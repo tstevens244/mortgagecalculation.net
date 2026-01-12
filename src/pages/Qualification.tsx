@@ -17,8 +17,7 @@ const Qualification = () => {
       <div className="min-h-screen bg-background flex flex-col">
         <Header />
         <main className="flex-1 container py-6 md:py-10">
-          <div className="max-w-5xl mx-auto">
-            <header className="mb-6">
+          <header className="mb-6">
               <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-2">
                 Mortgage Qualification Calculator
               </h1>
@@ -26,8 +25,7 @@ const Qualification = () => {
                 Calculate the minimum income needed to qualify for your desired home
               </p>
             </header>
-            <QualificationCalculator />
-          </div>
+          <QualificationCalculator />
         </main>
         <Footer />
       </div>
