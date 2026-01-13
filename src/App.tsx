@@ -5,6 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
+import AI from "./pages/AI";
 import SecondMortgage from "./pages/SecondMortgage";
 import Heloc from "./pages/Heloc";
 import Refinance from "./pages/Refinance";
@@ -27,6 +28,7 @@ const App = () => (
         <BrowserRouter basename={import.meta.env.BASE_URL}>
           <Routes>
             <Route path="/" element={<Index />} />
+            <Route path="/ai" element={<AI />} />
             <Route path="/second-mortgage" element={<SecondMortgage />} />
             <Route path="/heloc" element={<Heloc />} />
             <Route path="/refinance" element={<Refinance />} />
