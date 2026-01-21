@@ -12,7 +12,7 @@ const Qualification = () => {
           name="description"
           content="Calculate the minimum income required to qualify for a mortgage. Estimate your required annual salary based on home price, down payment, and debt-to-income ratios."
         />
-        <link rel="canonical" href="https://mortgagecalc.com/qualification" />
+        <link rel="canonical" href="https://mortgagecalculation.net/qualification" />
       </Helmet>
       <div className="min-h-screen flex flex-col">
         <Header />

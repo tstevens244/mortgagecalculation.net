@@ -12,7 +12,7 @@ const ExtraPayments = () => {
           name="description"
           content="Calculate how extra mortgage payments can save you thousands in interest and pay off your loan years early. See the impact of additional monthly or lump-sum payments."
         />
-        <link rel="canonical" href="https://mortgagecalc.example.com/extra-payments" />
+        <link rel="canonical" href="https://mortgagecalculation.net/extra-payments" />
       </Helmet>
       
       <div className="min-h-screen bg-background flex flex-col">
