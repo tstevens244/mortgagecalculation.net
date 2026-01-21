@@ -4,7 +4,7 @@ import Footer from "@/components/Footer";
 import HelocCalculator from "@/components/HelocCalculator";
 
 const Heloc = () => {
-  const canonicalUrl = "https://mortgagecalc.example.com/heloc";
+  const canonicalUrl = "https://mortgagecalculation.net/heloc";
 
   return (
     <>

@@ -4,7 +4,7 @@ import Footer from "@/components/Footer";
 import SecondMortgageCalculator from "@/components/SecondMortgageCalculator";
 
 const SecondMortgage = () => {
-  const canonicalUrl = "https://mortgagecalc.example.com/second-mortgage";
+  const canonicalUrl = "https://mortgagecalculation.net/second-mortgage";
 
   return (
     <>

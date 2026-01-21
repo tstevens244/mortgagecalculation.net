@@ -4,7 +4,7 @@ import Footer from "@/components/Footer";
 import AIChatbot from "@/components/AIChatbot";
 
 const AI = () => {
-  const canonicalUrl = "https://mortgagecalc.example.com/ai";
+  const canonicalUrl = "https://mortgagecalculation.net/ai";
 
   return (
     <>

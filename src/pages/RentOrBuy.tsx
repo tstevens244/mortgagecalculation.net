@@ -12,7 +12,7 @@ const RentOrBuy = () => {
           name="description"
           content="Compare the financial costs and benefits of renting vs buying a home. Analyze rent appreciation, home appreciation, tax benefits, and ownership costs."
         />
-        <link rel="canonical" href="https://mortgagecalc.example.com/rent-or-buy" />
+        <link rel="canonical" href="https://mortgagecalculation.net/rent-or-buy" />
       </Helmet>
       
       <div className="min-h-screen bg-background flex flex-col">

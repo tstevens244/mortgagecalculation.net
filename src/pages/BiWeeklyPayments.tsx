@@ -12,7 +12,7 @@ const BiWeeklyPayments = () => {
           name="description"
           content="Calculate how bi-weekly mortgage payments can save you thousands in interest and pay off your loan years early. Compare standard vs bi-weekly payment schedules."
         />
-        <link rel="canonical" href="https://mortgagecalc.example.com/bi-weekly-payments" />
+        <link rel="canonical" href="https://mortgagecalculation.net/bi-weekly-payments" />
       </Helmet>
       
       <div className="min-h-screen bg-background flex flex-col">

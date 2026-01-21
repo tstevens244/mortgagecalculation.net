@@ -12,7 +12,7 @@ const Affordability = () => {
           name="description"
           content="Calculate how much house you can afford based on your income, debts, and monthly budget. Estimate your maximum home price with our free affordability calculator."
         />
-        <link rel="canonical" href="https://mortgagecalc.com/affordability" />
+        <link rel="canonical" href="https://mortgagecalculation.net/affordability" />
       </Helmet>
       <div className="min-h-screen flex flex-col">
         <Header />

@@ -13,4 +13,4 @@ Allow: /
 User-agent: *
 Allow: /
 
-Sitemap: https://mortgagecalc.example.com/sitemap.xml
+Sitemap: https://mortgagecalculation.net/sitemap.xml
