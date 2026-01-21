@@ -7,7 +7,7 @@ import { componentTagger } from "lovable-tagger";
 export default defineConfig(({ mode }) => ({
   // In Lovable preview/dev we serve from "/".
   // In GitHub Pages production we serve from the repository subpath.
-  base: mode === "production" ? "/mortgage-smart-calculator/" : "/",
+  base: "/",
   server: {
     host: "::",
     port: 8080,
