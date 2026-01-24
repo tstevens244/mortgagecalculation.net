@@ -3,20 +3,20 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>MortgageCalc</title>
+    <title>MortgageCalculation.net</title>
   </head>
   <body>
     <script>
-      // GitHub Pages SPA redirect
-      // https://github.com/rafgraph/spa-github-pages
+      // SPA redirect for direct URL access
+      // Preserves the path and redirects to index.html with query params
       (function () {
         var l = window.location;
-        var base = "/mortgage-smart-calculator";
-        if (l.pathname.indexOf(base + "/") !== 0) return;
-        var redirect = base + "/?" +
-          "p=" + encodeURIComponent(l.pathname.slice(base.length)) +
-          "&q=" + encodeURIComponent(l.search.slice(1)) +
-          "&h=" + encodeURIComponent(l.hash.slice(1));
+        // Skip if already at root or has redirect params
+        if (l.pathname === '/' || l.search.indexOf('p=') !== -1) return;
+        var redirect = '/?' +
+          'p=' + encodeURIComponent(l.pathname) +
+          (l.search ? '&q=' + encodeURIComponent(l.search.slice(1)) : '') +
+          (l.hash ? '&h=' + encodeURIComponent(l.hash.slice(1)) : '');
         l.replace(redirect);
       })();
     </script>
