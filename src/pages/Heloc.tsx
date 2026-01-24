@@ -14,6 +14,7 @@ const Heloc = () => {
           name="description"
           content="Should you use a HELOC to consolidate debts? Compare keeping existing debts vs home equity line of credit. Calculate monthly savings and total costs."
         />
+        <meta name="robots" content="index, follow" />
         <link rel="canonical" href={canonicalUrl} />
         <meta property="og:title" content="HELOC Calculator | Home Equity Line of Credit" />
         <meta

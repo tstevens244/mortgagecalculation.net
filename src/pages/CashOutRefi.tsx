@@ -12,7 +12,27 @@ const CashOutRefi = () => {
           name="description"
           content="Calculate how much cash you can extract from your home equity with a cash-out refinance. Estimate your new loan balance, monthly payment, and maximum cash-out amount."
         />
+        <meta name="robots" content="index, follow" />
         <link rel="canonical" href="https://mortgagecalculation.net/cash-out-refinance" />
+        <meta property="og:title" content="Cash-Out Refinance Calculator" />
+        <meta property="og:description" content="Calculate how much cash you can extract from your home equity with a cash-out refinance." />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://mortgagecalculation.net/cash-out-refinance" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Cash-Out Refinance Calculator" />
+        <meta name="twitter:description" content="Estimate your new loan balance and maximum cash-out amount." />
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebApplication",
+            name: "Cash-Out Refinance Calculator",
+            applicationCategory: "FinanceApplication",
+            description: "Calculate how much cash you can extract from your home equity with a cash-out refinance.",
+            operatingSystem: "Any",
+            url: "https://mortgagecalculation.net/cash-out-refinance",
+            offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+          })}
+        </script>
       </Helmet>
       <div className="min-h-screen flex flex-col">
         <Header />

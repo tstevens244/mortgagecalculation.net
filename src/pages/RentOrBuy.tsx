@@ -12,7 +12,27 @@ const RentOrBuy = () => {
           name="description"
           content="Compare the financial costs and benefits of renting vs buying a home. Analyze rent appreciation, home appreciation, tax benefits, and ownership costs."
         />
+        <meta name="robots" content="index, follow" />
         <link rel="canonical" href="https://mortgagecalculation.net/rent-or-buy" />
+        <meta property="og:title" content="Rent or Buy Calculator | Should You Rent or Buy?" />
+        <meta property="og:description" content="Compare the long-term financial impact of renting versus purchasing a home." />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://mortgagecalculation.net/rent-or-buy" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Rent or Buy Calculator" />
+        <meta name="twitter:description" content="Compare renting vs buying a home to make the best financial decision." />
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebApplication",
+            name: "Rent or Buy Calculator",
+            applicationCategory: "FinanceApplication",
+            description: "Compare the financial costs and benefits of renting vs buying a home.",
+            operatingSystem: "Any",
+            url: "https://mortgagecalculation.net/rent-or-buy",
+            offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+          })}
+        </script>
       </Helmet>
       
       <div className="min-h-screen bg-background flex flex-col">

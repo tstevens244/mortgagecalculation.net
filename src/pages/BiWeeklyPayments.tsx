@@ -12,7 +12,27 @@ const BiWeeklyPayments = () => {
           name="description"
           content="Calculate how bi-weekly mortgage payments can save you thousands in interest and pay off your loan years early. Compare standard vs bi-weekly payment schedules."
         />
+        <meta name="robots" content="index, follow" />
         <link rel="canonical" href="https://mortgagecalculation.net/bi-weekly-payments" />
+        <meta property="og:title" content="Bi-Weekly Mortgage Payment Calculator" />
+        <meta property="og:description" content="See how bi-weekly payments can save you thousands and shave years off your mortgage." />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://mortgagecalculation.net/bi-weekly-payments" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Bi-Weekly Mortgage Calculator" />
+        <meta name="twitter:description" content="Calculate how bi-weekly payments can pay off your mortgage faster." />
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebApplication",
+            name: "Bi-Weekly Mortgage Payment Calculator",
+            applicationCategory: "FinanceApplication",
+            description: "Calculate how bi-weekly mortgage payments can save you thousands in interest.",
+            operatingSystem: "Any",
+            url: "https://mortgagecalculation.net/bi-weekly-payments",
+            offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+          })}
+        </script>
       </Helmet>
       
       <div className="min-h-screen bg-background flex flex-col">

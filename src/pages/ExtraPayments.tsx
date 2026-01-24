@@ -12,7 +12,27 @@ const ExtraPayments = () => {
           name="description"
           content="Calculate how extra mortgage payments can save you thousands in interest and pay off your loan years early. See the impact of additional monthly or lump-sum payments."
         />
+        <meta name="robots" content="index, follow" />
         <link rel="canonical" href="https://mortgagecalculation.net/extra-payments" />
+        <meta property="og:title" content="Extra Mortgage Payments Calculator" />
+        <meta property="og:description" content="See how paying extra each month can save you thousands and pay off your mortgage early." />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://mortgagecalculation.net/extra-payments" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Extra Mortgage Payments Calculator" />
+        <meta name="twitter:description" content="Calculate how extra payments can save you thousands in interest." />
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebApplication",
+            name: "Extra Mortgage Payments Calculator",
+            applicationCategory: "FinanceApplication",
+            description: "Calculate how extra mortgage payments can save you thousands in interest and pay off your loan early.",
+            operatingSystem: "Any",
+            url: "https://mortgagecalculation.net/extra-payments",
+            offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+          })}
+        </script>
       </Helmet>
       
       <div className="min-h-screen bg-background flex flex-col">
