@@ -252,7 +252,7 @@ const ARMCalculator = () => {
                     inputMode="decimal"
                     value={inputs.initialRate}
                     onChange={(e) => updateInput("initialRate", parseFloat(e.target.value) || 0)}
-                    className="h-8 sm:h-10 text-sm sm:text-lg font-medium flex-1"
+                    className="h-8 sm:h-10 text-sm font-medium flex-1"
                   />
                   <span className="flex items-center text-muted-foreground text-xs sm:text-sm">%</span>
                 </div>
@@ -269,7 +269,7 @@ const ARMCalculator = () => {
                   value={inputs.loanTerm.toString()}
                   onValueChange={(v) => updateInput("loanTerm", parseInt(v))}
                 >
-                  <SelectTrigger id="loan-term" className="h-8 sm:h-10 text-sm sm:text-lg font-medium flex-1">
+                  <SelectTrigger id="loan-term" className="h-8 sm:h-10 text-sm font-medium flex-1">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -322,7 +322,7 @@ const ARMCalculator = () => {
                     inputMode="decimal"
                     value={inputs.pmiRate}
                     onChange={(e) => updateInput("pmiRate", parseFloat(e.target.value) || 0)}
-                    className="h-8 sm:h-10 text-sm sm:text-lg font-medium flex-1"
+                    className="h-8 sm:h-10 text-sm font-medium flex-1"
                   />
                   <span className="flex items-center text-muted-foreground text-xs sm:text-sm">%</span>
                 </div>
@@ -357,7 +357,7 @@ const ARMCalculator = () => {
                   value={inputs.yearsBeforeFirstAdjustment.toString()}
                   onValueChange={(v) => updateInput("yearsBeforeFirstAdjustment", parseInt(v))}
                 >
-                  <SelectTrigger id="years-first-adj" className="h-8 sm:h-10 text-sm sm:text-lg font-medium flex-1">
+                  <SelectTrigger id="years-first-adj" className="h-8 sm:h-10 text-sm font-medium flex-1">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -392,7 +392,7 @@ const ARMCalculator = () => {
                     inputMode="decimal"
                     value={inputs.expectedFirstAdjustment}
                     onChange={(e) => updateInput("expectedFirstAdjustment", parseFloat(e.target.value) || 0)}
-                    className="h-8 sm:h-10 text-sm sm:text-lg font-medium flex-1"
+                    className="h-8 sm:h-10 text-sm font-medium flex-1"
                   />
                   <span className="flex items-center text-muted-foreground text-xs sm:text-sm">%</span>
                 </div>
@@ -417,7 +417,7 @@ const ARMCalculator = () => {
                   value={inputs.monthsBetweenAdjustments.toString()}
                   onValueChange={(v) => updateInput("monthsBetweenAdjustments", parseInt(v))}
                 >
-                  <SelectTrigger id="months-between" className="h-8 sm:h-10 text-sm sm:text-lg font-medium flex-1">
+                  <SelectTrigger id="months-between" className="h-8 sm:h-10 text-sm font-medium flex-1">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -450,7 +450,7 @@ const ARMCalculator = () => {
                     inputMode="decimal"
                     value={inputs.expectedSubsequentAdjustment}
                     onChange={(e) => updateInput("expectedSubsequentAdjustment", parseFloat(e.target.value) || 0)}
-                    className="h-8 sm:h-10 text-sm sm:text-lg font-medium flex-1"
+                    className="h-8 sm:h-10 text-sm font-medium flex-1"
                   />
                   <span className="flex items-center text-muted-foreground text-xs sm:text-sm">%</span>
                 </div>
@@ -478,7 +478,7 @@ const ARMCalculator = () => {
                     inputMode="decimal"
                     value={inputs.lifetimeCap}
                     onChange={(e) => updateInput("lifetimeCap", parseFloat(e.target.value) || 0)}
-                    className="h-8 sm:h-10 text-sm sm:text-lg font-medium flex-1"
+                    className="h-8 sm:h-10 text-sm font-medium flex-1"
                   />
                   <span className="flex items-center text-muted-foreground text-xs sm:text-sm">%</span>
                 </div>
