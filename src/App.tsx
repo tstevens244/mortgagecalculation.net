@@ -9,6 +9,7 @@ import AI from "./pages/AI";
 import FHA from "./pages/FHA";
 import USDA from "./pages/USDA";
 import VA from "./pages/VA";
+import Jumbo from "./pages/Jumbo";
 import SecondMortgage from "./pages/SecondMortgage";
 import Heloc from "./pages/Heloc";
 import Refinance from "./pages/Refinance";
@@ -35,6 +36,7 @@ const App = () => (
             <Route path="/fha" element={<FHA />} />
             <Route path="/usda" element={<USDA />} />
             <Route path="/va" element={<VA />} />
+            <Route path="/jumbo" element={<Jumbo />} />
             <Route path="/second-mortgage" element={<SecondMortgage />} />
             <Route path="/heloc" element={<Heloc />} />
             <Route path="/refinance" element={<Refinance />} />
