@@ -14,6 +14,7 @@ const Refinance = () => {
           name="description"
           content="Calculate if refinancing your mortgage makes sense. Compare interest savings, closing costs, and break-even timeline to make an informed decision."
         />
+        <meta name="robots" content="index, follow" />
         <link rel="canonical" href={canonicalUrl} />
         <meta property="og:title" content="Refinance Calculator | Mortgage Refinancing Analysis" />
         <meta

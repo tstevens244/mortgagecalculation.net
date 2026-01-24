@@ -14,6 +14,7 @@ const Index = () => {
           name="description"
           content="Calculate your monthly mortgage payment with our free mortgage calculator. Includes property tax, insurance, PMI, and full amortization schedule."
         />
+        <meta name="robots" content="index, follow" />
         <link rel="canonical" href={canonicalUrl} />
         <meta property="og:title" content="Free Mortgage Calculator | Estimate Monthly Payments" />
         <meta

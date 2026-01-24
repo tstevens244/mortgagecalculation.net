@@ -14,6 +14,7 @@ const SecondMortgage = () => {
           name="description"
           content="Compare the cost of PMI versus a second mortgage (piggyback loan). Calculate if an 80/10/10 or 80/20 loan structure saves you money."
         />
+        <meta name="robots" content="index, follow" />
         <link rel="canonical" href={canonicalUrl} />
         <meta property="og:title" content="Second Mortgage Calculator | PMI vs Piggyback Loan" />
         <meta
