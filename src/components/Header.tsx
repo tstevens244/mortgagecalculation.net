@@ -20,38 +20,38 @@ import { cn } from "@/lib/utils";
 
 const navItems = [
   {
-    label: "Mortgage",
+    label: "Core Calculators",
     href: "/",
     subItems: [
       { label: "Mortgage Calculator", href: "/" },
-      { label: "FHA Loan", href: "/fha" },
-      { label: "VA Loan", href: "/va" },
-      { label: "USDA Loan", href: "/usda" },
-      { label: "Jumbo Loan", href: "/jumbo" },
-      { label: "ARM", href: "/arm" },
-      { label: "Second Mortgage", href: "/second-mortgage" },
-      { label: "HELOC", href: "/heloc" },
+      { label: "Mortgage Affordability", href: "/affordability" },
+      { label: "Rent or Buy", href: "/rent-or-buy" },
+      { label: "Mortgage Qualification", href: "/qualification" },
     ],
   },
   {
-    label: "Refinance",
+    label: "Loan Programs",
+    href: "/fha",
+    subItems: [
+      { label: "FHA Loan", href: "/fha" },
+      { label: "USDA Loan", href: "/usda" },
+      { label: "VA Loan", href: "/va" },
+      { label: "Jumbo", href: "/jumbo" },
+      { label: "ARM", href: "/arm" },
+    ],
+  },
+  {
+    label: "Refinancing & Home Equity",
     href: "/refinance",
     subItems: [
-      { label: "Refi Calculator", href: "/refinance" },
+      { label: "Refinance", href: "/refinance" },
       { label: "Cash-Out Refi", href: "/cash-out-refinance" },
+      { label: "HELOC", href: "/heloc" },
+      { label: "Second Mortgage", href: "/second-mortgage" },
     ],
   },
   {
-    label: "Affordability",
-    href: "/affordability",
-    subItems: [
-      { label: "Mortgage Affordability", href: "/affordability" },
-      { label: "Mortgage Qualification", href: "/qualification" },
-      { label: "Rent or Buy", href: "/rent-or-buy" },
-    ],
-  },
-  {
-    label: "Save Money",
+    label: "Savings Strategies",
     href: "/extra-payments",
     subItems: [
       { label: "Extra Payments", href: "/extra-payments" },
@@ -84,7 +84,7 @@ const Header = () => {
                     className="flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
                   >
                     <Sparkles className="h-4 w-4" />
-                    AI
+                    Mortgage Assistant
                   </Link>
                 </NavigationMenuLink>
               </NavigationMenuItem>
@@ -141,7 +141,7 @@ const Header = () => {
                       className="flex items-center gap-2 py-2 text-base font-medium text-foreground hover:text-primary transition-colors"
                     >
                       <Sparkles className="h-4 w-4" />
-                      AI
+                      Mortgage Assistant
                     </Link>
                   </li>
 
