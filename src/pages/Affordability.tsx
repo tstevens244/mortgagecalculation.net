@@ -13,11 +13,11 @@ const Affordability = () => {
           content="Calculate how much house you can afford based on your income, debts, and monthly budget. Estimate your maximum home price with our free affordability calculator."
         />
         <meta name="robots" content="index, follow" />
-        <link rel="canonical" href="https://mortgagecalculation.net/affordability" />
+        <link rel="canonical" href="https://mortgagecalculation.net/house-affordability" />
         <meta property="og:title" content="How Much House Can I Afford? | Affordability Calculator" />
         <meta property="og:description" content="Calculate how much house you can afford based on your income, debts, and monthly budget." />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://mortgagecalculation.net/affordability" />
+        <meta property="og:url" content="https://mortgagecalculation.net/house-affordability" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="Mortgage Affordability Calculator" />
         <meta name="twitter:description" content="Estimate your maximum home price based on income or monthly budget." />
@@ -29,7 +29,7 @@ const Affordability = () => {
             applicationCategory: "FinanceApplication",
             description: "Calculate how much house you can afford based on your income, debts, and monthly budget.",
             operatingSystem: "Any",
-            url: "https://mortgagecalculation.net/affordability",
+            url: "https://mortgagecalculation.net/house-affordability",
             offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
           })}
         </script>

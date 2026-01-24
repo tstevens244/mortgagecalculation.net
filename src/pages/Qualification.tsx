@@ -13,11 +13,11 @@ const Qualification = () => {
           content="Calculate the minimum income required to qualify for a mortgage. Estimate your required annual salary based on home price, down payment, and debt-to-income ratios."
         />
         <meta name="robots" content="index, follow" />
-        <link rel="canonical" href="https://mortgagecalculation.net/qualification" />
+        <link rel="canonical" href="https://mortgagecalculation.net/mortgage-qualification-calculator" />
         <meta property="og:title" content="Mortgage Qualification Calculator" />
         <meta property="og:description" content="Calculate the minimum income required to qualify for a mortgage." />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://mortgagecalculation.net/qualification" />
+        <meta property="og:url" content="https://mortgagecalculation.net/mortgage-qualification-calculator" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="Mortgage Qualification Calculator" />
         <meta name="twitter:description" content="Estimate your required annual salary to qualify for a mortgage." />
@@ -29,7 +29,7 @@ const Qualification = () => {
             applicationCategory: "FinanceApplication",
             description: "Calculate the minimum income required to qualify for a mortgage.",
             operatingSystem: "Any",
-            url: "https://mortgagecalculation.net/qualification",
+            url: "https://mortgagecalculation.net/mortgage-qualification-calculator",
             offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
           })}
         </script>

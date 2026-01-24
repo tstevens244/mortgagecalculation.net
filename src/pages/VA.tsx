@@ -4,7 +4,7 @@ import Footer from "@/components/Footer";
 import VACalculator from "@/components/VACalculator";
 
 const VA = () => {
-  const canonicalUrl = "https://mortgagecalculation.net/va";
+  const canonicalUrl = "https://mortgagecalculation.net/va-loan-calculator";
 
   return (
     <>
