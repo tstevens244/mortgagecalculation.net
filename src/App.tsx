@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import AI from "./pages/AI";
+import FHA from "./pages/FHA";
 import SecondMortgage from "./pages/SecondMortgage";
 import Heloc from "./pages/Heloc";
 import Refinance from "./pages/Refinance";
@@ -29,6 +30,7 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/ai" element={<AI />} />
+            <Route path="/fha" element={<FHA />} />
             <Route path="/second-mortgage" element={<SecondMortgage />} />
             <Route path="/heloc" element={<Heloc />} />
             <Route path="/refinance" element={<Refinance />} />
