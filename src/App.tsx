@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import AI from "./pages/AI";
+import Conventional from "./pages/Conventional";
 import FHA from "./pages/FHA";
 import USDA from "./pages/USDA";
 import VA from "./pages/VA";
@@ -34,6 +35,7 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/ai" element={<AI />} />
+            <Route path="/conventional" element={<Conventional />} />
             <Route path="/fha" element={<FHA />} />
             <Route path="/usda" element={<USDA />} />
             <Route path="/va" element={<VA />} />
