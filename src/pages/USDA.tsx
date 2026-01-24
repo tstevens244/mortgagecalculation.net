@@ -4,7 +4,7 @@ import Footer from "@/components/Footer";
 import USDACalculator from "@/components/USDACalculator";
 
 const USDA = () => {
-  const canonicalUrl = "https://mortgagecalculation.net/usda";
+  const canonicalUrl = "https://mortgagecalculation.net/usda-loan-calculator";
 
   return (
     <>

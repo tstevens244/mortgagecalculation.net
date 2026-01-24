@@ -5,7 +5,7 @@ import JumboCalculator from "@/components/JumboCalculator";
 import { formatCurrency } from "@/lib/formatters";
 
 const Jumbo = () => {
-  const canonicalUrl = "https://mortgagecalculation.net/jumbo";
+  const canonicalUrl = "https://mortgagecalculation.net/jumbo-loan-calculator";
 
   return (
     <>

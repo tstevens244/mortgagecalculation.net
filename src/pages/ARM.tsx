@@ -4,7 +4,7 @@ import Footer from "@/components/Footer";
 import ARMCalculator from "@/components/ARMCalculator";
 
 const ARM = () => {
-  const canonicalUrl = "https://mortgagecalculation.net/arm";
+  const canonicalUrl = "https://mortgagecalculation.net/adjustable-rate-mortgage-calculator";
 
   return (
     <>
