@@ -1,4 +1,5 @@
-import { Calculator, Menu, Sparkles } from "lucide-react";
+import { Calculator, ChevronDown, Menu, Sparkles } from "lucide-react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import {
   Sheet,
@@ -17,6 +18,11 @@ import {
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
 import { cn } from "@/lib/utils";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 
 const navItems = [
   {
@@ -62,6 +68,17 @@ const navItems = [
 ];
 
 const Header = () => {
+  const [openSections, setOpenSections] = useState<string[]>([]);
+  const [sheetOpen, setSheetOpen] = useState(false);
+
+  const toggleSection = (label: string) => {
+    setOpenSections((prev) =>
+      prev.includes(label)
+        ? prev.filter((l) => l !== label)
+        : [...prev, label]
+    );
+  };
+
   return (
     <header className="border-b border-border bg-card sticky top-0 z-50">
       <div className="container py-4">
@@ -120,25 +137,26 @@ const Header = () => {
           </NavigationMenu>
 
           {/* Mobile Hamburger Menu */}
-          <Sheet>
+          <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
             <SheetTrigger asChild className="md:hidden">
               <Button variant="ghost" size="icon" aria-label="Open menu">
                 <Menu className="h-6 w-6" />
               </Button>
             </SheetTrigger>
-            <SheetContent side="right" className="w-64">
+            <SheetContent side="right" className="w-64 flex flex-col">
               <SheetHeader>
                 <SheetTitle className="flex items-center gap-2">
                   <Calculator className="h-5 w-5 text-accent" />
                   Menu
                 </SheetTitle>
               </SheetHeader>
-              <nav className="mt-6">
-                <ul className="flex flex-col gap-4" role="list">
+              <nav className="mt-6 flex-1 overflow-y-auto">
+                <ul className="flex flex-col gap-2" role="list">
                   {/* AI Link */}
                   <li>
                     <Link
                       to="/ai"
+                      onClick={() => setSheetOpen(false)}
                       className="flex items-center gap-2 py-2 text-base font-medium text-foreground hover:text-primary transition-colors"
                     >
                       <Sparkles className="h-4 w-4" />
@@ -148,21 +166,35 @@ const Header = () => {
 
                   {navItems.map((item) => (
                     <li key={item.label}>
-                      <span className="block py-2 text-base font-medium text-foreground">
-                        {item.label}
-                      </span>
-                      <ul className="ml-4 flex flex-col gap-2">
-                        {item.subItems.map((subItem) => (
-                          <li key={subItem.label}>
-                            <Link
-                              to={subItem.href}
-                              className="block py-1 text-sm text-muted-foreground hover:text-primary transition-colors"
-                            >
-                              {subItem.label}
-                            </Link>
-                          </li>
-                        ))}
-                      </ul>
+                      <Collapsible
+                        open={openSections.includes(item.label)}
+                        onOpenChange={() => toggleSection(item.label)}
+                      >
+                        <CollapsibleTrigger className="flex w-full items-center justify-between py-2 text-base font-medium text-foreground hover:text-primary transition-colors">
+                          {item.label}
+                          <ChevronDown
+                            className={cn(
+                              "h-4 w-4 transition-transform duration-200",
+                              openSections.includes(item.label) && "rotate-180"
+                            )}
+                          />
+                        </CollapsibleTrigger>
+                        <CollapsibleContent>
+                          <ul className="ml-4 flex flex-col gap-1 pb-2">
+                            {item.subItems.map((subItem) => (
+                              <li key={subItem.label}>
+                                <Link
+                                  to={subItem.href}
+                                  onClick={() => setSheetOpen(false)}
+                                  className="block py-1.5 text-sm text-muted-foreground hover:text-primary transition-colors"
+                                >
+                                  {subItem.label}
+                                </Link>
+                              </li>
+                            ))}
+                          </ul>
+                        </CollapsibleContent>
+                      </Collapsible>
                     </li>
                   ))}
                 </ul>
