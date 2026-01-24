@@ -24,6 +24,11 @@ const navItems = [
     href: "/",
     subItems: [
       { label: "Mortgage Calculator", href: "/" },
+      { label: "FHA Loan", href: "/fha" },
+      { label: "VA Loan", href: "/va" },
+      { label: "USDA Loan", href: "/usda" },
+      { label: "Jumbo Loan", href: "/jumbo" },
+      { label: "ARM", href: "/arm" },
       { label: "Second Mortgage", href: "/second-mortgage" },
       { label: "HELOC", href: "/heloc" },
     ],
