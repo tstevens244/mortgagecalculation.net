@@ -25,13 +25,14 @@
   <body>
     <div id="root"></div>
     <script>
-      // GitHub Pages SPA redirect support (pairs with public/404.html)
+      // SPA redirect support (pairs with public/404.html)
       (function () {
         var params = new URLSearchParams(window.location.search);
         var p = params.get("p");
         if (!p) return;
         var q = params.get("q");
         var h = params.get("h");
+        // Construct the proper path
         var newPath = p + (q ? "?" + q : "") + (h ? "#" + h : "");
         window.history.replaceState(null, "", newPath);
       })();
