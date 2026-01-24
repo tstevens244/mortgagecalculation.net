@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import AI from "./pages/AI";
 import FHA from "./pages/FHA";
+import USDA from "./pages/USDA";
 import SecondMortgage from "./pages/SecondMortgage";
 import Heloc from "./pages/Heloc";
 import Refinance from "./pages/Refinance";
@@ -31,6 +32,7 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/ai" element={<AI />} />
             <Route path="/fha" element={<FHA />} />
+            <Route path="/usda" element={<USDA />} />
             <Route path="/second-mortgage" element={<SecondMortgage />} />
             <Route path="/heloc" element={<Heloc />} />
             <Route path="/refinance" element={<Refinance />} />
