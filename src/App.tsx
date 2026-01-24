@@ -34,7 +34,7 @@ const App = () => (
         <BrowserRouter basename={import.meta.env.BASE_URL}>
           <Routes>
             <Route path="/" element={<Index />} />
-            <Route path="/ai" element={<AI />} />
+            <Route path="/mortgage-assistant" element={<AI />} />
             <Route path="/conventional" element={<Conventional />} />
             <Route path="/fha" element={<FHA />} />
             <Route path="/usda" element={<USDA />} />

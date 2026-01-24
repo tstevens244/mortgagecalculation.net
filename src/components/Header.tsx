@@ -99,7 +99,7 @@ const Header = () => {
               <NavigationMenuItem>
                 <NavigationMenuLink asChild>
                   <Link
-                    to="/ai"
+                    to="/mortgage-assistant"
                     className="flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
                   >
                     <Sparkles className="h-4 w-4" />
@@ -156,7 +156,7 @@ const Header = () => {
                   {/* AI Link */}
                   <li>
                     <Link
-                      to="/ai"
+                      to="/mortgage-assistant"
                       onClick={() => setSheetOpen(false)}
                       className="flex items-center gap-2 py-2 text-base font-medium text-foreground hover:text-primary transition-colors"
                     >
