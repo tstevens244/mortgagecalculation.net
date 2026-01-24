@@ -89,10 +89,10 @@ const Conventional = () => {
                 or don't meet other standard criteria.
               </p>
 
-              <div className="mt-8 grid gap-6 md:grid-cols-2">
-                <div className="calculator-card">
+              <div className="not-prose mt-8 grid gap-6 md:grid-cols-2">
+                <div className="calculator-card p-4">
                   <h4 className="font-display font-semibold text-lg mb-3">Advantages of Conventional Loans</h4>
-                  <ul className="space-y-2 text-muted-foreground">
+                  <ul className="space-y-2 text-muted-foreground text-sm">
                     <li className="flex items-start gap-2">
                       <span className="text-accent">✓</span>
                       <span>No upfront mortgage insurance premium</span>
@@ -116,9 +116,9 @@ const Conventional = () => {
                   </ul>
                 </div>
 
-                <div className="calculator-card">
+                <div className="calculator-card p-4">
                   <h4 className="font-display font-semibold text-lg mb-3">Considerations</h4>
-                  <ul className="space-y-2 text-muted-foreground">
+                  <ul className="space-y-2 text-muted-foreground text-sm">
                     <li className="flex items-start gap-2">
                       <span className="text-primary">•</span>
                       <span>Higher credit score requirements than government loans</span>
@@ -151,7 +151,7 @@ const Conventional = () => {
                 can be canceled once you've built 20% equity in your home, either through payments or appreciation.
               </p>
 
-              <div className="calculator-card mt-8">
+              <div className="not-prose calculator-card p-4 mt-8">
                 <h4 className="font-display font-semibold text-lg mb-4">Conventional vs. Government-Backed Loans</h4>
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm">
