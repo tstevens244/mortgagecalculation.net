@@ -49,6 +49,7 @@ const navItems = [
   },
   {
     label: "Refinancing & Home Equity",
+    mobileLabel: "Refinance & Equity",
     href: "/refinance",
     subItems: [
       { label: "Refinance", href: "/refinance" },
@@ -170,11 +171,11 @@ const Header = () => {
                         open={openSections.includes(item.label)}
                         onOpenChange={() => toggleSection(item.label)}
                       >
-                        <CollapsibleTrigger className="flex w-full items-center justify-between py-2 text-base font-medium text-foreground hover:text-primary transition-colors">
-                          {item.label}
+                        <CollapsibleTrigger className="flex w-full items-center justify-between py-2 text-base font-medium text-foreground hover:text-primary transition-colors text-left">
+                          {item.mobileLabel || item.label}
                           <ChevronDown
                             className={cn(
-                              "h-4 w-4 transition-transform duration-200",
+                              "h-4 w-4 shrink-0 transition-transform duration-200",
                               openSections.includes(item.label) && "rotate-180"
                             )}
                           />
