@@ -7,7 +7,7 @@ const CashOutRefi = () => {
   return (
     <>
       <Helmet>
-        <title>Cash-Out Refinance Calculator | MortgageCalculation</title>
+        <title>Cash-Out Refinance Calculator | Mortgage Calculation</title>
         <meta
           name="description"
           content="Calculate how much cash you can extract from your home equity with a cash-out refinance. Estimate your new loan balance, monthly payment, and maximum cash-out amount."
