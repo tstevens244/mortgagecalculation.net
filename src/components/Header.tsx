@@ -65,7 +65,7 @@ const Header = () => {
             className="flex items-center gap-2 text-xl font-display font-bold text-foreground hover:text-primary transition-colors"
           >
             <Calculator className="h-6 w-6 text-accent" aria-hidden="true" />
-            <span>MortgageCalculation</span>
+            <span>Mortgage Calculation</span>
           </Link>
 
           {/* Desktop Navigation */}
