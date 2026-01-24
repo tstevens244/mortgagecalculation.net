@@ -187,7 +187,7 @@ const MortgageCalculator = () => {
                   value={inputs.loanTerm.toString()}
                   onValueChange={(v) => updateInput("loanTerm", parseInt(v))}
                 >
-                  <SelectTrigger id="loan-term" className="h-8 sm:h-10 text-sm sm:text-lg font-medium flex-1">
+                  <SelectTrigger id="loan-term" className="h-8 sm:h-10 text-sm font-medium flex-1">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -213,7 +213,7 @@ const MortgageCalculator = () => {
                     inputMode="decimal"
                     value={inputs.interestRate}
                     onChange={(e) => updateInput("interestRate", parseFloat(e.target.value) || 0)}
-                    className="h-8 sm:h-10 text-sm sm:text-lg font-medium flex-1"
+                    className="h-8 sm:h-10 text-sm font-medium flex-1"
                   />
                   <span className="flex items-center text-muted-foreground text-xs sm:text-sm">%</span>
                 </div>
