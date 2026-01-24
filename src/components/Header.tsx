@@ -33,6 +33,7 @@ const navItems = [
     label: "Loan Programs",
     href: "/fha",
     subItems: [
+      { label: "Conventional", href: "/conventional" },
       { label: "FHA Loan", href: "/fha" },
       { label: "USDA Loan", href: "/usda" },
       { label: "VA Loan", href: "/va" },
