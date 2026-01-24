@@ -4,7 +4,7 @@ import Footer from "@/components/Footer";
 import AIChatbot from "@/components/AIChatbot";
 
 const AI = () => {
-  const canonicalUrl = "https://mortgagecalculation.net/ai";
+  const canonicalUrl = "https://mortgagecalculation.net/mortgage-assistant";
 
   return (
     <>
@@ -31,7 +31,7 @@ const AI = () => {
             applicationCategory: "FinanceApplication",
             description: "Chat with our AI assistant to find the right mortgage calculator for your needs.",
             operatingSystem: "Any",
-            url: "https://mortgagecalculation.net/ai",
+            url: "https://mortgagecalculation.net/mortgage-assistant",
             offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
           })}
         </script>
