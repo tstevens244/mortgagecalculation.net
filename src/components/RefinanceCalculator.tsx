@@ -185,54 +185,6 @@ const RefinanceCalculator = () => {
         </TabsList>
 
         <TabsContent value="calculator" className="space-y-6">
-          {/* Results Summary Card */}
-          <section className="calculator-card p-4 sm:p-6 bg-gradient-to-br from-primary/5 to-accent/5" aria-labelledby="summary-heading">
-            <h2 id="summary-heading" className="text-base sm:text-xl font-display font-semibold mb-4 flex items-center gap-2">
-              <TrendingDown className="h-4 w-4 sm:h-5 sm:w-5 text-accent" aria-hidden="true" />
-              Should You Refinance? Here Are Your Results
-            </h2>
-
-            <div className="overflow-x-auto">
-              <table className="w-full text-xs sm:text-sm">
-                <thead>
-                  <tr className="border-b border-border">
-                    <th className="text-left py-2 text-muted-foreground font-medium">Your Savings</th>
-                    <th className="text-right py-2 text-muted-foreground font-medium">Amount</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-border">
-                  <tr>
-                    <td className="py-3">Loan Balance Difference in {inputs.yearsBeforeSell} Years, Less Income Tax Shift</td>
-                    <td className="py-3 text-right font-bold">
-                      {formatCurrency(calculations.comparison.balanceDifference - calculations.comparison.taxSavingsLoss)}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="py-3">Less Additional Monthly Payments</td>
-                    <td className="py-3 text-right font-bold">
-                      {calculations.comparison.additionalMonthlyPayments > 0 ? "-" : ""}
-                      {formatCurrency(Math.abs(calculations.comparison.additionalMonthlyPayments))}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="py-3">Less Total Closing Costs</td>
-                    <td className="py-3 text-right font-bold">
-                      -{formatCurrency(calculations.refinanced.totalClosingCosts)}
-                    </td>
-                  </tr>
-                  <tr className={`${calculations.comparison.shouldRefinance ? 'bg-accent/10' : 'bg-destructive/10'}`}>
-                    <td className="py-4 font-semibold">
-                      Total Refinancing {calculations.comparison.shouldRefinance ? 'Benefit' : 'Cost'} Over Next {inputs.yearsBeforeSell} Years
-                    </td>
-                    <td className={`py-4 text-right text-xl font-bold ${calculations.comparison.shouldRefinance ? 'text-accent' : 'text-destructive'}`}>
-                      {calculations.comparison.shouldRefinance ? '' : '-'}{formatCurrency(Math.abs(calculations.comparison.totalBenefit))}
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </section>
-
           <div className="grid gap-6 lg:grid-cols-2">
             {/* Original Loan Details */}
             <section className="calculator-card p-4 sm:p-6" aria-labelledby="original-loan-heading">
@@ -504,6 +456,54 @@ const RefinanceCalculator = () => {
                   <span className="text-muted-foreground text-sm">%</span>
                 </div>
               </div>
+            </div>
+          </section>
+
+          {/* Results Summary Card */}
+          <section className="calculator-card p-4 sm:p-6 bg-gradient-to-br from-primary/5 to-accent/5" aria-labelledby="summary-heading">
+            <h2 id="summary-heading" className="text-base sm:text-xl font-display font-semibold mb-4 flex items-center gap-2">
+              <TrendingDown className="h-4 w-4 sm:h-5 sm:w-5 text-accent" aria-hidden="true" />
+              Should You Refinance? Here Are Your Results
+            </h2>
+
+            <div className="overflow-x-auto">
+              <table className="w-full text-xs sm:text-sm">
+                <thead>
+                  <tr className="border-b border-border">
+                    <th className="text-left py-2 text-muted-foreground font-medium">Your Savings</th>
+                    <th className="text-right py-2 text-muted-foreground font-medium">Amount</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-border">
+                  <tr>
+                    <td className="py-3">Loan Balance Difference in {inputs.yearsBeforeSell} Years, Less Income Tax Shift</td>
+                    <td className="py-3 text-right font-bold">
+                      {formatCurrency(calculations.comparison.balanceDifference - calculations.comparison.taxSavingsLoss)}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="py-3">Less Additional Monthly Payments</td>
+                    <td className="py-3 text-right font-bold">
+                      {calculations.comparison.additionalMonthlyPayments > 0 ? "-" : ""}
+                      {formatCurrency(Math.abs(calculations.comparison.additionalMonthlyPayments))}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="py-3">Less Total Closing Costs</td>
+                    <td className="py-3 text-right font-bold">
+                      -{formatCurrency(calculations.refinanced.totalClosingCosts)}
+                    </td>
+                  </tr>
+                  <tr className={`${calculations.comparison.shouldRefinance ? 'bg-accent/10' : 'bg-destructive/10'}`}>
+                    <td className="py-4 font-semibold">
+                      Total Refinancing {calculations.comparison.shouldRefinance ? 'Benefit' : 'Cost'} Over Next {inputs.yearsBeforeSell} Years
+                    </td>
+                    <td className={`py-4 text-right text-xl font-bold ${calculations.comparison.shouldRefinance ? 'text-accent' : 'text-destructive'}`}>
+                      {calculations.comparison.shouldRefinance ? '' : '-'}{formatCurrency(Math.abs(calculations.comparison.totalBenefit))}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </section>
         </TabsContent>
