@@ -93,14 +93,14 @@ const Header = () => {
           </Link>
 
           {/* Desktop Navigation */}
-          <NavigationMenu className="hidden md:flex">
-            <NavigationMenuList>
+          <NavigationMenu className="hidden lg:flex">
+            <NavigationMenuList className="gap-1">
               {/* AI Button - standalone link */}
               <NavigationMenuItem>
                 <NavigationMenuLink asChild>
                   <Link
                     to="/mortgage-assistant"
-                    className="flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+                    className="flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors whitespace-nowrap"
                   >
                     <Sparkles className="h-4 w-4" />
                     Mortgage Assistant
@@ -110,7 +110,7 @@ const Header = () => {
 
               {navItems.map((item) => (
                 <NavigationMenuItem key={item.label}>
-                  <NavigationMenuTrigger className="text-sm font-medium text-muted-foreground hover:text-foreground bg-transparent">
+                  <NavigationMenuTrigger className="text-sm font-medium text-muted-foreground hover:text-foreground bg-transparent whitespace-nowrap">
                     {item.label}
                   </NavigationMenuTrigger>
                   <NavigationMenuContent>
@@ -137,9 +137,9 @@ const Header = () => {
             </NavigationMenuList>
           </NavigationMenu>
 
-          {/* Mobile Hamburger Menu */}
+          {/* Mobile/Tablet Hamburger Menu */}
           <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
-            <SheetTrigger asChild className="md:hidden">
+            <SheetTrigger asChild className="lg:hidden">
               <Button variant="ghost" size="icon" aria-label="Open menu">
                 <Menu className="h-6 w-6" />
               </Button>
