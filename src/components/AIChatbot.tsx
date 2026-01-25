@@ -23,6 +23,12 @@ type ChatOption = {
 
 const calculatorRoutes: Record<string, { label: string; href: string; description: string }> = {
   mortgage: { label: "Mortgage Calculator", href: "/", description: "Calculate your monthly mortgage payment" },
+  conventional: { label: "Conventional Mortgage Calculator", href: "/conventional-mortgage-calculator", description: "Calculate conventional loan payments with PMI" },
+  fha: { label: "FHA Loan Calculator", href: "/fha-loan-calculator", description: "Calculate FHA loan payments with MIP" },
+  usda: { label: "USDA Loan Calculator", href: "/usda-loan-calculator", description: "Calculate USDA rural development loan payments" },
+  va: { label: "VA Loan Calculator", href: "/va-loan-calculator", description: "Calculate VA loan payments for veterans" },
+  jumbo: { label: "Jumbo Loan Calculator", href: "/jumbo-loan-calculator", description: "Calculate jumbo loan payments for high-value homes" },
+  arm: { label: "ARM Calculator", href: "/adjustable-rate-mortgage-calculator", description: "Calculate adjustable-rate mortgage payments" },
   second_mortgage: { label: "Second Mortgage Calculator", href: "/second-mortgage-calculator", description: "Explore second mortgage options" },
   heloc: { label: "HELOC Calculator", href: "/heloc-calculator", description: "Calculate home equity line of credit" },
   refinance: { label: "Refinance Calculator", href: "/refinance-calculator", description: "See if refinancing makes sense" },
@@ -49,8 +55,21 @@ const followUpQuestions: Record<string, Message> = {
     options: [
       { label: "💵 What can I afford?", value: "afford" },
       { label: "🔢 I know the price, calculate my payment", value: "calculate_payment" },
-      { label: "✅ Do I qualify for a mortgage?", value: "qualify" },
+      { label: "🏦 Explore loan programs", value: "loan_programs" },
       { label: "🤔 Should I rent or buy?", value: "rent_buy" },
+    ],
+  },
+  loan_programs: {
+    id: "",
+    role: "assistant",
+    content: "There are several loan programs available. Which one interests you?",
+    options: [
+      { label: "🏠 Conventional (20% down)", value: "conventional" },
+      { label: "🏛️ FHA (low down payment)", value: "fha" },
+      { label: "🎖️ VA (for veterans)", value: "va" },
+      { label: "🌾 USDA (rural areas)", value: "usda" },
+      { label: "💎 Jumbo (high-value homes)", value: "jumbo" },
+      { label: "📈 ARM (adjustable rate)", value: "arm" },
     ],
   },
   refinancing: {
@@ -101,6 +120,12 @@ const calculatorResponses: Record<string, { content: string; calculator: string 
   extra_payments: { content: "The Extra Payments Calculator shows the impact of making additional principal payments on your mortgage.", calculator: "extra_payments" },
   biweekly: { content: "The Bi-Weekly Payments Calculator shows how paying every two weeks instead of monthly can save you money.", calculator: "biweekly" },
   all_calculators: { content: "Here are all our available calculators. Which one would you like to explore?", calculator: "" },
+  conventional: { content: "The Conventional Mortgage Calculator helps you calculate payments for a standard loan, including PMI if your down payment is less than 20%.", calculator: "conventional" },
+  fha: { content: "The FHA Loan Calculator shows payments for FHA-insured loans, which require lower down payments (as low as 3.5%) and include mortgage insurance premiums.", calculator: "fha" },
+  va: { content: "The VA Loan Calculator is designed for veterans and active military. VA loans often require no down payment and have competitive rates.", calculator: "va" },
+  usda: { content: "The USDA Loan Calculator helps with rural development loans that offer 100% financing for eligible properties in rural areas.", calculator: "usda" },
+  jumbo: { content: "The Jumbo Loan Calculator is for home loans that exceed conforming loan limits, typically for high-value properties.", calculator: "jumbo" },
+  arm: { content: "The ARM Calculator shows how adjustable-rate mortgages work, with initial fixed periods followed by rate adjustments.", calculator: "arm" },
 };
 
 const secondHelocOptions: Message = {
@@ -237,6 +262,12 @@ export default function AIChatbot() {
       { keywords: ["biweekly", "bi-weekly", "every two weeks"], calculator: "biweekly", message: "The Bi-Weekly Payments Calculator can show you potential savings!" },
       { keywords: ["second mortgage"], calculator: "second_mortgage", message: "The Second Mortgage Calculator can help you explore your options!" },
       { keywords: ["cash out", "cash-out"], calculator: "cash_out", message: "The Cash-Out Refinance Calculator will help you understand your options!" },
+      { keywords: ["conventional", "20 percent", "20%"], calculator: "conventional", message: "The Conventional Mortgage Calculator will help you calculate payments with PMI!" },
+      { keywords: ["fha", "low down payment", "3.5%"], calculator: "fha", message: "The FHA Loan Calculator can show you payments with mortgage insurance!" },
+      { keywords: ["va", "veteran", "military"], calculator: "va", message: "The VA Loan Calculator is designed for veterans and service members!" },
+      { keywords: ["usda", "rural"], calculator: "usda", message: "The USDA Loan Calculator can help with rural development loans!" },
+      { keywords: ["jumbo", "high value", "expensive home"], calculator: "jumbo", message: "The Jumbo Loan Calculator is for loans above conforming limits!" },
+      { keywords: ["arm", "adjustable", "variable rate"], calculator: "arm", message: "The ARM Calculator shows how adjustable-rate mortgages work!" },
     ];
 
     // Check if it's a direct calculator request
@@ -306,6 +337,12 @@ export default function AIChatbot() {
         { keywords: ["bi-weekly", "biweekly"], key: "biweekly" },
         { keywords: ["qualification calculator", "qualify"], key: "qualification" },
         { keywords: ["cash-out", "cash out"], key: "cash_out" },
+        { keywords: ["conventional"], key: "conventional" },
+        { keywords: ["fha"], key: "fha" },
+        { keywords: ["va loan", "veteran"], key: "va" },
+        { keywords: ["usda"], key: "usda" },
+        { keywords: ["jumbo"], key: "jumbo" },
+        { keywords: ["arm", "adjustable"], key: "arm" },
       ];
 
       calculatorMentions.forEach(({ keywords, key }) => {
