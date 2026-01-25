@@ -169,7 +169,7 @@ const MortgageCalculator = () => {
                     inputMode="decimal"
                     value={inputs.downPaymentPercent.toFixed(1)}
                     onChange={(e) => updateInput("downPaymentPercent", parseFloat(e.target.value) || 0)}
-                    className="h-8 sm:h-10 w-12 sm:w-16 text-center text-xs sm:text-sm"
+                    className="h-8 sm:h-10 w-14 sm:w-16 text-center text-xs sm:text-sm px-1"
                     aria-label="Down payment percentage"
                   />
                   <span className="flex items-center text-muted-foreground text-xs sm:text-sm">%</span>
