@@ -1,4 +1,3 @@
-import { Calculator } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const Footer = () => {
@@ -10,7 +9,7 @@ const Footer = () => {
         <div className="grid gap-8 md:grid-cols-3">
           <div>
             <Link to="/" className="flex items-center gap-2 text-lg font-display font-bold">
-              <Calculator className="h-5 w-5 text-accent" aria-hidden="true" />
+              <img src="/favicon.png" alt="" className="h-5 w-5" aria-hidden="true" />
               Mortgage Calculation
             </Link>
             <p className="mt-2 text-sm text-muted-foreground">
