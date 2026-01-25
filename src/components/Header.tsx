@@ -93,7 +93,7 @@ const Header = () => {
           </Link>
 
           {/* Desktop Navigation */}
-          <NavigationMenu className="hidden lg:flex">
+          <NavigationMenu className="hidden xl:flex">
             <NavigationMenuList className="gap-1">
               {/* AI Button - standalone link */}
               <NavigationMenuItem>
@@ -139,7 +139,7 @@ const Header = () => {
 
           {/* Mobile/Tablet Hamburger Menu */}
           <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
-            <SheetTrigger asChild className="lg:hidden">
+            <SheetTrigger asChild className="xl:hidden">
               <Button variant="ghost" size="icon" aria-label="Open menu">
                 <Menu className="h-6 w-6" />
               </Button>
