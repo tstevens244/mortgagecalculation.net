@@ -96,14 +96,6 @@ const QualificationCalculator = () => {
 
   return (
     <div className="space-y-6">
-      {/* Introduction */}
-      <div className="prose prose-sm max-w-none">
-        <p className="text-muted-foreground leading-relaxed">
-          This pre-qualification calculator estimates the minimum income required to qualify for a mortgage. 
-          Enter the home price and loan details to see how much you need to earn based on debt-to-income (DTI) ratios.
-        </p>
-      </div>
-
       <div className="grid lg:grid-cols-5 gap-6">
         {/* Input Section */}
         <div className="space-y-6 lg:col-span-3">
