@@ -153,9 +153,10 @@ const MortgageCalculator = () => {
 
               {/* Down Payment */}
               <div className="flex items-center gap-2">
-                <Label htmlFor="down-payment" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
+              <Label htmlFor="down-payment" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
                   <Percent className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" />
-                  <span className="hidden sm:inline">Down Payment</span>
+                  <span className="hidden lg:inline">Down Payment</span>
+                  <span className="hidden sm:inline lg:hidden">% Down</span>
                   <span className="sm:hidden">Down</span>
                 </Label>
                 <div className="flex gap-1 sm:gap-2 flex-1">
