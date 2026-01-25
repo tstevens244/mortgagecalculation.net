@@ -185,14 +185,6 @@ const ExtraPaymentsCalculator = () => {
 
   return (
     <div className="space-y-6">
-      {/* Introduction */}
-      <div className="prose prose-sm max-w-none">
-        <p className="text-muted-foreground leading-relaxed">
-          See how extra payments can save you thousands in interest and pay off your mortgage years early. 
-          Enter your loan details and additional payment amounts to see the impact.
-        </p>
-      </div>
-
       <div className="grid lg:grid-cols-5 gap-6">
         {/* Left Column - Inputs */}
         <div className="space-y-6 lg:col-span-3">
