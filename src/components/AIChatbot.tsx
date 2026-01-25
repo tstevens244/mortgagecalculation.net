@@ -1,12 +1,12 @@
 import { useState, useRef, useEffect } from "react";
-import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Textarea } from "@/components/ui/textarea";
 import { Send, Bot, User, Calculator, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+
 type Message = {
   id: string;
   role: "assistant" | "user";
@@ -23,28 +23,23 @@ type ChatOption = {
 
 const calculatorRoutes: Record<string, { label: string; href: string; description: string }> = {
   mortgage: { label: "Mortgage Calculator", href: "/", description: "Calculate your monthly mortgage payment" },
-  second_mortgage: { label: "Second Mortgage Calculator", href: "/second-mortgage", description: "Explore second mortgage options" },
-  heloc: { label: "HELOC Calculator", href: "/heloc", description: "Calculate home equity line of credit" },
-  refinance: { label: "Refinance Calculator", href: "/refinance", description: "See if refinancing makes sense" },
-  cash_out: { label: "Cash-Out Refinance Calculator", href: "/cash-out-refinance", description: "Calculate cash-out refinancing" },
-  affordability: { label: "Affordability Calculator", href: "/affordability", description: "Find out how much home you can afford" },
-  qualification: { label: "Qualification Calculator", href: "/qualification", description: "Check if you qualify for a mortgage" },
+  second_mortgage: { label: "Second Mortgage Calculator", href: "/second-mortgage-calculator", description: "Explore second mortgage options" },
+  heloc: { label: "HELOC Calculator", href: "/heloc-calculator", description: "Calculate home equity line of credit" },
+  refinance: { label: "Refinance Calculator", href: "/refinance-calculator", description: "See if refinancing makes sense" },
+  cash_out: { label: "Cash-Out Refinance Calculator", href: "/cash-out-refinance-calculator", description: "Calculate cash-out refinancing" },
+  affordability: { label: "Affordability Calculator", href: "/house-affordability", description: "Find out how much home you can afford" },
+  qualification: { label: "Qualification Calculator", href: "/mortgage-qualification-calculator", description: "Check if you qualify for a mortgage" },
   rent_or_buy: { label: "Rent or Buy Calculator", href: "/rent-or-buy", description: "Compare renting vs buying" },
-  extra_payments: { label: "Extra Payments Calculator", href: "/extra-payments", description: "See how extra payments affect your loan" },
-  biweekly: { label: "Bi-Weekly Payments Calculator", href: "/bi-weekly-payments", description: "Calculate bi-weekly payment savings" },
+  extra_payments: { label: "Extra Payments Calculator", href: "/extra-mortgage-payments-calculator", description: "See how extra payments affect your loan" },
+  biweekly: { label: "Bi-Weekly Payments Calculator", href: "/bi-weekly-mortgage-payments-calculator", description: "Calculate bi-weekly payment savings" },
 };
 
-const initialMessage: Message = {
-  id: "1",
-  role: "assistant",
-  content: "Hi! I'm your AI mortgage assistant. What would you like help with today?",
-  options: [
-    { label: "🏠 Buying a new home", value: "buying" },
-    { label: "💰 Refinancing my current mortgage", value: "refinancing" },
-    { label: "📊 Understanding my options", value: "options" },
-    { label: "💵 Saving Money", value: "saving" },
-  ],
-};
+const welcomeOptions: ChatOption[] = [
+  { label: "🏠 Buying a new home", value: "buying" },
+  { label: "💰 Refinancing my current mortgage", value: "refinancing" },
+  { label: "📊 Understanding my options", value: "options" },
+  { label: "💵 Saving Money", value: "saving" },
+];
 
 const followUpQuestions: Record<string, Message> = {
   buying: {
@@ -119,10 +114,13 @@ const secondHelocOptions: Message = {
 };
 
 export default function AIChatbot() {
-  const [messages, setMessages] = useState<Message[]>([initialMessage]);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  const hasMessages = messages.length > 0;
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -130,24 +128,35 @@ export default function AIChatbot() {
     }
   }, [messages, isTyping]);
 
+  // Auto-resize textarea
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "auto";
+      textareaRef.current.style.height = Math.min(textareaRef.current.scrollHeight, 200) + "px";
+    }
+  }, [input]);
+
   const addMessage = (message: Omit<Message, "id">) => {
     const newMessage = { ...message, id: Date.now().toString() };
     setMessages((prev) => [...prev, newMessage]);
     return newMessage;
   };
 
-  const handleOptionClick = (value: string, messageId: string) => {
+  const handleOptionClick = (value: string, messageId?: string) => {
     // Find the option that was clicked
-    const targetMessage = messages.find((m) => m.id === messageId);
-    const option = targetMessage?.options?.find((o) => o.value === value);
+    const option = messageId 
+      ? messages.find((m) => m.id === messageId)?.options?.find((o) => o.value === value)
+      : welcomeOptions.find((o) => o.value === value);
     
     if (option) {
-      // Remove options from the message that was clicked
-      setMessages((prev) =>
-        prev.map((m) =>
-          m.id === messageId ? { ...m, options: undefined } : m
-        )
-      );
+      // Remove options from the message that was clicked (if in messages)
+      if (messageId) {
+        setMessages((prev) =>
+          prev.map((m) =>
+            m.id === messageId ? { ...m, options: undefined } : m
+          )
+        );
+      }
       
       // Add user's choice as a message
       addMessage({ role: "user", content: option.label });
@@ -342,41 +351,49 @@ export default function AIChatbot() {
     }
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleFreeformSubmit(e);
+    }
+  };
+
   return (
-    <Card className="calculator-card max-w-4xl mx-auto flex flex-col h-[calc(100dvh-120px)] sm:h-[850px]">
-      <CardContent className="p-0 flex flex-col flex-1 min-h-0">
-        <ScrollArea className="flex-1 min-h-0 p-3 sm:p-6">
-          <div className="space-y-3 sm:space-y-4">
+    <div className="flex-1 flex flex-col overflow-hidden">
+      {/* Chat messages area or welcome screen */}
+      {hasMessages ? (
+        <ScrollArea className="flex-1 min-h-0">
+          <div className="max-w-3xl mx-auto px-4 py-6 space-y-4">
             {messages.map((message) => (
               <div
                 key={message.id}
-                className={`flex gap-2 sm:gap-3 ${message.role === "user" ? "justify-end" : "justify-start"}`}
+                className={`flex gap-3 ${message.role === "user" ? "justify-end" : "justify-start"}`}
               >
                 {message.role === "assistant" && (
-                  <div className="flex-shrink-0 w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-primary/10 flex items-center justify-center">
-                    <Bot className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary" />
+                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                    <Bot className="h-4 w-4 text-primary" />
                   </div>
                 )}
                 <div
-                  className={`max-w-[85%] sm:max-w-[80%] ${
+                  className={`max-w-[85%] ${
                     message.role === "user"
-                      ? "bg-primary text-primary-foreground rounded-2xl rounded-tr-sm px-3 py-2 sm:px-4"
-                      : "space-y-2 sm:space-y-3"
+                      ? "bg-primary text-primary-foreground rounded-2xl rounded-tr-sm px-4 py-2"
+                      : "space-y-3"
                   }`}
                 >
                   {message.role === "assistant" ? (
                     <>
-                      <div className="bg-secondary/50 rounded-2xl rounded-tl-sm px-3 py-2 sm:px-4 sm:py-3">
-                        <p className="text-foreground text-sm sm:text-base">{message.content}</p>
+                      <div className="bg-secondary/50 rounded-2xl rounded-tl-sm px-4 py-3">
+                        <p className="text-foreground">{message.content}</p>
                       </div>
                       {message.options && (
-                        <div className="flex flex-col sm:flex-row sm:flex-wrap gap-1.5 sm:gap-2">
+                        <div className="flex flex-wrap gap-2">
                           {message.options.map((option) => (
                             <Button
                               key={option.value}
                               variant="outline"
                               size="sm"
-                              className="rounded-full hover:bg-primary hover:text-primary-foreground transition-colors text-xs sm:text-sm justify-start sm:justify-center"
+                              className="rounded-full hover:bg-primary hover:text-primary-foreground transition-colors"
                               onClick={() => handleOptionClick(option.value, message.id)}
                             >
                               {option.label}
@@ -386,21 +403,21 @@ export default function AIChatbot() {
                       )}
                       {message.calculatorLink && (
                         <Link to={message.calculatorLink.href}>
-                          <Button className="gap-1.5 sm:gap-2 rounded-full text-xs sm:text-sm w-full sm:w-auto">
-                            <Calculator className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                            <span className="truncate">Go to {message.calculatorLink.label}</span>
-                            <ArrowRight className="h-3.5 w-3.5 sm:h-4 sm:w-4 flex-shrink-0" />
+                          <Button className="gap-2 rounded-full">
+                            <Calculator className="h-4 w-4" />
+                            <span>Go to {message.calculatorLink.label}</span>
+                            <ArrowRight className="h-4 w-4" />
                           </Button>
                         </Link>
                       )}
                       {message.calculatorLinks && (
-                        <div className="flex flex-col sm:flex-row sm:flex-wrap gap-1.5 sm:gap-2">
+                        <div className="flex flex-wrap gap-2">
                           {message.calculatorLinks.map((calc) => (
-                            <Link key={calc.href} to={calc.href} className="w-full sm:w-auto">
-                              <Button className="gap-1.5 sm:gap-2 rounded-full text-xs sm:text-sm w-full sm:w-auto" size="sm">
-                                <Calculator className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                                <span className="truncate">{calc.label}</span>
-                                <ArrowRight className="h-3.5 w-3.5 sm:h-4 sm:w-4 flex-shrink-0" />
+                            <Link key={calc.href} to={calc.href}>
+                              <Button className="gap-2 rounded-full" size="sm">
+                                <Calculator className="h-4 w-4" />
+                                <span>{calc.label}</span>
+                                <ArrowRight className="h-4 w-4" />
                               </Button>
                             </Link>
                           ))}
@@ -408,22 +425,22 @@ export default function AIChatbot() {
                       )}
                     </>
                   ) : (
-                    <p className="text-sm sm:text-base">{message.content}</p>
+                    <p>{message.content}</p>
                   )}
                 </div>
                 {message.role === "user" && (
-                  <div className="flex-shrink-0 w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-muted flex items-center justify-center">
-                    <User className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-muted-foreground" />
+                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-muted flex items-center justify-center">
+                    <User className="h-4 w-4 text-muted-foreground" />
                   </div>
                 )}
               </div>
             ))}
             {isTyping && (
-              <div className="flex gap-2 sm:gap-3">
-                <div className="flex-shrink-0 w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-primary/10 flex items-center justify-center">
-                  <Bot className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary" />
+              <div className="flex gap-3">
+                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                  <Bot className="h-4 w-4 text-primary" />
                 </div>
-                <div className="bg-secondary/50 rounded-2xl rounded-tl-sm px-3 py-2 sm:px-4 sm:py-3">
+                <div className="bg-secondary/50 rounded-2xl rounded-tl-sm px-4 py-3">
                   <div className="flex gap-1">
                     <span className="w-2 h-2 bg-muted-foreground/50 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
                     <span className="w-2 h-2 bg-muted-foreground/50 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
@@ -435,19 +452,57 @@ export default function AIChatbot() {
             <div ref={scrollRef} />
           </div>
         </ScrollArea>
+      ) : (
+        <div className="flex-1 flex flex-col items-center justify-center px-4">
+          <div className="text-center mb-8">
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-display font-bold text-foreground mb-3">
+              How can I help you today?
+            </h1>
+            <p className="text-muted-foreground text-lg">
+              Ask about mortgages, refinancing, or finding the right calculator
+            </p>
+          </div>
+          
+          {/* Quick options for empty state */}
+          <div className="flex flex-wrap justify-center gap-2 max-w-2xl">
+            {welcomeOptions.map((option) => (
+              <Button
+                key={option.value}
+                variant="outline"
+                className="rounded-full hover:bg-primary hover:text-primary-foreground transition-colors"
+                onClick={() => handleOptionClick(option.value)}
+              >
+                {option.label}
+              </Button>
+            ))}
+          </div>
+        </div>
+      )}
 
-        <form onSubmit={handleFreeformSubmit} className="border-t p-3 sm:p-4 flex gap-2 flex-shrink-0 bg-card">
-          <Input
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder="Type your question..."
-            className="flex-1 rounded-full text-sm sm:text-base"
-          />
-          <Button type="submit" size="icon" className="rounded-full h-9 w-9 sm:h-10 sm:w-10 flex-shrink-0" disabled={!input.trim()}>
-            <Send className="h-4 w-4" />
-          </Button>
+      {/* Fixed input at bottom */}
+      <div className="flex-shrink-0 border-t bg-background p-4">
+        <form onSubmit={handleFreeformSubmit} className="max-w-3xl mx-auto">
+          <div className="relative flex items-end gap-2 bg-card border rounded-2xl p-2 shadow-sm">
+            <Textarea
+              ref={textareaRef}
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder="Ask about mortgages..."
+              className="flex-1 min-h-[44px] max-h-[200px] resize-none border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 py-3 px-2"
+              rows={1}
+            />
+            <Button 
+              type="submit" 
+              size="icon" 
+              className="rounded-full h-10 w-10 flex-shrink-0" 
+              disabled={!input.trim()}
+            >
+              <Send className="h-4 w-4" />
+            </Button>
+          </div>
         </form>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }
