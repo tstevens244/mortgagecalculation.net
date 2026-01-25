@@ -129,7 +129,10 @@
     input[type="url"],
     input:not([type]),
     textarea,
-    select {
+    select,
+    label,
+    [data-radix-select-trigger],
+    button[role="combobox"] {
       font-size: 16px !important;
     }
   }
