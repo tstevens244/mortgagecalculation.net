@@ -88,7 +88,7 @@ const Header = () => {
             to="/"
             className="flex items-center gap-2 text-xl font-display font-bold text-foreground hover:text-primary transition-colors"
           >
-            <Calculator className="h-6 w-6 text-accent" aria-hidden="true" />
+            <img src="/favicon.png" alt="" className="h-6 w-6" aria-hidden="true" />
             <span>Mortgage Calculation</span>
           </Link>
 
@@ -147,7 +147,7 @@ const Header = () => {
             <SheetContent side="right" className="w-64 flex flex-col">
               <SheetHeader>
                 <SheetTitle className="flex items-center gap-2">
-                  <Calculator className="h-5 w-5 text-accent" />
+                  <img src="/favicon.png" alt="" className="h-5 w-5" />
                   Menu
                 </SheetTitle>
               </SheetHeader>
