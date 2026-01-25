@@ -194,14 +194,6 @@ const RentOrBuyCalculator = () => {
 
   return (
     <div className="space-y-6">
-      {/* Introduction */}
-      <div className="prose prose-sm max-w-none">
-        <p className="text-muted-foreground leading-relaxed">
-          Use this calculator to compare the financial costs and benefits of renting versus buying a home. 
-          This analysis considers rent appreciation, real estate appreciation, income tax deductions, and transaction costs.
-        </p>
-      </div>
-
       <div className="grid lg:grid-cols-5 gap-6">
         {/* Left Column - Inputs */}
         <div className="space-y-6 lg:col-span-3">
