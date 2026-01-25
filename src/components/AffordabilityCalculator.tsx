@@ -291,14 +291,6 @@ const AffordabilityCalculator = () => {
 
   return (
     <div className="space-y-6">
-      {/* Introduction */}
-      <div className="prose prose-sm max-w-none">
-        <p className="text-muted-foreground leading-relaxed">
-          Use this calculator to estimate how much house you can afford. Calculate based on your annual income 
-          and debt-to-income ratios, or based on a fixed monthly housing budget.
-        </p>
-      </div>
-
       <Tabs defaultValue="income" className="w-full">
         <TabsList className="grid w-full grid-cols-2 mb-6">
           <TabsTrigger value="income" className="text-sm">
