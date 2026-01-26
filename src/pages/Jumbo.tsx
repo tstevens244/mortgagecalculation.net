@@ -3,48 +3,35 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import JumboCalculator from "@/components/JumboCalculator";
 import { formatCurrency } from "@/lib/formatters";
-
 const Jumbo = () => {
   const canonicalUrl = "https://mortgagecalculation.net/jumbo-loan-calculator";
-
-  return (
-    <>
+  return <>
       <Helmet>
         <title>Jumbo Loan Calculator | High-Value Mortgage Payment Estimator | Mortgage Calculation</title>
-        <meta
-          name="description"
-          content="Calculate your jumbo loan payment for high-value homes. Estimate monthly payments for loans above the conforming limit. Free jumbo mortgage calculator."
-        />
+        <meta name="description" content="Calculate your jumbo loan payment for high-value homes. Estimate monthly payments for loans above the conforming limit. Free jumbo mortgage calculator." />
         <meta name="robots" content="index, follow" />
         <link rel="canonical" href={canonicalUrl} />
         <meta property="og:title" content="Jumbo Loan Calculator | High-Value Mortgage Payment Estimator" />
-        <meta
-          property="og:description"
-          content="Calculate your jumbo loan payment for high-value homes above the conforming loan limit."
-        />
+        <meta property="og:description" content="Calculate your jumbo loan payment for high-value homes above the conforming loan limit." />
         <meta property="og:type" content="website" />
         <meta property="og:url" content={canonicalUrl} />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="Jumbo Loan Calculator" />
-        <meta
-          name="twitter:description"
-          content="Calculate your jumbo mortgage payment for high-value homes above conforming limits."
-        />
+        <meta name="twitter:description" content="Calculate your jumbo mortgage payment for high-value homes above conforming limits." />
         <script type="application/ld+json">
           {JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "WebApplication",
-            name: "Jumbo Loan Calculator",
-            applicationCategory: "FinanceApplication",
-            description:
-              "Free jumbo loan calculator to estimate monthly payments for mortgages above conforming loan limits.",
-            operatingSystem: "Any",
-            offers: {
-              "@type": "Offer",
-              price: "0",
-              priceCurrency: "USD",
-            },
-          })}
+          "@context": "https://schema.org",
+          "@type": "WebApplication",
+          name: "Jumbo Loan Calculator",
+          applicationCategory: "FinanceApplication",
+          description: "Free jumbo loan calculator to estimate monthly payments for mortgages above conforming loan limits.",
+          operatingSystem: "Any",
+          offers: {
+            "@type": "Offer",
+            price: "0",
+            priceCurrency: "USD"
+          }
+        })}
         </script>
       </Helmet>
 
@@ -73,7 +60,7 @@ const Jumbo = () => {
                 they're considered non-conforming loans and typically have stricter qualification requirements.
               </p>
 
-              <h3 className="text-xl font-display font-semibold mt-8 mb-3">2024 Conforming Loan Limits</h3>
+              <h3 className="text-xl font-display font-semibold mt-8 mb-3">2026 Conforming Loan Limits</h3>
               <div className="grid md:grid-cols-2 gap-4 not-prose">
                 <div className="calculator-card p-4 text-center">
                   <p className="text-sm text-muted-foreground mb-1">Standard Areas</p>
@@ -187,8 +174,6 @@ const Jumbo = () => {
 
         <Footer />
       </div>
-    </>
-  );
+    </>;
 };
-
 export default Jumbo;
