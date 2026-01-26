@@ -64,7 +64,7 @@ const Jumbo = () => {
               <div className="grid md:grid-cols-2 gap-4 not-prose">
                 <div className="calculator-card p-4 text-center">
                   <p className="text-sm text-muted-foreground mb-1">Standard Areas</p>
-                  <p className="text-2xl font-bold text-primary">{formatCurrency(766550)}</p>
+                  <p className="text-2xl font-bold text-primary">{formatCurrency(832750)}</p>
                   <p className="text-xs text-muted-foreground mt-1">Most U.S. counties</p>
                 </div>
                 <div className="calculator-card p-4 text-center">
@@ -135,8 +135,8 @@ const Jumbo = () => {
                   <tbody className="text-muted-foreground">
                     <tr className="border-b border-border">
                       <td className="p-3">Loan Limit</td>
-                      <td className="p-3">Above $766,550</td>
-                      <td className="p-3">Up to $766,550</td>
+                      <td className="p-3">Above $832,750</td>
+                      <td className="p-3">Up to $832,750</td>
                     </tr>
                     <tr className="border-b border-border">
                       <td className="p-3">Min. Credit Score</td>
