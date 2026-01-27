@@ -3,9 +3,91 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import JumboCalculator from "@/components/JumboCalculator";
 import { formatCurrency } from "@/lib/formatters";
+
 const Jumbo = () => {
   const canonicalUrl = "https://mortgagecalculation.net/jumbo-loan-calculator";
-  return <>
+
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: "https://mortgagecalculation.net/",
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Loan Programs",
+        item: "https://mortgagecalculation.net/fha-loan-calculator",
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: "Jumbo Loan",
+        item: canonicalUrl,
+      },
+    ],
+  };
+
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: [
+      {
+        "@type": "Question",
+        name: "What is a jumbo loan?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "A jumbo loan is a mortgage that exceeds the conforming loan limits set by the Federal Housing Finance Agency (FHFA). Because these loans can't be purchased by Fannie Mae or Freddie Mac, they're considered non-conforming loans and typically have stricter qualification requirements.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "What are the jumbo loan requirements?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Jumbo loan requirements typically include: Credit Score of 700-720+ (higher than conventional loans), Down Payment of 10-20% minimum (some lenders require up to 30%), DTI Ratio of 43% or lower (some require 36%), and Cash Reserves of 6-12 months of mortgage payments in liquid assets after closing.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "What are the 2026 conforming loan limits?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "For 2026, the conforming loan limit is $832,750 for most U.S. counties (standard areas). In high-cost areas like Alaska, Hawaii, and select counties, the limit is $1,249,125. Loans above these amounts are considered jumbo loans.",
+        },
+      },
+    ],
+  };
+
+  const webAppSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    name: "Jumbo Loan Calculator",
+    applicationCategory: "FinanceApplication",
+    description: "Free jumbo loan calculator to estimate monthly payments for mortgages above conforming loan limits.",
+    operatingSystem: "Any",
+    url: canonicalUrl,
+    featureList: [
+      "Calculate jumbo loan payments",
+      "Current conforming loan limits",
+      "High-cost area limit information",
+      "Stricter qualification requirements",
+      "Compare jumbo vs conforming loans",
+      "No PMI with 20% down payment",
+    ],
+    offers: {
+      "@type": "Offer",
+      price: "0",
+      priceCurrency: "USD",
+    },
+  };
+
+  return (
+    <>
       <Helmet>
         <title>Jumbo Loan Calculator | High-Value Mortgage Payment Estimator | Mortgage Calculation</title>
         <meta name="description" content="Calculate your jumbo loan payment for high-value homes. Estimate monthly payments for loans above the conforming limit. Free jumbo mortgage calculator." />
@@ -18,21 +100,9 @@ const Jumbo = () => {
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="Jumbo Loan Calculator" />
         <meta name="twitter:description" content="Calculate your jumbo mortgage payment for high-value homes above conforming limits." />
-        <script type="application/ld+json">
-          {JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "WebApplication",
-          name: "Jumbo Loan Calculator",
-          applicationCategory: "FinanceApplication",
-          description: "Free jumbo loan calculator to estimate monthly payments for mortgages above conforming loan limits.",
-          operatingSystem: "Any",
-          offers: {
-            "@type": "Offer",
-            price: "0",
-            priceCurrency: "USD"
-          }
-        })}
-        </script>
+        <script type="application/ld+json">{JSON.stringify(breadcrumbSchema)}</script>
+        <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
+        <script type="application/ld+json">{JSON.stringify(webAppSchema)}</script>
       </Helmet>
 
       <div className="min-h-screen flex flex-col">
@@ -174,6 +244,8 @@ const Jumbo = () => {
 
         <Footer />
       </div>
-    </>;
+    </>
+  );
 };
+
 export default Jumbo;

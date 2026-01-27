@@ -6,6 +6,86 @@ import ARMCalculator from "@/components/ARMCalculator";
 const ARM = () => {
   const canonicalUrl = "https://mortgagecalculation.net/adjustable-rate-mortgage-calculator";
 
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: "https://mortgagecalculation.net/",
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Loan Programs",
+        item: "https://mortgagecalculation.net/fha-loan-calculator",
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: "ARM",
+        item: canonicalUrl,
+      },
+    ],
+  };
+
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: [
+      {
+        "@type": "Question",
+        name: "What is an Adjustable Rate Mortgage (ARM)?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "An Adjustable Rate Mortgage (ARM) is a home loan with an interest rate that can change periodically. Unlike fixed-rate mortgages, ARMs start with an initial fixed-rate period, after which the rate adjusts based on market conditions and a reference index. ARMs are named by their structure: a 5/1 ARM has a fixed rate for 5 years, then adjusts annually.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "What are ARM rate caps?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "ARM rate caps protect borrowers from extreme rate increases. There are three types: Initial Cap (maximum rate increase at first adjustment, often 2-5%), Periodic Cap (maximum rate change per adjustment period, typically 1-2%), and Lifetime Cap (maximum total rate increase over the loan's life, usually 5-6%).",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "When should I consider an ARM vs a fixed-rate mortgage?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "ARMs may be right if you plan to sell before the fixed period ends, expect to refinance within a few years, believe interest rates will decrease, want lower initial payments to qualify for more home, or have income expected to increase. Consider a fixed-rate if you plan to stay long-term, value payment predictability, current rates are historically low, or prefer financial certainty.",
+        },
+      },
+    ],
+  };
+
+  const webAppSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    name: "ARM Calculator",
+    description:
+      "Free adjustable rate mortgage calculator to estimate ARM payments, compare initial vs maximum rates, and understand rate adjustment caps.",
+    url: canonicalUrl,
+    applicationCategory: "FinanceApplication",
+    operatingSystem: "Any",
+    featureList: [
+      "Calculate ARM payments before and after adjustments",
+      "Compare initial vs maximum possible payments",
+      "Understand rate cap protection",
+      "Support for 1/1, 3/1, 5/1, 7/1, 10/1 ARMs",
+      "Compare ARM vs fixed-rate mortgages",
+      "Payment projection over loan term",
+    ],
+    offers: {
+      "@type": "Offer",
+      price: "0",
+      priceCurrency: "USD",
+    },
+  };
+
   return (
     <>
       <Helmet>
@@ -29,23 +109,9 @@ const ARM = () => {
           name="twitter:description"
           content="Calculate adjustable rate mortgage payments with our free ARM calculator. Compare initial vs maximum payments."
         />
-        <script type="application/ld+json">
-          {JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "WebApplication",
-            name: "ARM Calculator",
-            description:
-              "Free adjustable rate mortgage calculator to estimate ARM payments, compare initial vs maximum rates, and understand rate adjustment caps.",
-            url: canonicalUrl,
-            applicationCategory: "FinanceApplication",
-            operatingSystem: "Any",
-            offers: {
-              "@type": "Offer",
-              price: "0",
-              priceCurrency: "USD",
-            },
-          })}
-        </script>
+        <script type="application/ld+json">{JSON.stringify(breadcrumbSchema)}</script>
+        <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
+        <script type="application/ld+json">{JSON.stringify(webAppSchema)}</script>
       </Helmet>
 
       <div className="min-h-screen flex flex-col bg-background">

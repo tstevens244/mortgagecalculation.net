@@ -6,6 +6,86 @@ import FHACalculator from "@/components/FHACalculator";
 const FHA = () => {
   const canonicalUrl = "https://mortgagecalculation.net/fha-loan-calculator";
 
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: "https://mortgagecalculation.net/",
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Loan Programs",
+        item: "https://mortgagecalculation.net/fha-loan-calculator",
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: "FHA Loan",
+        item: canonicalUrl,
+      },
+    ],
+  };
+
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: [
+      {
+        "@type": "Question",
+        name: "What is an FHA loan?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "An FHA loan is a mortgage insured by the Federal Housing Administration (FHA), a government agency within the U.S. Department of Housing and Urban Development. FHA loans are popular among first-time homebuyers because they offer more flexible qualification requirements and lower down payment options compared to conventional mortgages.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "What is FHA Mortgage Insurance Premium (MIP)?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "FHA loans require two types of mortgage insurance premiums (MIP): Upfront MIP (UFMIP) at 1.75% of the base loan amount (typically financed into the loan), and Annual MIP ranging from 0.15% to 0.75% of the loan amount paid monthly. For most 30-year FHA loans with less than 10% down, MIP is required for the life of the loan.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "What are FHA loan requirements?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "FHA loans require: Minimum 3.5% down with a credit score of 580 or higher (10% down for scores between 500-579), Minimum 500 credit score, total monthly debt payments should not exceed 43% of gross monthly income, and the home must be your primary residence meeting FHA minimum property standards.",
+        },
+      },
+    ],
+  };
+
+  const webAppSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    name: "FHA Loan Calculator",
+    applicationCategory: "FinanceApplication",
+    description:
+      "Free FHA loan calculator to estimate monthly payments including upfront MIP, annual MIP, property tax, and insurance.",
+    operatingSystem: "Any",
+    url: canonicalUrl,
+    featureList: [
+      "Calculate FHA loan payments",
+      "Include upfront MIP (1.75%)",
+      "Calculate annual MIP costs",
+      "Low 3.5% down payment option",
+      "Compare FHA vs conventional loans",
+      "View complete amortization schedule",
+    ],
+    offers: {
+      "@type": "Offer",
+      price: "0",
+      priceCurrency: "USD",
+    },
+  };
+
   return (
     <>
       <Helmet>
@@ -29,22 +109,9 @@ const FHA = () => {
           name="twitter:description"
           content="Calculate your FHA loan payment including upfront and annual mortgage insurance premiums."
         />
-        <script type="application/ld+json">
-          {JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "WebApplication",
-            name: "FHA Loan Calculator",
-            applicationCategory: "FinanceApplication",
-            description:
-              "Free FHA loan calculator to estimate monthly payments including upfront MIP, annual MIP, property tax, and insurance.",
-            operatingSystem: "Any",
-            offers: {
-              "@type": "Offer",
-              price: "0",
-              priceCurrency: "USD",
-            },
-          })}
-        </script>
+        <script type="application/ld+json">{JSON.stringify(breadcrumbSchema)}</script>
+        <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
+        <script type="application/ld+json">{JSON.stringify(webAppSchema)}</script>
       </Helmet>
 
       <div className="min-h-screen flex flex-col">

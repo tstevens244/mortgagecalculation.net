@@ -6,6 +6,86 @@ import MortgageCalculator from "@/components/MortgageCalculator";
 const Conventional = () => {
   const canonicalUrl = "https://mortgagecalculation.net/conventional-mortgage-calculator";
 
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: "https://mortgagecalculation.net/",
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Loan Programs",
+        item: "https://mortgagecalculation.net/conventional-mortgage-calculator",
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: "Conventional",
+        item: canonicalUrl,
+      },
+    ],
+  };
+
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: [
+      {
+        "@type": "Question",
+        name: "What is a conventional mortgage?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "A conventional mortgage is a home loan that is not insured or guaranteed by the federal government. Unlike FHA, VA, or USDA loans, conventional mortgages are backed by private lenders and typically follow guidelines set by Fannie Mae and Freddie Mac. They are the most common type of mortgage and offer flexible terms for qualified borrowers.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "What are the requirements for a conventional loan?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "To qualify for a conventional mortgage, lenders typically require a minimum credit score of 620, though better rates are available with scores of 740 or higher. You'll need a debt-to-income (DTI) ratio of 43% or less, stable employment history, and documentation of income and assets. Down payments can be as low as 3%, but putting down less than 20% requires Private Mortgage Insurance (PMI).",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "What is Private Mortgage Insurance (PMI)?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "If your down payment is less than 20%, you'll be required to pay PMI on a conventional loan. PMI protects the lender if you default on the loan. The cost typically ranges from 0.3% to 1.5% of the original loan amount annually. The good news is that unlike FHA mortgage insurance, PMI can be canceled once you've built 20% equity in your home, either through payments or appreciation.",
+        },
+      },
+    ],
+  };
+
+  const webAppSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    name: "Conventional Mortgage Calculator",
+    applicationCategory: "FinanceApplication",
+    description:
+      "Free online conventional mortgage calculator to estimate monthly payments, including property tax, insurance, PMI, and amortization schedule.",
+    operatingSystem: "Any",
+    url: canonicalUrl,
+    featureList: [
+      "Calculate conventional loan payments",
+      "Include PMI for low down payments",
+      "View complete amortization schedule",
+      "Compare with government-backed loans",
+      "Estimate property taxes and insurance",
+      "No upfront mortgage insurance premium",
+    ],
+    offers: {
+      "@type": "Offer",
+      price: "0",
+      priceCurrency: "USD",
+    },
+  };
+
   return (
     <>
       <Helmet>
@@ -29,22 +109,9 @@ const Conventional = () => {
           name="twitter:description"
           content="Calculate your conventional mortgage payment including taxes, insurance, and PMI."
         />
-        <script type="application/ld+json">
-          {JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "WebApplication",
-            name: "Conventional Mortgage Calculator",
-            applicationCategory: "FinanceApplication",
-            description:
-              "Free online conventional mortgage calculator to estimate monthly payments, including property tax, insurance, PMI, and amortization schedule.",
-            operatingSystem: "Any",
-            offers: {
-              "@type": "Offer",
-              price: "0",
-              priceCurrency: "USD",
-            },
-          })}
-        </script>
+        <script type="application/ld+json">{JSON.stringify(breadcrumbSchema)}</script>
+        <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
+        <script type="application/ld+json">{JSON.stringify(webAppSchema)}</script>
       </Helmet>
 
       <div className="min-h-screen flex flex-col">

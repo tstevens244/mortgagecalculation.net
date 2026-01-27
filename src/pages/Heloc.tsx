@@ -6,6 +6,86 @@ import HelocCalculator from "@/components/HelocCalculator";
 const Heloc = () => {
   const canonicalUrl = "https://mortgagecalculation.net/heloc-calculator";
 
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: "https://mortgagecalculation.net/",
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Refinancing & Home Equity",
+        item: "https://mortgagecalculation.net/refinance-calculator",
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: "HELOC Calculator",
+        item: canonicalUrl,
+      },
+    ],
+  };
+
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: [
+      {
+        "@type": "Question",
+        name: "When does a HELOC make sense for debt consolidation?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "A HELOC for debt consolidation typically makes sense when: you have significant home equity, your current debts carry high interest rates (especially credit cards), you need lower monthly payments to improve cash flow, and you're disciplined enough not to run up new credit card balances after consolidating.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "What are the risks of using a HELOC?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Unlike credit cards and personal loans, a HELOC is secured by your home. If you can't make payments, you risk foreclosure. Additionally, HELOCs typically have variable interest rates that can increase over time. The longer repayment period means you may pay more total interest, even at a lower rate.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Is HELOC interest tax deductible?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Prior to 2017, HELOC interest was tax deductible regardless of how funds were used. Now, interest is only deductible if used for home improvements. If you're consolidating credit card debt, the interest is not tax deductible.",
+        },
+      },
+    ],
+  };
+
+  const webAppSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    name: "HELOC Calculator",
+    applicationCategory: "FinanceApplication",
+    description:
+      "Free calculator to compare using a home equity line of credit (HELOC) for debt consolidation versus keeping existing debts.",
+    operatingSystem: "Any",
+    url: canonicalUrl,
+    featureList: [
+      "Compare HELOC vs existing debts",
+      "Calculate monthly payment savings",
+      "Total interest comparison",
+      "Variable rate considerations",
+      "Tax deduction analysis",
+      "Debt consolidation payoff timeline",
+    ],
+    offers: {
+      "@type": "Offer",
+      price: "0",
+      priceCurrency: "USD",
+    },
+  };
+
   return (
     <>
       <Helmet>
@@ -29,22 +109,9 @@ const Heloc = () => {
           name="twitter:description"
           content="Compare HELOC debt consolidation vs keeping existing debts."
         />
-        <script type="application/ld+json">
-          {JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "WebApplication",
-            name: "HELOC Calculator",
-            applicationCategory: "FinanceApplication",
-            description:
-              "Free calculator to compare using a home equity line of credit (HELOC) for debt consolidation versus keeping existing debts.",
-            operatingSystem: "Any",
-            offers: {
-              "@type": "Offer",
-              price: "0",
-              priceCurrency: "USD",
-            },
-          })}
-        </script>
+        <script type="application/ld+json">{JSON.stringify(breadcrumbSchema)}</script>
+        <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
+        <script type="application/ld+json">{JSON.stringify(webAppSchema)}</script>
       </Helmet>
 
       <div className="min-h-screen flex flex-col">

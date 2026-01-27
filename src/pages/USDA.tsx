@@ -6,6 +6,86 @@ import USDACalculator from "@/components/USDACalculator";
 const USDA = () => {
   const canonicalUrl = "https://mortgagecalculation.net/usda-loan-calculator";
 
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: "https://mortgagecalculation.net/",
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Loan Programs",
+        item: "https://mortgagecalculation.net/fha-loan-calculator",
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: "USDA Loan",
+        item: canonicalUrl,
+      },
+    ],
+  };
+
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: [
+      {
+        "@type": "Question",
+        name: "What is a USDA loan?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "A USDA loan (also called a Rural Development loan) is a government-backed mortgage offered by the United States Department of Agriculture. These loans are designed to help low-to-moderate income borrowers purchase homes in eligible rural and suburban areas with no down payment required.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "What are USDA guarantee fees?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "USDA loans require two types of guarantee fees: Upfront Guarantee Fee of 1% of the loan amount (typically financed into the loan), and Annual Fee of 0.35% of the remaining loan balance paid monthly. This is significantly lower than FHA's annual MIP rate.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "What are the USDA loan requirements?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "USDA loan requirements include: Location Eligibility (property must be in an eligible rural area), Income Limits (household income cannot exceed 115% of area median income), Credit Score (most lenders require 640 for automated approval), and the home must be your primary residence.",
+        },
+      },
+    ],
+  };
+
+  const webAppSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    name: "USDA Loan Calculator",
+    applicationCategory: "FinanceApplication",
+    description:
+      "Free USDA loan calculator to estimate monthly payments with 0% down, including upfront and annual guarantee fees.",
+    operatingSystem: "Any",
+    url: canonicalUrl,
+    featureList: [
+      "Calculate USDA loan payments with 0% down",
+      "Include upfront guarantee fee (1%)",
+      "Calculate annual guarantee fee (0.35%)",
+      "Rural area eligibility information",
+      "Income limit guidelines",
+      "Compare USDA vs FHA vs conventional",
+    ],
+    offers: {
+      "@type": "Offer",
+      price: "0",
+      priceCurrency: "USD",
+    },
+  };
+
   return (
     <>
       <Helmet>
@@ -29,22 +109,9 @@ const USDA = () => {
           name="twitter:description"
           content="Calculate your USDA rural home loan payment with 0% down payment."
         />
-        <script type="application/ld+json">
-          {JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "WebApplication",
-            name: "USDA Loan Calculator",
-            applicationCategory: "FinanceApplication",
-            description:
-              "Free USDA loan calculator to estimate monthly payments with 0% down, including upfront and annual guarantee fees.",
-            operatingSystem: "Any",
-            offers: {
-              "@type": "Offer",
-              price: "0",
-              priceCurrency: "USD",
-            },
-          })}
-        </script>
+        <script type="application/ld+json">{JSON.stringify(breadcrumbSchema)}</script>
+        <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
+        <script type="application/ld+json">{JSON.stringify(webAppSchema)}</script>
       </Helmet>
 
       <div className="min-h-screen flex flex-col">
