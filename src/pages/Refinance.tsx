@@ -6,6 +6,86 @@ import RefinanceCalculator from "@/components/RefinanceCalculator";
 const Refinance = () => {
   const canonicalUrl = "https://mortgagecalculation.net/refinance-calculator";
 
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: "https://mortgagecalculation.net/",
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Refinancing & Home Equity",
+        item: "https://mortgagecalculation.net/refinance-calculator",
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: "Refinance Calculator",
+        item: canonicalUrl,
+      },
+    ],
+  };
+
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: [
+      {
+        "@type": "Question",
+        name: "Should I refinance my mortgage?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Refinancing typically makes sense when: you can lower your interest rate by at least 0.5-1%, you plan to stay in your home long enough to recover closing costs, you want to switch from an adjustable-rate to a fixed-rate mortgage, or you want to shorten your loan term to pay off your home faster and save on total interest.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "What is the break-even point for refinancing?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "The break-even point is how long it takes to recover closing costs through savings. If you plan to move before reaching break-even, refinancing may not be worthwhile. Calculate this by dividing your total closing costs by your monthly savings from the new loan.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "What factors should I consider when calculating refinance savings?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Key factors include: Years before sell (run both loans from present until that date), Standard deductions (if using standard deductions, set tax rates to zero), and Break-even point (how long to recover closing costs through savings).",
+        },
+      },
+    ],
+  };
+
+  const webAppSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    name: "Refinance Calculator",
+    applicationCategory: "FinanceApplication",
+    description:
+      "Free calculator to determine if refinancing your mortgage makes financial sense by comparing interest savings against closing costs.",
+    operatingSystem: "Any",
+    url: canonicalUrl,
+    featureList: [
+      "Compare current vs new loan payments",
+      "Calculate total interest savings",
+      "Determine break-even point",
+      "Account for closing costs",
+      "Include tax benefit analysis",
+      "Compare equity accumulation",
+    ],
+    offers: {
+      "@type": "Offer",
+      price: "0",
+      priceCurrency: "USD",
+    },
+  };
+
   return (
     <>
       <Helmet>
@@ -29,22 +109,9 @@ const Refinance = () => {
           name="twitter:description"
           content="Calculate if refinancing your mortgage will save you money."
         />
-        <script type="application/ld+json">
-          {JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "WebApplication",
-            name: "Refinance Calculator",
-            applicationCategory: "FinanceApplication",
-            description:
-              "Free calculator to determine if refinancing your mortgage makes financial sense by comparing interest savings against closing costs.",
-            operatingSystem: "Any",
-            offers: {
-              "@type": "Offer",
-              price: "0",
-              priceCurrency: "USD",
-            },
-          })}
-        </script>
+        <script type="application/ld+json">{JSON.stringify(breadcrumbSchema)}</script>
+        <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
+        <script type="application/ld+json">{JSON.stringify(webAppSchema)}</script>
       </Helmet>
 
       <div className="min-h-screen flex flex-col">

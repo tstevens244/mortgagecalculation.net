@@ -6,6 +6,86 @@ import VACalculator from "@/components/VACalculator";
 const VA = () => {
   const canonicalUrl = "https://mortgagecalculation.net/va-loan-calculator";
 
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: "https://mortgagecalculation.net/",
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Loan Programs",
+        item: "https://mortgagecalculation.net/fha-loan-calculator",
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: "VA Loan",
+        item: canonicalUrl,
+      },
+    ],
+  };
+
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: [
+      {
+        "@type": "Question",
+        name: "What is a VA loan?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "A VA loan is a mortgage guaranteed by the U.S. Department of Veterans Affairs (VA). These loans are available to eligible veterans, active-duty service members, National Guard and Reserve members, and surviving spouses. VA loans offer significant advantages including no down payment, no PMI, and competitive interest rates.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Who is exempt from the VA funding fee?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "The following are exempt from the VA funding fee: Veterans receiving VA disability compensation for a service-connected disability (10% or higher), Veterans entitled to receive disability compensation but receiving retirement or active-duty pay, Surviving spouses of veterans who died in service or from service-connected disabilities, and Active-duty service members who provide evidence of a Purple Heart award.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "What are the VA loan eligibility requirements?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "VA loan eligibility includes: Active Duty (currently serving at least 90 continuous days), Veterans (served 90 days during wartime, 181 days during peacetime, or 6 years in the Reserves/Guard), National Guard/Reserves (6 years of service or 90 days of active service), and Surviving Spouses (unremarried surviving spouse of a veteran who died in service or from a service-connected disability).",
+        },
+      },
+    ],
+  };
+
+  const webAppSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    name: "VA Loan Calculator",
+    applicationCategory: "FinanceApplication",
+    description:
+      "Free VA loan calculator to estimate monthly payments with 0% down and no PMI, including VA funding fee calculations.",
+    operatingSystem: "Any",
+    url: canonicalUrl,
+    featureList: [
+      "Calculate VA loan payments with 0% down",
+      "No private mortgage insurance (PMI)",
+      "VA funding fee calculator",
+      "First-time vs subsequent use rates",
+      "Funding fee exemption options",
+      "Compare VA vs conventional loans",
+    ],
+    offers: {
+      "@type": "Offer",
+      price: "0",
+      priceCurrency: "USD",
+    },
+  };
+
   return (
     <>
       <Helmet>
@@ -29,22 +109,9 @@ const VA = () => {
           name="twitter:description"
           content="Calculate your VA home loan payment with 0% down payment and no mortgage insurance."
         />
-        <script type="application/ld+json">
-          {JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "WebApplication",
-            name: "VA Loan Calculator",
-            applicationCategory: "FinanceApplication",
-            description:
-              "Free VA loan calculator to estimate monthly payments with 0% down and no PMI, including VA funding fee calculations.",
-            operatingSystem: "Any",
-            offers: {
-              "@type": "Offer",
-              price: "0",
-              priceCurrency: "USD",
-            },
-          })}
-        </script>
+        <script type="application/ld+json">{JSON.stringify(breadcrumbSchema)}</script>
+        <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
+        <script type="application/ld+json">{JSON.stringify(webAppSchema)}</script>
       </Helmet>
 
       <div className="min-h-screen flex flex-col">

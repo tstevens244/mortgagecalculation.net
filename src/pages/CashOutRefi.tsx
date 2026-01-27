@@ -4,6 +4,83 @@ import Footer from "@/components/Footer";
 import CashOutRefiCalculator from "@/components/CashOutRefiCalculator";
 
 const CashOutRefi = () => {
+  const canonicalUrl = "https://mortgagecalculation.net/cash-out-refinance-calculator";
+
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: "https://mortgagecalculation.net/",
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Refinancing & Home Equity",
+        item: "https://mortgagecalculation.net/refinance-calculator",
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: "Cash-Out Refinance",
+        item: canonicalUrl,
+      },
+    ],
+  };
+
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: [
+      {
+        "@type": "Question",
+        name: "What is a cash-out refinance?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "A cash-out refinance replaces your existing mortgage with a new, larger loan. The difference between your old loan balance and the new loan amount is paid to you in cash. This allows homeowners to tap into their home equity for major expenses like home improvements, debt consolidation, or other financial goals.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "How does cash-out refinancing work?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Lenders typically allow you to borrow up to 80% of your home's current value. For example, if your home is worth $400,000 and you owe $200,000, you could potentially access up to $120,000 in cash ($400,000 × 80% = $320,000, minus $200,000 owed = $120,000).",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "When does a cash-out refinance make sense?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Cash-out refinancing may be a good option when: you have significant home equity, current interest rates are favorable compared to your existing rate, you need funds for home improvements (which can add value), or you want to consolidate high-interest debt. It typically makes less sense if rates have risen significantly or you plan to move soon.",
+        },
+      },
+    ],
+  };
+
+  const webAppSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    name: "Cash-Out Refinance Calculator",
+    applicationCategory: "FinanceApplication",
+    description: "Calculate how much cash you can extract from your home equity with a cash-out refinance.",
+    operatingSystem: "Any",
+    url: canonicalUrl,
+    featureList: [
+      "Calculate maximum cash-out amount",
+      "Determine new loan balance",
+      "Estimate new monthly payment",
+      "80% LTV limit calculations",
+      "Compare with current mortgage",
+      "Include closing cost estimates",
+    ],
+    offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+  };
+
   return (
     <>
       <Helmet>
@@ -13,26 +90,17 @@ const CashOutRefi = () => {
           content="Calculate how much cash you can extract from your home equity with a cash-out refinance. Estimate your new loan balance, monthly payment, and maximum cash-out amount."
         />
         <meta name="robots" content="index, follow" />
-        <link rel="canonical" href="https://mortgagecalculation.net/cash-out-refinance-calculator" />
+        <link rel="canonical" href={canonicalUrl} />
         <meta property="og:title" content="Cash-Out Refinance Calculator" />
         <meta property="og:description" content="Calculate how much cash you can extract from your home equity with a cash-out refinance." />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://mortgagecalculation.net/cash-out-refinance-calculator" />
+        <meta property="og:url" content={canonicalUrl} />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="Cash-Out Refinance Calculator" />
         <meta name="twitter:description" content="Estimate your new loan balance and maximum cash-out amount." />
-        <script type="application/ld+json">
-          {JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "WebApplication",
-            name: "Cash-Out Refinance Calculator",
-            applicationCategory: "FinanceApplication",
-            description: "Calculate how much cash you can extract from your home equity with a cash-out refinance.",
-            operatingSystem: "Any",
-            url: "https://mortgagecalculation.net/cash-out-refinance-calculator",
-            offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
-          })}
-        </script>
+        <script type="application/ld+json">{JSON.stringify(breadcrumbSchema)}</script>
+        <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
+        <script type="application/ld+json">{JSON.stringify(webAppSchema)}</script>
       </Helmet>
       <div className="min-h-screen flex flex-col">
         <Header />

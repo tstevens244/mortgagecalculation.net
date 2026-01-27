@@ -6,6 +6,74 @@ import MortgageCalculator from "@/components/MortgageCalculator";
 const Index = () => {
   const canonicalUrl = "https://mortgagecalculation.net/";
 
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: "https://mortgagecalculation.net/",
+      },
+    ],
+  };
+
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: [
+      {
+        "@type": "Question",
+        name: "How do I use this mortgage calculator?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Enter your home price, down payment, loan term, and interest rate to calculate your estimated monthly payment. You can also add property taxes, home insurance, PMI (Private Mortgage Insurance), and HOA fees for a complete picture of your housing costs.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "What does my monthly mortgage payment include?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Your monthly mortgage payment typically consists of four main components, often referred to as PITI: Principal (the loan amount), Interest (the cost of borrowing), Taxes (property taxes), and Insurance (homeowner's insurance). If your down payment is less than 20%, you may also need to pay PMI.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "What is an amortization schedule?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "An amortization schedule shows how your monthly payments are split between principal and interest over the life of your loan. In the early years, a larger portion goes toward interest. As you continue making payments, more goes toward paying down the principal balance.",
+        },
+      },
+    ],
+  };
+
+  const webAppSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    name: "Mortgage Calculator",
+    applicationCategory: "FinanceApplication",
+    description:
+      "Free online mortgage calculator to estimate monthly payments, including property tax, insurance, PMI, and amortization schedule.",
+    operatingSystem: "Any",
+    url: canonicalUrl,
+    featureList: [
+      "Calculate monthly mortgage payments",
+      "Include property taxes, insurance, and PMI",
+      "View complete amortization schedule",
+      "Visualize payment breakdown with charts",
+      "Compare different loan scenarios",
+      "Export amortization data",
+    ],
+    offers: {
+      "@type": "Offer",
+      price: "0",
+      priceCurrency: "USD",
+    },
+  };
+
   return (
     <>
       <Helmet>
@@ -29,22 +97,9 @@ const Index = () => {
           name="twitter:description"
           content="Calculate your monthly mortgage payment including taxes, insurance, and PMI."
         />
-        <script type="application/ld+json">
-          {JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "WebApplication",
-            name: "Mortgage Calculator",
-            applicationCategory: "FinanceApplication",
-            description:
-              "Free online mortgage calculator to estimate monthly payments, including property tax, insurance, PMI, and amortization schedule.",
-            operatingSystem: "Any",
-            offers: {
-              "@type": "Offer",
-              price: "0",
-              priceCurrency: "USD",
-            },
-          })}
-        </script>
+        <script type="application/ld+json">{JSON.stringify(breadcrumbSchema)}</script>
+        <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
+        <script type="application/ld+json">{JSON.stringify(webAppSchema)}</script>
       </Helmet>
 
       <div className="min-h-screen flex flex-col">
