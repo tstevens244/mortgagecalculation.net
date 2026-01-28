@@ -31,8 +31,8 @@ run({
   inlineCss: true,
   // Remove script tags for purely static pages (optional - comment out if you need JS)
   // removeScriptTags: true,
-  // Wait for network to be idle before capturing
-  puppeteerExecutablePath: undefined,
+  // Use Chrome from environment variable if available (for CI)
+  puppeteerExecutablePath: process.env.PUPPETEER_EXECUTABLE_PATH || undefined,
   skipThirdPartyRequests: false,
   // Ensure all content is loaded
   waitFor: 1000,
