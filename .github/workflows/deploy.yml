@@ -30,11 +30,19 @@ jobs:
       - name: Install deps
         run: npm ci
 
+      - name: Install Chrome for Puppeteer
+        id: setup-chrome
+        uses: browser-actions/setup-chrome@v1
+        with:
+          chrome-version: stable
+
       - name: Build
         run: npm run build
 
       - name: Prerender static HTML
         run: node scripts/prerender.cjs
+        env:
+          PUPPETEER_EXECUTABLE_PATH: ${{ steps.setup-chrome.outputs.chrome-path }}
 
       - name: Configure Pages
         uses: actions/configure-pages@v5
