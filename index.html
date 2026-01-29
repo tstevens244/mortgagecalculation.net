@@ -7,12 +7,18 @@
     <meta name="description" content="Calculate your monthly mortgage payment with our free mortgage calculator. Includes property tax, insurance, PMI, and full amortization schedule." />
     <meta name="author" content="MortgageCalculation" />
     <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#1e3a5f" />
     <link rel="canonical" href="https://mortgagecalculation.net/" />
     <link rel="icon" type="image/x-ico" href="/favicon.ico" />
     <link rel="icon" type="image/png" href="/favicon.png" />
     <link rel="apple-touch-icon" href="/favicon.png" />
     <link rel="apple-touch-icon-precomposed" href="/favicon.png" />
     <meta name="msapplication-TileImage" content="/favicon.png" />
+
+    <!-- Preconnect to external origins for performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" />
 
     <!-- Open Graph -->
     <meta property="og:title" content="Free Mortgage Calculator | Estimate Monthly Payments" />
@@ -24,9 +30,30 @@
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Free Mortgage Calculator" />
     <meta name="twitter:description" content="Calculate your monthly mortgage payment including taxes, insurance, and PMI." />
+
+    <!-- Skip link styles (inline for immediate availability) -->
+    <style>
+      .skip-link {
+        position: absolute;
+        top: -40px;
+        left: 0;
+        background: #1e3a5f;
+        color: white;
+        padding: 8px 16px;
+        z-index: 100;
+        text-decoration: none;
+        font-family: sans-serif;
+        border-radius: 0 0 8px 0;
+      }
+      .skip-link:focus {
+        top: 0;
+      }
+    </style>
   </head>
 
   <body>
+    <!-- Skip to main content link for accessibility -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
     <div id="root"></div>
     <script>
       // SPA redirect support (pairs with public/404.html)

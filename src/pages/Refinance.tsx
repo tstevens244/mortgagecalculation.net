@@ -117,7 +117,7 @@ const Refinance = () => {
       <div className="min-h-screen flex flex-col">
         <Header />
 
-        <main className="flex-1 container py-8">
+        <main id="main-content" className="flex-1 container py-8">
           <article>
             <header className="text-center mb-10">
               <h1 className="text-3xl sm:text-4xl lg:text-5xl font-display font-bold text-foreground mb-4">

@@ -117,7 +117,7 @@ const ARM = () => {
       <div className="min-h-screen flex flex-col bg-background">
         <Header />
 
-        <main className="flex-1">
+        <main id="main-content" className="flex-1">
           <article className="container py-8">
             <header className="mb-8 text-center">
               <h1 className="text-3xl md:text-4xl lg:text-5xl font-display font-bold text-foreground">
