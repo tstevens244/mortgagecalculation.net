@@ -42,7 +42,7 @@ const navItems = [
       { label: "Conventional", href: "/conventional-mortgage-calculator" },
       { label: "FHA Loan", href: "/fha-loan-calculator" },
       { label: "USDA Loan", href: "/usda-loan-calculator" },
-      { label: "VA Loan", href: "/va-loan-calculator" },
+      { label: "VA Loan", href: "/va-loan-calculator/" },
       { label: "Jumbo", href: "/jumbo-loan-calculator" },
       { label: "ARM", href: "/adjustable-rate-mortgage-calculator" },
     ],
