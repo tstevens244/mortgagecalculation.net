@@ -4,7 +4,7 @@ import Footer from "@/components/Footer";
 import RentOrBuyCalculator from "@/components/RentOrBuyCalculator";
 
 const RentOrBuy = () => {
-  const canonicalUrl = "https://mortgagecalculation.net/rent-or-buy";
+  const canonicalUrl = "https://mortgagecalculation.net/rent-or-buy/";
 
   const breadcrumbSchema = {
     "@context": "https://schema.org",

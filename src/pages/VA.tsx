@@ -23,7 +23,7 @@ const VA = () => {
         "@type": "ListItem",
         position: 2,
         name: "Loan Programs",
-        item: "https://mortgagecalculation.net/fha-loan-calculator",
+        item: "https://mortgagecalculation.net/fha-loan-calculator/",
       },
       {
         "@type": "ListItem",
