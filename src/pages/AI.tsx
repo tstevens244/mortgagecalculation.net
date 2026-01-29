@@ -98,7 +98,7 @@ const AI = () => {
 
       <div className="h-dvh flex flex-col overflow-hidden">
         <Header />
-        <main className="flex-1 flex flex-col overflow-hidden">
+        <main id="main-content" className="flex-1 flex flex-col overflow-hidden">
           <AIChatbot />
         </main>
       </div>

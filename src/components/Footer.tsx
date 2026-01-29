@@ -24,7 +24,7 @@ const Footer = () => {
   ];
 
   return (
-    <footer className="border-t border-border bg-card mt-12">
+    <footer className="border-t border-border bg-card mt-12" role="contentinfo">
       <div className="container py-8">
         {/* Quick Links - Full Width at Top */}
         <nav aria-label="Quick links" className="mb-8">

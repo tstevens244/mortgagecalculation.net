@@ -100,7 +100,7 @@ const RentOrBuy = () => {
       <div className="min-h-screen bg-background flex flex-col">
         <Header />
         
-        <main className="flex-1 container py-8">
+        <main id="main-content" className="flex-1 container py-8">
           <header className="text-center mb-10">
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-display font-bold text-foreground mb-4">
               Rent or Buy Calculator
