@@ -4,7 +4,7 @@ import Footer from "@/components/Footer";
 import USDACalculator from "@/components/USDACalculator";
 
 const USDA = () => {
-  const canonicalUrl = "https://mortgagecalculation.net/usda-loan-calculator/";
+  const canonicalUrl = "https://mortgagecalculation.net/usda-loan-calculator";
 
   const breadcrumbSchema = {
     "@context": "https://schema.org",
@@ -20,7 +20,7 @@ const USDA = () => {
         "@type": "ListItem",
         position: 2,
         name: "Loan Programs",
-        item: "https://mortgagecalculation.net/fha-loan-calculator/",
+        item: "https://mortgagecalculation.net/fha-loan-calculator",
       },
       {
         "@type": "ListItem",

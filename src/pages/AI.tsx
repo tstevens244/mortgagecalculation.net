@@ -3,7 +3,7 @@ import Header from "@/components/Header";
 import AIChatbot from "@/components/AIChatbot";
 
 const AI = () => {
-  const canonicalUrl = "https://mortgagecalculation.net/mortgage-assistant/";
+  const canonicalUrl = "https://mortgagecalculation.net/mortgage-assistant";
 
   const breadcrumbSchema = {
     "@context": "https://schema.org",

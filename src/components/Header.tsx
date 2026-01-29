@@ -30,40 +30,40 @@ const navItems = [
     href: "/",
     subItems: [
       { label: "Mortgage Calculator", href: "/" },
-      { label: "Mortgage Affordability", href: "/house-affordability/" },
-      { label: "Rent or Buy", href: "/rent-or-buy/" },
-      { label: "Mortgage Qualification", href: "/mortgage-qualification-calculator/" },
+      { label: "Mortgage Affordability", href: "/house-affordability" },
+      { label: "Rent or Buy", href: "/rent-or-buy" },
+      { label: "Mortgage Qualification", href: "/mortgage-qualification-calculator" },
     ],
   },
   {
     label: "Loan Programs",
-    href: "/fha-loan-calculator/",
+    href: "/fha-loan-calculator",
     subItems: [
-      { label: "Conventional", href: "/conventional-mortgage-calculator/" },
-      { label: "FHA Loan", href: "/fha-loan-calculator/" },
-      { label: "USDA Loan", href: "/usda-loan-calculator/" },
+      { label: "Conventional", href: "/conventional-mortgage-calculator" },
+      { label: "FHA Loan", href: "/fha-loan-calculator" },
+      { label: "USDA Loan", href: "/usda-loan-calculator" },
       { label: "VA Loan", href: "/va-loan-calculator/" },
-      { label: "Jumbo", href: "/jumbo-loan-calculator/" },
-      { label: "ARM", href: "/adjustable-rate-mortgage-calculator/" },
+      { label: "Jumbo", href: "/jumbo-loan-calculator" },
+      { label: "ARM", href: "/adjustable-rate-mortgage-calculator" },
     ],
   },
   {
     label: "Refinancing & Home Equity",
     mobileLabel: "Refinance & Equity",
-    href: "/refinance-calculator/",
+    href: "/refinance-calculator",
     subItems: [
-      { label: "Refinance", href: "/refinance-calculator/" },
-      { label: "Cash-Out Refi", href: "/cash-out-refinance-calculator/" },
-      { label: "HELOC", href: "/heloc-calculator/" },
-      { label: "Second Mortgage", href: "/second-mortgage-calculator/" },
+      { label: "Refinance", href: "/refinance-calculator" },
+      { label: "Cash-Out Refi", href: "/cash-out-refinance-calculator" },
+      { label: "HELOC", href: "/heloc-calculator" },
+      { label: "Second Mortgage", href: "/second-mortgage-calculator" },
     ],
   },
   {
     label: "Savings Strategies",
-    href: "/extra-mortgage-payments-calculator/",
+    href: "/extra-mortgage-payments-calculator",
     subItems: [
-      { label: "Extra Payments", href: "/extra-mortgage-payments-calculator/" },
-      { label: "Bi-Weekly Payments", href: "/bi-weekly-mortgage-payments-calculator/" },
+      { label: "Extra Payments", href: "/extra-mortgage-payments-calculator" },
+      { label: "Bi-Weekly Payments", href: "/bi-weekly-mortgage-payments-calculator" },
     ],
   },
 ];
@@ -99,7 +99,7 @@ const Header = () => {
               <NavigationMenuItem>
                 <NavigationMenuLink asChild>
                   <Link
-                    to="/mortgage-assistant/"
+                    to="/mortgage-assistant"
                     className="flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors whitespace-nowrap"
                   >
                     <Sparkles className="h-4 w-4" />
@@ -156,7 +156,7 @@ const Header = () => {
                   {/* AI Link */}
                   <li>
                     <Link
-                      to="/mortgage-assistant/"
+                      to="/mortgage-assistant"
                       onClick={() => setSheetOpen(false)}
                       className="flex items-center gap-2 py-2 text-base font-medium text-foreground hover:text-primary transition-colors"
                     >
