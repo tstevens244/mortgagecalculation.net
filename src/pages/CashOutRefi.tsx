@@ -4,7 +4,7 @@ import Footer from "@/components/Footer";
 import CashOutRefiCalculator from "@/components/CashOutRefiCalculator";
 
 const CashOutRefi = () => {
-  const canonicalUrl = "https://mortgagecalculation.net/cash-out-refinance-calculator";
+  const canonicalUrl = "https://mortgagecalculation.net/cash-out-refinance-calculator/";
 
   const breadcrumbSchema = {
     "@context": "https://schema.org",
@@ -20,7 +20,7 @@ const CashOutRefi = () => {
         "@type": "ListItem",
         position: 2,
         name: "Refinancing & Home Equity",
-        item: "https://mortgagecalculation.net/refinance-calculator",
+        item: "https://mortgagecalculation.net/refinance-calculator/",
       },
       {
         "@type": "ListItem",

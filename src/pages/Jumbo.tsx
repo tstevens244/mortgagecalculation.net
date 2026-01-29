@@ -5,7 +5,7 @@ import JumboCalculator from "@/components/JumboCalculator";
 import { formatCurrency } from "@/lib/formatters";
 
 const Jumbo = () => {
-  const canonicalUrl = "https://mortgagecalculation.net/jumbo-loan-calculator";
+  const canonicalUrl = "https://mortgagecalculation.net/jumbo-loan-calculator/";
 
   const breadcrumbSchema = {
     "@context": "https://schema.org",
@@ -21,7 +21,7 @@ const Jumbo = () => {
         "@type": "ListItem",
         position: 2,
         name: "Loan Programs",
-        item: "https://mortgagecalculation.net/fha-loan-calculator",
+        item: "https://mortgagecalculation.net/fha-loan-calculator/",
       },
       {
         "@type": "ListItem",

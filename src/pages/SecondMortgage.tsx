@@ -4,7 +4,7 @@ import Footer from "@/components/Footer";
 import SecondMortgageCalculator from "@/components/SecondMortgageCalculator";
 
 const SecondMortgage = () => {
-  const canonicalUrl = "https://mortgagecalculation.net/second-mortgage-calculator";
+  const canonicalUrl = "https://mortgagecalculation.net/second-mortgage-calculator/";
 
   const breadcrumbSchema = {
     "@context": "https://schema.org",
@@ -20,7 +20,7 @@ const SecondMortgage = () => {
         "@type": "ListItem",
         position: 2,
         name: "Refinancing & Home Equity",
-        item: "https://mortgagecalculation.net/refinance-calculator",
+        item: "https://mortgagecalculation.net/refinance-calculator/",
       },
       {
         "@type": "ListItem",

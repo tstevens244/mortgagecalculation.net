@@ -4,7 +4,7 @@ import Footer from "@/components/Footer";
 import ARMCalculator from "@/components/ARMCalculator";
 
 const ARM = () => {
-  const canonicalUrl = "https://mortgagecalculation.net/adjustable-rate-mortgage-calculator";
+  const canonicalUrl = "https://mortgagecalculation.net/adjustable-rate-mortgage-calculator/";
 
   const breadcrumbSchema = {
     "@context": "https://schema.org",
@@ -20,7 +20,7 @@ const ARM = () => {
         "@type": "ListItem",
         position: 2,
         name: "Loan Programs",
-        item: "https://mortgagecalculation.net/fha-loan-calculator",
+        item: "https://mortgagecalculation.net/fha-loan-calculator/",
       },
       {
         "@type": "ListItem",

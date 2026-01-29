@@ -4,7 +4,7 @@ import Footer from "@/components/Footer";
 import BiWeeklyCalculator from "@/components/BiWeeklyCalculator";
 
 const BiWeeklyPayments = () => {
-  const canonicalUrl = "https://mortgagecalculation.net/bi-weekly-mortgage-payments-calculator";
+  const canonicalUrl = "https://mortgagecalculation.net/bi-weekly-mortgage-payments-calculator/";
 
   const breadcrumbSchema = {
     "@context": "https://schema.org",
@@ -20,7 +20,7 @@ const BiWeeklyPayments = () => {
         "@type": "ListItem",
         position: 2,
         name: "Savings Strategies",
-        item: "https://mortgagecalculation.net/extra-mortgage-payments-calculator",
+        item: "https://mortgagecalculation.net/extra-mortgage-payments-calculator/",
       },
       {
         "@type": "ListItem",
