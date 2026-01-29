@@ -4,7 +4,7 @@ import Footer from "@/components/Footer";
 import HelocCalculator from "@/components/HelocCalculator";
 
 const Heloc = () => {
-  const canonicalUrl = "https://mortgagecalculation.net/heloc-calculator";
+  const canonicalUrl = "https://mortgagecalculation.net/heloc-calculator/";
 
   const breadcrumbSchema = {
     "@context": "https://schema.org",

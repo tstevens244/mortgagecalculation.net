@@ -4,7 +4,7 @@ import Footer from "@/components/Footer";
 import AffordabilityCalculator from "@/components/AffordabilityCalculator";
 
 const Affordability = () => {
-  const canonicalUrl = "https://mortgagecalculation.net/house-affordability";
+  const canonicalUrl = "https://mortgagecalculation.net/house-affordability/";
 
   const breadcrumbSchema = {
     "@context": "https://schema.org",

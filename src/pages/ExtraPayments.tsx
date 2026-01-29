@@ -4,7 +4,7 @@ import Footer from "@/components/Footer";
 import ExtraPaymentsCalculator from "@/components/ExtraPaymentsCalculator";
 
 const ExtraPayments = () => {
-  const canonicalUrl = "https://mortgagecalculation.net/extra-mortgage-payments-calculator";
+  const canonicalUrl = "https://mortgagecalculation.net/extra-mortgage-payments-calculator/";
 
   const breadcrumbSchema = {
     "@context": "https://schema.org",

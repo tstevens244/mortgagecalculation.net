@@ -4,7 +4,7 @@ import Footer from "@/components/Footer";
 import BiWeeklyCalculator from "@/components/BiWeeklyCalculator";
 
 const BiWeeklyPayments = () => {
-  const canonicalUrl = "https://mortgagecalculation.net/bi-weekly-mortgage-payments-calculator";
+  const canonicalUrl = "https://mortgagecalculation.net/bi-weekly-mortgage-payments-calculator/";
 
   const breadcrumbSchema = {
     "@context": "https://schema.org",
