@@ -4,7 +4,7 @@ import Footer from "@/components/Footer";
 import FHACalculator from "@/components/FHACalculator";
 
 const FHA = () => {
-  const canonicalUrl = "https://mortgagecalculation.net/fha-loan-calculator";
+  const canonicalUrl = "https://mortgagecalculation.net/fha-loan-calculator/";
 
   const breadcrumbSchema = {
     "@context": "https://schema.org",
