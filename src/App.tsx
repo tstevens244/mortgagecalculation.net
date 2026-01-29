@@ -40,7 +40,7 @@ const App = () => (
             <Route path="/conventional-mortgage-calculator" element={<Conventional />} />
             <Route path="/fha-loan-calculator" element={<FHA />} />
             <Route path="/usda-loan-calculator" element={<USDA />} />
-            <Route path="/va-loan-calculator" element={<VA />} />
+            <Route path="/va-loan-calculator/" element={<VA />} />
             <Route path="/jumbo-loan-calculator" element={<Jumbo />} />
             <Route path="/adjustable-rate-mortgage-calculator" element={<ARM />} />
             <Route path="/second-mortgage-calculator" element={<SecondMortgage />} />
