@@ -4,7 +4,10 @@ import Footer from "@/components/Footer";
 import VACalculator from "@/components/VACalculator";
 
 const VA = () => {
-  const canonicalUrl = "https://mortgagecalculation.net/va-loan-calculator";
+  // GitHub Pages serves prerendered routes as directories (…/va-loan-calculator/index.html)
+  // and may redirect the non-trailing-slash URL to the trailing-slash URL.
+  // Keep canonical aligned with the final URL to avoid crawler/Lighthouse redirect warnings.
+  const canonicalUrl = "https://mortgagecalculation.net/va-loan-calculator/";
 
   const breadcrumbSchema = {
     "@context": "https://schema.org",
