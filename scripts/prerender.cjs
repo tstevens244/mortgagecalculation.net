@@ -7,7 +7,7 @@ const routes = [
   "/conventional-mortgage-calculator",
   "/fha-loan-calculator",
   "/usda-loan-calculator",
-  "/va-loan-calculator/",
+  "/va-loan-calculator",
   "/jumbo-loan-calculator",
   "/adjustable-rate-mortgage-calculator",
   "/second-mortgage-calculator",
