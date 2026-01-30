@@ -77,7 +77,7 @@ const PercentInput = forwardRef<HTMLInputElement, PercentInputProps>(
         onChange={handleChange}
         onFocus={handleFocus}
         onBlur={handleBlur}
-        className={cn("h-8 sm:h-10 text-center text-xs sm:text-sm", className)}
+        className={cn("h-8 sm:h-10 text-left text-xs sm:text-sm", className)}
         {...props}
       />
     );
