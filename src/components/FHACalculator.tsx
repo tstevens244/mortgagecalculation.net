@@ -189,12 +189,13 @@ const FHACalculator = () => {
                     value={inputs.downPayment}
                     onChange={(value) => updateInput("downPayment", value)}
                   />
-                  <Input
-                    type="text"
-                    inputMode="decimal"
-                    value={inputs.downPaymentPercent.toFixed(1)}
-                    onChange={(e) => updateInput("downPaymentPercent", parseFloat(e.target.value) || 0)}
-                    className="h-8 sm:h-10 w-12 sm:w-16 text-center text-xs sm:text-sm"
+                  <PercentInput
+                    value={inputs.downPaymentPercent}
+                    onChange={(value) => updateInput("downPaymentPercent", value)}
+                    min={0}
+                    max={100}
+                    decimalPlaces={1}
+                    className="w-16 sm:w-20"
                     aria-label="Down payment percentage"
                   />
                   <span className="flex items-center text-muted-foreground text-xs sm:text-sm">%</span>
@@ -230,13 +231,13 @@ const FHACalculator = () => {
                   <span className="sm:hidden">Rate</span>
                 </Label>
                 <div className="flex gap-1 sm:gap-2 flex-1">
-                  <Input
+                  <PercentInput
                     id="interest-rate"
-                    type="text"
-                    inputMode="decimal"
                     value={inputs.interestRate}
-                    onChange={(e) => updateInput("interestRate", parseFloat(e.target.value) || 0)}
-                    className="h-8 sm:h-10 text-sm font-medium flex-1"
+                    onChange={(value) => updateInput("interestRate", value)}
+                    min={0}
+                    max={30}
+                    decimalPlaces={3}
                   />
                   <span className="flex items-center text-muted-foreground text-xs sm:text-sm">%</span>
                 </div>

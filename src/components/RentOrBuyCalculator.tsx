@@ -228,14 +228,12 @@ const RentOrBuyCalculator = () => {
                     </Tooltip>
                   </Label>
                   <div className="flex gap-1 sm:gap-2 flex-1">
-                    <input
-                      type="number"
+                    <PercentInput
                       value={annualRentIncrease}
-                      onChange={(e) => setAnnualRentIncrease(parseFloat(e.target.value) || 0)}
-                      step="0.5"
-                      min="0"
-                      max="20"
-                      className="flex h-8 sm:h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                      onChange={setAnnualRentIncrease}
+                      min={0}
+                      max={20}
+                      decimalPlaces={1}
                     />
                     <span className="flex items-center text-muted-foreground text-xs sm:text-sm">%</span>
                   </div>
@@ -275,14 +273,12 @@ const RentOrBuyCalculator = () => {
                     </Tooltip>
                   </Label>
                   <div className="flex gap-1 sm:gap-2 flex-1">
-                    <input
-                      type="number"
+                    <PercentInput
                       value={annualAppreciation}
-                      onChange={(e) => setAnnualAppreciation(parseFloat(e.target.value) || 0)}
-                      step="0.5"
-                      min="-10"
-                      max="20"
-                      className="flex h-8 sm:h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                      onChange={setAnnualAppreciation}
+                      min={-10}
+                      max={20}
+                      decimalPlaces={1}
                     />
                     <span className="flex items-center text-muted-foreground text-xs sm:text-sm">%</span>
                   </div>
@@ -319,14 +315,12 @@ const RentOrBuyCalculator = () => {
                     </Tooltip>
                   </Label>
                   <div className="flex gap-1 sm:gap-2 flex-1">
-                    <input
-                      type="number"
+                    <PercentInput
                       value={sellingCost}
-                      onChange={(e) => setSellingCost(parseFloat(e.target.value) || 0)}
-                      step="0.5"
-                      min="0"
-                      max="15"
-                      className="flex h-8 sm:h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                      onChange={setSellingCost}
+                      min={0}
+                      max={15}
+                      decimalPlaces={1}
                     />
                     <span className="flex items-center text-muted-foreground text-xs sm:text-sm">%</span>
                   </div>
@@ -343,14 +337,12 @@ const RentOrBuyCalculator = () => {
                     Down Payment
                   </Label>
                   <div className="flex gap-1 sm:gap-2 flex-1">
-                    <input
-                      type="number"
+                    <PercentInput
                       value={downPaymentPercent}
-                      onChange={(e) => setDownPaymentPercent(parseFloat(e.target.value) || 0)}
-                      step="1"
-                      min="0"
-                      max="100"
-                      className="flex h-8 sm:h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                      onChange={setDownPaymentPercent}
+                      min={0}
+                      max={100}
+                      decimalPlaces={1}
                     />
                     <span className="flex items-center text-muted-foreground text-xs sm:text-sm">%</span>
                   </div>
@@ -361,14 +353,12 @@ const RentOrBuyCalculator = () => {
                     Interest Rate
                   </Label>
                   <div className="flex gap-1 sm:gap-2 flex-1">
-                    <input
-                      type="number"
+                    <PercentInput
                       value={interestRate}
-                      onChange={(e) => setInterestRate(parseFloat(e.target.value) || 0)}
-                      step="0.125"
-                      min="0"
-                      max="20"
-                      className="flex h-8 sm:h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                      onChange={setInterestRate}
+                      min={0}
+                      max={20}
+                      decimalPlaces={3}
                     />
                     <span className="flex items-center text-muted-foreground text-xs sm:text-sm">%</span>
                   </div>
@@ -405,14 +395,12 @@ const RentOrBuyCalculator = () => {
                       </Tooltip>
                     </Label>
                     <div className="flex gap-1 sm:gap-2 flex-1">
-                      <input
-                        type="number"
+                      <PercentInput
                         value={annualPMIPercent}
-                        onChange={(e) => setAnnualPMIPercent(parseFloat(e.target.value) || 0)}
-                        step="0.1"
-                        min="0"
-                        max="3"
-                        className="flex h-8 sm:h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                        onChange={setAnnualPMIPercent}
+                        min={0}
+                        max={3}
+                        decimalPlaces={2}
                       />
                       <span className="flex items-center text-muted-foreground text-xs sm:text-sm">%</span>
                     </div>
@@ -445,14 +433,12 @@ const RentOrBuyCalculator = () => {
                     Property Tax
                   </Label>
                   <div className="flex gap-1 sm:gap-2 flex-1">
-                    <input
-                      type="number"
+                    <PercentInput
                       value={annualPropertyTaxRate}
-                      onChange={(e) => setAnnualPropertyTaxRate(parseFloat(e.target.value) || 0)}
-                      step="0.1"
-                      min="0"
-                      max="5"
-                      className="flex h-8 sm:h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                      onChange={setAnnualPropertyTaxRate}
+                      min={0}
+                      max={5}
+                      decimalPlaces={2}
                     />
                     <span className="flex items-center text-muted-foreground text-xs sm:text-sm">%</span>
                   </div>
@@ -463,14 +449,12 @@ const RentOrBuyCalculator = () => {
                     Insurance
                   </Label>
                   <div className="flex gap-1 sm:gap-2 flex-1">
-                    <input
-                      type="number"
+                    <PercentInput
                       value={annualInsuranceRate}
-                      onChange={(e) => setAnnualInsuranceRate(parseFloat(e.target.value) || 0)}
-                      step="0.1"
-                      min="0"
-                      max="3"
-                      className="flex h-8 sm:h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                      onChange={setAnnualInsuranceRate}
+                      min={0}
+                      max={3}
+                      decimalPlaces={2}
                     />
                     <span className="flex items-center text-muted-foreground text-xs sm:text-sm">%</span>
                   </div>
@@ -496,14 +480,12 @@ const RentOrBuyCalculator = () => {
                     </Tooltip>
                   </Label>
                   <div className="flex gap-1 sm:gap-2 flex-1">
-                    <input
-                      type="number"
+                    <PercentInput
                       value={incomeTaxRate}
-                      onChange={(e) => setIncomeTaxRate(parseFloat(e.target.value) || 0)}
-                      step="1"
-                      min="0"
-                      max="50"
-                      className="flex h-8 sm:h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                      onChange={setIncomeTaxRate}
+                      min={0}
+                      max={50}
+                      decimalPlaces={0}
                     />
                     <span className="flex items-center text-muted-foreground text-xs sm:text-sm">%</span>
                   </div>

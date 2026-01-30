@@ -237,12 +237,13 @@ const SecondMortgageCalculator = () => {
                       value={inputs.downPayment}
                       onChange={(value) => updateInput("downPayment", value)}
                     />
-                    <Input
-                      type="text"
-                      inputMode="decimal"
-                      value={inputs.downPaymentPercent.toFixed(1)}
-                      onChange={(e) => updateInput("downPaymentPercent", parseFloat(e.target.value) || 0)}
-                      className="h-8 sm:h-10 w-16 text-center text-xs sm:text-sm"
+                    <PercentInput
+                      value={inputs.downPaymentPercent}
+                      onChange={(value) => updateInput("downPaymentPercent", value)}
+                      min={0}
+                      max={100}
+                      decimalPlaces={1}
+                      className="w-16"
                     />
                     <span className="flex items-center text-muted-foreground text-sm">%</span>
                   </div>
@@ -253,12 +254,12 @@ const SecondMortgageCalculator = () => {
                     Annual PMI Rate
                   </Label>
                   <div className="flex gap-2 flex-1">
-                    <Input
-                      type="text"
-                      inputMode="decimal"
+                    <PercentInput
                       value={inputs.annualPMI}
-                      onChange={(e) => updateInput("annualPMI", parseFloat(e.target.value) || 0)}
-                      className="h-8 sm:h-10 text-sm"
+                      onChange={(value) => updateInput("annualPMI", value)}
+                      min={0}
+                      max={5}
+                      decimalPlaces={2}
                     />
                     <span className="flex items-center text-muted-foreground text-sm">%</span>
                   </div>
@@ -325,11 +326,12 @@ const SecondMortgageCalculator = () => {
                       <td className="py-2">Interest Rate</td>
                       <td className="py-2 text-center">
                         <div className="flex items-center justify-center gap-1">
-                          <Input
-                            type="text"
-                            inputMode="decimal"
+                          <PercentInput
                             value={inputs.pmiInterestRate}
-                            onChange={(e) => updateInput("pmiInterestRate", parseFloat(e.target.value) || 0)}
+                            onChange={(value) => updateInput("pmiInterestRate", value)}
+                            min={0}
+                            max={30}
+                            decimalPlaces={3}
                             className="h-7 w-14 text-center text-xs"
                           />
                           <span className="text-muted-foreground">%</span>
@@ -337,11 +339,12 @@ const SecondMortgageCalculator = () => {
                       </td>
                       <td className="py-2 text-center">
                         <div className="flex items-center justify-center gap-1">
-                          <Input
-                            type="text"
-                            inputMode="decimal"
+                          <PercentInput
                             value={inputs.firstMortInterestRate}
-                            onChange={(e) => updateInput("firstMortInterestRate", parseFloat(e.target.value) || 0)}
+                            onChange={(value) => updateInput("firstMortInterestRate", value)}
+                            min={0}
+                            max={30}
+                            decimalPlaces={3}
                             className="h-7 w-14 text-center text-xs"
                           />
                           <span className="text-muted-foreground">%</span>
@@ -349,11 +352,12 @@ const SecondMortgageCalculator = () => {
                       </td>
                       <td className="py-2 text-center">
                         <div className="flex items-center justify-center gap-1">
-                          <Input
-                            type="text"
-                            inputMode="decimal"
+                          <PercentInput
                             value={inputs.secondMortInterestRate}
-                            onChange={(e) => updateInput("secondMortInterestRate", parseFloat(e.target.value) || 0)}
+                            onChange={(value) => updateInput("secondMortInterestRate", value)}
+                            min={0}
+                            max={30}
+                            decimalPlaces={3}
                             className="h-7 w-14 text-center text-xs"
                           />
                           <span className="text-muted-foreground">%</span>

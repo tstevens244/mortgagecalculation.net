@@ -207,12 +207,12 @@ const HelocCalculator = () => {
                     Interest Rate
                   </Label>
                   <div className="flex gap-2 flex-1 items-center">
-                    <Input
-                      type="text"
-                      inputMode="decimal"
+                    <PercentInput
                       value={inputs.helocInterestRate}
-                      onChange={(e) => updateInput("helocInterestRate", parseFloat(e.target.value) || 0)}
-                      className="h-8 sm:h-10 text-sm"
+                      onChange={(value) => updateInput("helocInterestRate", value)}
+                      min={0}
+                      max={30}
+                      decimalPlaces={3}
                     />
                     <span className="text-muted-foreground text-sm">%</span>
                   </div>
@@ -223,12 +223,12 @@ const HelocCalculator = () => {
                     Federal Tax Rate
                   </Label>
                   <div className="flex gap-2 flex-1 items-center">
-                    <Input
-                      type="text"
-                      inputMode="decimal"
+                    <PercentInput
                       value={inputs.federalTaxRate}
-                      onChange={(e) => updateInput("federalTaxRate", parseFloat(e.target.value) || 0)}
-                      className="h-8 sm:h-10 text-sm"
+                      onChange={(value) => updateInput("federalTaxRate", value)}
+                      min={0}
+                      max={50}
+                      decimalPlaces={1}
                     />
                     <span className="text-muted-foreground text-sm">%</span>
                   </div>
@@ -289,11 +289,12 @@ const HelocCalculator = () => {
                     </div>
                     <div className="col-span-2">
                       <div className="flex items-center gap-1">
-                        <Input
-                          type="text"
-                          inputMode="decimal"
+                        <PercentInput
                           value={debt.interestRate}
-                          onChange={(e) => updateDebt(debt.id, "interestRate", parseFloat(e.target.value) || 0)}
+                          onChange={(value) => updateDebt(debt.id, "interestRate", value)}
+                          min={0}
+                          max={50}
+                          decimalPlaces={2}
                           className="h-8 text-xs w-full"
                         />
                       </div>

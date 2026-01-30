@@ -370,16 +370,13 @@ const AffordabilityCalculator = () => {
                   <div className="input-group">
                     <Label className="input-label">Interest Rate</Label>
                     <div className="relative">
-                      <input
-                        type="number"
+                      <PercentInput
                         value={interestRate}
-                        onChange={(e) => setInterestRate(parseFloat(e.target.value) || 0)}
-                        step="0.125"
-                        min="0"
-                        max="20"
-                        className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                        onChange={setInterestRate}
+                        min={0}
+                        max={20}
+                        decimalPlaces={3}
                       />
-                      <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">%</span>
                     </div>
                   </div>
 
@@ -387,16 +384,13 @@ const AffordabilityCalculator = () => {
                   <div className="input-group">
                     <Label className="input-label">Down Payment</Label>
                     <div className="relative">
-                      <input
-                        type="number"
+                      <PercentInput
                         value={downPaymentPercent}
-                        onChange={(e) => setDownPaymentPercent(parseFloat(e.target.value) || 0)}
-                        step="1"
-                        min="0"
-                        max="100"
-                        className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                        onChange={setDownPaymentPercent}
+                        min={0}
+                        max={100}
+                        decimalPlaces={1}
                       />
-                      <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">%</span>
                     </div>
                   </div>
 
@@ -404,16 +398,13 @@ const AffordabilityCalculator = () => {
                   <div className="input-group">
                     <Label className="input-label">Property Tax Rate (per year)</Label>
                     <div className="relative">
-                      <input
-                        type="number"
+                      <PercentInput
                         value={propertyTaxRate}
-                        onChange={(e) => setPropertyTaxRate(parseFloat(e.target.value) || 0)}
-                        step="0.1"
-                        min="0"
-                        max="10"
-                        className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                        onChange={setPropertyTaxRate}
+                        min={0}
+                        max={10}
+                        decimalPlaces={2}
                       />
-                      <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">%</span>
                     </div>
                   </div>
 
@@ -427,16 +418,13 @@ const AffordabilityCalculator = () => {
                   <div className="input-group">
                     <Label className="input-label">Home Insurance Rate (per year)</Label>
                     <div className="relative">
-                      <input
-                        type="number"
+                      <PercentInput
                         value={insuranceRate}
-                        onChange={(e) => setInsuranceRate(parseFloat(e.target.value) || 0)}
-                        step="0.1"
-                        min="0"
-                        max="5"
-                        className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                        onChange={setInsuranceRate}
+                        min={0}
+                        max={5}
+                        decimalPlaces={2}
                       />
-                      <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">%</span>
                     </div>
                   </div>
 
@@ -523,16 +511,13 @@ const AffordabilityCalculator = () => {
                   <div className="input-group">
                     <Label className="input-label">Interest Rate</Label>
                     <div className="relative">
-                      <input
-                        type="number"
+                      <PercentInput
                         value={budgetInterestRate}
-                        onChange={(e) => setBudgetInterestRate(parseFloat(e.target.value) || 0)}
-                        step="0.125"
-                        min="0"
-                        max="20"
-                        className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                        onChange={setBudgetInterestRate}
+                        min={0}
+                        max={20}
+                        decimalPlaces={3}
                       />
-                      <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">%</span>
                     </div>
                   </div>
 
@@ -540,16 +525,13 @@ const AffordabilityCalculator = () => {
                   <div className="input-group">
                     <Label className="input-label">Down Payment</Label>
                     <div className="relative">
-                      <input
-                        type="number"
+                      <PercentInput
                         value={budgetDownPaymentPercent}
-                        onChange={(e) => setBudgetDownPaymentPercent(parseFloat(e.target.value) || 0)}
-                        step="1"
-                        min="0"
-                        max="100"
-                        className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                        onChange={setBudgetDownPaymentPercent}
+                        min={0}
+                        max={100}
+                        decimalPlaces={1}
                       />
-                      <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">%</span>
                     </div>
                   </div>
 
@@ -557,16 +539,13 @@ const AffordabilityCalculator = () => {
                   <div className="input-group">
                     <Label className="input-label">Property Tax Rate (per year)</Label>
                     <div className="relative">
-                      <input
-                        type="number"
+                      <PercentInput
                         value={budgetPropertyTaxRate}
-                        onChange={(e) => setBudgetPropertyTaxRate(parseFloat(e.target.value) || 0)}
-                        step="0.1"
-                        min="0"
-                        max="10"
-                        className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                        onChange={setBudgetPropertyTaxRate}
+                        min={0}
+                        max={10}
+                        decimalPlaces={2}
                       />
-                      <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">%</span>
                     </div>
                   </div>
 
@@ -580,16 +559,13 @@ const AffordabilityCalculator = () => {
                   <div className="input-group">
                     <Label className="input-label">Home Insurance Rate (per year)</Label>
                     <div className="relative">
-                      <input
-                        type="number"
+                      <PercentInput
                         value={budgetInsuranceRate}
-                        onChange={(e) => setBudgetInsuranceRate(parseFloat(e.target.value) || 0)}
-                        step="0.1"
-                        min="0"
-                        max="5"
-                        className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                        onChange={setBudgetInsuranceRate}
+                        min={0}
+                        max={5}
+                        decimalPlaces={2}
                       />
-                      <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">%</span>
                     </div>
                   </div>
                 </div>
