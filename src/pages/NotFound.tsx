@@ -9,7 +9,7 @@ const NotFound = () => {
   return (
     <>
       <Helmet>
-        <title>Page Not Found | Mortgage Calculation</title>
+        <title>404 Page Not Found | Mortgage Calculation</title>
         <meta name="description" content="The page you're looking for doesn't exist. Return to our mortgage calculators." />
         <meta name="robots" content="noindex, nofollow" />
       </Helmet>
