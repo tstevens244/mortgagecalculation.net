@@ -9,6 +9,7 @@ import PaymentBreakdown from "./PaymentBreakdown";
 import AmortizationSchedule from "./AmortizationSchedule";
 import AmortizationChart from "./AmortizationChart";
 import CurrencyInput from "./CurrencyInput";
+import PercentInput from "./PercentInput";
 import { formatCurrency } from "@/lib/formatters";
 
 interface ARMInputs {

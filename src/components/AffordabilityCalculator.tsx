@@ -17,6 +17,7 @@ import {
 import { HelpCircle, Home, DollarSign, PiggyBank, TrendingUp } from "lucide-react";
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip as RechartsTooltip } from "recharts";
 import CurrencyInput from "./CurrencyInput";
+import PercentInput from "./PercentInput";
 import { formatCurrency } from "@/lib/formatters";
 
 const AffordabilityCalculator = () => {
