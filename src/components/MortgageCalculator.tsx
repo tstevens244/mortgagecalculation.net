@@ -167,7 +167,7 @@ const MortgageCalculator = () => {
                   <PercentInput
                     value={inputs.downPaymentPercent}
                     onChange={(value) => updateInput("downPaymentPercent", value)}
-                    className="w-[3.5rem] sm:w-16 px-1 flex-shrink-0"
+                    className="w-[3.5rem] sm:w-16 px-2 flex-shrink-0"
                     decimalPlaces={1}
                     min={0}
                     max={100}
