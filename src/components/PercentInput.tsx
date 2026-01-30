@@ -2,40 +2,33 @@ import { useState, useCallback, useEffect, forwardRef } from "react";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 
-interface CurrencyInputProps {
+interface PercentInputProps {
   value: number;
   onChange: (value: number) => void;
   id?: string;
   className?: string;
-  allowDecimals?: boolean;
+  decimalPlaces?: number;
+  min?: number;
+  max?: number;
   "aria-describedby"?: string;
   "aria-label"?: string;
 }
 
-const formatNumber = (value: number, allowDecimals: boolean): string => {
-  if (allowDecimals) {
-    return new Intl.NumberFormat("en-US", {
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 2,
-    }).format(value);
-  }
-  return new Intl.NumberFormat("en-US").format(Math.round(value));
-};
-
-const CurrencyInput = forwardRef<HTMLInputElement, CurrencyInputProps>(
-  ({ value, onChange, className, allowDecimals = true, ...props }, ref) => {
-    const [displayValue, setDisplayValue] = useState(formatNumber(value, allowDecimals));
+const PercentInput = forwardRef<HTMLInputElement, PercentInputProps>(
+  ({ value, onChange, className, decimalPlaces = 2, min = 0, max = 100, ...props }, ref) => {
+    const [displayValue, setDisplayValue] = useState(value.toFixed(decimalPlaces));
     const [isFocused, setIsFocused] = useState(false);
 
     // Sync display value when external value changes (and not focused)
     useEffect(() => {
       if (!isFocused) {
-        setDisplayValue(formatNumber(value, allowDecimals));
+        setDisplayValue(value.toFixed(decimalPlaces));
       }
-    }, [value, isFocused, allowDecimals]);
+    }, [value, isFocused, decimalPlaces]);
 
     const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
       const rawValue = e.target.value;
+      
       // Allow digits and decimal point
       const sanitized = rawValue.replace(/[^0-9.]/g, "");
       
@@ -47,28 +40,33 @@ const CurrencyInput = forwardRef<HTMLInputElement, CurrencyInputProps>(
       
       setDisplayValue(cleanValue);
       
-      // Update the actual value
-      const numericValue = parseFloat(cleanValue) || 0;
+      // Parse and clamp the value
+      let numericValue = parseFloat(cleanValue) || 0;
+      numericValue = Math.max(min, Math.min(max, numericValue));
+      
       onChange(numericValue);
-    }, [onChange]);
+    }, [onChange, min, max]);
 
     const handleFocus = useCallback(() => {
       setIsFocused(true);
-      // Show raw number without formatting when focused
+      // Show raw value when focused, trim trailing zeros
       if (value === 0) {
         setDisplayValue("");
-      } else if (allowDecimals && value % 1 !== 0) {
-        setDisplayValue(value.toString());
       } else {
-        setDisplayValue(Math.round(value).toString());
+        // Remove trailing zeros but keep the decimal if there are decimals
+        const str = value.toString();
+        setDisplayValue(str);
       }
-    }, [value, allowDecimals]);
+    }, [value]);
 
     const handleBlur = useCallback(() => {
       setIsFocused(false);
-      // Format the number on blur
-      setDisplayValue(formatNumber(value, allowDecimals));
-    }, [value, allowDecimals]);
+      // Clamp on blur
+      let finalValue = parseFloat(displayValue) || 0;
+      finalValue = Math.max(min, Math.min(max, finalValue));
+      onChange(finalValue);
+      setDisplayValue(finalValue.toFixed(decimalPlaces));
+    }, [displayValue, min, max, decimalPlaces, onChange]);
 
     return (
       <Input
@@ -79,13 +77,13 @@ const CurrencyInput = forwardRef<HTMLInputElement, CurrencyInputProps>(
         onChange={handleChange}
         onFocus={handleFocus}
         onBlur={handleBlur}
-        className={cn("h-8 sm:h-10 text-sm font-medium flex-[2] min-w-[5.5rem]", className)}
+        className={cn("h-8 sm:h-10 text-center text-xs sm:text-sm", className)}
         {...props}
       />
     );
   }
 );
 
-CurrencyInput.displayName = "CurrencyInput";
+PercentInput.displayName = "PercentInput";
 
-export default CurrencyInput;
+export default PercentInput;
