@@ -16,6 +16,7 @@ import {
 import { HelpCircle, Home, DollarSign, TrendingUp, CheckCircle, AlertCircle } from "lucide-react";
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip as RechartsTooltip } from "recharts";
 import CurrencyInput from "./CurrencyInput";
+import PercentInput from "./PercentInput";
 import { formatCurrency, formatPercent } from "@/lib/formatters";
 
 const QualificationCalculator = () => {

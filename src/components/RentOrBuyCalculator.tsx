@@ -16,6 +16,7 @@ import {
 import { HelpCircle, Home, Building2, TrendingUp, DollarSign, PiggyBank, Scale } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip as RechartsTooltip, Cell } from "recharts";
 import CurrencyInput from "./CurrencyInput";
+import PercentInput from "./PercentInput";
 import { formatCurrency } from "@/lib/formatters";
 
 const RentOrBuyCalculator = () => {
