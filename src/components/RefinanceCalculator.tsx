@@ -249,12 +249,12 @@ const RefinanceCalculator = () => {
                     Interest Rate
                   </Label>
                   <div className="flex gap-2 flex-1 items-center">
-                    <Input
-                      type="text"
-                      inputMode="decimal"
+                    <PercentInput
                       value={inputs.originalInterestRate}
-                      onChange={(e) => updateInput("originalInterestRate", parseFloat(e.target.value) || 0)}
-                      className="h-8 sm:h-10 text-sm"
+                      onChange={(value) => updateInput("originalInterestRate", value)}
+                      min={0}
+                      max={30}
+                      decimalPlaces={3}
                     />
                     <span className="text-muted-foreground text-sm">%</span>
                   </div>
@@ -322,12 +322,12 @@ const RefinanceCalculator = () => {
                     New Interest Rate
                   </Label>
                   <div className="flex gap-2 flex-1 items-center">
-                    <Input
-                      type="text"
-                      inputMode="decimal"
+                    <PercentInput
                       value={inputs.newInterestRate}
-                      onChange={(e) => updateInput("newInterestRate", parseFloat(e.target.value) || 0)}
-                      className="h-8 sm:h-10 text-sm"
+                      onChange={(value) => updateInput("newInterestRate", value)}
+                      min={0}
+                      max={30}
+                      decimalPlaces={3}
                     />
                     <span className="text-muted-foreground text-sm">%</span>
                   </div>
@@ -356,13 +356,13 @@ const RefinanceCalculator = () => {
                     <Label className="text-xs sm:text-sm text-muted-foreground min-w-[130px]">
                       Discount Points
                     </Label>
-                    <div className="flex gap-2 flex-1 items-center">
-                      <Input
-                        type="text"
-                        inputMode="decimal"
+                      <div className="flex gap-2 flex-1 items-center">
+                      <PercentInput
                         value={inputs.discountPoints}
-                        onChange={(e) => updateInput("discountPoints", parseFloat(e.target.value) || 0)}
-                        className="h-8 sm:h-10 text-sm"
+                        onChange={(value) => updateInput("discountPoints", value)}
+                        min={0}
+                        max={10}
+                        decimalPlaces={2}
                       />
                       <span className="text-muted-foreground text-sm">%</span>
                     </div>
@@ -373,12 +373,12 @@ const RefinanceCalculator = () => {
                       Origination Fees
                     </Label>
                     <div className="flex gap-2 flex-1 items-center">
-                      <Input
-                        type="text"
-                        inputMode="decimal"
+                      <PercentInput
                         value={inputs.originationFees}
-                        onChange={(e) => updateInput("originationFees", parseFloat(e.target.value) || 0)}
-                        className="h-8 sm:h-10 text-sm"
+                        onChange={(value) => updateInput("originationFees", value)}
+                        min={0}
+                        max={10}
+                        decimalPlaces={2}
                       />
                       <span className="text-muted-foreground text-sm">%</span>
                     </div>
