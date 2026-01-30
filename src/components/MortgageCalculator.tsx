@@ -1,6 +1,5 @@
 import { useState, useMemo } from "react";
 import { Calculator, Home, Percent, Calendar, DollarSign, Shield, Building, Users } from "lucide-react";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -8,6 +7,7 @@ import PaymentBreakdown from "./PaymentBreakdown";
 import AmortizationSchedule from "./AmortizationSchedule";
 import AmortizationChart from "./AmortizationChart";
 import CurrencyInput from "./CurrencyInput";
+import PercentInput from "./PercentInput";
 import { formatCurrency } from "@/lib/formatters";
 
 interface MortgageInputs {
@@ -164,12 +164,13 @@ const MortgageCalculator = () => {
                     value={inputs.downPayment}
                     onChange={(value) => updateInput("downPayment", value)}
                   />
-                  <Input
-                    type="text"
-                    inputMode="decimal"
-                    value={inputs.downPaymentPercent.toFixed(1)}
-                    onChange={(e) => updateInput("downPaymentPercent", parseFloat(e.target.value) || 0)}
-                    className="h-8 sm:h-10 w-[3.5rem] sm:w-16 text-center text-xs sm:text-sm px-1 flex-shrink-0"
+                  <PercentInput
+                    value={inputs.downPaymentPercent}
+                    onChange={(value) => updateInput("downPaymentPercent", value)}
+                    className="w-[3.5rem] sm:w-16 px-1 flex-shrink-0"
+                    decimalPlaces={1}
+                    min={0}
+                    max={100}
                     aria-label="Down payment percentage"
                   />
                   <span className="flex items-center text-muted-foreground text-xs sm:text-sm flex-shrink-0">%</span>
@@ -207,13 +208,14 @@ const MortgageCalculator = () => {
                   <span className="sm:hidden">Rate</span>
                 </Label>
                 <div className="flex gap-1 sm:gap-2 flex-1">
-                  <Input
+                  <PercentInput
                     id="interest-rate"
-                    type="text"
-                    inputMode="decimal"
                     value={inputs.interestRate}
-                    onChange={(e) => updateInput("interestRate", parseFloat(e.target.value) || 0)}
-                    className="h-8 sm:h-10 text-sm font-medium flex-1"
+                    onChange={(value) => updateInput("interestRate", value)}
+                    className="flex-1"
+                    decimalPlaces={3}
+                    min={0}
+                    max={30}
                   />
                   <span className="flex items-center text-muted-foreground text-xs sm:text-sm">%</span>
                 </div>
