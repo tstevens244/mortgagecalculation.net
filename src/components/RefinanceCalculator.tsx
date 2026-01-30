@@ -125,23 +125,64 @@ const RefinanceCalculator = () => {
     const newTaxSavings = newInterestOverPeriod * combinedTaxRate;
     const taxSavingsLoss = originalTaxSavings - newTaxSavings;
 
-    // Monthly payment difference
-    const monthlyPaymentDiff = newMonthlyPayment - originalMonthlyPayment;
-    const additionalMonthlyPayments = monthlyPaymentDiff * monthsUntilSell;
-
-    // Balance difference (equity gained)
+    // Balance difference (equity gained through faster principal paydown)
+    // Positive when new loan has lower remaining balance (more equity built)
     const balanceDifference = originalBalanceAtSell - newBalanceAtSell;
 
-    // Interest savings
+    // Interest savings over the comparison period
     const interestSavings = originalInterestOverPeriod - newInterestOverPeriod;
 
-    // Total refinancing benefit
-    const totalBenefit = balanceDifference - taxSavingsLoss - totalClosingCosts;
+    // Monthly payment difference (positive = new payment is higher)
+    const monthlyPaymentDiff = newMonthlyPayment - originalMonthlyPayment;
+    
+    // Total additional out-of-pocket payments over the period
+    // Positive = you pay more with new loan each month
+    // Negative = you save money each month with new loan
+    const additionalMonthlyPayments = monthlyPaymentDiff * monthsUntilSell;
 
-    // Break-even calculation (months until closing costs are recovered)
+    // ============================================
+    // TOTAL COST COMPARISON (Industry Standard)
+    // ============================================
+    // Compare true cost of staying with old loan vs refinancing
+    //
+    // Old loan total cost over period:
+    //   Payments made + Remaining balance at end
+    //   = originalPaymentsOverPeriod + originalBalanceAtSell
+    //
+    // New loan total cost over period:
+    //   Payments made + Closing costs + Remaining balance at end
+    //   = newPaymentsOverPeriod + totalClosingCosts + newBalanceAtSell
+    //
+    // Benefit = Old cost - New cost (after tax adjustment)
+    //
+    // Simplified:
+    // = (originalPayments + originalBalance) - (newPayments + closingCosts + newBalance)
+    // = (originalPayments - newPayments) + (originalBalance - newBalance) - closingCosts
+    // = -additionalMonthlyPayments + balanceDifference - closingCosts
+    // = balanceDifference - additionalMonthlyPayments - closingCosts - taxSavingsLoss
+    //
+    // But note: balanceDifference - additionalMonthlyPayments = interestSavings
+    // Because: (what you paid extra) - (balance reduction) = interest paid
+    
+    // Net benefit calculation
+    const totalBenefit = interestSavings - taxSavingsLoss - totalClosingCosts;
+
+    // Monthly savings (positive when new payment is lower)
     const monthlySavings = originalMonthlyPayment - newMonthlyPayment;
-    const breakEvenMonths = monthlySavings > 0 ? Math.ceil(totalClosingCosts / monthlySavings) : 
-                            (totalBenefit > 0 ? Math.ceil(totalClosingCosts / (totalBenefit / monthsUntilSell)) : Infinity);
+
+    // Break-even calculation
+    let breakEvenMonths: number;
+    if (monthlySavings > 0) {
+      // Payment decreased - simple break-even
+      breakEvenMonths = Math.ceil(totalClosingCosts / monthlySavings);
+    } else if (totalBenefit > 0 && monthsUntilSell > 0) {
+      // Payment increased but overall benefit exists (shorter term saves interest)
+      // Break-even based on when interest savings exceed closing costs
+      const monthlyInterestSavings = interestSavings / monthsUntilSell;
+      breakEvenMonths = monthlyInterestSavings > 0 ? Math.ceil(totalClosingCosts / monthlyInterestSavings) : Infinity;
+    } else {
+      breakEvenMonths = Infinity;
+    }
 
     return {
       original: {
@@ -172,6 +213,7 @@ const RefinanceCalculator = () => {
         taxSavingsLoss,
         totalBenefit,
         breakEvenMonths,
+        monthlySavings,
         shouldRefinance: totalBenefit > 0,
       },
     };
@@ -477,16 +519,15 @@ const RefinanceCalculator = () => {
                 </thead>
                 <tbody className="divide-y divide-border">
                   <tr>
-                    <td className="py-3">Loan Balance Difference in {inputs.yearsBeforeSell} Years, Less Income Tax Shift</td>
+                    <td className="py-3">Interest Savings Over {inputs.yearsBeforeSell} Years</td>
                     <td className="py-3 text-right font-bold">
-                      {formatCurrency(calculations.comparison.balanceDifference - calculations.comparison.taxSavingsLoss)}
+                      {formatCurrency(calculations.comparison.interestSavings)}
                     </td>
                   </tr>
                   <tr>
-                    <td className="py-3">Less Additional Monthly Payments</td>
+                    <td className="py-3">Less Tax Deduction Lost</td>
                     <td className="py-3 text-right font-bold">
-                      {calculations.comparison.additionalMonthlyPayments > 0 ? "-" : ""}
-                      {formatCurrency(Math.abs(calculations.comparison.additionalMonthlyPayments))}
+                      -{formatCurrency(calculations.comparison.taxSavingsLoss)}
                     </td>
                   </tr>
                   <tr>
@@ -497,10 +538,26 @@ const RefinanceCalculator = () => {
                   </tr>
                   <tr className={`${calculations.comparison.shouldRefinance ? 'bg-accent/10' : 'bg-destructive/10'}`}>
                     <td className="py-4 font-semibold">
-                      Total Refinancing {calculations.comparison.shouldRefinance ? 'Benefit' : 'Cost'} Over Next {inputs.yearsBeforeSell} Years
+                      Net Refinancing {calculations.comparison.shouldRefinance ? 'Benefit' : 'Cost'} Over {inputs.yearsBeforeSell} Years
                     </td>
                     <td className={`py-4 text-right text-xl font-bold ${calculations.comparison.shouldRefinance ? 'text-accent' : 'text-destructive'}`}>
-                      {calculations.comparison.shouldRefinance ? '' : '-'}{formatCurrency(Math.abs(calculations.comparison.totalBenefit))}
+                      {calculations.comparison.totalBenefit >= 0 ? '' : '-'}{formatCurrency(Math.abs(calculations.comparison.totalBenefit))}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="py-3 text-muted-foreground">Monthly Payment Change</td>
+                    <td className={`py-3 text-right font-medium ${calculations.comparison.monthlySavings > 0 ? 'text-accent' : 'text-destructive'}`}>
+                      {calculations.comparison.monthlySavings >= 0 ? 
+                        `Save ${formatCurrency(calculations.comparison.monthlySavings)}/mo` : 
+                        `Pay ${formatCurrency(Math.abs(calculations.comparison.monthlySavings))}/mo more`}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="py-3 text-muted-foreground">Break-Even Point</td>
+                    <td className="py-3 text-right font-medium">
+                      {calculations.comparison.breakEvenMonths === Infinity 
+                        ? 'N/A' 
+                        : `${Math.floor(calculations.comparison.breakEvenMonths / 12)} years ${calculations.comparison.breakEvenMonths % 12} months`}
                     </td>
                   </tr>
                 </tbody>
