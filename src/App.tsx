@@ -27,8 +27,12 @@ import NotFound from "./pages/NotFound";
 // Redirect component to enforce trailing slashes
 const TrailingSlashRedirect = () => {
   const location = useLocation();
+  // Don't redirect real files (e.g. /404.html, /BingSiteAuth.xml, /robots.txt) because
+  // it breaks static hosting + react-snap output paths.
+  const looksLikeFile = location.pathname.includes(".");
+
   // If path doesn't end with / and isn't the root, redirect to trailing slash version
-  if (location.pathname !== "/" && !location.pathname.endsWith("/")) {
+  if (!looksLikeFile && location.pathname !== "/" && !location.pathname.endsWith("/")) {
     return <Navigate to={`${location.pathname}/${location.search}${location.hash}`} replace />;
   }
   return null;
