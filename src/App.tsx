@@ -47,21 +47,37 @@ const App = () => (
           <ScrollToTop />
           <Routes>
             <Route path="/" element={<Index />} />
+            <Route path="/mortgage-assistant" element={<AI />} />
             <Route path="/mortgage-assistant/" element={<AI />} />
+            <Route path="/conventional-mortgage-calculator" element={<Conventional />} />
             <Route path="/conventional-mortgage-calculator/" element={<Conventional />} />
+            <Route path="/fha-loan-calculator" element={<FHA />} />
             <Route path="/fha-loan-calculator/" element={<FHA />} />
+            <Route path="/usda-loan-calculator" element={<USDA />} />
             <Route path="/usda-loan-calculator/" element={<USDA />} />
+            <Route path="/va-loan-calculator" element={<VA />} />
             <Route path="/va-loan-calculator/" element={<VA />} />
+            <Route path="/jumbo-loan-calculator" element={<Jumbo />} />
             <Route path="/jumbo-loan-calculator/" element={<Jumbo />} />
+            <Route path="/adjustable-rate-mortgage-calculator" element={<ARM />} />
             <Route path="/adjustable-rate-mortgage-calculator/" element={<ARM />} />
+            <Route path="/second-mortgage-calculator" element={<SecondMortgage />} />
             <Route path="/second-mortgage-calculator/" element={<SecondMortgage />} />
+            <Route path="/heloc-calculator" element={<Heloc />} />
             <Route path="/heloc-calculator/" element={<Heloc />} />
+            <Route path="/refinance-calculator" element={<Refinance />} />
             <Route path="/refinance-calculator/" element={<Refinance />} />
+            <Route path="/cash-out-refinance-calculator" element={<CashOutRefi />} />
             <Route path="/cash-out-refinance-calculator/" element={<CashOutRefi />} />
+            <Route path="/house-affordability" element={<Affordability />} />
             <Route path="/house-affordability/" element={<Affordability />} />
+            <Route path="/mortgage-qualification-calculator" element={<Qualification />} />
             <Route path="/mortgage-qualification-calculator/" element={<Qualification />} />
+            <Route path="/rent-or-buy" element={<RentOrBuy />} />
             <Route path="/rent-or-buy/" element={<RentOrBuy />} />
+            <Route path="/extra-mortgage-payments-calculator" element={<ExtraPayments />} />
             <Route path="/extra-mortgage-payments-calculator/" element={<ExtraPayments />} />
+            <Route path="/bi-weekly-mortgage-payments-calculator" element={<BiWeeklyPayments />} />
             <Route path="/bi-weekly-mortgage-payments-calculator/" element={<BiWeeklyPayments />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
