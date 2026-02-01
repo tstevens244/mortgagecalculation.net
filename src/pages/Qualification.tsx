@@ -1,4 +1,4 @@
-import { Helmet } from "react-helmet-async";
+ import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -366,7 +366,7 @@ const Qualification = () => {
                     </a> — Understanding loan estimates
                   </li>
                   <li>
-                    <a href="https://singlefamily.fanniemae.com/originating-underwriting/borrower-asset-income-property/income-assessment" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+                    <a href="https://singlefamily.fanniemae.com/originating-underwriting" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
                       Fannie Mae
                     </a> — Income and DTI requirements
                   </li>
