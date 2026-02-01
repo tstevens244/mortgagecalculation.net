@@ -192,7 +192,7 @@ const Index = () => {
               <h3 className="text-xl font-display font-semibold mt-8 mb-3">Private Mortgage Insurance (PMI)</h3>
               <p className="text-muted-foreground leading-relaxed">
                 If your down payment is less than 20% of the home's purchase price, you'll typically need to pay 
-                Private Mortgage Insurance. According to <a href="https://singlefamily.fanniemae.com/originating-underwriting/mortgage-products/borrower-paid-mortgage-insurance" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Fannie Mae</a>, 
+                Private Mortgage Insurance. According to <a href="https://singlefamily.fanniemae.com/originating-underwriting/mortgage-products" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Fannie Mae</a>, 
                 PMI protects the lender if you default on the loan. PMI typically costs 0.3% to 1.5% of the original 
                 loan amount annually.
               </p>
