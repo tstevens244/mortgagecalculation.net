@@ -350,7 +350,7 @@ const BiWeeklyPayments = () => {
                     </a> — Consumer mortgage resources
                   </li>
                   <li>
-                    <a href="https://www.ftc.gov/business-guidance/resources/mortgage-assistance-relief-services-advertising-disclosures" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+                    <a href="https://www.ftc.gov/business-guidance/resources/mortgage-assistance-relief-services-rule-compliance-guide-business" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
                       Federal Trade Commission
                     </a> — Avoiding mortgage payment service scams
                   </li>
