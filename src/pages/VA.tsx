@@ -315,7 +315,7 @@ const VA = () => {
 
               <h3 className="text-xl font-display font-semibold mt-8 mb-3">Who is Exempt from the VA Funding Fee?</h3>
               <p className="text-muted-foreground leading-relaxed mb-2">
-                According to <a href="https://www.va.gov/housing-assistance/home-loans/funding-fee/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">VA guidelines</a>, 
+                According to <a href="https://www.va.gov/housing-assistance/home-loans/funding-fee-and-closing-costs/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">VA guidelines</a>, 
                 the following individuals are exempt from paying the funding fee:
               </p>
               <ul className="list-disc pl-6 text-muted-foreground space-y-2">
