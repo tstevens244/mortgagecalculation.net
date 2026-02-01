@@ -349,7 +349,7 @@ const ExtraPayments = () => {
                     </a> — Understanding prepayment penalties
                   </li>
                   <li>
-                    <a href="https://www.investor.gov/introduction-investing/getting-started/saving-and-investing" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+                    <a href="https://www.investor.gov/introduction-investing/investing-basics/save-and-invest" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
                       SEC Investor.gov
                     </a> — Saving and investing basics (for comparison)
                   </li>
