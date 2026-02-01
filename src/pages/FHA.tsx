@@ -395,7 +395,7 @@ const FHA = () => {
                     </a> — Official FHA program information
                   </li>
                   <li>
-                    <a href="https://www.consumerfinance.gov/ask-cfpb/what-is-an-fha-loan-en-1963/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+                    <a href="https://www.consumerfinance.gov/ask-cfpb/what-is-an-fha-loan-en-112/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
                       Consumer Financial Protection Bureau (CFPB)
                     </a> — FHA loan overview and consumer protections
                   </li>
