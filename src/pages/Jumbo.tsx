@@ -145,12 +145,12 @@ const Jumbo = () => {
               <div className="grid md:grid-cols-2 gap-4 not-prose">
                 <div className="calculator-card p-4 text-center">
                   <p className="text-sm text-muted-foreground mb-1">Standard Areas</p>
-                  <p className="text-2xl font-bold text-primary">{formatCurrency(806500)}</p>
+                  <p className="text-2xl font-bold text-primary">{formatCurrency(832750)}</p>
                   <p className="text-xs text-muted-foreground mt-1">Most U.S. counties</p>
                 </div>
                 <div className="calculator-card p-4 text-center">
                   <p className="text-sm text-muted-foreground mb-1">High-Cost Areas</p>
-                  <p className="text-2xl font-bold text-primary">{formatCurrency(1209750)}</p>
+                  <p className="text-2xl font-bold text-primary">{formatCurrency(1249125)}</p>
                   <p className="text-xs text-muted-foreground mt-1">Alaska, Hawaii, and select metros</p>
                 </div>
               </div>
