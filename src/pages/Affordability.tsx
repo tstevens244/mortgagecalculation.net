@@ -126,7 +126,7 @@ const Affordability = () => {
               <p className="text-muted-foreground leading-relaxed">
                 Determining how much house you can afford is one of the most important financial decisions you'll 
                 make. According to the{" "}
-                <a href="https://www.consumerfinance.gov/owning-a-home/explore/how-much-can-i-afford/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+                <a href="https://www.consumerfinance.gov/ask-cfpb/how-can-i-figure-out-if-i-can-afford-to-buy-a-home-and-take-out-a-mortgage-en-118/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
                   Consumer Financial Protection Bureau (CFPB)
                 </a>, understanding your true affordability—not just what a lender will approve—helps you 
                 avoid becoming "house poor" and maintain financial flexibility.
@@ -360,7 +360,7 @@ const Affordability = () => {
                 <h4 className="font-display font-semibold text-lg mb-4">Official Resources & Citations</h4>
                 <ul className="space-y-2 text-sm text-muted-foreground">
                   <li>
-                    <a href="https://www.consumerfinance.gov/owning-a-home/explore/how-much-can-i-afford/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+                    <a href="https://www.consumerfinance.gov/ask-cfpb/how-can-i-figure-out-if-i-can-afford-to-buy-a-home-and-take-out-a-mortgage-en-118/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
                       Consumer Financial Protection Bureau (CFPB)
                     </a> — How much can I afford?
                   </li>
@@ -370,7 +370,7 @@ const Affordability = () => {
                     </a> — Home buying resources
                   </li>
                   <li>
-                    <a href="https://singlefamily.fanniemae.com/originating-underwriting/borrower-asset-income-property/income-assessment" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+                    <a href="https://singlefamily.fanniemae.com/originating-underwriting" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
                       Fannie Mae
                     </a> — Debt-to-income ratio guidelines
                   </li>
