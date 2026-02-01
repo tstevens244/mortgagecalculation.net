@@ -140,7 +140,7 @@ const Refinance = () => {
               <p className="text-muted-foreground leading-relaxed">
                 Refinancing replaces your existing mortgage with a new loan, typically to get a lower interest rate, 
                 change your loan term, or switch from an adjustable to fixed rate. According to the{" "}
-                <a href="https://www.consumerfinance.gov/ask-cfpb/what-is-a-mortgage-refinance-en-1577/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+                <a href="https://www.consumerfinance.gov/consumer-tools/mortgages/answers/key-terms/#refinance" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
                   Consumer Financial Protection Bureau (CFPB)
                 </a>, refinancing can save thousands over the life of your loan—but it's not always the right choice.
               </p>
@@ -346,7 +346,7 @@ const Refinance = () => {
                 <h4 className="font-display font-semibold text-lg mb-4">Official Resources & Citations</h4>
                 <ul className="space-y-2 text-sm text-muted-foreground">
                   <li>
-                    <a href="https://www.consumerfinance.gov/ask-cfpb/what-is-a-mortgage-refinance-en-1577/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+                    <a href="https://www.consumerfinance.gov/consumer-tools/mortgages/answers/key-terms/#refinance" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
                       Consumer Financial Protection Bureau (CFPB)
                     </a> — What is a mortgage refinance?
                   </li>
