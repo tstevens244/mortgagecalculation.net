@@ -47,10 +47,10 @@ const Jumbo = () => {
       },
       {
         "@type": "Question",
-        name: "What is the jumbo loan limit for 2025?",
+        name: "What is the jumbo loan limit for 2026?",
         acceptedAnswer: {
           "@type": "Answer",
-          text: "For 2025, the conforming loan limit is $806,500 for most U.S. counties. Loans above this amount are considered jumbo loans. In high-cost areas like parts of California, New York, and Hawaii, the limit is $1,209,750. Any loan exceeding these area-specific limits requires jumbo financing.",
+          text: "For 2026, the conforming loan limit is $832,750 for most U.S. counties. Loans above this amount are considered jumbo loans. In high-cost areas like parts of California, New York, and Hawaii, the limit is $1,249,125. Any loan exceeding these area-specific limits requires jumbo financing.",
         },
       },
       {
@@ -132,7 +132,7 @@ const Jumbo = () => {
             <JumboCalculator />
 
             <section className="mt-12 prose prose-slate max-w-none">
-              <h2 className="text-2xl font-display font-semibold mb-4">The Complete Guide to Jumbo Loans in 2025</h2>
+              <h2 className="text-2xl font-display font-semibold mb-4">The Complete Guide to Jumbo Loans in 2026</h2>
               <p className="text-muted-foreground leading-relaxed">
                 A jumbo loan is a mortgage that exceeds the conforming loan limits set by the 
                 <a href="https://www.fhfa.gov/DataTools/Downloads/Pages/Conforming-Loan-Limit.aspx" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline"> Federal Housing Finance Agency (FHFA)</a>. 
@@ -141,7 +141,7 @@ const Jumbo = () => {
                 in expensive markets like San Francisco, New York City, or Los Angeles.
               </p>
 
-              <h3 className="text-xl font-display font-semibold mt-8 mb-3">2025 Conforming Loan Limits</h3>
+              <h3 className="text-xl font-display font-semibold mt-8 mb-3">2026 Conforming Loan Limits</h3>
               <div className="grid md:grid-cols-2 gap-4 not-prose">
                 <div className="calculator-card p-4 text-center">
                   <p className="text-sm text-muted-foreground mb-1">Standard Areas</p>
@@ -319,7 +319,7 @@ const Jumbo = () => {
                     <tr className="border-b border-border">
                       <td className="p-3">Loan Limit</td>
                       <td className="p-3 text-accent font-semibold">No upper limit</td>
-                      <td className="p-3">Up to $806,500*</td>
+                      <td className="p-3">Up to $832,750*</td>
                     </tr>
                     <tr className="border-b border-border">
                       <td className="p-3">Min. Credit Score</td>
@@ -348,7 +348,7 @@ const Jumbo = () => {
                     </tr>
                   </tbody>
                 </table>
-                <p className="text-xs text-muted-foreground mt-2">*$1,209,750 in high-cost areas</p>
+                <p className="text-xs text-muted-foreground mt-2">*$1,249,125 in high-cost areas</p>
               </div>
 
               <h2 className="text-2xl font-display font-semibold mt-10 mb-4">Frequently Asked Questions About Jumbo Loans</h2>
