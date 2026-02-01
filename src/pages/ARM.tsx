@@ -147,7 +147,7 @@ const ARM = () => {
                   An Adjustable Rate Mortgage (ARM) is a home loan with an interest rate that can change periodically 
                   based on market conditions. Unlike <Link to="/" className="text-primary hover:underline">fixed-rate mortgages</Link> where 
                   your rate never changes, ARMs offer a lower initial rate that adjusts after a set period. According to 
-                  the <a href="https://www.consumerfinance.gov/ask-cfpb/what-is-an-adjustable-rate-mortgage-arm-en-100/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Consumer Financial Protection Bureau</a>, 
+                  the <a href="https://www.consumerfinance.gov/ask-cfpb/what-is-the-difference-between-a-fixed-rate-and-adjustable-rate-mortgage-arm-loan-en-100/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Consumer Financial Protection Bureau</a>, 
                   understanding how ARMs work is essential before choosing this loan type.
                 </p>
 
@@ -396,7 +396,7 @@ const ARM = () => {
                 <h4 className="font-display font-semibold text-lg mb-4">Official Resources & Citations</h4>
                 <ul className="space-y-2 text-sm text-muted-foreground">
                   <li>
-                    <a href="https://www.consumerfinance.gov/ask-cfpb/what-is-an-adjustable-rate-mortgage-arm-en-100/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+                    <a href="https://www.consumerfinance.gov/ask-cfpb/what-is-the-difference-between-a-fixed-rate-and-adjustable-rate-mortgage-arm-loan-en-100/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
                       Consumer Financial Protection Bureau (CFPB)
                     </a> — ARM consumer information and protections
                   </li>
