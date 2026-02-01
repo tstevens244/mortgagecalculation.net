@@ -180,7 +180,7 @@ const USDA = () => {
                   <h4 className="font-semibold text-foreground mb-2">Location Eligibility</h4>
                   <p className="text-sm text-muted-foreground">
                     Property must be in an eligible rural area (populations generally under 35,000). Use the 
-                    <a href="https://eligibility.sc.egov.usda.gov/eligibility/welcomeAction.do" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline"> USDA eligibility map</a> to 
+                    <a href="https://eligibility.sc.egov.usda.gov/eligibility/welcomeAction.do?pageAction=sfp" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline"> USDA eligibility map</a> to 
                     check specific addresses.
                   </p>
                 </div>
@@ -333,7 +333,7 @@ const USDA = () => {
                 <ul className="space-y-3 text-muted-foreground text-sm">
                   <li>
                     <strong>Verify location eligibility:</strong> Before getting excited about your payment estimate, 
-                    confirm the property qualifies using the <a href="https://eligibility.sc.egov.usda.gov/eligibility/welcomeAction.do" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">USDA eligibility map</a>.
+                    confirm the property qualifies using the <a href="https://eligibility.sc.egov.usda.gov/eligibility/welcomeAction.do?pageAction=sfp" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">USDA eligibility map</a>.
                   </li>
                   <li>
                     <strong>Check income limits:</strong> Your household income must be under 115% of AMI. 
@@ -445,7 +445,7 @@ const USDA = () => {
                     </a> — Official program information
                   </li>
                   <li>
-                    <a href="https://eligibility.sc.egov.usda.gov/eligibility/welcomeAction.do" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+                    <a href="https://eligibility.sc.egov.usda.gov/eligibility/welcomeAction.do?pageAction=sfp" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
                       USDA Property Eligibility Map
                     </a> — Check if an address qualifies
                   </li>
