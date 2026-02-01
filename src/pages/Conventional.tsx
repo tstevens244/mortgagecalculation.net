@@ -147,14 +147,14 @@ const Conventional = () => {
                 Unlike <Link to="/fha-loan-calculator/" className="text-primary hover:underline">FHA</Link>, 
                 <Link to="/va-loan-calculator/" className="text-primary hover:underline"> VA</Link>, or 
                 <Link to="/usda-loan-calculator/" className="text-primary hover:underline"> USDA loans</Link>, conventional mortgages are backed by private lenders and typically 
-                follow guidelines set by <a href="https://singlefamily.fanniemae.com/originating-underwriting/mortgage-products/conventional-financing" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Fannie Mae</a> and 
+                follow guidelines set by <a href="https://singlefamily.fanniemae.com/originating-underwriting/mortgage-products" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Fannie Mae</a> and 
                 <a href="https://sf.freddiemac.com/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline"> Freddie Mac</a>. 
                 They are the most common type of mortgage, accounting for about 70% of all home loans.
               </p>
 
               <h2 className="text-2xl font-display font-semibold mt-10 mb-4">Conventional Loan Eligibility Requirements</h2>
               <p className="text-muted-foreground leading-relaxed mb-4">
-                According to <a href="https://www.consumerfinance.gov/ask-cfpb/what-is-a-conventional-loan-en-1795/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Consumer Financial Protection Bureau guidelines</a>, 
+                According to <a href="https://www.consumerfinance.gov/ask-cfpb/what-is-a-conventional-loan-en-117/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Consumer Financial Protection Bureau guidelines</a>, 
                 conventional loans have stricter requirements than government-backed options:
               </p>
               <div className="grid md:grid-cols-2 gap-6 not-prose">
@@ -274,8 +274,8 @@ const Conventional = () => {
                     Meet Fannie Mae/Freddie Mac guidelines and fall within loan limits:
                   </p>
                   <ul className="text-sm text-muted-foreground space-y-1">
-                    <li>• $766,550 for most U.S. counties (2024)</li>
-                    <li>• Up to $1,149,825 in high-cost areas</li>
+                    <li>• $832,750 for most U.S. counties (2026)</li>
+                    <li>• Up to $1,249,125 in high-cost areas</li>
                     <li>• Generally offer best rates</li>
                   </ul>
                 </div>
@@ -429,7 +429,7 @@ const Conventional = () => {
                 <h4 className="font-display font-semibold text-lg mb-4">Official Resources & Citations</h4>
                 <ul className="space-y-2 text-sm text-muted-foreground">
                   <li>
-                    <a href="https://singlefamily.fanniemae.com/originating-underwriting/mortgage-products/conventional-financing" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+                    <a href="https://singlefamily.fanniemae.com/originating-underwriting/mortgage-products" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
                       Fannie Mae Conventional Financing
                     </a> — Official guidelines and requirements
                   </li>
@@ -439,7 +439,7 @@ const Conventional = () => {
                     </a> — Loan programs and eligibility
                   </li>
                   <li>
-                    <a href="https://www.consumerfinance.gov/ask-cfpb/what-is-a-conventional-loan-en-1795/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+                    <a href="https://www.consumerfinance.gov/ask-cfpb/what-is-a-conventional-loan-en-117/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
                       Consumer Financial Protection Bureau (CFPB)
                     </a> — Consumer information on conventional loans
                   </li>
