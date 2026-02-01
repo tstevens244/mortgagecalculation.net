@@ -126,7 +126,7 @@ const CashOutRefi = () => {
               <p className="text-muted-foreground leading-relaxed">
                 A cash-out refinance allows you to convert home equity into cash by replacing your current mortgage 
                 with a larger loan. According to the{" "}
-                <a href="https://www.consumerfinance.gov/ask-cfpb/what-is-a-cash-out-refinance-en-1971/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+                <a href="https://www.consumerfinance.gov/about-us/newsroom/cfpb-report-finds-cash-out-mortgage-refinance-borrowers-improve-credit-scores/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
                   Consumer Financial Protection Bureau (CFPB)
                 </a>, this is one of several ways homeowners can access their home equity—but it's important to 
                 understand both the benefits and risks.
@@ -366,7 +366,7 @@ const CashOutRefi = () => {
                 <h4 className="font-display font-semibold text-lg mb-4">Official Resources & Citations</h4>
                 <ul className="space-y-2 text-sm text-muted-foreground">
                   <li>
-                    <a href="https://www.consumerfinance.gov/ask-cfpb/what-is-a-cash-out-refinance-en-1971/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+                    <a href="https://www.consumerfinance.gov/about-us/newsroom/cfpb-report-finds-cash-out-mortgage-refinance-borrowers-improve-credit-scores/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
                       Consumer Financial Protection Bureau (CFPB)
                     </a> — What is a cash-out refinance?
                   </li>
@@ -376,7 +376,7 @@ const CashOutRefi = () => {
                     </a> — VA Cash-Out Refinance Loan
                   </li>
                   <li>
-                    <a href="https://singlefamily.fanniemae.com/originating-underwriting/mortgage-products/cash-out-refinance-loans" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+                    <a href="https://singlefamily.fanniemae.com/originating-underwriting/mortgage-products" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
                       Fannie Mae
                     </a> — Cash-out refinance guidelines
                   </li>
