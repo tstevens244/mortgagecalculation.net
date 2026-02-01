@@ -357,7 +357,7 @@ const SecondMortgage = () => {
                     </a> — When can I remove PMI?
                   </li>
                   <li>
-                    <a href="https://singlefamily.fanniemae.com/originating-underwriting/mortgage-products/borrower-paid-mortgage-insurance" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+                    <a href="https://singlefamily.fanniemae.com/originating-underwriting/mortgage-products" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
                       Fannie Mae
                     </a> — Mortgage insurance requirements
                   </li>
