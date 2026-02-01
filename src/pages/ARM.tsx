@@ -406,7 +406,7 @@ const ARM = () => {
                     </a> — Detailed ARM guide
                   </li>
                   <li>
-                    <a href="https://singlefamily.fanniemae.com/originating-underwriting/mortgage-products/arm-products" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+                    <a href="https://singlefamily.fanniemae.com/originating-underwriting/mortgage-products" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
                       Fannie Mae ARM Products
                     </a> — Conforming ARM guidelines
                   </li>
