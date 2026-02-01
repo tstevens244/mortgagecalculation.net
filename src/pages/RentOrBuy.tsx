@@ -128,7 +128,7 @@ const RentOrBuy = () => {
               <p className="text-muted-foreground leading-relaxed">
                 The decision to rent or buy is one of the biggest financial choices you'll make. While homeownership 
                 is often considered part of the "American Dream," it's not always the best financial move. According to the{" "}
-                <a href="https://www.consumerfinance.gov/owning-a-home/explore/how-do-i-decide-if-buying-a-home-is-right-for-me/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+                <a href="https://www.consumerfinance.gov/about-us/blog/making-decision-rent-or-buy/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
                   Consumer Financial Protection Bureau (CFPB)
                 </a>, the right choice depends on your financial situation, local market conditions, and personal goals.
               </p>
@@ -362,7 +362,7 @@ const RentOrBuy = () => {
                 <h4 className="font-display font-semibold text-lg mb-4">Official Resources & Citations</h4>
                 <ul className="space-y-2 text-sm text-muted-foreground">
                   <li>
-                    <a href="https://www.consumerfinance.gov/owning-a-home/explore/how-do-i-decide-if-buying-a-home-is-right-for-me/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+                    <a href="https://www.consumerfinance.gov/about-us/blog/making-decision-rent-or-buy/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
                       Consumer Financial Protection Bureau (CFPB)
                     </a> — How do I decide if buying is right for me?
                   </li>
