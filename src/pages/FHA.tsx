@@ -317,7 +317,7 @@ const FHA = () => {
                 </ul>
               </div>
 
-              <h2 className="text-2xl font-display font-semibold mt-10 mb-4">FHA Loan Limits by Area (2025)</h2>
+              <h2 className="text-2xl font-display font-semibold mt-10 mb-4">FHA Loan Limits by Area (2026)</h2>
               <p className="text-muted-foreground leading-relaxed">
                 According to <a href="https://www.hud.gov/program_offices/housing/sfh/lender/origination/mortgage_limits" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">HUD's official loan limits</a>, 
                 FHA loan limits vary by county:
@@ -325,12 +325,12 @@ const FHA = () => {
               <div className="grid md:grid-cols-2 gap-4 not-prose mt-4">
                 <div className="calculator-card p-4 text-center">
                   <p className="text-sm text-muted-foreground mb-1">Low-Cost Areas (Floor)</p>
-                  <p className="text-2xl font-bold text-primary">$524,225</p>
+                  <p className="text-2xl font-bold text-primary">$541,287</p>
                   <p className="text-xs text-muted-foreground mt-1">Single-family home</p>
                 </div>
                 <div className="calculator-card p-4 text-center">
                   <p className="text-sm text-muted-foreground mb-1">High-Cost Areas (Ceiling)</p>
-                  <p className="text-2xl font-bold text-primary">$1,209,750</p>
+                  <p className="text-2xl font-bold text-primary">$1,249,125</p>
                   <p className="text-xs text-muted-foreground mt-1">Alaska, Hawaii, select metros</p>
                 </div>
               </div>
