@@ -200,8 +200,10 @@
     box-shadow: var(--shadow-md);
   }
 
+  /* No entrance animation: the page is prerendered and then re-rendered by
+     React, so an animation here played twice and made the calculator flicker
+     (and kept it transparent while LCP was measured). */
   .fade-in {
-    animation: fadeIn 0.3s ease-out;
   }
 
   @keyframes fadeIn {
