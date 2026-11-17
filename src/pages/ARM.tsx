@@ -1,7 +1,12 @@
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
+import { ChevronDown } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import TrustLine from "@/components/TrustLine";
+import GuideContents from "@/components/GuideContents";
+import RelatedCalculators from "@/components/RelatedCalculators";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import ARMCalculator from "@/components/ARMCalculator";
 
 const ARM = () => {
@@ -62,7 +67,7 @@ const ARM = () => {
       },
       {
         "@type": "Question",
-        name: "Should I choose an ARM or fixed-rate mortgage in 2025?",
+        name: "Should I choose an ARM or a fixed-rate mortgage?",
         acceptedAnswer: {
           "@type": "Answer",
           text: "Choose an ARM if: you plan to sell or refinance before the fixed period ends, rates are expected to decrease, you want lower initial payments, or you need to qualify for more house. Choose fixed-rate if: you plan to stay long-term, you value payment predictability, current rates are historically low, or you have a tight budget.",
@@ -98,7 +103,7 @@ const ARM = () => {
   return (
     <>
       <Helmet>
-        <title>ARM Calculator - Adjustable Rate Mortgage Calculator | MortgageCalculation.net</title>
+        <title>Adjustable Rate Mortgage (ARM) Calculator | Payment After Rate Changes</title>
         <meta
           name="description"
           content="Calculate adjustable rate mortgage payments with our free ARM calculator. Compare initial vs maximum payments, understand rate caps, and see payment projections for 3/1, 5/1, 7/1, and 10/1 ARMs."
@@ -135,14 +140,19 @@ const ARM = () => {
               <p className="text-muted-foreground mt-2 text-base sm:text-lg max-w-3xl mx-auto">
                 Calculate your ARM payments before and after rate adjustments. See initial payments, maximum possible payments, and understand how rate caps protect you.
               </p>
+              <TrustLine />
             </header>
 
             <ARMCalculator />
 
+
+            <RelatedCalculators />
+
+            <GuideContents />
             {/* Educational Content */}
             <section className="mt-12 space-y-8">
               <div className="prose prose-slate max-w-none">
-                <h2 className="text-2xl font-display font-semibold mb-4">The Complete Guide to Adjustable Rate Mortgages in 2025</h2>
+                <h2 className="text-2xl font-display font-semibold mb-4">The Complete Guide to Adjustable Rate Mortgages</h2>
                 <p className="text-muted-foreground leading-relaxed">
                   An Adjustable Rate Mortgage (ARM) is a home loan with an interest rate that can change periodically 
                   based on market conditions. Unlike <Link to="/" className="text-primary hover:underline">fixed-rate mortgages</Link> where 
@@ -165,23 +175,23 @@ const ARM = () => {
                   <h3 className="text-xl font-display font-semibold mb-4">Common ARM Types</h3>
                   <ul className="space-y-3 text-muted-foreground">
                     <li className="flex items-start gap-2">
-                      <span className="text-accent font-bold">1/1 ARM:</span>
+                      <span className="text-accent-strong font-bold">1/1 ARM:</span>
                       <span>Fixed for 1 year, adjusts annually. Highest risk but lowest initial rate.</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-accent font-bold">3/1 ARM:</span>
+                      <span className="text-accent-strong font-bold">3/1 ARM:</span>
                       <span>Fixed for 3 years. Good for short-term ownership or frequent movers.</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-accent font-bold">5/1 ARM:</span>
+                      <span className="text-accent-strong font-bold">5/1 ARM:</span>
                       <span>Fixed for 5 years. Most popular ARM, balancing savings with stability.</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-accent font-bold">7/1 ARM:</span>
+                      <span className="text-accent-strong font-bold">7/1 ARM:</span>
                       <span>Fixed for 7 years. More stability with moderate initial savings.</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-accent font-bold">10/1 ARM:</span>
+                      <span className="text-accent-strong font-bold">10/1 ARM:</span>
                       <span>Fixed for 10 years. Most stable ARM, closest to fixed-rate behavior.</span>
                     </li>
                   </ul>
@@ -194,15 +204,15 @@ const ARM = () => {
                   </p>
                   <ul className="space-y-3 text-muted-foreground">
                     <li className="flex items-start gap-2">
-                      <span className="text-accent font-bold">Initial Cap:</span>
+                      <span className="text-accent-strong font-bold">Initial Cap:</span>
                       <span>Maximum increase at first adjustment (often 2-5%).</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-accent font-bold">Periodic Cap:</span>
+                      <span className="text-accent-strong font-bold">Periodic Cap:</span>
                       <span>Maximum change per adjustment period (typically 1-2%).</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-accent font-bold">Lifetime Cap:</span>
+                      <span className="text-accent-strong font-bold">Lifetime Cap:</span>
                       <span>Maximum total increase over the loan's life (usually 5-6%).</span>
                     </li>
                   </ul>
@@ -214,37 +224,37 @@ const ARM = () => {
               </div>
               <div className="grid gap-6 md:grid-cols-2 not-prose">
                 <div className="calculator-card p-4">
-                  <h4 className="font-display font-semibold text-lg mb-3 text-accent">✓ Advantages of ARMs</h4>
+                  <h3 className="font-display font-semibold text-lg mb-3 text-accent-strong">✓ Advantages of ARMs</h3>
                   <ul className="space-y-2 text-muted-foreground text-sm">
                     <li className="flex items-start gap-2">
-                      <span className="text-accent">✓</span>
+                      <span className="text-accent-strong">✓</span>
                       <span>Lower initial rate—typically 0.5-1% below fixed rates</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-accent">✓</span>
+                      <span className="text-accent-strong">✓</span>
                       <span>Lower monthly payments during fixed period</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-accent">✓</span>
+                      <span className="text-accent-strong">✓</span>
                       <span>May qualify for a larger loan amount</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-accent">✓</span>
+                      <span className="text-accent-strong">✓</span>
                       <span>Rate caps protect against extreme increases</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-accent">✓</span>
+                      <span className="text-accent-strong">✓</span>
                       <span>Potential savings if rates decrease</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-accent">✓</span>
+                      <span className="text-accent-strong">✓</span>
                       <span>Great for planned short-term ownership</span>
                     </li>
                   </ul>
                 </div>
 
                 <div className="calculator-card p-4">
-                  <h4 className="font-display font-semibold text-lg mb-3 text-primary">✗ Disadvantages of ARMs</h4>
+                  <h3 className="font-display font-semibold text-lg mb-3 text-primary">✗ Disadvantages of ARMs</h3>
                   <ul className="space-y-2 text-muted-foreground text-sm">
                     <li className="flex items-start gap-2">
                       <span className="text-primary">✗</span>
@@ -325,18 +335,18 @@ const ARM = () => {
                     <tbody className="text-muted-foreground">
                       <tr className="border-b border-border">
                         <td className="py-3 px-4">Initial Rate</td>
-                        <td className="py-3 px-4 text-accent font-semibold">Lower (0.5-1% less)</td>
+                        <td className="py-3 px-4 text-accent-strong font-semibold">Lower (0.5-1% less)</td>
                         <td className="py-3 px-4">Higher</td>
                       </tr>
                       <tr className="border-b border-border">
                         <td className="py-3 px-4">Rate Stability</td>
                         <td className="py-3 px-4">Changes after fixed period</td>
-                        <td className="py-3 px-4 text-accent font-semibold">Never changes</td>
+                        <td className="py-3 px-4 text-accent-strong font-semibold">Never changes</td>
                       </tr>
                       <tr className="border-b border-border">
                         <td className="py-3 px-4">Payment Predictability</td>
                         <td className="py-3 px-4">Uncertain after initial period</td>
-                        <td className="py-3 px-4 text-accent font-semibold">Always the same</td>
+                        <td className="py-3 px-4 text-accent-strong font-semibold">Always the same</td>
                       </tr>
                       <tr className="border-b border-border">
                         <td className="py-3 px-4">Best For</td>
@@ -346,7 +356,7 @@ const ARM = () => {
                       <tr>
                         <td className="py-3 px-4">Risk Level</td>
                         <td className="py-3 px-4">Higher (rate can increase)</td>
-                        <td className="py-3 px-4 text-accent font-semibold">Lower (rate locked)</td>
+                        <td className="py-3 px-4 text-accent-strong font-semibold">Lower (rate locked)</td>
                       </tr>
                     </tbody>
                   </table>
@@ -356,44 +366,64 @@ const ARM = () => {
               <div className="prose prose-slate max-w-none">
                 <h2 className="text-2xl font-display font-semibold mt-10 mb-4">Frequently Asked Questions About ARMs</h2>
               </div>
-              <div className="space-y-6 not-prose">
-                <div className="calculator-card p-4">
-                  <h4 className="font-semibold text-foreground mb-2">Can I refinance out of an ARM before it adjusts?</h4>
+              <div className="space-y-3 not-prose">
+                <details className="group calculator-card overflow-hidden" data-faq>
+                  <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-4 hover:bg-secondary/40 [&::-webkit-details-marker]:hidden">
+                    <h3 className="text-base font-semibold text-foreground font-sans">Can I refinance out of an ARM before it adjusts?</h3>
+                    <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-open:rotate-180" aria-hidden="true" />
+                  </summary>
+                  <div className="px-4 pb-4">
                   <p className="text-sm text-muted-foreground">
                     Yes, and many ARM borrowers do exactly this. If rates are favorable before your fixed period ends, 
                     you can <Link to="/refinance-calculator/" className="text-primary hover:underline">refinance into a fixed-rate mortgage</Link> to 
                     lock in a permanent rate. Just ensure you'll stay long enough to recoup closing costs.
                   </p>
-                </div>
-                <div className="calculator-card p-4">
-                  <h4 className="font-semibold text-foreground mb-2">What happens if I can't afford my ARM payment after it adjusts?</h4>
+                  </div>
+                </details>
+                <details className="group calculator-card overflow-hidden" data-faq>
+                  <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-4 hover:bg-secondary/40 [&::-webkit-details-marker]:hidden">
+                    <h3 className="text-base font-semibold text-foreground font-sans">What happens if I can't afford my ARM payment after it adjusts?</h3>
+                    <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-open:rotate-180" aria-hidden="true" />
+                  </summary>
+                  <div className="px-4 pb-4">
                   <p className="text-sm text-muted-foreground">
                     Options include: refinancing to a fixed rate or new ARM, selling the home, or contacting your 
                     lender about modification programs. This is why it's crucial to calculate the worst-case scenario 
                     before choosing an ARM—make sure you can handle the maximum possible payment.
                   </p>
-                </div>
-                <div className="calculator-card p-4">
-                  <h4 className="font-semibold text-foreground mb-2">Are ARM rates tied to the Federal Reserve rate?</h4>
+                  </div>
+                </details>
+                <details className="group calculator-card overflow-hidden" data-faq>
+                  <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-4 hover:bg-secondary/40 [&::-webkit-details-marker]:hidden">
+                    <h3 className="text-base font-semibold text-foreground font-sans">Are ARM rates tied to the Federal Reserve rate?</h3>
+                    <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-open:rotate-180" aria-hidden="true" />
+                  </summary>
+                  <div className="px-4 pb-4">
                   <p className="text-sm text-muted-foreground">
                     Indirectly. Most ARMs are tied to the Secured Overnight Financing Rate (SOFR), which is influenced 
                     by the Fed's actions but doesn't move in lockstep. Your new rate = Index (SOFR) + Margin (set at 
                     loan origination, typically 2-3%).
                   </p>
-                </div>
-                <div className="calculator-card p-4">
-                  <h4 className="font-semibold text-foreground mb-2">Can I get an ARM for an FHA or VA loan?</h4>
+                  </div>
+                </details>
+                <details className="group calculator-card overflow-hidden" data-faq>
+                  <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-4 hover:bg-secondary/40 [&::-webkit-details-marker]:hidden">
+                    <h3 className="text-base font-semibold text-foreground font-sans">Can I get an ARM for an FHA or VA loan?</h3>
+                    <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-open:rotate-180" aria-hidden="true" />
+                  </summary>
+                  <div className="px-4 pb-4">
                   <p className="text-sm text-muted-foreground">
                     Yes, both <Link to="/fha-loan-calculator/" className="text-primary hover:underline">FHA</Link> and 
                     <Link to="/va-loan-calculator/" className="text-primary hover:underline"> VA</Link> offer ARM programs. 
                     FHA ARMs typically have 1/5/5 or 2/6 cap structures. VA ARMs (called "VA Hybrids") offer 
                     3/1, 5/1, 7/1, and 10/1 options with annual rate caps of 1%.
                   </p>
-                </div>
+                  </div>
+                </details>
               </div>
 
               <div className="calculator-card p-6 mt-10 not-prose">
-                <h4 className="font-display font-semibold text-lg mb-4">Official Resources & Citations</h4>
+                <h3 className="font-display font-semibold text-lg mb-4">Official Resources & Citations</h3>
                 <ul className="space-y-2 text-sm text-muted-foreground">
                   <li>
                     <a href="https://www.consumerfinance.gov/ask-cfpb/what-is-the-difference-between-a-fixed-rate-and-adjustable-rate-mortgage-arm-loan-en-100/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">

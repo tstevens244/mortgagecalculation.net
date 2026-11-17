@@ -1,7 +1,12 @@
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
+import { ChevronDown } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import TrustLine from "@/components/TrustLine";
+import GuideContents from "@/components/GuideContents";
+import RelatedCalculators from "@/components/RelatedCalculators";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import USDACalculator from "@/components/USDACalculator";
 
 const USDA = () => {
@@ -98,7 +103,7 @@ const USDA = () => {
   return (
     <>
       <Helmet>
-        <title>USDA Loan Calculator | Rural Home Loan Payment Estimator | Mortgage Calculation</title>
+        <title>USDA Loan Calculator | Payment With Guarantee Fees</title>
         <meta
           name="description"
           content="Calculate your USDA loan payment with 0% down. See how USDA guarantee fees affect your monthly payment. Free calculator for rural home buyers."
@@ -128,7 +133,8 @@ const USDA = () => {
 
         <main id="main-content" className="flex-1 container py-8">
           <article>
-            <header className="text-center mb-10">
+            <header className="text-center mb-8">
+              <Breadcrumbs />
               <h1 className="text-3xl sm:text-4xl lg:text-5xl font-display font-bold text-foreground mb-4">
                 USDA Loan Calculator
               </h1>
@@ -136,12 +142,17 @@ const USDA = () => {
                 Calculate your USDA rural development loan payment with 0% down payment. 
                 USDA loans help low-to-moderate income families purchase homes in eligible rural areas.
               </p>
+              <TrustLine />
             </header>
 
             <USDACalculator />
 
+
+            <RelatedCalculators />
+
+            <GuideContents />
             <section className="mt-12 prose prose-slate max-w-none">
-              <h2 className="text-2xl font-display font-semibold mb-4">The Complete Guide to USDA Loans in 2025</h2>
+              <h2 className="text-2xl font-display font-semibold mb-4">The Complete Guide to USDA Loans</h2>
               <p className="text-muted-foreground leading-relaxed">
                 A USDA loan (also called a Rural Development or RD loan) is a government-backed mortgage offered 
                 by the <a href="https://www.rd.usda.gov/programs-services/single-family-housing-programs/single-family-housing-guaranteed-loan-program" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">United States Department of Agriculture</a>. 
@@ -177,7 +188,7 @@ const USDA = () => {
               </p>
               <div className="grid md:grid-cols-2 gap-6 not-prose">
                 <div className="calculator-card p-4">
-                  <h4 className="font-semibold text-foreground mb-2">Location Eligibility</h4>
+                  <h3 className="font-semibold text-foreground mb-2 text-base font-sans">Location Eligibility</h3>
                   <p className="text-sm text-muted-foreground">
                     Property must be in an eligible rural area (populations generally under 35,000). Use the 
                     <a href="https://eligibility.sc.egov.usda.gov/eligibility/welcomeAction.do?pageAction=sfp" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline"> USDA eligibility map</a> to 
@@ -185,7 +196,7 @@ const USDA = () => {
                   </p>
                 </div>
                 <div className="calculator-card p-4">
-                  <h4 className="font-semibold text-foreground mb-2">Income Limits</h4>
+                  <h3 className="font-semibold text-foreground mb-2 text-base font-sans">Income Limits</h3>
                   <p className="text-sm text-muted-foreground">
                     Household income cannot exceed 115% of area median income (AMI). Limits vary by location and 
                     family size. Check <a href="https://eligibility.sc.egov.usda.gov/eligibility/incomeEligibilityAction.do" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">USDA income limits</a> for 
@@ -193,28 +204,28 @@ const USDA = () => {
                   </p>
                 </div>
                 <div className="calculator-card p-4">
-                  <h4 className="font-semibold text-foreground mb-2">Credit Score</h4>
+                  <h3 className="font-semibold text-foreground mb-2 text-base font-sans">Credit Score</h3>
                   <p className="text-sm text-muted-foreground">
                     Most lenders require 640+ for automated approval (GUS). Scores below 640 may qualify with 
                     manual underwriting. USDA has no official minimum score.
                   </p>
                 </div>
                 <div className="calculator-card p-4">
-                  <h4 className="font-semibold text-foreground mb-2">Primary Residence</h4>
+                  <h3 className="font-semibold text-foreground mb-2 text-base font-sans">Primary Residence</h3>
                   <p className="text-sm text-muted-foreground">
                     Must be your primary residence. Cannot own another adequate home at time of purchase. 
                     No investment properties or vacation homes.
                   </p>
                 </div>
                 <div className="calculator-card p-4">
-                  <h4 className="font-semibold text-foreground mb-2">Debt-to-Income Ratio</h4>
+                  <h3 className="font-semibold text-foreground mb-2 text-base font-sans">Debt-to-Income Ratio</h3>
                   <p className="text-sm text-muted-foreground">
                     Standard limits: 29% front-end (housing), 41% back-end (total debt). Higher ratios may 
                     be approved with compensating factors.
                   </p>
                 </div>
                 <div className="calculator-card p-4">
-                  <h4 className="font-semibold text-foreground mb-2">U.S. Citizenship</h4>
+                  <h3 className="font-semibold text-foreground mb-2 text-base font-sans">U.S. Citizenship</h3>
                   <p className="text-sm text-muted-foreground">
                     Must be a U.S. citizen, U.S. non-citizen national, or qualified alien. Permanent 
                     residents with a Green Card typically qualify.
@@ -225,41 +236,41 @@ const USDA = () => {
               <h2 className="text-2xl font-display font-semibold mt-10 mb-4">USDA Loan Pros and Cons</h2>
               <div className="not-prose grid gap-6 md:grid-cols-2">
                 <div className="calculator-card p-4">
-                  <h4 className="font-display font-semibold text-lg mb-3 text-accent">✓ Advantages of USDA Loans</h4>
+                  <h3 className="font-display font-semibold text-lg mb-3 text-accent-strong">✓ Advantages of USDA Loans</h3>
                   <ul className="space-y-2 text-muted-foreground text-sm">
                     <li className="flex items-start gap-2">
-                      <span className="text-accent">✓</span>
+                      <span className="text-accent-strong">✓</span>
                       <span>No down payment required—100% financing</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-accent">✓</span>
+                      <span className="text-accent-strong">✓</span>
                       <span>Lower annual fee (0.35%) than FHA MIP (0.55%+)</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-accent">✓</span>
+                      <span className="text-accent-strong">✓</span>
                       <span>Competitive interest rates, often below market</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-accent">✓</span>
+                      <span className="text-accent-strong">✓</span>
                       <span>No loan limit—borrow based on ability to repay</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-accent">✓</span>
+                      <span className="text-accent-strong">✓</span>
                       <span>Flexible credit requirements with manual underwriting</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-accent">✓</span>
+                      <span className="text-accent-strong">✓</span>
                       <span>Seller can pay up to 6% of closing costs</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-accent">✓</span>
+                      <span className="text-accent-strong">✓</span>
                       <span>Available to repeat homebuyers, not just first-time</span>
                     </li>
                   </ul>
                 </div>
 
                 <div className="calculator-card p-4">
-                  <h4 className="font-display font-semibold text-lg mb-3 text-primary">✗ Disadvantages of USDA Loans</h4>
+                  <h3 className="font-display font-semibold text-lg mb-3 text-primary">✗ Disadvantages of USDA Loans</h3>
                   <ul className="space-y-2 text-muted-foreground text-sm">
                     <li className="flex items-start gap-2">
                       <span className="text-primary">✗</span>
@@ -329,7 +340,7 @@ const USDA = () => {
 
               <h2 className="text-2xl font-display font-semibold mt-10 mb-4">How to Interpret Your Calculator Results</h2>
               <div className="calculator-card p-6 not-prose">
-                <h4 className="font-semibold text-foreground mb-4">Making Sense of Your USDA Loan Estimate</h4>
+                <h3 className="font-semibold text-foreground mb-4 text-base font-sans">Making Sense of Your USDA Loan Estimate</h3>
                 <ul className="space-y-3 text-muted-foreground text-sm">
                   <li>
                     <strong>Verify location eligibility:</strong> Before getting excited about your payment estimate, 
@@ -365,8 +376,8 @@ const USDA = () => {
                   <tbody className="text-muted-foreground">
                     <tr className="border-b border-border">
                       <td className="p-3">Down Payment</td>
-                      <td className="p-3 text-accent font-semibold">0%</td>
-                      <td className="p-3 text-accent font-semibold">0%</td>
+                      <td className="p-3 text-accent-strong font-semibold">0%</td>
+                      <td className="p-3 text-accent-strong font-semibold">0%</td>
                       <td className="p-3">3.5%</td>
                     </tr>
                     <tr className="border-b border-border">
@@ -377,21 +388,21 @@ const USDA = () => {
                     </tr>
                     <tr className="border-b border-border">
                       <td className="p-3">Annual Fee</td>
-                      <td className="p-3 text-accent font-semibold">0.35%</td>
-                      <td className="p-3 text-accent font-semibold">None</td>
+                      <td className="p-3 text-accent-strong font-semibold">0.35%</td>
+                      <td className="p-3 text-accent-strong font-semibold">None</td>
                       <td className="p-3">0.55%+</td>
                     </tr>
                     <tr className="border-b border-border">
                       <td className="p-3">Location</td>
                       <td className="p-3">Rural/Suburban</td>
-                      <td className="p-3 text-accent font-semibold">Any</td>
-                      <td className="p-3 text-accent font-semibold">Any</td>
+                      <td className="p-3 text-accent-strong font-semibold">Any</td>
+                      <td className="p-3 text-accent-strong font-semibold">Any</td>
                     </tr>
                     <tr className="border-b border-border">
                       <td className="p-3">Income Limits</td>
                       <td className="p-3">Yes (115% AMI)</td>
-                      <td className="p-3 text-accent font-semibold">None</td>
-                      <td className="p-3 text-accent font-semibold">None</td>
+                      <td className="p-3 text-accent-strong font-semibold">None</td>
+                      <td className="p-3 text-accent-strong font-semibold">None</td>
                     </tr>
                     <tr>
                       <td className="p-3">Eligibility</td>
@@ -404,40 +415,60 @@ const USDA = () => {
               </div>
 
               <h2 className="text-2xl font-display font-semibold mt-10 mb-4">Frequently Asked Questions About USDA Loans</h2>
-              <div className="space-y-6 not-prose">
-                <div className="calculator-card p-4">
-                  <h4 className="font-semibold text-foreground mb-2">Can I use a USDA loan for a manufactured home?</h4>
+              <div className="space-y-3 not-prose">
+                <details className="group calculator-card overflow-hidden" data-faq>
+                  <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-4 hover:bg-secondary/40 [&::-webkit-details-marker]:hidden">
+                    <h3 className="text-base font-semibold text-foreground font-sans">Can I use a USDA loan for a manufactured home?</h3>
+                    <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-open:rotate-180" aria-hidden="true" />
+                  </summary>
+                  <div className="px-4 pb-4">
                   <p className="text-sm text-muted-foreground">
                     Yes, USDA loans can finance manufactured homes if they're new, permanently affixed to a foundation, 
                     and meet HUD standards. The home must be at least 400 sq ft and located on an eligible site.
                   </p>
-                </div>
-                <div className="calculator-card p-4">
-                  <h4 className="font-semibold text-foreground mb-2">Do I have to live in a rural area to qualify?</h4>
+                  </div>
+                </details>
+                <details className="group calculator-card overflow-hidden" data-faq>
+                  <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-4 hover:bg-secondary/40 [&::-webkit-details-marker]:hidden">
+                    <h3 className="text-base font-semibold text-foreground font-sans">Do I have to live in a rural area to qualify?</h3>
+                    <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-open:rotate-180" aria-hidden="true" />
+                  </summary>
+                  <div className="px-4 pb-4">
                   <p className="text-sm text-muted-foreground">
                     Many suburban areas qualify as "rural" under USDA guidelines. Towns with populations under 35,000 
                     often qualify. Check specific addresses using the USDA eligibility map—you might be surprised.
                   </p>
-                </div>
-                <div className="calculator-card p-4">
-                  <h4 className="font-semibold text-foreground mb-2">Can I build a new home with a USDA loan?</h4>
+                  </div>
+                </details>
+                <details className="group calculator-card overflow-hidden" data-faq>
+                  <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-4 hover:bg-secondary/40 [&::-webkit-details-marker]:hidden">
+                    <h3 className="text-base font-semibold text-foreground font-sans">Can I build a new home with a USDA loan?</h3>
+                    <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-open:rotate-180" aria-hidden="true" />
+                  </summary>
+                  <div className="px-4 pb-4">
                   <p className="text-sm text-muted-foreground">
                     Yes, through the USDA Single Close Construction Loan program, you can combine land purchase, 
                     construction, and permanent financing into one loan. This requires working with a USDA-approved lender.
                   </p>
-                </div>
-                <div className="calculator-card p-4">
-                  <h4 className="font-semibold text-foreground mb-2">Can I refinance my USDA loan?</h4>
+                  </div>
+                </details>
+                <details className="group calculator-card overflow-hidden" data-faq>
+                  <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-4 hover:bg-secondary/40 [&::-webkit-details-marker]:hidden">
+                    <h3 className="text-base font-semibold text-foreground font-sans">Can I refinance my USDA loan?</h3>
+                    <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-open:rotate-180" aria-hidden="true" />
+                  </summary>
+                  <div className="px-4 pb-4">
                   <p className="text-sm text-muted-foreground">
                     Yes, USDA offers the Streamlined Assist Refinance program with minimal documentation and no appraisal 
                     required. You can also do a standard <Link to="/refinance-calculator/" className="text-primary hover:underline">rate-and-term refinance</Link> or 
                     refinance into a conventional loan once you have 20% equity.
                   </p>
-                </div>
+                  </div>
+                </details>
               </div>
 
               <div className="calculator-card p-6 mt-10 not-prose">
-                <h4 className="font-display font-semibold text-lg mb-4">Official Resources & Citations</h4>
+                <h3 className="font-display font-semibold text-lg mb-4">Official Resources & Citations</h3>
                 <ul className="space-y-2 text-sm text-muted-foreground">
                   <li>
                     <a href="https://www.rd.usda.gov/programs-services/single-family-housing-programs/single-family-housing-guaranteed-loan-program" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">

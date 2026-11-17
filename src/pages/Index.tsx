@@ -2,6 +2,9 @@ import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import TrustLine from "@/components/TrustLine";
+import GuideContents from "@/components/GuideContents";
+import CalculatorDirectory from "@/components/CalculatorDirectory";
 import MortgageCalculator from "@/components/MortgageCalculator";
 
 const Index = () => {
@@ -83,6 +86,24 @@ const Index = () => {
     },
   };
 
+  // Tells Google the site's name (shown above the result in search) and links
+  // the brand to the domain, so searches for it don't land on similarly named sites.
+  const websiteSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: "MortgageCalculation.net",
+    alternateName: ["Mortgage Calculation", "mortgagecalculation.net"],
+    url: canonicalUrl,
+  };
+
+  const organizationSchema = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: "MortgageCalculation.net",
+    url: canonicalUrl,
+    logo: "https://mortgagecalculation.net/favicon.png",
+  };
+
   return (
     <>
       <Helmet>
@@ -109,6 +130,8 @@ const Index = () => {
         <script type="application/ld+json">{JSON.stringify(breadcrumbSchema)}</script>
         <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
         <script type="application/ld+json">{JSON.stringify(webAppSchema)}</script>
+        <script type="application/ld+json">{JSON.stringify(websiteSchema)}</script>
+        <script type="application/ld+json">{JSON.stringify(organizationSchema)}</script>
       </Helmet>
 
       <div className="min-h-screen flex flex-col">
@@ -116,7 +139,7 @@ const Index = () => {
 
         <main id="main-content" className="flex-1 container py-8">
           <article>
-            <header className="text-center mb-10">
+            <header className="text-center mb-8">
               <h1 className="text-3xl sm:text-4xl lg:text-5xl font-display font-bold text-foreground mb-4">
                 Mortgage Calculator
               </h1>
@@ -124,10 +147,15 @@ const Index = () => {
                 Estimate your monthly mortgage payment with our free calculator. Includes principal, interest,
                 taxes, insurance, and PMI.
               </p>
+              <TrustLine />
             </header>
 
             <MortgageCalculator />
 
+
+            <CalculatorDirectory />
+
+            <GuideContents />
             {/* Comprehensive Guide Section */}
             <section className="mt-16 prose prose-slate max-w-none">
               <h2 className="text-2xl font-display font-semibold mb-4">Complete Guide to Mortgage Payments</h2>
@@ -251,7 +279,7 @@ const Index = () => {
                 </li>
                 <li>
                   <Link to="/jumbo-loan-calculator/" className="text-primary hover:underline font-medium">Jumbo Loans</Link>: 
-                  Loans exceeding conforming limits (${">"}$806,500 in most areas for 2025).
+                  Loans exceeding conforming limits (over $832,750 in most areas for 2026).
                 </li>
               </ul>
 

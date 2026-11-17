@@ -1,7 +1,12 @@
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
+import { ChevronDown } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import TrustLine from "@/components/TrustLine";
+import GuideContents from "@/components/GuideContents";
+import RelatedCalculators from "@/components/RelatedCalculators";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import JumboCalculator from "@/components/JumboCalculator";
 import { formatCurrency } from "@/lib/formatters";
 
@@ -98,7 +103,7 @@ const Jumbo = () => {
   return (
     <>
       <Helmet>
-        <title>Jumbo Loan Calculator | High-Value Mortgage Payment Estimator | Mortgage Calculation</title>
+        <title>Jumbo Loan Calculator | 2026 Limits & Monthly Payment</title>
         <meta name="description" content="Calculate your jumbo loan payment for high-value homes. Estimate monthly payments for loans above the conforming limit. Free jumbo mortgage calculator." />
         <meta name="robots" content="index, follow" />
         <link rel="canonical" href={canonicalUrl} />
@@ -119,7 +124,8 @@ const Jumbo = () => {
 
         <main id="main-content" className="flex-1 container py-8">
           <article>
-            <header className="text-center mb-10">
+            <header className="text-center mb-8">
+              <Breadcrumbs />
               <h1 className="text-3xl sm:text-4xl lg:text-5xl font-display font-bold text-foreground mb-4">
                 Jumbo Loan Calculator
               </h1>
@@ -127,10 +133,15 @@ const Jumbo = () => {
                 Calculate your monthly payment for jumbo mortgages that exceed conforming loan limits. 
                 Ideal for luxury homes and high-cost real estate markets.
               </p>
+              <TrustLine />
             </header>
 
             <JumboCalculator />
 
+
+            <RelatedCalculators />
+
+            <GuideContents />
             <section className="mt-12 prose prose-slate max-w-none">
               <h2 className="text-2xl font-display font-semibold mb-4">The Complete Guide to Jumbo Loans in 2026</h2>
               <p className="text-muted-foreground leading-relaxed">
@@ -164,42 +175,42 @@ const Jumbo = () => {
               </p>
               <div className="grid md:grid-cols-2 gap-6 not-prose">
                 <div className="calculator-card p-4">
-                  <h4 className="font-semibold text-foreground mb-2">Credit Score</h4>
+                  <h3 className="font-semibold text-foreground mb-2 text-base font-sans">Credit Score</h3>
                   <p className="text-sm text-muted-foreground">
                     Most lenders require 700-720+ for jumbo loans. Some offer programs starting at 680, 
                     but expect higher rates. Excellent credit (760+) secures the best terms.
                   </p>
                 </div>
                 <div className="calculator-card p-4">
-                  <h4 className="font-semibold text-foreground mb-2">Down Payment</h4>
+                  <h3 className="font-semibold text-foreground mb-2 text-base font-sans">Down Payment</h3>
                   <p className="text-sm text-muted-foreground">
                     Typically 10-20% minimum. Very large loans ($1.5M+) may require 25-30%. 
                     Some lenders offer 10% down with PMI or higher rates.
                   </p>
                 </div>
                 <div className="calculator-card p-4">
-                  <h4 className="font-semibold text-foreground mb-2">Debt-to-Income Ratio</h4>
+                  <h3 className="font-semibold text-foreground mb-2 text-base font-sans">Debt-to-Income Ratio</h3>
                   <p className="text-sm text-muted-foreground">
                     Most lenders cap DTI at 43%, with some requiring 36% or lower. 
                     Strong compensating factors may allow up to 45%.
                   </p>
                 </div>
                 <div className="calculator-card p-4">
-                  <h4 className="font-semibold text-foreground mb-2">Cash Reserves</h4>
+                  <h3 className="font-semibold text-foreground mb-2 text-base font-sans">Cash Reserves</h3>
                   <p className="text-sm text-muted-foreground">
                     6-12 months of mortgage payments in liquid assets after closing. 
                     Larger loans may require 12-18 months of reserves.
                   </p>
                 </div>
                 <div className="calculator-card p-4">
-                  <h4 className="font-semibold text-foreground mb-2">Documentation</h4>
+                  <h3 className="font-semibold text-foreground mb-2 text-base font-sans">Documentation</h3>
                   <p className="text-sm text-muted-foreground">
                     Full documentation required: 2 years tax returns, W-2s/1099s, 2 months bank statements. 
                     Asset and income verification is thorough.
                   </p>
                 </div>
                 <div className="calculator-card p-4">
-                  <h4 className="font-semibold text-foreground mb-2">Appraisal</h4>
+                  <h3 className="font-semibold text-foreground mb-2 text-base font-sans">Appraisal</h3>
                   <p className="text-sm text-muted-foreground">
                     Two appraisals may be required for very large loans. Unique or luxury 
                     properties may require specialized appraisers.
@@ -210,37 +221,37 @@ const Jumbo = () => {
               <h2 className="text-2xl font-display font-semibold mt-10 mb-4">Jumbo Loan Pros and Cons</h2>
               <div className="not-prose grid gap-6 md:grid-cols-2">
                 <div className="calculator-card p-4">
-                  <h4 className="font-display font-semibold text-lg mb-3 text-accent">✓ Advantages of Jumbo Loans</h4>
+                  <h3 className="font-display font-semibold text-lg mb-3 text-accent-strong">✓ Advantages of Jumbo Loans</h3>
                   <ul className="space-y-2 text-muted-foreground text-sm">
                     <li className="flex items-start gap-2">
-                      <span className="text-accent">✓</span>
+                      <span className="text-accent-strong">✓</span>
                       <span>Finance expensive properties with a single loan</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-accent">✓</span>
+                      <span className="text-accent-strong">✓</span>
                       <span>Competitive rates—sometimes below conforming rates</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-accent">✓</span>
+                      <span className="text-accent-strong">✓</span>
                       <span>No PMI with 20% down payment</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-accent">✓</span>
+                      <span className="text-accent-strong">✓</span>
                       <span>Various term options: 10, 15, 20, 30-year fixed and ARMs</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-accent">✓</span>
+                      <span className="text-accent-strong">✓</span>
                       <span>Interest-only options available from some lenders</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-accent">✓</span>
+                      <span className="text-accent-strong">✓</span>
                       <span>No upper loan limit—borrow what you need</span>
                     </li>
                   </ul>
                 </div>
 
                 <div className="calculator-card p-4">
-                  <h4 className="font-display font-semibold text-lg mb-3 text-primary">✗ Disadvantages of Jumbo Loans</h4>
+                  <h3 className="font-display font-semibold text-lg mb-3 text-primary">✗ Disadvantages of Jumbo Loans</h3>
                   <ul className="space-y-2 text-muted-foreground text-sm">
                     <li className="flex items-start gap-2">
                       <span className="text-primary">✗</span>
@@ -284,7 +295,7 @@ const Jumbo = () => {
 
               <h2 className="text-2xl font-display font-semibold mt-10 mb-4">How to Interpret Your Calculator Results</h2>
               <div className="calculator-card p-6 not-prose">
-                <h4 className="font-semibold text-foreground mb-4">Making Sense of Your Jumbo Loan Estimate</h4>
+                <h3 className="font-semibold text-foreground mb-4 text-base font-sans">Making Sense of Your Jumbo Loan Estimate</h3>
                 <ul className="space-y-3 text-muted-foreground text-sm">
                   <li>
                     <strong>Check conforming limits first:</strong> If your loan is close to the limit, 
@@ -318,7 +329,7 @@ const Jumbo = () => {
                   <tbody className="text-muted-foreground">
                     <tr className="border-b border-border">
                       <td className="p-3">Loan Limit</td>
-                      <td className="p-3 text-accent font-semibold">No upper limit</td>
+                      <td className="p-3 text-accent-strong font-semibold">No upper limit</td>
                       <td className="p-3">Up to $832,750*</td>
                     </tr>
                     <tr className="border-b border-border">
@@ -352,43 +363,63 @@ const Jumbo = () => {
               </div>
 
               <h2 className="text-2xl font-display font-semibold mt-10 mb-4">Frequently Asked Questions About Jumbo Loans</h2>
-              <div className="space-y-6 not-prose">
-                <div className="calculator-card p-4">
-                  <h4 className="font-semibold text-foreground mb-2">Can I get a jumbo loan for an investment property?</h4>
+              <div className="space-y-3 not-prose">
+                <details className="group calculator-card overflow-hidden" data-faq>
+                  <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-4 hover:bg-secondary/40 [&::-webkit-details-marker]:hidden">
+                    <h3 className="text-base font-semibold text-foreground font-sans">Can I get a jumbo loan for an investment property?</h3>
+                    <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-open:rotate-180" aria-hidden="true" />
+                  </summary>
+                  <div className="px-4 pb-4">
                   <p className="text-sm text-muted-foreground">
                     Yes, jumbo loans are available for investment properties. Expect higher rates 
                     (0.25-0.75% more), larger down payments (25-30%), and stricter reserve requirements 
                     (12-18 months) compared to primary residence jumbo loans.
                   </p>
-                </div>
-                <div className="calculator-card p-4">
-                  <h4 className="font-semibold text-foreground mb-2">Are jumbo loan interest rates higher?</h4>
+                  </div>
+                </details>
+                <details className="group calculator-card overflow-hidden" data-faq>
+                  <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-4 hover:bg-secondary/40 [&::-webkit-details-marker]:hidden">
+                    <h3 className="text-base font-semibold text-foreground font-sans">Are jumbo loan interest rates higher?</h3>
+                    <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-open:rotate-180" aria-hidden="true" />
+                  </summary>
+                  <div className="px-4 pb-4">
                   <p className="text-sm text-muted-foreground">
                     Not necessarily. While jumbo rates were historically higher, they've become very 
                     competitive in recent years. With excellent credit (760+) and 20%+ down, you may 
                     find jumbo rates equal to or even below conforming rates.
                   </p>
-                </div>
-                <div className="calculator-card p-4">
-                  <h4 className="font-semibold text-foreground mb-2">Can I refinance a jumbo loan?</h4>
+                  </div>
+                </details>
+                <details className="group calculator-card overflow-hidden" data-faq>
+                  <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-4 hover:bg-secondary/40 [&::-webkit-details-marker]:hidden">
+                    <h3 className="text-base font-semibold text-foreground font-sans">Can I refinance a jumbo loan?</h3>
+                    <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-open:rotate-180" aria-hidden="true" />
+                  </summary>
+                  <div className="px-4 pb-4">
                   <p className="text-sm text-muted-foreground">
                     Yes, jumbo loans can be refinanced like any mortgage. If your home has appreciated 
                     and your loan is now under conforming limits, you may be able to <Link to="/refinance-calculator/" className="text-primary hover:underline">refinance into a conforming loan</Link> for 
                     potentially easier qualification.
                   </p>
-                </div>
-                <div className="calculator-card p-4">
-                  <h4 className="font-semibold text-foreground mb-2">What documents do I need for a jumbo loan?</h4>
+                  </div>
+                </details>
+                <details className="group calculator-card overflow-hidden" data-faq>
+                  <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-4 hover:bg-secondary/40 [&::-webkit-details-marker]:hidden">
+                    <h3 className="text-base font-semibold text-foreground font-sans">What documents do I need for a jumbo loan?</h3>
+                    <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-open:rotate-180" aria-hidden="true" />
+                  </summary>
+                  <div className="px-4 pb-4">
                   <p className="text-sm text-muted-foreground">
                     Prepare: 2 years of tax returns, 2 years of W-2s/1099s, 60 days of bank/investment 
                     statements, proof of reserves, recent pay stubs, and documentation of any other 
                     income sources. Self-employed borrowers need business tax returns and P&L statements.
                   </p>
-                </div>
+                  </div>
+                </details>
               </div>
 
               <div className="calculator-card p-6 mt-10 not-prose">
-                <h4 className="font-display font-semibold text-lg mb-4">Official Resources & Citations</h4>
+                <h3 className="font-display font-semibold text-lg mb-4">Official Resources & Citations</h3>
                 <ul className="space-y-2 text-sm text-muted-foreground">
                   <li>
                     <a href="https://www.fhfa.gov/DataTools/Downloads/Pages/Conforming-Loan-Limit.aspx" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">

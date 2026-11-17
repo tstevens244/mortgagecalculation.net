@@ -11,6 +11,8 @@ import AmortizationChart from "./AmortizationChart";
 import CurrencyInput from "./CurrencyInput";
 import PercentInput from "./PercentInput";
 import { formatCurrency } from "@/lib/formatters";
+import { armSchedule } from "@/lib/mortgageMath";
+import StickyResult from "./StickyResult";
 
 interface ARMInputs {
   homePrice: number;
@@ -114,15 +116,23 @@ const ARMCalculator = () => {
     const initialTotalMonthly = initialMonthlyPI + monthlyOtherCosts;
     const maxTotalMonthly = maxMonthlyPI + monthlyOtherCosts;
 
-    // Estimate total interest (simplified - using average rate scenario)
-    const avgRate = (inputs.initialRate + maxRate) / 2;
-    const avgMonthlyRate = avgRate / 100 / 12;
-    const avgMonthlyPI =
-      avgMonthlyRate > 0
-        ? (baseLoanAmount * avgMonthlyRate * Math.pow(1 + avgMonthlyRate, numPayments)) /
-          (Math.pow(1 + avgMonthlyRate, numPayments) - 1)
-        : baseLoanAmount / numPayments;
-    const estimatedTotalInterest = avgMonthlyPI * numPayments - baseLoanAmount;
+    // Expected path: the rate changes by the expected adjustments you entered,
+    // within the lifetime cap, and the payment is recalculated at each change.
+    const schedule = armSchedule({
+      principal: baseLoanAmount,
+      termMonths: numPayments,
+      initialRatePercent: inputs.initialRate,
+      fixedMonths: fixedPeriodPayments,
+      firstAdjustment: inputs.expectedFirstAdjustment,
+      subsequentAdjustment: inputs.expectedSubsequentAdjustment,
+      monthsBetweenAdjustments: inputs.monthsBetweenAdjustments,
+      lifetimeCap: inputs.lifetimeCap,
+    });
+    const estimatedTotalInterest = schedule.reduce((sum, row) => sum + row.interest, 0);
+    const firstAdjustedRow = schedule[fixedPeriodPayments];
+    const adjustedMonthlyPI = firstAdjustedRow ? firstAdjustedRow.payment : initialMonthlyPI;
+    const adjustedRate = firstAdjustedRow ? firstAdjustedRow.rate : inputs.initialRate;
+    const expectedPeakPI = schedule.reduce((max, row) => Math.max(max, row.payment), 0);
     const totalTaxesInsurance = (monthlyTax + monthlyInsurance + monthlyHOA) * numPayments;
 
     return {
@@ -146,36 +156,31 @@ const ARMCalculator = () => {
       avgMonthlyTotal: (baseLoanAmount + estimatedTotalInterest + totalTaxesInsurance) / numPayments,
       numPayments,
       remainingBalance,
+      schedule,
+      adjustedMonthlyPI,
+      adjustedRate,
+      adjustedTotalMonthly: adjustedMonthlyPI + monthlyOtherCosts,
+      expectedPeakTotalMonthly: expectedPeakPI + monthlyOtherCosts,
     };
   }, [inputs]);
 
   // Generate amortization data using initial rate for simplicity
   const amortizationData = useMemo(() => {
-    const data = [];
-    let balance = calculations.baseLoanAmount;
-    const monthlyRate = inputs.initialRate / 100 / 12;
+    // Uses the expected rate path, so payments change after the fixed period.
     const startDate = new Date(inputs.startDate + "-01");
-
-    for (let i = 1; i <= calculations.numPayments && balance > 0; i++) {
-      const interestPayment = balance * monthlyRate;
-      const principalPayment = Math.min(calculations.initialMonthlyPI - interestPayment, balance);
-      balance = Math.max(0, balance - principalPayment);
-
+    return calculations.schedule.map((row) => {
       const paymentDate = new Date(startDate);
-      paymentDate.setMonth(paymentDate.getMonth() + i);
-
-      data.push({
-        month: i,
+      paymentDate.setMonth(paymentDate.getMonth() + row.month);
+      return {
+        month: row.month,
         date: paymentDate,
-        payment: calculations.initialMonthlyPI,
-        principal: principalPayment,
-        interest: interestPayment,
-        balance,
-      });
-    }
-
-    return data;
-  }, [calculations, inputs.initialRate, inputs.startDate]);
+        payment: row.payment,
+        principal: row.principal,
+        interest: row.interest,
+        balance: row.balance,
+      };
+    });
+  }, [calculations, inputs.startDate]);
 
   const armTypeLabel = `${inputs.yearsBeforeFirstAdjustment}/1 ARM`;
 
@@ -193,11 +198,10 @@ const ARMCalculator = () => {
 
             <div className="grid gap-2 sm:gap-4 grid-cols-1 sm:grid-cols-2">
               {/* Home Price */}
-              <div className="flex items-center gap-2">
-                <Label htmlFor="home-price" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
+              <div className="flex flex-col gap-1.5">
+                <Label htmlFor="home-price" className="text-sm font-medium text-foreground flex items-center gap-1">
                   <DollarSign className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" />
-                  <span className="hidden sm:inline">Home Price</span>
-                  <span className="sm:hidden">Price</span>
+                  <span>Home Price</span>
                 </Label>
                 <CurrencyInput
                   id="home-price"
@@ -207,8 +211,8 @@ const ARMCalculator = () => {
               </div>
 
               {/* Down Payment */}
-              <div className="flex items-center gap-2">
-                <Label htmlFor="down-payment" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
+              <div className="flex flex-col gap-1.5">
+                <Label htmlFor="down-payment" className="text-sm font-medium text-foreground flex items-center gap-1">
                   <Percent className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" />
                   <span className="hidden lg:inline">Down Payment</span>
                   <span className="lg:hidden">Down</span>
@@ -228,16 +232,14 @@ const ARMCalculator = () => {
                     className="w-16 sm:w-20"
                     aria-label="Down payment percentage"
                   />
-                  <span className="flex items-center text-muted-foreground text-xs sm:text-sm">%</span>
                 </div>
               </div>
 
               {/* Initial APR */}
-              <div className="flex items-center gap-2">
-                <Label htmlFor="initial-rate" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
+              <div className="flex flex-col gap-1.5">
+                <Label htmlFor="initial-rate" className="text-sm font-medium text-foreground flex items-center gap-1">
                   <Percent className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" />
-                  <span className="hidden sm:inline">Initial APR</span>
-                  <span className="sm:hidden">APR</span>
+                  <span>Initial APR</span>
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <Info className="h-3 w-3 text-muted-foreground cursor-help" />
@@ -256,16 +258,14 @@ const ARMCalculator = () => {
                     max={30}
                     decimalPlaces={3}
                   />
-                  <span className="flex items-center text-muted-foreground text-xs sm:text-sm">%</span>
                 </div>
               </div>
 
               {/* Loan Term */}
-              <div className="flex items-center gap-2">
-                <Label htmlFor="loan-term" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
+              <div className="flex flex-col gap-1.5">
+                <Label htmlFor="loan-term" className="text-sm font-medium text-foreground flex items-center gap-1">
                   <Calendar className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" />
-                  <span className="hidden sm:inline">Loan Term</span>
-                  <span className="sm:hidden">Term</span>
+                  <span>Loan Term</span>
                 </Label>
                 <Select
                   value={inputs.loanTerm.toString()}
@@ -282,11 +282,10 @@ const ARMCalculator = () => {
               </div>
 
               {/* Closing Costs */}
-              <div className="flex items-center gap-2">
-                <Label htmlFor="closing-costs" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
+              <div className="flex flex-col gap-1.5">
+                <Label htmlFor="closing-costs" className="text-sm font-medium text-foreground flex items-center gap-1">
                   <DollarSign className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" />
-                  <span className="hidden sm:inline">Closing Costs</span>
-                  <span className="sm:hidden">Closing</span>
+                  <span>Closing Costs</span>
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <Info className="h-3 w-3 text-muted-foreground cursor-help" />
@@ -304,8 +303,8 @@ const ARMCalculator = () => {
               </div>
 
               {/* PMI Rate */}
-              <div className="flex items-center gap-2">
-                <Label htmlFor="pmi-rate" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
+              <div className="flex flex-col gap-1.5">
+                <Label htmlFor="pmi-rate" className="text-sm font-medium text-foreground flex items-center gap-1">
                   <Shield className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" />
                   PMI
                   <Tooltip>
@@ -326,7 +325,6 @@ const ARMCalculator = () => {
                     max={5}
                     decimalPlaces={2}
                   />
-                  <span className="flex items-center text-muted-foreground text-xs sm:text-sm">%</span>
                 </div>
               </div>
             </div>
@@ -341,11 +339,10 @@ const ARMCalculator = () => {
 
             <div className="grid gap-2 sm:gap-4 grid-cols-1 sm:grid-cols-2">
               {/* Years Before First Adjustment */}
-              <div className="flex items-center gap-2">
-                <Label htmlFor="years-first-adj" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
+              <div className="flex flex-col gap-1.5">
+                <Label htmlFor="years-first-adj" className="text-sm font-medium text-foreground flex items-center gap-1">
                   <Calendar className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" />
-                  <span className="hidden sm:inline">Fixed Period</span>
-                  <span className="sm:hidden">Fixed</span>
+                  <span>Fixed Period</span>
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <Info className="h-3 w-3 text-muted-foreground cursor-help" />
@@ -373,11 +370,10 @@ const ARMCalculator = () => {
               </div>
 
               {/* Expected First Adjustment */}
-              <div className="flex items-center gap-2">
-                <Label htmlFor="first-adj" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
+              <div className="flex flex-col gap-1.5">
+                <Label htmlFor="first-adj" className="text-sm font-medium text-foreground flex items-center gap-1">
                   <TrendingUp className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" />
-                  <span className="hidden sm:inline">1st Adjustment</span>
-                  <span className="sm:hidden">1st Adj</span>
+                  <span>1st Adjustment</span>
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <Info className="h-3 w-3 text-muted-foreground cursor-help" />
@@ -388,24 +384,23 @@ const ARMCalculator = () => {
                   </Tooltip>
                 </Label>
                 <div className="flex gap-1 sm:gap-2 flex-1">
-                  <Input
-                    id="first-adj"
-                    type="text"
-                    inputMode="decimal"
+                  <PercentInput id="first-adj"
                     value={inputs.expectedFirstAdjustment}
-                    onChange={(e) => updateInput("expectedFirstAdjustment", parseFloat(e.target.value) || 0)}
+                    onChange={(v) => updateInput("expectedFirstAdjustment", v)}
+                    min={-5}
+                    max={10}
+                    decimalPlaces={2}
+                    allowNegative
                     className="h-8 sm:h-10 text-sm font-medium flex-1"
                   />
-                  <span className="flex items-center text-muted-foreground text-xs sm:text-sm">%</span>
                 </div>
               </div>
 
               {/* Months Between Adjustments */}
-              <div className="flex items-center gap-2">
-                <Label htmlFor="months-between" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
+              <div className="flex flex-col gap-1.5">
+                <Label htmlFor="months-between" className="text-sm font-medium text-foreground flex items-center gap-1">
                   <Calendar className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" />
-                  <span className="hidden sm:inline">Adj. Frequency</span>
-                  <span className="sm:hidden">Freq.</span>
+                  <span>Adj. Frequency</span>
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <Info className="h-3 w-3 text-muted-foreground cursor-help" />
@@ -431,11 +426,10 @@ const ARMCalculator = () => {
               </div>
 
               {/* Expected Subsequent Adjustment */}
-              <div className="flex items-center gap-2">
-                <Label htmlFor="subsequent-adj" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
+              <div className="flex flex-col gap-1.5">
+                <Label htmlFor="subsequent-adj" className="text-sm font-medium text-foreground flex items-center gap-1">
                   <TrendingUp className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" />
-                  <span className="hidden sm:inline">Later Adj.</span>
-                  <span className="sm:hidden">Later</span>
+                  <span>Later Adj.</span>
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <Info className="h-3 w-3 text-muted-foreground cursor-help" />
@@ -446,15 +440,15 @@ const ARMCalculator = () => {
                   </Tooltip>
                 </Label>
                 <div className="flex gap-1 sm:gap-2 flex-1">
-                  <Input
-                    id="subsequent-adj"
-                    type="text"
-                    inputMode="decimal"
+                  <PercentInput id="subsequent-adj"
                     value={inputs.expectedSubsequentAdjustment}
-                    onChange={(e) => updateInput("expectedSubsequentAdjustment", parseFloat(e.target.value) || 0)}
+                    onChange={(v) => updateInput("expectedSubsequentAdjustment", v)}
+                    min={-5}
+                    max={10}
+                    decimalPlaces={2}
+                    allowNegative
                     className="h-8 sm:h-10 text-sm font-medium flex-1"
                   />
-                  <span className="flex items-center text-muted-foreground text-xs sm:text-sm">%</span>
                 </div>
               </div>
 
@@ -474,15 +468,14 @@ const ARMCalculator = () => {
                   </Tooltip>
                 </Label>
                 <div className="flex gap-1 sm:gap-2 flex-1">
-                  <Input
-                    id="lifetime-cap"
-                    type="text"
-                    inputMode="decimal"
+                  <PercentInput id="lifetime-cap"
                     value={inputs.lifetimeCap}
-                    onChange={(e) => updateInput("lifetimeCap", parseFloat(e.target.value) || 0)}
+                    onChange={(v) => updateInput("lifetimeCap", v)}
+                    min={0}
+                    max={15}
+                    decimalPlaces={2}
                     className="h-8 sm:h-10 text-sm font-medium flex-1"
                   />
-                  <span className="flex items-center text-muted-foreground text-xs sm:text-sm">%</span>
                 </div>
               </div>
             </div>
@@ -497,11 +490,10 @@ const ARMCalculator = () => {
 
             <div className="grid gap-2 sm:gap-4 grid-cols-1 sm:grid-cols-2">
               {/* Property Tax */}
-              <div className="flex items-center gap-2">
-                <Label htmlFor="property-tax" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
+              <div className="flex flex-col gap-1.5">
+                <Label htmlFor="property-tax" className="text-sm font-medium text-foreground flex items-center gap-1">
                   <Building className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" />
-                  <span className="hidden sm:inline">Property Tax/yr</span>
-                  <span className="sm:hidden">Tax/yr</span>
+                  <span>Property tax</span> <span className="font-normal text-muted-foreground">(per year)</span>
                 </Label>
                 <CurrencyInput
                   id="property-tax"
@@ -511,11 +503,10 @@ const ARMCalculator = () => {
               </div>
 
               {/* Home Insurance */}
-              <div className="flex items-center gap-2">
-                <Label htmlFor="home-insurance" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
+              <div className="flex flex-col gap-1.5">
+                <Label htmlFor="home-insurance" className="text-sm font-medium text-foreground flex items-center gap-1">
                   <Shield className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" />
-                  <span className="hidden sm:inline">Insurance/yr</span>
-                  <span className="sm:hidden">Ins./yr</span>
+                  <span>Home insurance</span> <span className="font-normal text-muted-foreground">(per year)</span>
                 </Label>
                 <CurrencyInput
                   id="home-insurance"
@@ -525,10 +516,10 @@ const ARMCalculator = () => {
               </div>
 
               {/* HOA Fees */}
-              <div className="flex items-center gap-2">
-                <Label htmlFor="hoa-fees" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
+              <div className="flex flex-col gap-1.5">
+                <Label htmlFor="hoa-fees" className="text-sm font-medium text-foreground flex items-center gap-1">
                   <Users className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" />
-                  HOA/mo
+                  HOA dues <span className="font-normal text-muted-foreground">(per month)</span>
                 </Label>
                 <CurrencyInput
                   id="hoa-fees"
@@ -538,11 +529,10 @@ const ARMCalculator = () => {
               </div>
 
               {/* Start Date */}
-              <div className="flex items-center gap-2">
-                <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
+              <div className="flex flex-col gap-1.5">
+                <Label className="text-sm font-medium text-foreground flex items-center gap-1">
                   <Calendar className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" />
-                  <span className="hidden sm:inline">Start Date</span>
-                  <span className="sm:hidden">Start</span>
+                  <span>Start Date</span>
                 </Label>
                 <div className="flex gap-1 sm:gap-2 flex-1">
                   <Select
@@ -552,7 +542,7 @@ const ARMCalculator = () => {
                       updateInput("startDate", `${year}-${month}`);
                     }}
                   >
-                    <SelectTrigger className="h-8 sm:h-10 text-xs sm:text-sm flex-1">
+                    <SelectTrigger aria-label="Loan start month" className="h-8 sm:h-10 text-xs sm:text-sm flex-1">
                       <SelectValue placeholder="Month" />
                     </SelectTrigger>
                     <SelectContent>
@@ -577,7 +567,7 @@ const ARMCalculator = () => {
                       updateInput("startDate", `${year}-${month}`);
                     }}
                   >
-                    <SelectTrigger className="h-8 sm:h-10 text-xs sm:text-sm w-20 sm:w-24">
+                    <SelectTrigger aria-label="Loan start year" className="h-8 sm:h-10 text-xs sm:text-sm w-20 sm:w-24">
                       <SelectValue placeholder="Year" />
                     </SelectTrigger>
                     <SelectContent>
@@ -600,7 +590,8 @@ const ARMCalculator = () => {
         {/* Results Section */}
         <aside className="space-y-6" aria-label="Calculation Results">
           {/* Initial Payment */}
-          <div className="result-highlight">
+          <StickyResult targetId="calc-result" label={"Initial monthly payment"} value={formatCurrency(calculations.initialTotalMonthly)} />
+          <div id="calc-result" className="result-highlight">
             <p className="text-primary-foreground/80 text-sm font-medium uppercase tracking-wide">
               Initial Monthly Payment
             </p>
@@ -612,17 +603,32 @@ const ARMCalculator = () => {
             </p>
           </div>
 
+          {/* After first adjustment (expected) */}
+          <div className="calculator-card p-6">
+            <h3 className="font-semibold text-lg flex items-center gap-2">
+              <TrendingUp className="h-5 w-5 text-accent" aria-hidden="true" />
+              After first adjustment
+            </h3>
+            <p className="text-3xl font-display font-bold mt-2">
+              {formatCurrency(calculations.adjustedTotalMonthly)}
+            </p>
+            <p className="text-muted-foreground text-sm mt-2">
+              Year {inputs.yearsBeforeFirstAdjustment + 1}, at an expected {calculations.adjustedRate.toFixed(2)}%.
+              Highest expected payment: {formatCurrency(calculations.expectedPeakTotalMonthly)}.
+            </p>
+          </div>
+
           {/* Maximum Payment */}
           <div className="calculator-card p-6 border-2 border-destructive/20 bg-destructive/5">
-            <h3 className="font-semibold text-lg flex items-center gap-2 text-destructive">
-              <TrendingUp className="h-5 w-5" />
-              Maximum Payment
+            <h3 className="font-semibold text-lg flex items-center gap-2 text-red-700 dark:text-red-400">
+              <TrendingUp className="h-5 w-5" aria-hidden="true" />
+              Worst-case payment
             </h3>
             <p className="text-3xl font-display font-bold mt-2">
               {formatCurrency(calculations.maxTotalMonthly)}
             </p>
             <p className="text-muted-foreground text-sm mt-2">
-              At max rate of {calculations.maxRate.toFixed(2)}%
+              If the rate hits the {calculations.maxRate.toFixed(2)}% lifetime cap at the first adjustment
             </p>
           </div>
 

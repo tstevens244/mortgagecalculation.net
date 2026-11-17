@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect, forwardRef } from "react";
 import { Input } from "@/components/ui/input";
-import { cn } from "@/lib/utils";
+import { cn, splitLayoutClasses } from "@/lib/utils";
 
 interface CurrencyInputProps {
   value: number;
@@ -70,18 +70,28 @@ const CurrencyInput = forwardRef<HTMLInputElement, CurrencyInputProps>(
       setDisplayValue(formatNumber(value, allowDecimals));
     }, [value, allowDecimals]);
 
+    // The wrapper takes the layout classes (width, flex); the field keeps the rest.
+    const { layout, field } = splitLayoutClasses(className);
     return (
-      <Input
-        ref={ref}
-        type="text"
-        inputMode="decimal"
-        value={displayValue}
-        onChange={handleChange}
-        onFocus={handleFocus}
-        onBlur={handleBlur}
-        className={cn("h-8 sm:h-10 text-sm font-medium flex-[2] min-w-[5.5rem]", className)}
-        {...props}
-      />
+      <div className={cn("relative min-w-[5.5rem]", /(^|\s|:)w-/.test(layout) ? "" : "flex-[2]", layout)}>
+        <span
+          className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-sm text-muted-foreground"
+          aria-hidden="true"
+        >
+          $
+        </span>
+        <Input
+          ref={ref}
+          type="text"
+          inputMode="decimal"
+          value={displayValue}
+          onChange={handleChange}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
+          className={cn("h-10 w-full text-sm font-medium tabular-nums", field, "pl-6")}
+          {...props}
+        />
+      </div>
     );
   }
 );

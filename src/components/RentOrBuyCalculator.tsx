@@ -18,6 +18,7 @@ import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip as RechartsTo
 import CurrencyInput from "./CurrencyInput";
 import PercentInput from "./PercentInput";
 import { formatCurrency } from "@/lib/formatters";
+import StickyResult from "./StickyResult";
 
 const RentOrBuyCalculator = () => {
   // Rent Info
@@ -26,9 +27,11 @@ const RentOrBuyCalculator = () => {
 
   // Property Info
   const [homePrice, setHomePrice] = useState(400000);
-  const [annualAppreciation, setAnnualAppreciation] = useState(5);
+  const [annualAppreciation, setAnnualAppreciation] = useState(3);
   const [yearsBeforeSell, setYearsBeforeSell] = useState("7");
   const [sellingCost, setSellingCost] = useState(6);
+  const [buyingCost, setBuyingCost] = useState(3);
+  const [investmentReturn, setInvestmentReturn] = useState(4);
 
   // Loan Information
   const [downPaymentPercent, setDownPaymentPercent] = useState(20);
@@ -42,7 +45,7 @@ const RentOrBuyCalculator = () => {
   const [annualMaintenance, setAnnualMaintenance] = useState(2000);
 
   // Tax Info
-  const [incomeTaxRate, setIncomeTaxRate] = useState(25);
+  const [incomeTaxRate, setIncomeTaxRate] = useState(0);
 
   const results = useMemo(() => {
     const years = parseInt(yearsBeforeSell);
@@ -92,9 +95,11 @@ const RentOrBuyCalculator = () => {
     let currentLTV = (loanAmount / homePrice) * 100;
     
     for (let month = 1; month <= years * 12; month++) {
-      const interestPayment = remainingBalance * monthlyRate;
-      const principalPayment = monthlyPI - interestPayment;
-      
+      // After the loan is paid off there's no more principal or interest.
+      const loanActive = month <= totalPayments && remainingBalance > 0.005;
+      const interestPayment = loanActive ? remainingBalance * monthlyRate : 0;
+      const principalPayment = loanActive ? Math.min(monthlyPI - interestPayment, remainingBalance) : 0;
+
       totalInterestPaid += interestPayment;
       remainingBalance -= principalPayment;
       
@@ -106,7 +111,7 @@ const RentOrBuyCalculator = () => {
         totalPMIPaid += monthlyPMI;
       }
       
-      totalOwnershipPayments += monthlyPI + monthlyPropertyTax + monthlyInsurance + monthlyMaintenance;
+      totalOwnershipPayments += (loanActive ? monthlyPI : 0) + monthlyPropertyTax + monthlyInsurance + monthlyMaintenance;
       if (currentLTV > 80 && hasPMI) {
         totalOwnershipPayments += monthlyPMI;
       }
@@ -138,7 +143,13 @@ const RentOrBuyCalculator = () => {
     // Net equity at end = futureHomeValue - sellingCosts - loanBalance - downPayment already paid
     // Total out of pocket for buying = downPayment + totalOwnershipPayments - totalTaxSavings
     // Net cost of buying = out of pocket - equity appreciation
-    const totalBuyCost = downPayment + totalOwnershipPayments - totalTaxSavings - equityAppreciation;
+    // Buying also costs closing costs up front, and the return that money
+    // (plus the down payment) would have earned invested while renting.
+    const buyingClosingCosts = homePrice * (buyingCost / 100);
+    const opportunityCost =
+      (downPayment + buyingClosingCosts) * (Math.pow(1 + investmentReturn / 100, years) - 1);
+    const totalBuyCost =
+      downPayment + buyingClosingCosts + opportunityCost + totalOwnershipPayments - totalTaxSavings - equityAppreciation;
     
     // Should buy when buying costs less than renting
     const netBenefitOfBuying = totalRentCost - totalBuyCost;
@@ -161,6 +172,8 @@ const RentOrBuyCalculator = () => {
       totalTaxDeduction,
       avgAnnualTaxSavings,
       totalTaxSavings,
+      buyingClosingCosts,
+      opportunityCost,
       
       // Appreciation
       // Costs for comparison
@@ -190,7 +203,7 @@ const RentOrBuyCalculator = () => {
     monthlyRent, annualRentIncrease, homePrice, annualAppreciation, 
     yearsBeforeSell, sellingCost, downPaymentPercent, interestRate, 
     loanTerm, annualPMIPercent, annualPropertyTaxRate, annualInsuranceRate,
-    annualMaintenance, incomeTaxRate
+    annualMaintenance, incomeTaxRate, buyingCost, investmentReturn
   ]);
 
   return (
@@ -208,15 +221,15 @@ const RentOrBuyCalculator = () => {
             </CardHeader>
             <CardContent>
               <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2">
-                <div className="flex items-center gap-2">
-                  <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap min-w-[80px] sm:min-w-[100px]">
+                <div className="flex flex-col gap-1.5">
+                  <Label htmlFor="rent-or-buy-monthly-rent" className="text-sm font-medium text-foreground">
                     Monthly Rent
                   </Label>
-                  <CurrencyInput value={monthlyRent} onChange={setMonthlyRent} />
+                  <CurrencyInput id="rent-or-buy-monthly-rent" value={monthlyRent} onChange={setMonthlyRent} />
                 </div>
 
-                <div className="flex items-center gap-2">
-                  <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
+                <div className="flex flex-col gap-1.5">
+                  <Label htmlFor="rent-or-buy-rent-increase" className="text-sm font-medium text-foreground flex items-center gap-1">
                     Rent Increase
                     <Tooltip>
                       <TooltipTrigger asChild>
@@ -228,14 +241,13 @@ const RentOrBuyCalculator = () => {
                     </Tooltip>
                   </Label>
                   <div className="flex gap-1 sm:gap-2 flex-1">
-                    <PercentInput
+                    <PercentInput id="rent-or-buy-rent-increase"
                       value={annualRentIncrease}
                       onChange={setAnnualRentIncrease}
                       min={0}
                       max={20}
                       decimalPlaces={1}
                     />
-                    <span className="flex items-center text-muted-foreground text-xs sm:text-sm">%</span>
                   </div>
                 </div>
               </div>
@@ -253,15 +265,15 @@ const RentOrBuyCalculator = () => {
             <CardContent className="space-y-6">
               {/* Property Section */}
               <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2">
-                <div className="flex items-center gap-2">
-                  <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap min-w-[80px] sm:min-w-[100px]">
+                <div className="flex flex-col gap-1.5">
+                  <Label htmlFor="rent-or-buy-home-price" className="text-sm font-medium text-foreground">
                     Home Price
                   </Label>
-                  <CurrencyInput value={homePrice} onChange={setHomePrice} />
+                  <CurrencyInput id="rent-or-buy-home-price" value={homePrice} onChange={setHomePrice} />
                 </div>
 
-                <div className="flex items-center gap-2">
-                  <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
+                <div className="flex flex-col gap-1.5">
+                  <Label htmlFor="rent-or-buy-appreciation" className="text-sm font-medium text-foreground flex items-center gap-1">
                     Appreciation
                     <Tooltip>
                       <TooltipTrigger asChild>
@@ -273,23 +285,22 @@ const RentOrBuyCalculator = () => {
                     </Tooltip>
                   </Label>
                   <div className="flex gap-1 sm:gap-2 flex-1">
-                    <PercentInput
+                    <PercentInput id="rent-or-buy-appreciation"
                       value={annualAppreciation}
                       onChange={setAnnualAppreciation}
                       min={-10}
                       max={20}
                       decimalPlaces={1}
                     />
-                    <span className="flex items-center text-muted-foreground text-xs sm:text-sm">%</span>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2">
-                  <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap min-w-[80px] sm:min-w-[100px]">
+                <div className="flex flex-col gap-1.5">
+                  <Label htmlFor="rent-or-buy-years-to-sell" className="text-sm font-medium text-foreground">
                     Years to Sell
                   </Label>
                   <Select value={yearsBeforeSell} onValueChange={setYearsBeforeSell}>
-                    <SelectTrigger className="h-8 sm:h-10 text-sm flex-1">
+                    <SelectTrigger id="rent-or-buy-years-to-sell" className="h-8 sm:h-10 text-sm flex-1">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -302,8 +313,8 @@ const RentOrBuyCalculator = () => {
                   </Select>
                 </div>
 
-                <div className="flex items-center gap-2">
-                  <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
+                <div className="flex flex-col gap-1.5">
+                  <Label htmlFor="rent-or-buy-selling-cost" className="text-sm font-medium text-foreground flex items-center gap-1">
                     Selling Cost
                     <Tooltip>
                       <TooltipTrigger asChild>
@@ -315,14 +326,57 @@ const RentOrBuyCalculator = () => {
                     </Tooltip>
                   </Label>
                   <div className="flex gap-1 sm:gap-2 flex-1">
-                    <PercentInput
+                    <PercentInput id="rent-or-buy-selling-cost"
                       value={sellingCost}
                       onChange={setSellingCost}
                       min={0}
                       max={15}
                       decimalPlaces={1}
                     />
-                    <span className="flex items-center text-muted-foreground text-xs sm:text-sm">%</span>
+                  </div>
+                </div>
+                <div className="flex flex-col gap-1.5">
+                  <Label htmlFor="rent-or-buy-buying-cost" className="text-sm font-medium text-foreground flex items-center gap-1">
+                    Buying Cost
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <HelpCircle className="h-3 w-3 sm:h-4 sm:w-4 cursor-help" />
+                      </TooltipTrigger>
+                      <TooltipContent className="max-w-xs">
+                        <p>Closing costs when you buy, usually 2% to 5% of the price.</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </Label>
+                  <div className="flex gap-1 sm:gap-2 flex-1">
+                    <PercentInput id="rent-or-buy-buying-cost"
+                      value={buyingCost}
+                      onChange={setBuyingCost}
+                      min={0}
+                      max={10}
+                      decimalPlaces={1}
+                    />
+                  </div>
+                </div>
+                <div className="flex flex-col gap-1.5">
+                  <Label htmlFor="rent-or-buy-investment-return" className="text-sm font-medium text-foreground flex items-center gap-1">
+                    Investment Return
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <HelpCircle className="h-3 w-3 sm:h-4 sm:w-4 cursor-help" />
+                      </TooltipTrigger>
+                      <TooltipContent className="max-w-xs">
+                        <p>What your down payment and closing costs could earn if you rented and invested them instead.</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </Label>
+                  <div className="flex gap-1 sm:gap-2 flex-1">
+                    <PercentInput id="rent-or-buy-investment-return"
+                      value={investmentReturn}
+                      onChange={setInvestmentReturn}
+                      min={0}
+                      max={15}
+                      decimalPlaces={1}
+                    />
                   </div>
                 </div>
               </div>
@@ -332,44 +386,42 @@ const RentOrBuyCalculator = () => {
 
               {/* Loan Section */}
               <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2">
-                <div className="flex items-center gap-2">
-                  <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap min-w-[80px] sm:min-w-[100px]">
+                <div className="flex flex-col gap-1.5">
+                  <Label htmlFor="rent-or-buy-down-payment" className="text-sm font-medium text-foreground">
                     Down Payment
                   </Label>
                   <div className="flex gap-1 sm:gap-2 flex-1">
-                    <PercentInput
+                    <PercentInput id="rent-or-buy-down-payment"
                       value={downPaymentPercent}
                       onChange={setDownPaymentPercent}
                       min={0}
                       max={100}
                       decimalPlaces={1}
                     />
-                    <span className="flex items-center text-muted-foreground text-xs sm:text-sm">%</span>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2">
-                  <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap min-w-[80px] sm:min-w-[100px]">
+                <div className="flex flex-col gap-1.5">
+                  <Label htmlFor="rent-or-buy-interest-rate" className="text-sm font-medium text-foreground">
                     Interest Rate
                   </Label>
                   <div className="flex gap-1 sm:gap-2 flex-1">
-                    <PercentInput
+                    <PercentInput id="rent-or-buy-interest-rate"
                       value={interestRate}
                       onChange={setInterestRate}
                       min={0}
                       max={20}
                       decimalPlaces={3}
                     />
-                    <span className="flex items-center text-muted-foreground text-xs sm:text-sm">%</span>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2">
-                  <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap min-w-[80px] sm:min-w-[100px]">
+                <div className="flex flex-col gap-1.5">
+                  <Label htmlFor="rent-or-buy-loan-term" className="text-sm font-medium text-foreground">
                     Loan Term
                   </Label>
                   <Select value={loanTerm} onValueChange={setLoanTerm}>
-                    <SelectTrigger className="h-8 sm:h-10 text-sm flex-1">
+                    <SelectTrigger id="rent-or-buy-loan-term" className="h-8 sm:h-10 text-sm flex-1">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -382,8 +434,8 @@ const RentOrBuyCalculator = () => {
                 </div>
 
                 {downPaymentPercent < 20 && (
-                  <div className="flex items-center gap-2">
-                    <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
+                  <div className="flex flex-col gap-1.5">
+                    <Label htmlFor="rent-or-buy-pmi-rate" className="text-sm font-medium text-foreground flex items-center gap-1">
                       PMI Rate
                       <Tooltip>
                         <TooltipTrigger asChild>
@@ -395,14 +447,13 @@ const RentOrBuyCalculator = () => {
                       </Tooltip>
                     </Label>
                     <div className="flex gap-1 sm:gap-2 flex-1">
-                      <PercentInput
+                      <PercentInput id="rent-or-buy-pmi-rate"
                         value={annualPMIPercent}
                         onChange={setAnnualPMIPercent}
                         min={0}
                         max={3}
                         decimalPlaces={2}
                       />
-                      <span className="flex items-center text-muted-foreground text-xs sm:text-sm">%</span>
                     </div>
                   </div>
                 )}
@@ -428,48 +479,46 @@ const RentOrBuyCalculator = () => {
             <CardContent className="space-y-6">
               {/* Ownership Costs Section */}
               <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2">
-                <div className="flex items-center gap-2">
-                  <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap min-w-[80px] sm:min-w-[100px]">
+                <div className="flex flex-col gap-1.5">
+                  <Label htmlFor="rent-or-buy-property-tax" className="text-sm font-medium text-foreground">
                     Property Tax
                   </Label>
                   <div className="flex gap-1 sm:gap-2 flex-1">
-                    <PercentInput
+                    <PercentInput id="rent-or-buy-property-tax"
                       value={annualPropertyTaxRate}
                       onChange={setAnnualPropertyTaxRate}
                       min={0}
                       max={5}
                       decimalPlaces={2}
                     />
-                    <span className="flex items-center text-muted-foreground text-xs sm:text-sm">%</span>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2">
-                  <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap min-w-[80px] sm:min-w-[100px]">
+                <div className="flex flex-col gap-1.5">
+                  <Label htmlFor="rent-or-buy-insurance" className="text-sm font-medium text-foreground">
                     Insurance
                   </Label>
                   <div className="flex gap-1 sm:gap-2 flex-1">
-                    <PercentInput
+                    <PercentInput id="rent-or-buy-insurance"
                       value={annualInsuranceRate}
                       onChange={setAnnualInsuranceRate}
                       min={0}
                       max={3}
                       decimalPlaces={2}
                     />
-                    <span className="flex items-center text-muted-foreground text-xs sm:text-sm">%</span>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2">
-                  <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap min-w-[80px] sm:min-w-[100px]">
+                <div className="flex flex-col gap-1.5">
+                  <Label htmlFor="rent-or-buy-maintenance" className="text-sm font-medium text-foreground">
                     Maintenance
                   </Label>
-                  <CurrencyInput value={annualMaintenance} onChange={setAnnualMaintenance} />
+                  <CurrencyInput id="rent-or-buy-maintenance" value={annualMaintenance} onChange={setAnnualMaintenance} />
                 </div>
 
-                <div className="flex items-center gap-2">
-                  <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
-                    Tax Rate
+                <div className="flex flex-col gap-1.5">
+                  <Label htmlFor="rent-or-buy-tax-rate" className="text-sm font-medium text-foreground flex items-center gap-1">
+                    Tax rate (if itemizing)
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <HelpCircle className="h-3 w-3 sm:h-4 sm:w-4 cursor-help" />
@@ -480,14 +529,13 @@ const RentOrBuyCalculator = () => {
                     </Tooltip>
                   </Label>
                   <div className="flex gap-1 sm:gap-2 flex-1">
-                    <PercentInput
+                    <PercentInput id="rent-or-buy-tax-rate"
                       value={incomeTaxRate}
                       onChange={setIncomeTaxRate}
                       min={0}
                       max={50}
                       decimalPlaces={0}
                     />
-                    <span className="flex items-center text-muted-foreground text-xs sm:text-sm">%</span>
                   </div>
                 </div>
               </div>
@@ -536,7 +584,7 @@ const RentOrBuyCalculator = () => {
                         fontSize: '12px',
                       }}
                     />
-                    <Bar dataKey="value" radius={[0, 4, 4, 0]}>
+                    <Bar isAnimationActive={false} dataKey="value" radius={[0, 4, 4, 0]}>
                       {[
                         { name: 'Rent', value: results.totalRentCost, fill: 'hsl(var(--accent))' },
                         { name: 'Buy', value: results.totalBuyCost, fill: 'hsl(var(--primary))' },
@@ -549,7 +597,7 @@ const RentOrBuyCalculator = () => {
               </div>
               <div className="flex justify-between items-center py-2 bg-secondary/50 rounded-lg px-3 mt-3">
                 <span className="font-medium text-sm">Difference</span>
-                <span className="font-bold text-accent text-sm">
+                <span className="font-bold text-accent-strong text-sm">
                   {results.isRentCheaper ? "Rent saves " : "Buying saves "} 
                   {formatCurrency(results.costDifference)}
                 </span>
@@ -563,7 +611,8 @@ const RentOrBuyCalculator = () => {
           {/* Recommendation Card */}
           <Card className={`border-0 rounded-xl p-6 shadow-xl ${results.shouldBuy ? 'bg-primary' : 'bg-accent'}`}>
             <CardContent className="p-0">
-              <div className="text-center space-y-3">
+              <StickyResult targetId="calc-result" label={"Better choice"} value={`${results.shouldBuy ? "Buy" : "Rent"} · saves ${formatCurrency(results.costDifference)}`} />
+              <div id="calc-result" className="text-center space-y-3">
                 <Scale className="h-10 w-10 mx-auto text-white/80" />
                 <p className="text-white/80 text-sm font-medium">
                   Based on your inputs, it's better to
@@ -599,7 +648,7 @@ const RentOrBuyCalculator = () => {
                 
                 <div className="grid grid-cols-3 gap-2 text-sm py-2 font-semibold">
                   <span>Monthly Difference</span>
-                  <span className="col-span-2 text-center text-accent">
+                  <span className="col-span-2 text-center text-accent-strong">
                     {results.isRentCheaper ? "Rent saves " : "Buying saves "} 
                     {formatCurrency(Math.abs(results.avgMonthlyRent - results.monthlyOwnershipTotal))}/mo
                   </span>
@@ -630,12 +679,35 @@ const RentOrBuyCalculator = () => {
                   </div>
                   <div className="flex justify-between items-center py-2 bg-secondary/50 rounded-lg px-3 -mx-3">
                     <span className="font-medium text-sm">Total Tax Savings</span>
-                    <span className="font-bold text-accent">{formatCurrency(results.totalTaxSavings)}</span>
+                    <span className="font-bold text-accent-strong">{formatCurrency(results.totalTaxSavings)}</span>
                   </div>
                 </div>
               </CardContent>
             </Card>
           )}
+
+          {/* Upfront and opportunity costs */}
+          <Card className="calculator-card">
+            <CardHeader className="pb-4">
+              <CardTitle className="text-lg font-semibold">Upfront Costs of Buying</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                <div className="flex justify-between items-center py-2 border-b border-border/50">
+                  <span className="text-muted-foreground text-sm">Closing Costs</span>
+                  <span className="font-semibold">{formatCurrency(results.buyingClosingCosts)}</span>
+                </div>
+                <div className="flex justify-between items-center py-2 bg-secondary/50 rounded-lg px-3 -mx-3">
+                  <span className="font-medium text-sm">Investment Return Given Up</span>
+                  <span className="font-bold">{formatCurrency(results.opportunityCost)}</span>
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  What your down payment and closing costs could have earned at {investmentReturn}% a year over{" "}
+                  {yearsBeforeSell} years if you rented instead.
+                </p>
+              </div>
+            </CardContent>
+          </Card>
 
           {/* Appreciation */}
           <Card className="calculator-card">
@@ -658,7 +730,7 @@ const RentOrBuyCalculator = () => {
                 </div>
                 <div className="flex justify-between items-center py-2 bg-secondary/50 rounded-lg px-3 -mx-3">
                   <span className="font-medium text-sm">Equity Appreciation</span>
-                  <span className="font-bold text-accent">{formatCurrency(results.equityAppreciation)}</span>
+                  <span className="font-bold text-accent-strong">{formatCurrency(results.equityAppreciation)}</span>
                 </div>
               </div>
             </CardContent>
@@ -695,7 +767,7 @@ const RentOrBuyCalculator = () => {
                 )}
                 <div className="flex justify-between items-center py-3 bg-primary/10 rounded-lg px-3 -mx-3">
                   <span className="font-medium">Total Monthly</span>
-                  <span className="font-bold text-lg text-accent">{formatCurrency(results.monthlyOwnershipTotal)}</span>
+                  <span className="font-bold text-lg text-accent-strong">{formatCurrency(results.monthlyOwnershipTotal)}</span>
                 </div>
               </div>
             </CardContent>

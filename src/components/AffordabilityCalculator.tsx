@@ -18,7 +18,12 @@ import { HelpCircle, Home, DollarSign, PiggyBank, TrendingUp } from "lucide-reac
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip as RechartsTooltip } from "recharts";
 import CurrencyInput from "./CurrencyInput";
 import PercentInput from "./PercentInput";
+import { maxAffordablePrice } from "@/lib/mortgageMath";
 import { formatCurrency } from "@/lib/formatters";
+import StickyResult from "./StickyResult";
+
+// Estimated PMI, % of the loan per year, applied when the down payment is under 20%.
+const PMI_RATE = 0.5;
 
 const AffordabilityCalculator = () => {
   // Income-based calculator state
@@ -77,39 +82,21 @@ const AffordabilityCalculator = () => {
     // Use the lower of the two
     const maxMonthlyPayment = Math.max(0, Math.min(maxHousingFromFrontEnd, maxHousingFromBackEnd));
     
-    // Calculate how much of the payment goes to taxes, insurance, HOA
-    // We need to iterate to find the home price since taxes/insurance depend on it
-    let homePrice = 0;
     const monthlyRate = interestRate / 100 / 12;
     const numberOfPayments = parseInt(loanTerm) * 12;
-    
-    // Iterative approach to find home price
-    for (let price = 10000; price <= 5000000; price += 1000) {
-      const loanAmount = price * (1 - downPaymentPercent / 100);
-      
-      // Monthly P&I
-      let monthlyPI = 0;
-      if (monthlyRate > 0) {
-        monthlyPI = (loanAmount * monthlyRate * Math.pow(1 + monthlyRate, numberOfPayments)) /
-          (Math.pow(1 + monthlyRate, numberOfPayments) - 1);
-      } else {
-        monthlyPI = loanAmount / numberOfPayments;
-      }
-      
-      // Monthly taxes, insurance, HOA
-      const monthlyTaxes = (price * propertyTaxRate / 100) / 12;
-      const monthlyInsurance = (price * insuranceRate / 100) / 12;
-      const monthlyHOA = hoaFee / 12;
-      
-      const totalMonthly = monthlyPI + monthlyTaxes + monthlyInsurance + monthlyHOA;
-      
-      if (totalMonthly > maxMonthlyPayment) {
-        homePrice = price - 1000;
-        break;
-      }
-      homePrice = price;
-    }
-    
+    const homePrice = Math.floor(
+      maxAffordablePrice({
+        maxPayment: maxMonthlyPayment,
+        annualRatePercent: interestRate,
+        months: numberOfPayments,
+        downPaymentPercent,
+        propertyTaxRatePercent: propertyTaxRate,
+        insuranceRatePercent: insuranceRate,
+        pmiRatePercent: PMI_RATE,
+        monthlyHoa: hoaFee,
+      }),
+    );
+
     const downPayment = homePrice * (downPaymentPercent / 100);
     const loanAmount = homePrice - downPayment;
     
@@ -122,8 +109,9 @@ const AffordabilityCalculator = () => {
     
     const monthlyTaxes = (homePrice * propertyTaxRate / 100) / 12;
     const monthlyInsurance = (homePrice * insuranceRate / 100) / 12;
-    const monthlyHOA = hoaFee / 12;
-    const totalMonthlyPayment = monthlyPI + monthlyTaxes + monthlyInsurance + monthlyHOA;
+    const monthlyHOA = hoaFee;
+    const monthlyPMI = downPaymentPercent < 20 ? (loanAmount * PMI_RATE) / 100 / 12 : 0;
+    const totalMonthlyPayment = monthlyPI + monthlyTaxes + monthlyInsurance + monthlyHOA + monthlyPMI;
 
     return {
       homePrice: Math.max(0, homePrice),
@@ -134,6 +122,7 @@ const AffordabilityCalculator = () => {
       monthlyTaxes,
       monthlyInsurance,
       monthlyHOA,
+      monthlyPMI,
     };
   }, [annualIncome, loanTerm, interestRate, monthlyDebts, downPaymentPercent, propertyTaxRate, hoaFee, insuranceRate, dtiRule]);
 
@@ -142,35 +131,19 @@ const AffordabilityCalculator = () => {
     const monthlyRate = budgetInterestRate / 100 / 12;
     const numberOfPayments = parseInt(budgetLoanTerm) * 12;
     
-    // Iterate to find home price that fits budget
-    let homePrice = 0;
-    
-    for (let price = 10000; price <= 5000000; price += 1000) {
-      const loanAmount = price * (1 - budgetDownPaymentPercent / 100);
-      
-      // Monthly P&I
-      let monthlyPI = 0;
-      if (monthlyRate > 0) {
-        monthlyPI = (loanAmount * monthlyRate * Math.pow(1 + monthlyRate, numberOfPayments)) /
-          (Math.pow(1 + monthlyRate, numberOfPayments) - 1);
-      } else {
-        monthlyPI = loanAmount / numberOfPayments;
-      }
-      
-      // Monthly taxes, insurance, HOA
-      const monthlyTaxes = (price * budgetPropertyTaxRate / 100) / 12;
-      const monthlyInsurance = (price * budgetInsuranceRate / 100) / 12;
-      const monthlyHOA = budgetHoaFee / 12;
-      
-      const totalMonthly = monthlyPI + monthlyTaxes + monthlyInsurance + monthlyHOA;
-      
-      if (totalMonthly > monthlyBudget) {
-        homePrice = price - 1000;
-        break;
-      }
-      homePrice = price;
-    }
-    
+    const homePrice = Math.floor(
+      maxAffordablePrice({
+        maxPayment: monthlyBudget,
+        annualRatePercent: budgetInterestRate,
+        months: numberOfPayments,
+        downPaymentPercent: budgetDownPaymentPercent,
+        propertyTaxRatePercent: budgetPropertyTaxRate,
+        insuranceRatePercent: budgetInsuranceRate,
+        pmiRatePercent: PMI_RATE,
+        monthlyHoa: budgetHoaFee,
+      }),
+    );
+
     const downPayment = homePrice * (budgetDownPaymentPercent / 100);
     const loanAmount = homePrice - downPayment;
     
@@ -183,8 +156,9 @@ const AffordabilityCalculator = () => {
     
     const monthlyTaxes = (homePrice * budgetPropertyTaxRate / 100) / 12;
     const monthlyInsurance = (homePrice * budgetInsuranceRate / 100) / 12;
-    const monthlyHOA = budgetHoaFee / 12;
-    const totalMonthlyPayment = monthlyPI + monthlyTaxes + monthlyInsurance + monthlyHOA;
+    const monthlyHOA = budgetHoaFee;
+    const monthlyPMI = budgetDownPaymentPercent < 20 ? (loanAmount * PMI_RATE) / 100 / 12 : 0;
+    const totalMonthlyPayment = monthlyPI + monthlyTaxes + monthlyInsurance + monthlyHOA + monthlyPMI;
 
     return {
       homePrice: Math.max(0, homePrice),
@@ -195,15 +169,17 @@ const AffordabilityCalculator = () => {
       monthlyTaxes,
       monthlyInsurance,
       monthlyHOA,
+      monthlyPMI,
     };
   }, [monthlyBudget, budgetLoanTerm, budgetInterestRate, budgetDownPaymentPercent, budgetPropertyTaxRate, budgetHoaFee, budgetInsuranceRate]);
 
   const ResultsCard = ({ results, title }: { results: typeof incomeResults; title: string }) => (
     <div className="space-y-6 lg:col-span-2">
       {/* Main Result */}
-      <Card className="bg-primary border-0 rounded-xl p-6 shadow-xl">
+      <Card className="result-highlight border-0">
         <CardContent className="p-0">
-          <div className="text-center space-y-2">
+          <StickyResult targetId="calc-result" label={title} value={formatCurrency(results.homePrice)} />
+          <div id="calc-result" className="text-center space-y-2">
             <p className="text-white/80 text-sm font-medium">
               {title}
             </p>
@@ -226,12 +202,13 @@ const AffordabilityCalculator = () => {
           <div className="h-[180px]">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
-                <Pie
+                <Pie isAnimationActive={false}
                   data={[
                     { name: 'Principal & Interest', value: results.monthlyPI, color: 'hsl(var(--primary))' },
                     { name: 'Property Tax', value: results.monthlyTaxes, color: 'hsl(var(--accent))' },
                     { name: 'Insurance', value: results.monthlyInsurance, color: 'hsl(var(--muted-foreground))' },
-                    ...(results.monthlyHOA > 0 ? [{ name: 'HOA', value: results.monthlyHOA, color: 'hsl(var(--destructive))' }] : []),
+                    ...(results.monthlyPMI > 0 ? [{ name: 'PMI', value: results.monthlyPMI, color: 'hsl(0 84% 60%)' }] : []),
+                    ...(results.monthlyHOA > 0 ? [{ name: 'HOA', value: results.monthlyHOA, color: 'hsl(280 67% 50%)' }] : []),
                   ].filter(item => item.value > 0)}
                   cx="50%"
                   cy="50%"
@@ -244,7 +221,8 @@ const AffordabilityCalculator = () => {
                     { name: 'Principal & Interest', value: results.monthlyPI, color: 'hsl(var(--primary))' },
                     { name: 'Property Tax', value: results.monthlyTaxes, color: 'hsl(var(--accent))' },
                     { name: 'Insurance', value: results.monthlyInsurance, color: 'hsl(var(--muted-foreground))' },
-                    ...(results.monthlyHOA > 0 ? [{ name: 'HOA', value: results.monthlyHOA, color: 'hsl(var(--destructive))' }] : []),
+                    ...(results.monthlyPMI > 0 ? [{ name: 'PMI', value: results.monthlyPMI, color: 'hsl(0 84% 60%)' }] : []),
+                    ...(results.monthlyHOA > 0 ? [{ name: 'HOA', value: results.monthlyHOA, color: 'hsl(280 67% 50%)' }] : []),
                   ].filter(item => item.value > 0).map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={entry.color} />
                   ))}
@@ -267,7 +245,7 @@ const AffordabilityCalculator = () => {
           </div>
           <div className="flex justify-between items-center py-3 bg-secondary/50 rounded-lg px-3 mt-4">
             <span className="font-medium">Total Monthly Payment</span>
-            <span className="font-bold text-lg text-accent">{formatCurrency(results.monthlyPayment)}</span>
+            <span className="font-bold text-lg text-accent-strong">{formatCurrency(results.monthlyPayment)}</span>
           </div>
         </CardContent>
       </Card>
@@ -320,7 +298,7 @@ const AffordabilityCalculator = () => {
                 <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2">
                   {/* Annual Income */}
                   <div className="input-group">
-                    <Label className="input-label">
+                    <Label htmlFor="affordability-annual-household-income" className="input-label">
                       Annual Household Income
                       <Tooltip>
                         <TooltipTrigger asChild>
@@ -331,12 +309,12 @@ const AffordabilityCalculator = () => {
                         </TooltipContent>
                       </Tooltip>
                     </Label>
-                    <CurrencyInput value={annualIncome} onChange={setAnnualIncome} />
+                    <CurrencyInput id="affordability-annual-household-income" value={annualIncome} onChange={setAnnualIncome} />
                   </div>
 
                   {/* Monthly Debts */}
                   <div className="input-group">
-                    <Label className="input-label">
+                    <Label htmlFor="affordability-monthly-debt-payments" className="input-label">
                       Monthly Debt Payments
                       <Tooltip>
                         <TooltipTrigger asChild>
@@ -347,14 +325,14 @@ const AffordabilityCalculator = () => {
                         </TooltipContent>
                       </Tooltip>
                     </Label>
-                    <CurrencyInput value={monthlyDebts} onChange={setMonthlyDebts} />
+                    <CurrencyInput id="affordability-monthly-debt-payments" value={monthlyDebts} onChange={setMonthlyDebts} />
                   </div>
 
                   {/* Loan Term */}
                   <div className="input-group">
-                    <Label className="input-label">Loan Term</Label>
+                    <Label htmlFor="affordability-loan-term" className="input-label">Loan Term</Label>
                     <Select value={loanTerm} onValueChange={setLoanTerm}>
-                      <SelectTrigger>
+                      <SelectTrigger id="affordability-loan-term">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -368,9 +346,9 @@ const AffordabilityCalculator = () => {
 
                   {/* Interest Rate */}
                   <div className="input-group">
-                    <Label className="input-label">Interest Rate</Label>
+                    <Label htmlFor="affordability-interest-rate" className="input-label">Interest Rate</Label>
                     <div className="relative">
-                      <PercentInput
+                      <PercentInput id="affordability-interest-rate"
                         value={interestRate}
                         onChange={setInterestRate}
                         min={0}
@@ -382,9 +360,9 @@ const AffordabilityCalculator = () => {
 
                   {/* Down Payment */}
                   <div className="input-group">
-                    <Label className="input-label">Down Payment</Label>
+                    <Label htmlFor="affordability-down-payment" className="input-label">Down Payment</Label>
                     <div className="relative">
-                      <PercentInput
+                      <PercentInput id="affordability-down-payment"
                         value={downPaymentPercent}
                         onChange={setDownPaymentPercent}
                         min={0}
@@ -396,9 +374,9 @@ const AffordabilityCalculator = () => {
 
                   {/* Property Tax Rate */}
                   <div className="input-group">
-                    <Label className="input-label">Property Tax Rate (per year)</Label>
+                    <Label htmlFor="affordability-property-tax-rate-per-year" className="input-label">Property Tax Rate (per year)</Label>
                     <div className="relative">
-                      <PercentInput
+                      <PercentInput id="affordability-property-tax-rate-per-year"
                         value={propertyTaxRate}
                         onChange={setPropertyTaxRate}
                         min={0}
@@ -410,15 +388,15 @@ const AffordabilityCalculator = () => {
 
                   {/* HOA Fee */}
                   <div className="input-group">
-                    <Label className="input-label">HOA Fee (per year)</Label>
-                    <CurrencyInput value={hoaFee} onChange={setHoaFee} />
+                    <Label htmlFor="affordability-hoa-fee-per-year" className="input-label">HOA dues (per month)</Label>
+                    <CurrencyInput id="affordability-hoa-fee-per-year" value={hoaFee} onChange={setHoaFee} />
                   </div>
 
                   {/* Insurance Rate */}
                   <div className="input-group">
-                    <Label className="input-label">Home Insurance Rate (per year)</Label>
+                    <Label htmlFor="affordability-home-insurance-rate-per-year" className="input-label">Home Insurance Rate (per year)</Label>
                     <div className="relative">
-                      <PercentInput
+                      <PercentInput id="affordability-home-insurance-rate-per-year"
                         value={insuranceRate}
                         onChange={setInsuranceRate}
                         min={0}
@@ -430,7 +408,7 @@ const AffordabilityCalculator = () => {
 
                   {/* DTI Rule */}
                   <div className="input-group">
-                    <Label className="input-label">
+                    <Label htmlFor="affordability-debt-to-income-dti-ratio" className="input-label">
                       Debt-to-Income (DTI) Ratio
                       <Tooltip>
                         <TooltipTrigger asChild>
@@ -442,7 +420,7 @@ const AffordabilityCalculator = () => {
                       </Tooltip>
                     </Label>
                     <Select value={dtiRule} onValueChange={setDtiRule}>
-                      <SelectTrigger>
+                      <SelectTrigger id="affordability-debt-to-income-dti-ratio">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -477,7 +455,7 @@ const AffordabilityCalculator = () => {
                 <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2">
                   {/* Monthly Budget */}
                   <div className="input-group">
-                    <Label className="input-label">
+                    <Label htmlFor="affordability-monthly-housing-budget" className="input-label">
                       Monthly Housing Budget
                       <Tooltip>
                         <TooltipTrigger asChild>
@@ -488,14 +466,14 @@ const AffordabilityCalculator = () => {
                         </TooltipContent>
                       </Tooltip>
                     </Label>
-                    <CurrencyInput value={monthlyBudget} onChange={setMonthlyBudget} />
+                    <CurrencyInput id="affordability-monthly-housing-budget" value={monthlyBudget} onChange={setMonthlyBudget} />
                   </div>
 
                   {/* Loan Term */}
                   <div className="input-group">
-                    <Label className="input-label">Loan Term</Label>
+                    <Label htmlFor="affordability-loan-term-2" className="input-label">Loan Term</Label>
                     <Select value={budgetLoanTerm} onValueChange={setBudgetLoanTerm}>
-                      <SelectTrigger>
+                      <SelectTrigger id="affordability-loan-term-2">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -509,9 +487,9 @@ const AffordabilityCalculator = () => {
 
                   {/* Interest Rate */}
                   <div className="input-group">
-                    <Label className="input-label">Interest Rate</Label>
+                    <Label htmlFor="affordability-interest-rate-2" className="input-label">Interest Rate</Label>
                     <div className="relative">
-                      <PercentInput
+                      <PercentInput id="affordability-interest-rate-2"
                         value={budgetInterestRate}
                         onChange={setBudgetInterestRate}
                         min={0}
@@ -523,9 +501,9 @@ const AffordabilityCalculator = () => {
 
                   {/* Down Payment */}
                   <div className="input-group">
-                    <Label className="input-label">Down Payment</Label>
+                    <Label htmlFor="affordability-down-payment-2" className="input-label">Down Payment</Label>
                     <div className="relative">
-                      <PercentInput
+                      <PercentInput id="affordability-down-payment-2"
                         value={budgetDownPaymentPercent}
                         onChange={setBudgetDownPaymentPercent}
                         min={0}
@@ -537,9 +515,9 @@ const AffordabilityCalculator = () => {
 
                   {/* Property Tax Rate */}
                   <div className="input-group">
-                    <Label className="input-label">Property Tax Rate (per year)</Label>
+                    <Label htmlFor="affordability-property-tax-rate-per-year-2" className="input-label">Property Tax Rate (per year)</Label>
                     <div className="relative">
-                      <PercentInput
+                      <PercentInput id="affordability-property-tax-rate-per-year-2"
                         value={budgetPropertyTaxRate}
                         onChange={setBudgetPropertyTaxRate}
                         min={0}
@@ -551,15 +529,15 @@ const AffordabilityCalculator = () => {
 
                   {/* HOA Fee */}
                   <div className="input-group">
-                    <Label className="input-label">HOA Fee (per year)</Label>
-                    <CurrencyInput value={budgetHoaFee} onChange={setBudgetHoaFee} />
+                    <Label htmlFor="affordability-hoa-fee-per-year-2" className="input-label">HOA dues (per month)</Label>
+                    <CurrencyInput id="affordability-hoa-fee-per-year-2" value={budgetHoaFee} onChange={setBudgetHoaFee} />
                   </div>
 
                   {/* Insurance Rate */}
                   <div className="input-group">
-                    <Label className="input-label">Home Insurance Rate (per year)</Label>
+                    <Label htmlFor="affordability-home-insurance-rate-per-year-2" className="input-label">Home Insurance Rate (per year)</Label>
                     <div className="relative">
-                      <PercentInput
+                      <PercentInput id="affordability-home-insurance-rate-per-year-2"
                         value={budgetInsuranceRate}
                         onChange={setBudgetInsuranceRate}
                         min={0}

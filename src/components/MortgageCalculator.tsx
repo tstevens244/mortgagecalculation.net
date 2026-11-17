@@ -9,6 +9,8 @@ import AmortizationChart from "./AmortizationChart";
 import CurrencyInput from "./CurrencyInput";
 import PercentInput from "./PercentInput";
 import { formatCurrency } from "@/lib/formatters";
+import { monthsUntilBalance } from "@/lib/mortgageMath";
+import StickyResult from "./StickyResult";
 
 interface MortgageInputs {
   homePrice: number;
@@ -49,12 +51,11 @@ const MortgageCalculator = () => {
         updated.downPayment = (prev.downPaymentPercent / 100) * Number(value);
       }
 
-      // Auto-calculate PMI if down payment < 20%
-      if (updated.downPaymentPercent < 20) {
+      // Estimate PMI (0.5% of the loan a year) when the price or down payment
+      // changes. A PMI amount the user typed is kept until one of those changes.
+      if (field === "homePrice" || field === "downPayment" || field === "downPaymentPercent") {
         const loanAmount = updated.homePrice - updated.downPayment;
-        updated.pmi = (loanAmount * 0.005) / 12 * 12; // 0.5% annual PMI
-      } else {
-        updated.pmi = 0;
+        updated.pmi = updated.downPaymentPercent < 20 ? loanAmount * 0.005 : 0;
       }
 
       return updated;
@@ -80,7 +81,10 @@ const MortgageCalculator = () => {
 
     const totalMonthly = monthlyPI + monthlyTax + monthlyInsurance + monthlyPMI + monthlyHOA;
     const totalInterest = monthlyPI * numPayments - loanAmount;
-    const totalPayment = totalMonthly * numPayments;
+    // PMI ends automatically when the balance reaches 78% of the original value.
+    const pmiMonths = monthlyPMI > 0 ? monthsUntilBalance(loanAmount, inputs.interestRate, numPayments, inputs.homePrice * 0.78) : 0;
+    const totalPayment =
+      (monthlyPI + monthlyTax + monthlyInsurance + monthlyHOA) * numPayments + monthlyPMI * pmiMonths;
 
     return {
       loanAmount,
@@ -92,6 +96,7 @@ const MortgageCalculator = () => {
       totalMonthly,
       totalInterest,
       totalPayment,
+      pmiMonths,
       numPayments,
     };
   }, [inputs]);
@@ -136,11 +141,10 @@ const MortgageCalculator = () => {
 
             <div className="grid gap-2 sm:gap-4 grid-cols-1 sm:grid-cols-2">
               {/* Home Price */}
-              <div className="flex items-center gap-2">
-                <Label htmlFor="home-price" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
+              <div className="flex flex-col gap-1.5">
+                <Label htmlFor="home-price" className="text-sm font-medium text-foreground flex items-center gap-1">
                   <DollarSign className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" />
-                  <span className="hidden sm:inline">Home Price</span>
-                  <span className="sm:hidden">Price</span>
+                  <span>Home Price</span>
                 </Label>
                 <CurrencyInput
                   id="home-price"
@@ -152,8 +156,8 @@ const MortgageCalculator = () => {
               </div>
 
               {/* Down Payment */}
-              <div className="flex items-center gap-2">
-              <Label htmlFor="down-payment" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
+              <div className="flex flex-col gap-1.5">
+              <Label htmlFor="down-payment" className="text-sm font-medium text-foreground flex items-center gap-1">
                   <Percent className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" />
                   <span className="hidden lg:inline">Down Payment</span>
                   <span className="lg:hidden">Down</span>
@@ -173,16 +177,14 @@ const MortgageCalculator = () => {
                     max={100}
                     aria-label="Down payment percentage"
                   />
-                  <span className="flex items-center text-muted-foreground text-xs sm:text-sm flex-shrink-0">%</span>
                 </div>
               </div>
 
               {/* Loan Term */}
-              <div className="flex items-center gap-2">
-                <Label htmlFor="loan-term" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
+              <div className="flex flex-col gap-1.5">
+                <Label htmlFor="loan-term" className="text-sm font-medium text-foreground flex items-center gap-1">
                   <Calendar className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" />
-                  <span className="hidden sm:inline">Loan Term</span>
-                  <span className="sm:hidden">Term</span>
+                  <span>Loan Term</span>
                 </Label>
                 <Select
                   value={inputs.loanTerm.toString()}
@@ -201,11 +203,10 @@ const MortgageCalculator = () => {
               </div>
 
               {/* Interest Rate */}
-              <div className="flex items-center gap-2">
-                <Label htmlFor="interest-rate" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
+              <div className="flex flex-col gap-1.5">
+                <Label htmlFor="interest-rate" className="text-sm font-medium text-foreground flex items-center gap-1">
                   <Percent className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" />
-                  <span className="hidden sm:inline">Interest Rate</span>
-                  <span className="sm:hidden">Rate</span>
+                  <span>Interest Rate</span>
                 </Label>
                 <div className="flex gap-1 sm:gap-2 flex-1">
                   <PercentInput
@@ -217,16 +218,14 @@ const MortgageCalculator = () => {
                     min={0}
                     max={30}
                   />
-                  <span className="flex items-center text-muted-foreground text-xs sm:text-sm">%</span>
                 </div>
               </div>
 
               {/* Start Date */}
-              <div className="flex items-center gap-2">
-                <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
+              <div className="flex flex-col gap-1.5">
+                <Label className="text-sm font-medium text-foreground flex items-center gap-1">
                   <Calendar className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" />
-                  <span className="hidden sm:inline">Start Date</span>
-                  <span className="sm:hidden">Start</span>
+                  <span>Start Date</span>
                 </Label>
                 <div className="flex gap-1 sm:gap-2 flex-1">
                   <Select
@@ -236,7 +235,7 @@ const MortgageCalculator = () => {
                       updateInput("startDate", `${year}-${month}`);
                     }}
                   >
-                    <SelectTrigger className="h-8 sm:h-10 text-xs sm:text-sm flex-1">
+                    <SelectTrigger aria-label="Loan start month" className="h-8 sm:h-10 text-xs sm:text-sm flex-1">
                       <SelectValue placeholder="Month" />
                     </SelectTrigger>
                     <SelectContent>
@@ -261,7 +260,7 @@ const MortgageCalculator = () => {
                       updateInput("startDate", `${year}-${month}`);
                     }}
                   >
-                    <SelectTrigger className="h-8 sm:h-10 text-xs sm:text-sm w-20 sm:w-24">
+                    <SelectTrigger aria-label="Loan start year" className="h-8 sm:h-10 text-xs sm:text-sm w-20 sm:w-24">
                       <SelectValue placeholder="Year" />
                     </SelectTrigger>
                     <SelectContent>
@@ -287,11 +286,10 @@ const MortgageCalculator = () => {
 
             <div className="grid gap-2 sm:gap-4 grid-cols-1 sm:grid-cols-2">
               {/* Property Tax */}
-              <div className="flex items-center gap-2">
-                <Label htmlFor="property-tax" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
+              <div className="flex flex-col gap-1.5">
+                <Label htmlFor="property-tax" className="text-sm font-medium text-foreground flex items-center gap-1">
                   <Building className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" />
-                  <span className="hidden sm:inline">Property Tax</span>
-                  <span className="sm:hidden">Tax</span>
+                  <span>Property tax</span> <span className="font-normal text-muted-foreground">(per year)</span>
                 </Label>
                 <CurrencyInput
                   id="property-tax"
@@ -301,11 +299,10 @@ const MortgageCalculator = () => {
               </div>
 
               {/* Home Insurance */}
-              <div className="flex items-center gap-2">
-                <Label htmlFor="home-insurance" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
+              <div className="flex flex-col gap-1.5">
+                <Label htmlFor="home-insurance" className="text-sm font-medium text-foreground flex items-center gap-1">
                   <Shield className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" />
-                  <span className="hidden sm:inline">Insurance</span>
-                  <span className="sm:hidden">Ins.</span>
+                  <span>Home insurance</span> <span className="font-normal text-muted-foreground">(per year)</span>
                 </Label>
                 <CurrencyInput
                   id="home-insurance"
@@ -315,12 +312,12 @@ const MortgageCalculator = () => {
               </div>
 
               {/* PMI */}
-              <div className="flex items-center gap-2">
-                <Label htmlFor="pmi" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
+              <div className="flex flex-col gap-1.5">
+                <Label htmlFor="pmi" className="text-sm font-medium text-foreground flex items-center gap-1">
                   <Percent className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" />
-                  PMI
+                  PMI <span className="font-normal text-muted-foreground">(per year)</span>
                   {inputs.downPaymentPercent < 20 && (
-                    <span className="text-[10px] sm:text-xs text-accent ml-1">Auto</span>
+                    <span className="text-[10px] sm:text-xs text-accent-strong ml-1">Auto</span>
                   )}
                 </Label>
                 <CurrencyInput
@@ -331,10 +328,10 @@ const MortgageCalculator = () => {
               </div>
 
               {/* HOA Fees */}
-              <div className="flex items-center gap-2">
-                <Label htmlFor="hoa-fees" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
+              <div className="flex flex-col gap-1.5">
+                <Label htmlFor="hoa-fees" className="text-sm font-medium text-foreground flex items-center gap-1">
                   <Users className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" />
-                  HOA
+                  HOA dues <span className="font-normal text-muted-foreground">(per month)</span>
                 </Label>
                 <CurrencyInput
                   id="hoa-fees"
@@ -348,7 +345,8 @@ const MortgageCalculator = () => {
 
         {/* Results Section */}
         <aside className="space-y-6" aria-label="Calculation Results">
-          <div className="result-highlight">
+          <StickyResult targetId="calc-result" label={"Monthly payment"} value={formatCurrency(calculations.totalMonthly)} />
+          <div id="calc-result" className="result-highlight">
             <p className="text-primary-foreground/80 text-sm font-medium uppercase tracking-wide">
               Monthly Payment
             </p>
@@ -379,7 +377,9 @@ const MortgageCalculator = () => {
               </div>
               {calculations.monthlyPMI > 0 && (
                 <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">PMI</span>
+                  <span className="text-muted-foreground">
+                    PMI{calculations.pmiMonths > 0 && ` (ends in ~${Math.ceil(calculations.pmiMonths / 12)} yrs)`}
+                  </span>
                   <span className="font-medium">{formatCurrency(calculations.monthlyPMI)}</span>
                 </div>
               )}

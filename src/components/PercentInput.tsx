@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect, forwardRef } from "react";
 import { Input } from "@/components/ui/input";
-import { cn } from "@/lib/utils";
+import { cn, splitLayoutClasses } from "@/lib/utils";
 
 interface PercentInputProps {
   value: number;
@@ -12,10 +12,14 @@ interface PercentInputProps {
   max?: number;
   "aria-describedby"?: string;
   "aria-label"?: string;
+  /** Allow values below zero (e.g. an expected rate decrease). */
+  allowNegative?: boolean;
+  /** Unit shown inside the field. Defaults to "%". */
+  suffix?: string;
 }
 
 const PercentInput = forwardRef<HTMLInputElement, PercentInputProps>(
-  ({ value, onChange, className, decimalPlaces = 2, min = 0, max = 100, ...props }, ref) => {
+  ({ value, onChange, className, decimalPlaces = 2, min = 0, max = 100, allowNegative = false, suffix = "%", ...props }, ref) => {
     const [displayValue, setDisplayValue] = useState(value.toFixed(decimalPlaces));
     const [isFocused, setIsFocused] = useState(false);
 
@@ -29,8 +33,9 @@ const PercentInput = forwardRef<HTMLInputElement, PercentInputProps>(
     const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
       const rawValue = e.target.value;
       
-      // Allow digits and decimal point
-      const sanitized = rawValue.replace(/[^0-9.]/g, "");
+      // Allow digits and a decimal point (and a leading minus sign when allowed)
+      const negative = allowNegative && rawValue.trim().startsWith("-");
+      const sanitized = (negative ? "-" : "") + rawValue.replace(/[^0-9.]/g, "");
       
       // Prevent multiple decimal points
       const parts = sanitized.split(".");
@@ -45,7 +50,7 @@ const PercentInput = forwardRef<HTMLInputElement, PercentInputProps>(
       numericValue = Math.max(min, Math.min(max, numericValue));
       
       onChange(numericValue);
-    }, [onChange, min, max]);
+    }, [onChange, min, max, allowNegative]);
 
     const handleFocus = useCallback(() => {
       setIsFocused(true);
@@ -68,18 +73,30 @@ const PercentInput = forwardRef<HTMLInputElement, PercentInputProps>(
       setDisplayValue(finalValue.toFixed(decimalPlaces));
     }, [displayValue, min, max, decimalPlaces, onChange]);
 
+    // The wrapper takes the layout classes (width, flex); the field keeps the rest.
+    const { layout, field } = splitLayoutClasses(className);
     return (
-      <Input
-        ref={ref}
-        type="text"
-        inputMode="decimal"
-        value={displayValue}
-        onChange={handleChange}
-        onFocus={handleFocus}
-        onBlur={handleBlur}
-        className={cn("h-8 sm:h-10 text-left text-xs sm:text-sm", className)}
-        {...props}
-      />
+      <div className={cn("relative min-w-0", /(^|\s|:)w-/.test(layout) ? "" : "flex-1", layout)}>
+        <Input
+          ref={ref}
+          type="text"
+          inputMode={allowNegative ? "text" : "decimal"}
+          value={displayValue}
+          onChange={handleChange}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
+          className={cn("h-10 w-full text-left text-sm tabular-nums", field, suffix && "pr-7")}
+          {...props}
+        />
+        {suffix && (
+          <span
+            className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2.5 text-sm text-muted-foreground"
+            aria-hidden="true"
+          >
+            {suffix}
+          </span>
+        )}
+      </div>
     );
   }
 );

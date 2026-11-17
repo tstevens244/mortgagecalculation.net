@@ -1,5 +1,8 @@
-import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from "recharts";
+import { lazy, Suspense } from "react";
 import { formatCurrency } from "@/lib/formatters";
+
+// recharts is large, so the pie loads after the page; the text breakdown renders immediately.
+const PaymentPie = lazy(() => import("./charts/PaymentPie"));
 
 interface PaymentBreakdownProps {
   principal: number;
@@ -8,15 +11,17 @@ interface PaymentBreakdownProps {
   insurance: number;
   pmi: number;
   hoa: number;
+  /** Name for the mortgage insurance slice, e.g. "MIP" for FHA. */
+  pmiLabel?: string;
 }
 
-const PaymentBreakdown = ({ principal, interest, tax, insurance, pmi, hoa }: PaymentBreakdownProps) => {
+const PaymentBreakdown = ({ principal, interest, tax, insurance, pmi, hoa, pmiLabel = "PMI" }: PaymentBreakdownProps) => {
   const data = [
     { name: "Principal", value: principal, color: "hsl(var(--chart-primary))" },
     { name: "Interest", value: interest, color: "hsl(var(--chart-secondary))" },
     { name: "Property Tax", value: tax, color: "hsl(var(--chart-tertiary))" },
     { name: "Insurance", value: insurance, color: "hsl(var(--chart-quaternary))" },
-    ...(pmi > 0 ? [{ name: "PMI", value: pmi, color: "hsl(0 84% 60%)" }] : []),
+    ...(pmi > 0 ? [{ name: pmiLabel, value: pmi, color: "hsl(0 72% 55%)" }] : []),
     ...(hoa > 0 ? [{ name: "HOA", value: hoa, color: "hsl(280 67% 50%)" }] : []),
   ].filter((item) => item.value > 0);
 
@@ -28,39 +33,9 @@ const PaymentBreakdown = ({ principal, interest, tax, insurance, pmi, hoa }: Pay
       
       <div className="grid gap-8 lg:grid-cols-2 items-center">
         <div className="h-[300px] sm:h-[350px]" role="img" aria-label="Pie chart showing monthly payment breakdown">
-          <ResponsiveContainer width="100%" height="100%">
-            <PieChart>
-              <Pie
-                data={data}
-                cx="50%"
-                cy="50%"
-                innerRadius={60}
-                outerRadius={100}
-                paddingAngle={2}
-                dataKey="value"
-                strokeWidth={0}
-              >
-                {data.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={entry.color} />
-                ))}
-              </Pie>
-              <Tooltip
-                formatter={(value: number) => formatCurrency(value)}
-                contentStyle={{
-                  backgroundColor: "hsl(var(--card))",
-                  border: "1px solid hsl(var(--border))",
-                  borderRadius: "0.5rem",
-                }}
-              />
-              <Legend
-                verticalAlign="bottom"
-                height={36}
-                formatter={(value: string) => (
-                  <span className="text-sm text-foreground">{value}</span>
-                )}
-              />
-            </PieChart>
-          </ResponsiveContainer>
+          <Suspense fallback={null}>
+            <PaymentPie data={data} />
+          </Suspense>
         </div>
 
         <div className="space-y-4">

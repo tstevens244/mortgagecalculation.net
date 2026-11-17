@@ -2,6 +2,10 @@ import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import TrustLine from "@/components/TrustLine";
+import GuideContents from "@/components/GuideContents";
+import RelatedCalculators from "@/components/RelatedCalculators";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import RefinanceCalculator from "@/components/RefinanceCalculator";
 
 const Refinance = () => {
@@ -92,7 +96,7 @@ const Refinance = () => {
   return (
     <>
       <Helmet>
-        <title>Refinance Calculator | Should I Refinance My Mortgage in 2025?</title>
+        <title>Refinance Calculator | Should I Refinance My Mortgage?</title>
         <meta
           name="description"
           content="Calculate if refinancing your mortgage makes sense. Compare interest savings, closing costs, and break-even timeline to make an informed refinancing decision."
@@ -122,7 +126,8 @@ const Refinance = () => {
 
         <main id="main-content" className="flex-1 container py-8">
           <article>
-            <header className="text-center mb-10">
+            <header className="text-center mb-8">
+              <Breadcrumbs />
               <h1 className="text-3xl sm:text-4xl lg:text-5xl font-display font-bold text-foreground mb-4">
                 Refinance Calculator
               </h1>
@@ -130,10 +135,15 @@ const Refinance = () => {
                 Unsure if you should refinance? Compare interest savings and equity gains against closing costs 
                 to make an informed decision.
               </p>
+              <TrustLine />
             </header>
 
             <RefinanceCalculator />
 
+
+            <RelatedCalculators />
+
+            <GuideContents />
             {/* Comprehensive Guide Section */}
             <section className="mt-16 prose prose-slate max-w-none">
               <h2 className="text-2xl font-display font-semibold mb-4">Complete Guide to Mortgage Refinancing</h2>

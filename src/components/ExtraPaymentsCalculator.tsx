@@ -27,6 +27,7 @@ import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip as RechartsToolti
 import CurrencyInput from "./CurrencyInput";
 import PercentInput from "./PercentInput";
 import { formatCurrency } from "@/lib/formatters";
+import StickyResult from "./StickyResult";
 
 const ExtraPaymentsCalculator = () => {
   // Loan Information
@@ -199,42 +200,41 @@ const ExtraPaymentsCalculator = () => {
             </CardHeader>
             <CardContent>
               <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2">
-                <div className="flex items-center gap-2">
-                  <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap min-w-[80px] sm:min-w-[100px]">
+                <div className="flex flex-col gap-1.5">
+                  <Label htmlFor="extra-payments-home-price" className="text-sm font-medium text-foreground">
                     Home Price
                   </Label>
-                  <CurrencyInput value={homePrice} onChange={setHomePrice} />
+                  <CurrencyInput id="extra-payments-home-price" value={homePrice} onChange={setHomePrice} />
                 </div>
 
-                <div className="flex items-center gap-2">
-                  <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap min-w-[80px] sm:min-w-[100px]">
+                <div className="flex flex-col gap-1.5">
+                  <Label htmlFor="extra-payments-down-payment" className="text-sm font-medium text-foreground">
                     Down Payment
                   </Label>
-                  <CurrencyInput value={downPayment} onChange={setDownPayment} />
+                  <CurrencyInput id="extra-payments-down-payment" value={downPayment} onChange={setDownPayment} />
                 </div>
 
-                <div className="flex items-center gap-2">
-                  <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap min-w-[80px] sm:min-w-[100px]">
+                <div className="flex flex-col gap-1.5">
+                  <Label htmlFor="extra-payments-interest-rate" className="text-sm font-medium text-foreground">
                     Interest Rate
                   </Label>
                   <div className="flex gap-1 sm:gap-2 flex-1">
-                    <PercentInput
+                    <PercentInput id="extra-payments-interest-rate"
                       value={interestRate}
                       onChange={setInterestRate}
                       min={0}
                       max={20}
                       decimalPlaces={3}
                     />
-                    <span className="flex items-center text-muted-foreground text-xs sm:text-sm">%</span>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2">
-                  <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap min-w-[80px] sm:min-w-[100px]">
+                <div className="flex flex-col gap-1.5">
+                  <Label htmlFor="extra-payments-loan-term" className="text-sm font-medium text-foreground">
                     Loan Term
                   </Label>
                   <Select value={loanTerm} onValueChange={setLoanTerm}>
-                    <SelectTrigger className="h-8 sm:h-10 text-sm flex-1">
+                    <SelectTrigger id="extra-payments-loan-term" className="h-8 sm:h-10 text-sm flex-1">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -267,8 +267,8 @@ const ExtraPaymentsCalculator = () => {
             </CardHeader>
             <CardContent>
               <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2">
-                <div className="flex items-center gap-2">
-                  <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
+                <div className="flex flex-col gap-1.5">
+                  <Label htmlFor="extra-payments-lump-sum" className="text-sm font-medium text-foreground flex items-center gap-1">
                     Lump Sum
                     <Tooltip>
                       <TooltipTrigger asChild>
@@ -279,11 +279,11 @@ const ExtraPaymentsCalculator = () => {
                       </TooltipContent>
                     </Tooltip>
                   </Label>
-                  <CurrencyInput value={initialExtraPayment} onChange={setInitialExtraPayment} />
+                  <CurrencyInput id="extra-payments-lump-sum" value={initialExtraPayment} onChange={setInitialExtraPayment} />
                 </div>
 
-                <div className="flex items-center gap-2">
-                  <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
+                <div className="flex flex-col gap-1.5">
+                  <Label htmlFor="extra-payments-extra-month" className="text-sm font-medium text-foreground flex items-center gap-1">
                     Extra/Month
                     <Tooltip>
                       <TooltipTrigger asChild>
@@ -294,7 +294,7 @@ const ExtraPaymentsCalculator = () => {
                       </TooltipContent>
                     </Tooltip>
                   </Label>
-                  <CurrencyInput value={monthlyExtraPayment} onChange={setMonthlyExtraPayment} />
+                  <CurrencyInput id="extra-payments-extra-month" value={monthlyExtraPayment} onChange={setMonthlyExtraPayment} />
                 </div>
               </div>
             </CardContent>
@@ -348,7 +348,7 @@ const ExtraPaymentsCalculator = () => {
                           wrapperStyle={{ fontSize: '12px' }}
                           formatter={(value) => value === 'originalBalance' ? 'Original' : 'With Extra'}
                         />
-                        <Area
+                        <Area isAnimationActive={false}
                           type="monotone"
                           dataKey="originalBalance"
                           name="originalBalance"
@@ -356,7 +356,7 @@ const ExtraPaymentsCalculator = () => {
                           fill="hsl(var(--muted-foreground) / 0.3)"
                           strokeWidth={2}
                         />
-                        <Area
+                        <Area isAnimationActive={false}
                           type="monotone"
                           dataKey="extraBalance"
                           name="extraBalance"
@@ -390,7 +390,7 @@ const ExtraPaymentsCalculator = () => {
                             <TableCell className="text-center font-medium">{row.year}</TableCell>
                             <TableCell className="text-right">{formatCurrency(row.originalBalance)}</TableCell>
                             <TableCell className="text-right">{formatCurrency(row.extraBalance)}</TableCell>
-                            <TableCell className="text-right text-accent font-medium">
+                            <TableCell className="text-right text-accent-strong font-medium">
                               {formatCurrency(row.originalBalance - row.extraBalance)}
                             </TableCell>
                           </TableRow>
@@ -407,9 +407,10 @@ const ExtraPaymentsCalculator = () => {
         {/* Right Column - Results */}
         <div className="space-y-6 lg:col-span-2">
           {/* Interest Savings Highlight */}
-          <Card className="bg-primary border-0 rounded-xl p-6 shadow-xl">
+          <Card className="result-highlight border-0">
             <CardContent className="p-0">
-              <div className="text-center space-y-2">
+              <StickyResult targetId="calc-result" label={"Interest saved"} value={formatCurrency(results.interestSavings)} />
+              <div id="calc-result" className="text-center space-y-2">
                 <TrendingDown className="h-8 w-8 mx-auto text-white/80" />
                 <p className="text-white/80 text-sm font-medium">
                   Total Interest Savings
@@ -468,7 +469,7 @@ const ExtraPaymentsCalculator = () => {
                 <div className="grid grid-cols-3 gap-2 text-sm py-3 bg-secondary/50 rounded-lg px-3 -mx-3">
                   <span className="font-medium">Interest Savings</span>
                   <span className="text-center">—</span>
-                  <span className="text-center font-bold text-accent">{formatCurrency(results.interestSavings)}</span>
+                  <span className="text-center font-bold text-accent-strong">{formatCurrency(results.interestSavings)}</span>
                 </div>
               </div>
             </CardContent>

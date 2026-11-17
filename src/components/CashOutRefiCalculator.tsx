@@ -19,6 +19,7 @@ import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip as RechartsTo
 import CurrencyInput from "./CurrencyInput";
 import PercentInput from "./PercentInput";
 import { formatCurrency, formatPercent } from "@/lib/formatters";
+import StickyResult from "./StickyResult";
 
 const CashOutRefiCalculator = () => {
   const [homeValue, setHomeValue] = useState(400000);
@@ -33,7 +34,8 @@ const CashOutRefiCalculator = () => {
     // Maximum LTV is typically 80% for cash-out refi
     const maxLTV = 0.80;
     const maxLoanAmount = homeValue * maxLTV;
-    const maxCashOut = maxLoanAmount - currentMortgageBalance;
+    // Fees rolled into the loan count toward the 80% limit too.
+    const maxCashOut = maxLoanAmount - currentMortgageBalance - (rollFeesIntoLoan ? refinanceFees : 0);
     
     // Adjusted cash out (capped at max)
     const actualCashOut = Math.min(Math.max(0, desiredCashOut), maxCashOut);
@@ -102,16 +104,16 @@ const CashOutRefiCalculator = () => {
           <CardContent>
             <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2">
               {/* Home Value */}
-              <div className="flex items-center gap-2">
-                <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap min-w-[90px] sm:min-w-[110px]">
+              <div className="flex flex-col gap-1.5">
+                <Label htmlFor="cash-out-refi-home-value" className="text-sm font-medium text-foreground">
                   Home Value
                 </Label>
-                <CurrencyInput value={homeValue} onChange={setHomeValue} />
+                <CurrencyInput id="cash-out-refi-home-value" value={homeValue} onChange={setHomeValue} />
               </div>
 
               {/* Current Mortgage Balance */}
-              <div className="flex items-center gap-2">
-                <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[90px] sm:min-w-[110px]">
+              <div className="flex flex-col gap-1.5">
+                <Label htmlFor="cash-out-refi-current-balance" className="text-sm font-medium text-foreground flex items-center gap-1">
                   Current Balance
                   <Tooltip>
                     <TooltipTrigger asChild>
@@ -122,12 +124,12 @@ const CashOutRefiCalculator = () => {
                     </TooltipContent>
                   </Tooltip>
                 </Label>
-                <CurrencyInput value={currentMortgageBalance} onChange={setCurrentMortgageBalance} />
+                <CurrencyInput id="cash-out-refi-current-balance" value={currentMortgageBalance} onChange={setCurrentMortgageBalance} />
               </div>
 
               {/* Loan Term */}
-              <div className="flex items-center gap-2">
-                <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[90px] sm:min-w-[110px]">
+              <div className="flex flex-col gap-1.5">
+                <Label htmlFor="cash-out-refi-loan-term" className="text-sm font-medium text-foreground flex items-center gap-1">
                   Loan Term
                   <Tooltip>
                     <TooltipTrigger asChild>
@@ -139,7 +141,7 @@ const CashOutRefiCalculator = () => {
                   </Tooltip>
                 </Label>
                 <Select value={loanTerm} onValueChange={setLoanTerm}>
-                  <SelectTrigger className="h-8 sm:h-10 text-sm flex-1">
+                  <SelectTrigger id="cash-out-refi-loan-term" className="h-8 sm:h-10 text-sm flex-1">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -152,8 +154,8 @@ const CashOutRefiCalculator = () => {
               </div>
 
               {/* Interest Rate */}
-              <div className="flex items-center gap-2">
-                <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[90px] sm:min-w-[110px]">
+              <div className="flex flex-col gap-1.5">
+                <Label htmlFor="cash-out-refi-interest-rate" className="text-sm font-medium text-foreground flex items-center gap-1">
                   Interest Rate
                   <Tooltip>
                     <TooltipTrigger asChild>
@@ -165,20 +167,19 @@ const CashOutRefiCalculator = () => {
                   </Tooltip>
                 </Label>
                 <div className="flex gap-1 sm:gap-2 flex-1">
-                  <PercentInput
+                  <PercentInput id="cash-out-refi-interest-rate"
                     value={interestRate}
                     onChange={setInterestRate}
                     min={0}
                     max={20}
                     decimalPlaces={3}
                   />
-                  <span className="flex items-center text-muted-foreground text-xs sm:text-sm">%</span>
                 </div>
               </div>
 
               {/* Desired Cash Out */}
-              <div className="flex items-center gap-2">
-                <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[90px] sm:min-w-[110px]">
+              <div className="flex flex-col gap-1.5">
+                <Label htmlFor="cash-out-refi-cash-out" className="text-sm font-medium text-foreground flex items-center gap-1">
                   Cash-Out
                   <Tooltip>
                     <TooltipTrigger asChild>
@@ -189,12 +190,12 @@ const CashOutRefiCalculator = () => {
                     </TooltipContent>
                   </Tooltip>
                 </Label>
-                <CurrencyInput value={desiredCashOut} onChange={setDesiredCashOut} />
+                <CurrencyInput id="cash-out-refi-cash-out" value={desiredCashOut} onChange={setDesiredCashOut} />
               </div>
 
               {/* Refinance Fees */}
-              <div className="flex items-center gap-2">
-                <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[90px] sm:min-w-[110px]">
+              <div className="flex flex-col gap-1.5">
+                <Label htmlFor="cash-out-refi-refi-fees" className="text-sm font-medium text-foreground flex items-center gap-1">
                   Refi Fees
                   <Tooltip>
                     <TooltipTrigger asChild>
@@ -205,7 +206,7 @@ const CashOutRefiCalculator = () => {
                     </TooltipContent>
                   </Tooltip>
                 </Label>
-                <CurrencyInput value={refinanceFees} onChange={setRefinanceFees} />
+                <CurrencyInput id="cash-out-refi-refi-fees" value={refinanceFees} onChange={setRefinanceFees} />
               </div>
             </div>
 
@@ -240,7 +241,7 @@ const CashOutRefiCalculator = () => {
             <div className="h-[220px]">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
-                  <Pie
+                  <Pie isAnimationActive={false}
                     data={[
                       { name: 'Cash Out', value: results.actualCashOut, color: 'hsl(var(--accent))' },
                       { name: 'Remaining Equity', value: Math.max(0, results.equity - results.actualCashOut), color: 'hsl(var(--primary))' },
@@ -293,9 +294,10 @@ const CashOutRefiCalculator = () => {
         {/* Results Section */}
         <div className="space-y-6 lg:col-span-2 lg:row-span-2 lg:row-start-1 lg:col-start-4">
           {/* Main Result */}
-          <Card className="bg-primary border-0 rounded-xl p-6 shadow-xl">
+          <Card className="result-highlight border-0">
             <CardContent className="p-0">
-              <div className="text-center space-y-2">
+              <StickyResult targetId="calc-result" label={"Max cash-out"} value={formatCurrency(results.maxCashOut)} />
+              <div id="calc-result" className="text-center space-y-2">
                 <p className="text-white/80 text-sm font-medium">
                   Estimated Max Cash-Out Amount
                 </p>
@@ -361,7 +363,7 @@ const CashOutRefiCalculator = () => {
                       </TooltipContent>
                     </Tooltip>
                   </span>
-                  <span className="font-semibold text-lg text-accent">{formatCurrency(results.monthlyPayment)}</span>
+                  <span className="font-semibold text-lg text-accent-strong">{formatCurrency(results.monthlyPayment)}</span>
                 </div>
               </div>
             </CardContent>

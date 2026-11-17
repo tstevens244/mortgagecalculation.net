@@ -1,7 +1,12 @@
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
+import { ChevronDown } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import TrustLine from "@/components/TrustLine";
+import GuideContents from "@/components/GuideContents";
+import RelatedCalculators from "@/components/RelatedCalculators";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import MortgageCalculator from "@/components/MortgageCalculator";
 
 const Conventional = () => {
@@ -128,7 +133,8 @@ const Conventional = () => {
 
         <main id="main-content" className="flex-1 container py-8">
           <article>
-            <header className="text-center mb-10">
+            <header className="text-center mb-8">
+              <Breadcrumbs />
               <h1 className="text-3xl sm:text-4xl lg:text-5xl font-display font-bold text-foreground mb-4">
                 Conventional Mortgage Calculator
               </h1>
@@ -136,12 +142,17 @@ const Conventional = () => {
                 Estimate your monthly payment for a conventional loan. Includes principal, interest,
                 taxes, insurance, and PMI for down payments under 20%.
               </p>
+              <TrustLine />
             </header>
 
             <MortgageCalculator />
 
+
+            <RelatedCalculators />
+
+            <GuideContents />
             <section className="mt-12 prose prose-slate max-w-none">
-              <h2 className="text-2xl font-display font-semibold mb-4">The Complete Guide to Conventional Mortgages in 2025</h2>
+              <h2 className="text-2xl font-display font-semibold mb-4">The Complete Guide to Conventional Mortgages</h2>
               <p className="text-muted-foreground leading-relaxed">
                 A conventional mortgage is a home loan that is not insured or guaranteed by the federal government. 
                 Unlike <Link to="/fha-loan-calculator/" className="text-primary hover:underline">FHA</Link>, 
@@ -159,37 +170,37 @@ const Conventional = () => {
               </p>
               <div className="grid md:grid-cols-2 gap-6 not-prose">
                 <div className="calculator-card p-4">
-                  <h4 className="font-semibold text-foreground mb-2">Credit Score</h4>
+                  <h3 className="font-semibold text-foreground mb-2 text-base font-sans">Credit Score</h3>
                   <p className="text-sm text-muted-foreground">
                     Minimum 620 for most lenders. Scores of 740+ qualify for the best rates. Each 20-point drop typically increases rates by 0.125-0.25%.
                   </p>
                 </div>
                 <div className="calculator-card p-4">
-                  <h4 className="font-semibold text-foreground mb-2">Down Payment</h4>
+                  <h3 className="font-semibold text-foreground mb-2 text-base font-sans">Down Payment</h3>
                   <p className="text-sm text-muted-foreground">
                     As low as 3% for first-time buyers (HomeReady/Home Possible). 5-20% is typical. 20%+ eliminates PMI requirement.
                   </p>
                 </div>
                 <div className="calculator-card p-4">
-                  <h4 className="font-semibold text-foreground mb-2">Debt-to-Income Ratio (DTI)</h4>
+                  <h3 className="font-semibold text-foreground mb-2 text-base font-sans">Debt-to-Income Ratio (DTI)</h3>
                   <p className="text-sm text-muted-foreground">
                     Maximum 43-45% back-end DTI for most borrowers. Up to 50% may be allowed with compensating factors like high credit or cash reserves.
                   </p>
                 </div>
                 <div className="calculator-card p-4">
-                  <h4 className="font-semibold text-foreground mb-2">Employment & Income</h4>
+                  <h3 className="font-semibold text-foreground mb-2 text-base font-sans">Employment & Income</h3>
                   <p className="text-sm text-muted-foreground">
                     Two years of stable employment history preferred. Income must be documented with W-2s, tax returns, and pay stubs.
                   </p>
                 </div>
                 <div className="calculator-card p-4">
-                  <h4 className="font-semibold text-foreground mb-2">Property Types Allowed</h4>
+                  <h3 className="font-semibold text-foreground mb-2 text-base font-sans">Property Types Allowed</h3>
                   <p className="text-sm text-muted-foreground">
                     Primary residence, second homes, and investment properties. More flexibility than government loans.
                   </p>
                 </div>
                 <div className="calculator-card p-4">
-                  <h4 className="font-semibold text-foreground mb-2">Cash Reserves</h4>
+                  <h3 className="font-semibold text-foreground mb-2 text-base font-sans">Cash Reserves</h3>
                   <p className="text-sm text-muted-foreground">
                     Typically 2 months of mortgage payments in reserve. Investment properties may require 6 months.
                   </p>
@@ -199,41 +210,41 @@ const Conventional = () => {
               <h2 className="text-2xl font-display font-semibold mt-10 mb-4">Conventional Loan Pros and Cons</h2>
               <div className="not-prose grid gap-6 md:grid-cols-2">
                 <div className="calculator-card p-4">
-                  <h4 className="font-display font-semibold text-lg mb-3 text-accent">✓ Advantages of Conventional Loans</h4>
+                  <h3 className="font-display font-semibold text-lg mb-3 text-accent-strong">✓ Advantages of Conventional Loans</h3>
                   <ul className="space-y-2 text-muted-foreground text-sm">
                     <li className="flex items-start gap-2">
-                      <span className="text-accent">✓</span>
+                      <span className="text-accent-strong">✓</span>
                       <span>No upfront mortgage insurance premium</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-accent">✓</span>
+                      <span className="text-accent-strong">✓</span>
                       <span>PMI can be removed at 20% equity (unlike FHA MIP)</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-accent">✓</span>
+                      <span className="text-accent-strong">✓</span>
                       <span>Competitive rates for borrowers with good credit</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-accent">✓</span>
+                      <span className="text-accent-strong">✓</span>
                       <span>Flexible property types: primary, second home, investment</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-accent">✓</span>
-                      <span>Higher loan limits than FHA ($766,550 in most areas)</span>
+                      <span className="text-accent-strong">✓</span>
+                      <span>Higher loan limits than FHA ($832,750 in most areas)</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-accent">✓</span>
+                      <span className="text-accent-strong">✓</span>
                       <span>Less paperwork and faster closing than government loans</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-accent">✓</span>
+                      <span className="text-accent-strong">✓</span>
                       <span>No occupancy requirements for investment properties</span>
                     </li>
                   </ul>
                 </div>
 
                 <div className="calculator-card p-4">
-                  <h4 className="font-display font-semibold text-lg mb-3 text-primary">✗ Disadvantages of Conventional Loans</h4>
+                  <h3 className="font-display font-semibold text-lg mb-3 text-primary">✗ Disadvantages of Conventional Loans</h3>
                   <ul className="space-y-2 text-muted-foreground text-sm">
                     <li className="flex items-start gap-2">
                       <span className="text-primary">✗</span>
@@ -269,7 +280,7 @@ const Conventional = () => {
               </p>
               <div className="grid md:grid-cols-2 gap-4 not-prose mt-4">
                 <div className="calculator-card p-4">
-                  <h4 className="font-semibold text-foreground mb-2">Conforming Loans</h4>
+                  <h3 className="font-semibold text-foreground mb-2 text-base font-sans">Conforming Loans</h3>
                   <p className="text-sm text-muted-foreground mb-2">
                     Meet Fannie Mae/Freddie Mac guidelines and fall within loan limits:
                   </p>
@@ -280,7 +291,7 @@ const Conventional = () => {
                   </ul>
                 </div>
                 <div className="calculator-card p-4">
-                  <h4 className="font-semibold text-foreground mb-2">Non-Conforming (Jumbo) Loans</h4>
+                  <h3 className="font-semibold text-foreground mb-2 text-base font-sans">Non-Conforming (Jumbo) Loans</h3>
                   <p className="text-sm text-muted-foreground mb-2">
                     Exceed conforming limits or don't meet standard criteria:
                   </p>
@@ -324,14 +335,14 @@ const Conventional = () => {
 
               <h2 className="text-2xl font-display font-semibold mt-10 mb-4">How to Interpret Your Calculator Results</h2>
               <div className="calculator-card p-6 not-prose">
-                <h4 className="font-semibold text-foreground mb-4">Making Sense of Your Conventional Loan Estimate</h4>
+                <h3 className="font-semibold text-foreground mb-4 text-base font-sans">Making Sense of Your Conventional Loan Estimate</h3>
                 <ul className="space-y-3 text-muted-foreground text-sm">
                   <li>
                     <strong>Evaluate PMI impact:</strong> If PMI adds $150+/month, calculate how long until you reach 20% equity 
                     and compare total costs to an FHA loan.
                   </li>
                   <li>
-                    <strong>Check conforming limits:</strong> If your loan exceeds $766,550, you'll need a 
+                    <strong>Check conforming limits:</strong> If your loan exceeds $832,750, you'll need a 
                     <Link to="/jumbo-loan-calculator/" className="text-primary hover:underline"> jumbo loan</Link> with stricter requirements.
                   </li>
                   <li>
@@ -367,23 +378,23 @@ const Conventional = () => {
                       <td className="p-3">Min. Down Payment</td>
                       <td className="p-3">3%</td>
                       <td className="p-3">3.5%</td>
-                      <td className="p-3 text-accent font-semibold">0%</td>
+                      <td className="p-3 text-accent-strong font-semibold">0%</td>
                     </tr>
                     <tr className="border-b border-border">
                       <td className="p-3">Mortgage Insurance</td>
-                      <td className="p-3 text-accent font-semibold">PMI (removable)</td>
-                      <td className="p-3">MIP (lifetime)</td>
+                      <td className="p-3 text-accent-strong font-semibold">PMI (removable)</td>
+                      <td className="p-3">MIP (11 yrs or loan life)</td>
                       <td className="p-3">Funding fee</td>
                     </tr>
                     <tr className="border-b border-border">
-                      <td className="p-3">Loan Limits (2024)</td>
-                      <td className="p-3">$766,550*</td>
-                      <td className="p-3">$498,257*</td>
-                      <td className="p-3 text-accent font-semibold">No limit</td>
+                      <td className="p-3">Loan Limits (2026)</td>
+                      <td className="p-3">$832,750*</td>
+                      <td className="p-3">$541,287*</td>
+                      <td className="p-3 text-accent-strong font-semibold">No limit</td>
                     </tr>
                     <tr>
                       <td className="p-3">Property Types</td>
-                      <td className="p-3 text-accent font-semibold">All types</td>
+                      <td className="p-3 text-accent-strong font-semibold">All types</td>
                       <td className="p-3">Primary only</td>
                       <td className="p-3">Primary only</td>
                     </tr>
@@ -393,40 +404,60 @@ const Conventional = () => {
               </div>
 
               <h2 className="text-2xl font-display font-semibold mt-10 mb-4">Frequently Asked Questions About Conventional Loans</h2>
-              <div className="space-y-6 not-prose">
-                <div className="calculator-card p-4">
-                  <h4 className="font-semibold text-foreground mb-2">Can I get a conventional loan with a bankruptcy or foreclosure?</h4>
+              <div className="space-y-3 not-prose">
+                <details className="group calculator-card overflow-hidden" data-faq>
+                  <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-4 hover:bg-secondary/40 [&::-webkit-details-marker]:hidden">
+                    <h3 className="text-base font-semibold text-foreground font-sans">Can I get a conventional loan with a bankruptcy or foreclosure?</h3>
+                    <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-open:rotate-180" aria-hidden="true" />
+                  </summary>
+                  <div className="px-4 pb-4">
                   <p className="text-sm text-muted-foreground">
                     Yes, but waiting periods apply. After Chapter 7 bankruptcy: 4 years. After foreclosure: 7 years 
                     (or 3 years with extenuating circumstances). After Chapter 13 bankruptcy: 2 years from discharge.
                   </p>
-                </div>
-                <div className="calculator-card p-4">
-                  <h4 className="font-semibold text-foreground mb-2">What's the difference between HomeReady and Home Possible?</h4>
+                  </div>
+                </details>
+                <details className="group calculator-card overflow-hidden" data-faq>
+                  <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-4 hover:bg-secondary/40 [&::-webkit-details-marker]:hidden">
+                    <h3 className="text-base font-semibold text-foreground font-sans">What's the difference between HomeReady and Home Possible?</h3>
+                    <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-open:rotate-180" aria-hidden="true" />
+                  </summary>
+                  <div className="px-4 pb-4">
                   <p className="text-sm text-muted-foreground">
                     Both are 3% down payment programs. HomeReady (Fannie Mae) allows income from non-borrower household members. 
                     Home Possible (Freddie Mac) has similar features. Both have income limits in most areas.
                   </p>
-                </div>
-                <div className="calculator-card p-4">
-                  <h4 className="font-semibold text-foreground mb-2">Should I choose a 15-year or 30-year conventional loan?</h4>
+                  </div>
+                </details>
+                <details className="group calculator-card overflow-hidden" data-faq>
+                  <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-4 hover:bg-secondary/40 [&::-webkit-details-marker]:hidden">
+                    <h3 className="text-base font-semibold text-foreground font-sans">Should I choose a 15-year or 30-year conventional loan?</h3>
+                    <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-open:rotate-180" aria-hidden="true" />
+                  </summary>
+                  <div className="px-4 pb-4">
                   <p className="text-sm text-muted-foreground">
                     15-year loans have lower rates and save significantly on interest but require higher monthly payments. 
                     30-year loans offer lower payments and more flexibility. Consider <Link to="/extra-mortgage-payments-calculator/" className="text-primary hover:underline">making extra payments</Link> on 
                     a 30-year loan for the best of both worlds.
                   </p>
-                </div>
-                <div className="calculator-card p-4">
-                  <h4 className="font-semibold text-foreground mb-2">Can I use gift funds for my conventional loan down payment?</h4>
+                  </div>
+                </details>
+                <details className="group calculator-card overflow-hidden" data-faq>
+                  <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-4 hover:bg-secondary/40 [&::-webkit-details-marker]:hidden">
+                    <h3 className="text-base font-semibold text-foreground font-sans">Can I use gift funds for my conventional loan down payment?</h3>
+                    <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-open:rotate-180" aria-hidden="true" />
+                  </summary>
+                  <div className="px-4 pb-4">
                   <p className="text-sm text-muted-foreground">
                     Yes, gift funds are allowed from family members, employers, or other approved sources. For down payments 
                     under 20%, you may need to contribute some of your own funds depending on the program.
                   </p>
-                </div>
+                  </div>
+                </details>
               </div>
 
               <div className="calculator-card p-6 mt-10 not-prose">
-                <h4 className="font-display font-semibold text-lg mb-4">Official Resources & Citations</h4>
+                <h3 className="font-display font-semibold text-lg mb-4">Official Resources & Citations</h3>
                 <ul className="space-y-2 text-sm text-muted-foreground">
                   <li>
                     <a href="https://singlefamily.fanniemae.com/originating-underwriting/mortgage-products" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">

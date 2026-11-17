@@ -8,6 +8,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import CurrencyInput from "./CurrencyInput";
 import PercentInput from "./PercentInput";
 import { formatCurrency } from "@/lib/formatters";
+import StickyResult from "./StickyResult";
 
 interface RefinanceInputs {
   // Original loan
@@ -42,8 +43,8 @@ const RefinanceCalculator = () => {
     discountPoints: 1.0,
     originationFees: 0.5,
     otherClosingCosts: 1200,
-    federalTaxRate: 25,
-    stateTaxRate: 5,
+    federalTaxRate: 0,
+    stateTaxRate: 0,
   });
 
   const updateInput = (field: keyof RefinanceInputs, value: number) => {
@@ -237,28 +238,28 @@ const RefinanceCalculator = () => {
               </h2>
 
               <div className="space-y-3">
-                <div className="flex items-center gap-3">
-                  <Label className="text-xs sm:text-sm text-muted-foreground min-w-[130px]">
+                <div className="flex flex-col gap-1.5">
+                  <Label htmlFor="refinance-original-home-price" className="text-sm font-medium text-foreground">
                     Original Home Price
                   </Label>
-                  <CurrencyInput
+                  <CurrencyInput id="refinance-original-home-price"
                     value={inputs.originalHomePrice}
                     onChange={(value) => updateInput("originalHomePrice", value)}
                   />
                 </div>
 
-                <div className="flex items-center gap-3">
-                  <Label className="text-xs sm:text-sm text-muted-foreground min-w-[130px]">
+                <div className="flex flex-col gap-1.5">
+                  <Label htmlFor="refinance-original-down-payment" className="text-sm font-medium text-foreground">
                     Original Down Payment
                   </Label>
-                  <CurrencyInput
+                  <CurrencyInput id="refinance-original-down-payment"
                     value={inputs.originalDownPayment}
                     onChange={(value) => updateInput("originalDownPayment", value)}
                   />
                 </div>
 
-                <div className="flex items-center gap-3">
-                  <Label className="text-xs sm:text-sm text-muted-foreground min-w-[130px]">
+                <div className="flex flex-col gap-1.5">
+                  <Label className="text-sm font-medium text-foreground">
                     Original Loan Amount
                   </Label>
                   <div className="flex-1 h-8 sm:h-10 flex items-center px-3 bg-muted rounded-md text-sm font-medium">
@@ -266,15 +267,15 @@ const RefinanceCalculator = () => {
                   </div>
                 </div>
 
-                <div className="flex items-center gap-3">
-                  <Label className="text-xs sm:text-sm text-muted-foreground min-w-[130px]">
+                <div className="flex flex-col gap-1.5">
+                  <Label htmlFor="refinance-loan-term" className="text-sm font-medium text-foreground">
                     Loan Term
                   </Label>
                   <Select
                     value={inputs.originalLoanTerm.toString()}
                     onValueChange={(v) => updateInput("originalLoanTerm", parseInt(v))}
                   >
-                    <SelectTrigger className="h-8 sm:h-10 text-sm flex-1">
+                    <SelectTrigger id="refinance-loan-term" className="h-8 sm:h-10 text-sm flex-1">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -286,28 +287,27 @@ const RefinanceCalculator = () => {
                   </Select>
                 </div>
 
-                <div className="flex items-center gap-3">
-                  <Label className="text-xs sm:text-sm text-muted-foreground min-w-[130px]">
+                <div className="flex flex-col gap-1.5">
+                  <Label htmlFor="refinance-interest-rate" className="text-sm font-medium text-foreground">
                     Interest Rate
                   </Label>
                   <div className="flex gap-2 flex-1 items-center">
-                    <PercentInput
+                    <PercentInput id="refinance-interest-rate"
                       value={inputs.originalInterestRate}
                       onChange={(value) => updateInput("originalInterestRate", value)}
                       min={0}
                       max={30}
                       decimalPlaces={3}
                     />
-                    <span className="text-muted-foreground text-sm">%</span>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-3">
-                  <Label className="text-xs sm:text-sm text-muted-foreground min-w-[130px]">
+                <div className="flex flex-col gap-1.5">
+                  <Label htmlFor="refinance-months-already-paid" className="text-sm font-medium text-foreground">
                     Months Already Paid
                   </Label>
                   <div className="flex gap-2 flex-1 items-center">
-                    <Input
+                    <Input id="refinance-months-already-paid"
                       type="text"
                       inputMode="numeric"
                       value={inputs.monthsAlreadyPaid}
@@ -339,15 +339,15 @@ const RefinanceCalculator = () => {
               </h2>
 
               <div className="space-y-3">
-                <div className="flex items-center gap-3">
-                  <Label className="text-xs sm:text-sm text-muted-foreground min-w-[130px]">
+                <div className="flex flex-col gap-1.5">
+                  <Label htmlFor="refinance-new-loan-term" className="text-sm font-medium text-foreground">
                     New Loan Term
                   </Label>
                   <Select
                     value={inputs.newLoanTerm.toString()}
                     onValueChange={(v) => updateInput("newLoanTerm", parseInt(v))}
                   >
-                    <SelectTrigger className="h-8 sm:h-10 text-sm flex-1">
+                    <SelectTrigger id="refinance-new-loan-term" className="h-8 sm:h-10 text-sm flex-1">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -359,28 +359,27 @@ const RefinanceCalculator = () => {
                   </Select>
                 </div>
 
-                <div className="flex items-center gap-3">
-                  <Label className="text-xs sm:text-sm text-muted-foreground min-w-[130px]">
+                <div className="flex flex-col gap-1.5">
+                  <Label htmlFor="refinance-new-interest-rate" className="text-sm font-medium text-foreground">
                     New Interest Rate
                   </Label>
                   <div className="flex gap-2 flex-1 items-center">
-                    <PercentInput
+                    <PercentInput id="refinance-new-interest-rate"
                       value={inputs.newInterestRate}
                       onChange={(value) => updateInput("newInterestRate", value)}
                       min={0}
                       max={30}
                       decimalPlaces={3}
                     />
-                    <span className="text-muted-foreground text-sm">%</span>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-3">
-                  <Label className="text-xs sm:text-sm text-muted-foreground min-w-[130px]">
+                <div className="flex flex-col gap-1.5">
+                  <Label htmlFor="refinance-years-before-sell" className="text-sm font-medium text-foreground">
                     Years Before Sell
                   </Label>
                   <div className="flex gap-2 flex-1 items-center">
-                    <Input
+                    <Input id="refinance-years-before-sell"
                       type="text"
                       inputMode="numeric"
                       value={inputs.yearsBeforeSell}
@@ -395,42 +394,40 @@ const RefinanceCalculator = () => {
                   <h3 className="text-sm font-medium mb-2">Fees and Points</h3>
                   
                   <div className="flex items-center gap-3 mb-2">
-                    <Label className="text-xs sm:text-sm text-muted-foreground min-w-[130px]">
+                    <Label htmlFor="refinance-discount-points" className="text-xs sm:text-sm text-muted-foreground min-w-[130px]">
                       Discount Points
                     </Label>
                       <div className="flex gap-2 flex-1 items-center">
-                      <PercentInput
+                      <PercentInput id="refinance-discount-points"
                         value={inputs.discountPoints}
                         onChange={(value) => updateInput("discountPoints", value)}
                         min={0}
                         max={10}
                         decimalPlaces={2}
                       />
-                      <span className="text-muted-foreground text-sm">%</span>
                     </div>
                   </div>
 
                   <div className="flex items-center gap-3 mb-2">
-                    <Label className="text-xs sm:text-sm text-muted-foreground min-w-[130px]">
+                    <Label htmlFor="refinance-origination-fees" className="text-xs sm:text-sm text-muted-foreground min-w-[130px]">
                       Origination Fees
                     </Label>
                     <div className="flex gap-2 flex-1 items-center">
-                      <PercentInput
+                      <PercentInput id="refinance-origination-fees"
                         value={inputs.originationFees}
                         onChange={(value) => updateInput("originationFees", value)}
                         min={0}
                         max={10}
                         decimalPlaces={2}
                       />
-                      <span className="text-muted-foreground text-sm">%</span>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-3">
-                    <Label className="text-xs sm:text-sm text-muted-foreground min-w-[130px]">
+                  <div className="flex flex-col gap-1.5">
+                    <Label htmlFor="refinance-other-closing-costs" className="text-sm font-medium text-foreground">
                       Other Closing Costs
                     </Label>
-                    <CurrencyInput
+                    <CurrencyInput id="refinance-other-closing-costs"
                       value={inputs.otherClosingCosts}
                       onChange={(value) => updateInput("otherClosingCosts", value)}
                     />
@@ -468,42 +465,43 @@ const RefinanceCalculator = () => {
             </Alert>
 
             <div className="grid gap-4 sm:grid-cols-2">
-              <div className="flex items-center gap-3">
-                <Label className="text-xs sm:text-sm text-muted-foreground min-w-[130px]">
-                  Federal Tax Rate
+              <div className="flex flex-col gap-1.5">
+                <Label htmlFor="refinance-federal-tax-rate" className="text-sm font-medium text-foreground">
+                  Federal tax rate (if you itemize)
                 </Label>
                 <div className="flex gap-2 flex-1 items-center">
-                  <Input
-                    type="text"
-                    inputMode="decimal"
+                  <PercentInput id="refinance-federal-tax-rate"
                     value={inputs.federalTaxRate}
-                    onChange={(e) => updateInput("federalTaxRate", parseFloat(e.target.value) || 0)}
+                    onChange={(v) => updateInput("federalTaxRate", v)}
+                    min={0}
+                    max={50}
+                    decimalPlaces={2}
                     className="h-8 sm:h-10 text-sm"
                   />
-                  <span className="text-muted-foreground text-sm">%</span>
                 </div>
               </div>
 
-              <div className="flex items-center gap-3">
-                <Label className="text-xs sm:text-sm text-muted-foreground min-w-[130px]">
-                  State Tax Rate
+              <div className="flex flex-col gap-1.5">
+                <Label htmlFor="refinance-state-tax-rate" className="text-sm font-medium text-foreground">
+                  State tax rate (if you itemize)
                 </Label>
                 <div className="flex gap-2 flex-1 items-center">
-                  <Input
-                    type="text"
-                    inputMode="decimal"
+                  <PercentInput id="refinance-state-tax-rate"
                     value={inputs.stateTaxRate}
-                    onChange={(e) => updateInput("stateTaxRate", parseFloat(e.target.value) || 0)}
+                    onChange={(v) => updateInput("stateTaxRate", v)}
+                    min={0}
+                    max={20}
+                    decimalPlaces={2}
                     className="h-8 sm:h-10 text-sm"
                   />
-                  <span className="text-muted-foreground text-sm">%</span>
                 </div>
               </div>
             </div>
           </section>
 
           {/* Results Summary Card */}
-          <section className="calculator-card p-4 sm:p-6 bg-gradient-to-br from-primary/5 to-accent/5" aria-labelledby="summary-heading">
+          <StickyResult targetId="calc-result" label={calculations.comparison.shouldRefinance ? "Refinancing saves" : "Refinancing costs"} value={`${formatCurrency(Math.abs(calculations.comparison.totalBenefit))}${calculations.comparison.shouldRefinance && Number.isFinite(calculations.comparison.breakEvenMonths) ? ` · break-even ${calculations.comparison.breakEvenMonths} mo` : ""}`} />
+          <section id="calc-result" className="calculator-card p-4 sm:p-6 bg-gradient-to-br from-primary/5 to-accent/5" aria-labelledby="summary-heading">
             <h2 id="summary-heading" className="text-base sm:text-xl font-display font-semibold mb-4 flex items-center gap-2">
               <TrendingDown className="h-4 w-4 sm:h-5 sm:w-5 text-accent" aria-hidden="true" />
               Should You Refinance? Here Are Your Results
@@ -540,13 +538,13 @@ const RefinanceCalculator = () => {
                     <td className="py-4 font-semibold">
                       Net Refinancing {calculations.comparison.shouldRefinance ? 'Benefit' : 'Cost'} Over {inputs.yearsBeforeSell} Years
                     </td>
-                    <td className={`py-4 text-right text-xl font-bold ${calculations.comparison.shouldRefinance ? 'text-accent' : 'text-destructive'}`}>
+                    <td className={`py-4 text-right text-xl font-bold ${calculations.comparison.shouldRefinance ? 'text-accent-strong' : 'text-destructive'}`}>
                       {calculations.comparison.totalBenefit >= 0 ? '' : '-'}{formatCurrency(Math.abs(calculations.comparison.totalBenefit))}
                     </td>
                   </tr>
                   <tr>
                     <td className="py-3 text-muted-foreground">Monthly Payment Change</td>
-                    <td className={`py-3 text-right font-medium ${calculations.comparison.monthlySavings > 0 ? 'text-accent' : 'text-destructive'}`}>
+                    <td className={`py-3 text-right font-medium ${calculations.comparison.monthlySavings > 0 ? 'text-accent-strong' : 'text-destructive'}`}>
                       {calculations.comparison.monthlySavings >= 0 ? 
                         `Save ${formatCurrency(calculations.comparison.monthlySavings)}/mo` : 
                         `Pay ${formatCurrency(Math.abs(calculations.comparison.monthlySavings))}/mo more`}
@@ -631,7 +629,7 @@ const RefinanceCalculator = () => {
                     <tr className="bg-muted/30">
                       <td className="py-3 px-4 text-muted-foreground">Payment Difference Per Month</td>
                       <td className="py-3 px-4 text-right font-medium">—</td>
-                      <td className={`py-3 px-4 text-right font-medium ${calculations.comparison.monthlyPaymentDiff < 0 ? 'text-accent' : 'text-destructive'}`}>
+                      <td className={`py-3 px-4 text-right font-medium ${calculations.comparison.monthlyPaymentDiff < 0 ? 'text-accent-strong' : 'text-destructive'}`}>
                         {calculations.comparison.monthlyPaymentDiff >= 0 ? '+' : ''}{formatCurrency(calculations.comparison.monthlyPaymentDiff)}
                       </td>
                     </tr>
@@ -663,7 +661,7 @@ const RefinanceCalculator = () => {
                     <tr>
                       <td className="py-3 px-4 text-muted-foreground">Interest Savings</td>
                       <td className="py-3 px-4 text-right font-medium">—</td>
-                      <td className="py-3 px-4 text-right font-medium text-accent">{formatCurrency(calculations.comparison.interestSavings)}</td>
+                      <td className="py-3 px-4 text-right font-medium text-accent-strong">{formatCurrency(calculations.comparison.interestSavings)}</td>
                     </tr>
                   </tbody>
                 </table>
@@ -713,7 +711,7 @@ const RefinanceCalculator = () => {
                     <tr className="bg-accent/10">
                       <td className="py-3 px-4 font-semibold">Remaining Balance Difference (Equity Gained)</td>
                       <td className="py-3 px-4 text-right font-medium">—</td>
-                      <td className="py-3 px-4 text-right font-bold text-accent">{formatCurrency(calculations.comparison.balanceDifference)}</td>
+                      <td className="py-3 px-4 text-right font-bold text-accent-strong">{formatCurrency(calculations.comparison.balanceDifference)}</td>
                     </tr>
                   </tbody>
                 </table>
