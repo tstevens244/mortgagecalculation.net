@@ -11,15 +11,17 @@ interface PaymentBreakdownProps {
   insurance: number;
   pmi: number;
   hoa: number;
+  /** Name for the mortgage insurance slice, e.g. "MIP" for FHA. */
+  pmiLabel?: string;
 }
 
-const PaymentBreakdown = ({ principal, interest, tax, insurance, pmi, hoa }: PaymentBreakdownProps) => {
+const PaymentBreakdown = ({ principal, interest, tax, insurance, pmi, hoa, pmiLabel = "PMI" }: PaymentBreakdownProps) => {
   const data = [
     { name: "Principal", value: principal, color: "hsl(var(--chart-primary))" },
     { name: "Interest", value: interest, color: "hsl(var(--chart-secondary))" },
     { name: "Property Tax", value: tax, color: "hsl(var(--chart-tertiary))" },
     { name: "Insurance", value: insurance, color: "hsl(var(--chart-quaternary))" },
-    ...(pmi > 0 ? [{ name: "PMI", value: pmi, color: "hsl(0 84% 60%)" }] : []),
+    ...(pmi > 0 ? [{ name: pmiLabel, value: pmi, color: "hsl(0 72% 55%)" }] : []),
     ...(hoa > 0 ? [{ name: "HOA", value: hoa, color: "hsl(280 67% 50%)" }] : []),
   ].filter((item) => item.value > 0);
 

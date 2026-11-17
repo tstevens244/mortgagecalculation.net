@@ -348,7 +348,7 @@ const QualificationCalculator = () => {
               <div className="h-[180px]">
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
-                    <Pie
+                    <Pie isAnimationActive={false}
                       data={[
                         { name: 'Principal & Interest', value: results.monthlyPI, color: 'hsl(var(--primary))' },
                         { name: 'Property Tax', value: results.monthlyTaxes, color: 'hsl(var(--accent))' },

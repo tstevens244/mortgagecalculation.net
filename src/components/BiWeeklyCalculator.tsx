@@ -354,7 +354,7 @@ const BiWeeklyCalculator = () => {
                           wrapperStyle={{ fontSize: '12px' }}
                           formatter={(value) => value === 'standardBalance' ? 'Standard' : 'Bi-Weekly'}
                         />
-                        <Area
+                        <Area isAnimationActive={false}
                           type="monotone"
                           dataKey="standardBalance"
                           name="standardBalance"
@@ -362,7 +362,7 @@ const BiWeeklyCalculator = () => {
                           fill="hsl(var(--muted-foreground) / 0.3)"
                           strokeWidth={2}
                         />
-                        <Area
+                        <Area isAnimationActive={false}
                           type="monotone"
                           dataKey="biWeeklyBalance"
                           name="biWeeklyBalance"

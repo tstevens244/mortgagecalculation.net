@@ -445,6 +445,7 @@ const USDACalculator = () => {
 
           <TabsContent value="breakdown">
             <PaymentBreakdown
+              pmiLabel="Guarantee fee"
               principal={firstMonthPrincipal}
               interest={firstMonthInterest}
               tax={calculations.monthlyTax}

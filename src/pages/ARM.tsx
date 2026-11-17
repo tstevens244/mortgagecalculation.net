@@ -3,6 +3,9 @@ import { Link } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import TrustLine from "@/components/TrustLine";
+import GuideContents from "@/components/GuideContents";
+import RelatedCalculators from "@/components/RelatedCalculators";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import ARMCalculator from "@/components/ARMCalculator";
 
 const ARM = () => {
@@ -141,6 +144,10 @@ const ARM = () => {
 
             <ARMCalculator />
 
+
+            <RelatedCalculators />
+
+            <GuideContents />
             {/* Educational Content */}
             <section className="mt-12 space-y-8">
               <div className="prose prose-slate max-w-none">

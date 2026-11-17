@@ -3,6 +3,9 @@ import { Link } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import TrustLine from "@/components/TrustLine";
+import GuideContents from "@/components/GuideContents";
+import RelatedCalculators from "@/components/RelatedCalculators";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import QualificationCalculator from "@/components/QualificationCalculator";
 
 const Qualification = () => {
@@ -110,7 +113,8 @@ const Qualification = () => {
         <Header />
         <main id="main-content" className="flex-1 container py-8">
           <article>
-            <header className="text-center mb-10">
+            <header className="text-center mb-8">
+              <Breadcrumbs />
               <h1 className="text-3xl sm:text-4xl lg:text-5xl font-display font-bold text-foreground mb-4">
                 Mortgage Qualification Calculator
               </h1>
@@ -122,6 +126,10 @@ const Qualification = () => {
 
             <QualificationCalculator />
 
+
+            <RelatedCalculators />
+
+            <GuideContents />
             {/* Comprehensive Guide Section */}
             <section className="mt-16 prose prose-slate max-w-none">
               <h2 className="text-2xl font-display font-semibold mb-4">Complete Guide to Mortgage Qualification</h2>

@@ -584,7 +584,7 @@ const RentOrBuyCalculator = () => {
                         fontSize: '12px',
                       }}
                     />
-                    <Bar dataKey="value" radius={[0, 4, 4, 0]}>
+                    <Bar isAnimationActive={false} dataKey="value" radius={[0, 4, 4, 0]}>
                       {[
                         { name: 'Rent', value: results.totalRentCost, fill: 'hsl(var(--accent))' },
                         { name: 'Buy', value: results.totalBuyCost, fill: 'hsl(var(--primary))' },

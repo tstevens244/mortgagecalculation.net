@@ -151,7 +151,7 @@ const AmortizationChart = ({
                 <span className="text-xs sm:text-sm text-foreground">{value}</span>
               )}
             />
-            <Area
+            <Area isAnimationActive={false}
               yAxisId="left"
               type="monotone"
               dataKey="taxesAndFees"
@@ -161,7 +161,7 @@ const AmortizationChart = ({
               stroke="hsl(var(--chart-tertiary))"
               fillOpacity={0.8}
             />
-            <Area
+            <Area isAnimationActive={false}
               yAxisId="left"
               type="monotone"
               dataKey="interest"
@@ -171,7 +171,7 @@ const AmortizationChart = ({
               stroke="hsl(var(--chart-secondary))"
               fillOpacity={0.8}
             />
-            <Area
+            <Area isAnimationActive={false}
               yAxisId="left"
               type="monotone"
               dataKey="principal"
@@ -181,7 +181,7 @@ const AmortizationChart = ({
               stroke="hsl(var(--chart-primary))"
               fillOpacity={0.8}
             />
-            <Line
+            <Line isAnimationActive={false}
               yAxisId="right"
               type="monotone"
               dataKey="balance"

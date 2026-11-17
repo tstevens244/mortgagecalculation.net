@@ -241,7 +241,7 @@ const CashOutRefiCalculator = () => {
             <div className="h-[220px]">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
-                  <Pie
+                  <Pie isAnimationActive={false}
                     data={[
                       { name: 'Cash Out', value: results.actualCashOut, color: 'hsl(var(--accent))' },
                       { name: 'Remaining Equity', value: Math.max(0, results.equity - results.actualCashOut), color: 'hsl(var(--primary))' },

@@ -447,6 +447,7 @@ const FHACalculator = () => {
 
           <TabsContent value="breakdown">
             <PaymentBreakdown
+              pmiLabel="MIP"
               principal={calculations.monthlyPI - (calculations.totalLoanAmount * (inputs.interestRate / 100 / 12))}
               interest={calculations.totalLoanAmount * (inputs.interestRate / 100 / 12)}
               tax={calculations.monthlyTax}

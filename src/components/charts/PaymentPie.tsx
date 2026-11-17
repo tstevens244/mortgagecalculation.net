@@ -11,7 +11,7 @@ export interface PieSlice {
 const PaymentPie = ({ data }: { data: PieSlice[] }) => (
   <ResponsiveContainer width="100%" height="100%">
     <PieChart>
-      <Pie data={data} cx="50%" cy="50%" innerRadius={60} outerRadius={100} paddingAngle={2} dataKey="value" strokeWidth={0}>
+      <Pie isAnimationActive={false} data={data} cx="50%" cy="50%" innerRadius={60} outerRadius={100} paddingAngle={2} dataKey="value" strokeWidth={0}>
         {data.map((entry, index) => (
           <Cell key={`cell-${index}`} fill={entry.color} />
         ))}

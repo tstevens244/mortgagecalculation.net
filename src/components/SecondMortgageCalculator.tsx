@@ -633,7 +633,7 @@ const SecondMortgageCalculator = () => {
                           fontSize: '12px',
                         }}
                       />
-                      <Bar dataKey="value" radius={[0, 4, 4, 0]}>
+                      <Bar isAnimationActive={false} dataKey="value" radius={[0, 4, 4, 0]}>
                         {[
                           { name: 'With PMI', value: calculations.pmi.totalMonthly, fill: 'hsl(var(--primary))' },
                           { name: 'Piggyback', value: calculations.piggyback.totalMonthly, fill: 'hsl(var(--accent))' },

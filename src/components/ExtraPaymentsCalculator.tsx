@@ -348,7 +348,7 @@ const ExtraPaymentsCalculator = () => {
                           wrapperStyle={{ fontSize: '12px' }}
                           formatter={(value) => value === 'originalBalance' ? 'Original' : 'With Extra'}
                         />
-                        <Area
+                        <Area isAnimationActive={false}
                           type="monotone"
                           dataKey="originalBalance"
                           name="originalBalance"
@@ -356,7 +356,7 @@ const ExtraPaymentsCalculator = () => {
                           fill="hsl(var(--muted-foreground) / 0.3)"
                           strokeWidth={2}
                         />
-                        <Area
+                        <Area isAnimationActive={false}
                           type="monotone"
                           dataKey="extraBalance"
                           name="extraBalance"
