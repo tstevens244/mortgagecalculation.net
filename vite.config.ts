@@ -18,4 +18,20 @@ export default defineConfig(({ mode }) => ({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  build: {
+    rollupOptions: {
+      output: {
+        // Keep large third-party libraries in their own cacheable chunks so
+        // route code stays small and vendor code is reused between pages.
+        manualChunks(id) {
+          if (!id.includes("node_modules")) return undefined;
+          if (id.includes("recharts") || id.includes("/d3-")) return "charts";
+          if (id.includes("@supabase")) return "supabase";
+          if (id.includes("@radix-ui")) return "radix";
+          if (id.includes("react-router") || id.includes("/react-dom/") || id.includes("/react/")) return "react-vendor";
+          return undefined;
+        },
+      },
+    },
+  },
 }));
