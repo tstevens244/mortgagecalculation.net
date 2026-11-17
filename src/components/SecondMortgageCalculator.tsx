@@ -10,6 +10,7 @@ import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip as RechartsTo
 import CurrencyInput from "./CurrencyInput";
 import PercentInput from "./PercentInput";
 import { formatCurrency } from "@/lib/formatters";
+import StickyResult from "./StickyResult";
 
 interface SecondMortgageInputs {
   homeValue: number;
@@ -491,7 +492,8 @@ const SecondMortgageCalculator = () => {
           </div>
 
           {/* Results Comparison */}
-          <section className="calculator-card p-4 sm:p-6" aria-labelledby="results-heading">
+          <StickyResult targetId="calc-result" label="Cheaper option" value={`${calculations.betterOption === "piggyback" ? "Piggyback loan" : "Single loan + PMI"} · saves ${formatCurrency(calculations.savings)}`} />
+          <section id="calc-result" className="calculator-card p-4 sm:p-6" aria-labelledby="results-heading">
             <h2 id="results-heading" className="text-base sm:text-xl font-display font-semibold mb-4 flex items-center gap-2">
               <DollarSign className="h-4 w-4 sm:h-5 sm:w-5 text-accent" aria-hidden="true" />
               Financial Analysis

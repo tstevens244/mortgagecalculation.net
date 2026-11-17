@@ -19,6 +19,7 @@ import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip as RechartsTo
 import CurrencyInput from "./CurrencyInput";
 import PercentInput from "./PercentInput";
 import { formatCurrency, formatPercent } from "@/lib/formatters";
+import StickyResult from "./StickyResult";
 
 const CashOutRefiCalculator = () => {
   const [homeValue, setHomeValue] = useState(400000);
@@ -295,7 +296,8 @@ const CashOutRefiCalculator = () => {
           {/* Main Result */}
           <Card className="bg-primary border-0 rounded-xl p-6 shadow-xl">
             <CardContent className="p-0">
-              <div className="text-center space-y-2">
+              <StickyResult targetId="calc-result" label={"Max cash-out"} value={formatCurrency(results.maxCashOut)} />
+              <div id="calc-result" className="text-center space-y-2">
                 <p className="text-white/80 text-sm font-medium">
                   Estimated Max Cash-Out Amount
                 </p>

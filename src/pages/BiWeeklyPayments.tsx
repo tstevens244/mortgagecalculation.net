@@ -2,6 +2,7 @@ import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import TrustLine from "@/components/TrustLine";
 import BiWeeklyCalculator from "@/components/BiWeeklyCalculator";
 
 const BiWeeklyPayments = () => {
@@ -118,6 +119,7 @@ const BiWeeklyPayments = () => {
               <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
                 See how switching to bi-weekly payments can save you thousands and shave years off your mortgage.
               </p>
+              <TrustLine />
             </header>
 
             <BiWeeklyCalculator />

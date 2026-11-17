@@ -2,6 +2,7 @@ import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import TrustLine from "@/components/TrustLine";
 import SecondMortgageCalculator from "@/components/SecondMortgageCalculator";
 
 const SecondMortgage = () => {
@@ -130,6 +131,7 @@ const SecondMortgage = () => {
                 Compare obtaining a piggyback home equity loan versus paying PMI. 
                 Find out which option saves you more money.
               </p>
+              <TrustLine />
             </header>
 
             <SecondMortgageCalculator />

@@ -2,6 +2,7 @@ import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import TrustLine from "@/components/TrustLine";
 import MortgageCalculator from "@/components/MortgageCalculator";
 
 const Conventional = () => {
@@ -136,6 +137,7 @@ const Conventional = () => {
                 Estimate your monthly payment for a conventional loan. Includes principal, interest,
                 taxes, insurance, and PMI for down payments under 20%.
               </p>
+              <TrustLine />
             </header>
 
             <MortgageCalculator />

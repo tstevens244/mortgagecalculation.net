@@ -2,6 +2,7 @@ import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import TrustLine from "@/components/TrustLine";
 import VACalculator from "@/components/VACalculator";
 
 const VA = () => {
@@ -136,6 +137,7 @@ const VA = () => {
                 Calculate your VA home loan payment with 0% down payment and no private mortgage insurance. 
                 VA loans offer exceptional benefits for eligible veterans, active-duty service members, and surviving spouses.
               </p>
+              <TrustLine />
             </header>
 
             <VACalculator />

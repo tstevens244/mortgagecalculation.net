@@ -73,7 +73,12 @@ jobs:
         uses: actions/deploy-pages@v4
 
       - name: Notify Search Engines via IndexNow
+        # Submits every URL in the freshly deployed sitemap, so new pages are
+        # included without editing the Supabase function's built-in list.
         run: |
+          urls=$(curl -s "https://mortgagecalculation.net/sitemap.xml?deploy=${{ github.run_id }}" \
+            | grep -o '<loc>[^<]*' | sed 's/<loc>//' | jq -R . | jq -sc '{urls: .}')
+          if [ "$(echo "$urls" | jq '.urls | length')" -eq 0 ]; then urls='{}'; fi
           curl -X POST "https://dvohmhmnfsuuicodnaod.supabase.co/functions/v1/indexnow" \
             -H "Content-Type: application/json" \
-            -d '{}' || true
+            -d "$urls" || true

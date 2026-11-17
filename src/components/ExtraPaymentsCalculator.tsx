@@ -27,6 +27,7 @@ import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip as RechartsToolti
 import CurrencyInput from "./CurrencyInput";
 import PercentInput from "./PercentInput";
 import { formatCurrency } from "@/lib/formatters";
+import StickyResult from "./StickyResult";
 
 const ExtraPaymentsCalculator = () => {
   // Loan Information
@@ -409,7 +410,8 @@ const ExtraPaymentsCalculator = () => {
           {/* Interest Savings Highlight */}
           <Card className="bg-primary border-0 rounded-xl p-6 shadow-xl">
             <CardContent className="p-0">
-              <div className="text-center space-y-2">
+              <StickyResult targetId="calc-result" label={"Interest saved"} value={formatCurrency(results.interestSavings)} />
+              <div id="calc-result" className="text-center space-y-2">
                 <TrendingDown className="h-8 w-8 mx-auto text-white/80" />
                 <p className="text-white/80 text-sm font-medium">
                   Total Interest Savings

@@ -8,6 +8,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import CurrencyInput from "./CurrencyInput";
 import PercentInput from "./PercentInput";
 import { formatCurrency } from "@/lib/formatters";
+import StickyResult from "./StickyResult";
 
 interface RefinanceInputs {
   // Original loan
@@ -503,7 +504,8 @@ const RefinanceCalculator = () => {
           </section>
 
           {/* Results Summary Card */}
-          <section className="calculator-card p-4 sm:p-6 bg-gradient-to-br from-primary/5 to-accent/5" aria-labelledby="summary-heading">
+          <StickyResult targetId="calc-result" label={calculations.comparison.shouldRefinance ? "Refinancing saves" : "Refinancing costs"} value={`${formatCurrency(Math.abs(calculations.comparison.totalBenefit))}${calculations.comparison.shouldRefinance && Number.isFinite(calculations.comparison.breakEvenMonths) ? ` · break-even ${calculations.comparison.breakEvenMonths} mo` : ""}`} />
+          <section id="calc-result" className="calculator-card p-4 sm:p-6 bg-gradient-to-br from-primary/5 to-accent/5" aria-labelledby="summary-heading">
             <h2 id="summary-heading" className="text-base sm:text-xl font-display font-semibold mb-4 flex items-center gap-2">
               <TrendingDown className="h-4 w-4 sm:h-5 sm:w-5 text-accent" aria-hidden="true" />
               Should You Refinance? Here Are Your Results

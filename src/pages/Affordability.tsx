@@ -2,6 +2,7 @@ import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import TrustLine from "@/components/TrustLine";
 import AffordabilityCalculator from "@/components/AffordabilityCalculator";
 
 const Affordability = () => {
@@ -116,6 +117,7 @@ const Affordability = () => {
               <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
                 Estimate your maximum home price based on income or monthly budget using industry-standard DTI ratios.
               </p>
+              <TrustLine />
             </header>
 
             <AffordabilityCalculator />

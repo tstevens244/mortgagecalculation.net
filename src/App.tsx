@@ -26,6 +26,11 @@ const Qualification = lazy(() => import("./pages/Qualification"));
 const RentOrBuy = lazy(() => import("./pages/RentOrBuy"));
 const ExtraPayments = lazy(() => import("./pages/ExtraPayments"));
 const BiWeeklyPayments = lazy(() => import("./pages/BiWeeklyPayments"));
+const HelocDebtConsolidation = lazy(() => import("./pages/HelocDebtConsolidation"));
+const About = lazy(() => import("./pages/About"));
+const Methodology = lazy(() => import("./pages/Methodology"));
+const Privacy = lazy(() => import("./pages/Privacy"));
+const Terms = lazy(() => import("./pages/Terms"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 // Redirect component to enforce trailing slashes
@@ -103,6 +108,16 @@ const App = () => (
               <Route path="/extra-mortgage-payments-calculator/" element={<ExtraPayments />} />
               <Route path="/bi-weekly-mortgage-payments-calculator" element={<BiWeeklyPayments />} />
               <Route path="/bi-weekly-mortgage-payments-calculator/" element={<BiWeeklyPayments />} />
+              <Route path="/heloc-debt-consolidation-calculator" element={<HelocDebtConsolidation />} />
+              <Route path="/heloc-debt-consolidation-calculator/" element={<HelocDebtConsolidation />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/about/" element={<About />} />
+              <Route path="/methodology" element={<Methodology />} />
+              <Route path="/methodology/" element={<Methodology />} />
+              <Route path="/privacy-policy" element={<Privacy />} />
+              <Route path="/privacy-policy/" element={<Privacy />} />
+              <Route path="/terms-of-use" element={<Terms />} />
+              <Route path="/terms-of-use/" element={<Terms />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>

@@ -11,6 +11,7 @@ import AmortizationChart from "./AmortizationChart";
 import CurrencyInput from "./CurrencyInput";
 import PercentInput from "./PercentInput";
 import { formatCurrency } from "@/lib/formatters";
+import StickyResult from "./StickyResult";
 import { USDA_UPFRONT_FEE_RATE, USDA_ANNUAL_FEE_RATE } from "@/lib/loanLimits";
 
 interface USDAInputs {
@@ -344,7 +345,8 @@ const USDACalculator = () => {
 
         {/* Results Section */}
         <aside className="space-y-6" aria-label="Calculation Results">
-          <div className="result-highlight">
+          <StickyResult targetId="calc-result" label={"Monthly payment"} value={formatCurrency(calculations.totalMonthly)} />
+          <div id="calc-result" className="result-highlight">
             <p className="text-primary-foreground/80 text-sm font-medium uppercase tracking-wide">
               Monthly Payment
             </p>

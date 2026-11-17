@@ -14,6 +14,7 @@ const Footer = () => {
     { to: "/refinance-calculator/", label: "Refinance" },
     { to: "/cash-out-refinance-calculator/", label: "Cash-Out Refi" },
     { to: "/heloc-calculator/", label: "HELOC" },
+    { to: "/heloc-debt-consolidation-calculator/", label: "HELOC Debt Consolidation" },
     { to: "/second-mortgage-calculator/", label: "Second Mortgage" },
     { to: "/house-affordability/", label: "Affordability" },
     { to: "/mortgage-qualification-calculator/", label: "Qualification" },
@@ -21,6 +22,13 @@ const Footer = () => {
     { to: "/extra-mortgage-payments-calculator/", label: "Extra Payments" },
     { to: "/bi-weekly-mortgage-payments-calculator/", label: "Bi-Weekly" },
     { to: "/mortgage-assistant/", label: "AI Assistant" },
+  ];
+
+  const siteLinks = [
+    { to: "/about/", label: "About" },
+    { to: "/methodology/", label: "How We Calculate" },
+    { to: "/privacy-policy/", label: "Privacy Policy" },
+    { to: "/terms-of-use/", label: "Terms of Use" },
   ];
 
   return (
@@ -63,7 +71,18 @@ const Footer = () => {
           </div>
         </div>
 
-        <div className="border-t border-border mt-8 pt-6 text-center text-sm text-muted-foreground">
+        <div className="border-t border-border mt-8 pt-6 text-center text-sm text-muted-foreground space-y-3">
+          <nav aria-label="Site information">
+            <ul className="flex flex-wrap justify-center gap-x-6 gap-y-2" role="list">
+              {siteLinks.map((link) => (
+                <li key={link.to}>
+                  <Link to={link.to} className="hover:text-foreground transition-colors">
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
           <p>© {currentYear} MortgageCalculation.net. All rights reserved.</p>
         </div>
       </div>

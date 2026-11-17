@@ -2,6 +2,7 @@ import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import TrustLine from "@/components/TrustLine";
 import ExtraPaymentsCalculator from "@/components/ExtraPaymentsCalculator";
 
 const ExtraPayments = () => {
@@ -118,6 +119,7 @@ const ExtraPayments = () => {
               <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
                 See how paying a little extra each month can save you thousands and help you become mortgage-free years sooner.
               </p>
+              <TrustLine />
             </header>
 
             <ExtraPaymentsCalculator />

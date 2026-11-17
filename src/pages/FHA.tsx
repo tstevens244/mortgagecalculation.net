@@ -2,6 +2,7 @@ import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import TrustLine from "@/components/TrustLine";
 import FHACalculator from "@/components/FHACalculator";
 
 const FHA = () => {
@@ -136,6 +137,7 @@ const FHA = () => {
                 Calculate your FHA mortgage payment including upfront and annual mortgage insurance premiums (MIP). 
                 FHA loans offer lower down payment options for qualified borrowers.
               </p>
+              <TrustLine />
             </header>
 
             <FHACalculator />

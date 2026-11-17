@@ -2,6 +2,7 @@ import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import TrustLine from "@/components/TrustLine";
 import CashOutRefiCalculator from "@/components/CashOutRefiCalculator";
 
 const CashOutRefi = () => {
@@ -116,6 +117,7 @@ const CashOutRefi = () => {
               <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
                 See how much equity you can access from your home and calculate your new monthly payment.
               </p>
+              <TrustLine />
             </header>
 
             <CashOutRefiCalculator />

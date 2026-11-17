@@ -2,6 +2,7 @@ import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import TrustLine from "@/components/TrustLine";
 import RentOrBuyCalculator from "@/components/RentOrBuyCalculator";
 
 const RentOrBuy = () => {
@@ -118,6 +119,7 @@ const RentOrBuy = () => {
               <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
                 Should you rent or buy? Compare the long-term financial impact of renting versus purchasing a home.
               </p>
+              <TrustLine />
             </header>
 
             <RentOrBuyCalculator />

@@ -27,6 +27,7 @@ import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip as RechartsToolti
 import CurrencyInput from "./CurrencyInput";
 import PercentInput from "./PercentInput";
 import { formatCurrency } from "@/lib/formatters";
+import StickyResult from "./StickyResult";
 
 const BiWeeklyCalculator = () => {
   // Loan Information
@@ -416,7 +417,8 @@ const BiWeeklyCalculator = () => {
           {/* Net Benefit Highlight */}
           <Card className="bg-primary border-0 rounded-xl p-6 shadow-xl">
             <CardContent className="p-0">
-              <div className="text-center space-y-2">
+              <StickyResult targetId="calc-result" label={taxRate > 0 ? "Net benefit" : "Interest saved"} value={formatCurrency(taxRate > 0 ? results.netBenefit : results.interestSavings)} />
+              <div id="calc-result" className="text-center space-y-2">
                 <TrendingDown className="h-8 w-8 mx-auto text-white/80" />
                 <p className="text-white/80 text-sm font-medium">
                   {taxRate > 0 ? "Net Benefit (After Tax Consideration)" : "Total Interest Savings"}

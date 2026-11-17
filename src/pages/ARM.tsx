@@ -2,6 +2,7 @@ import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import TrustLine from "@/components/TrustLine";
 import ARMCalculator from "@/components/ARMCalculator";
 
 const ARM = () => {
@@ -135,6 +136,7 @@ const ARM = () => {
               <p className="text-muted-foreground mt-2 text-base sm:text-lg max-w-3xl mx-auto">
                 Calculate your ARM payments before and after rate adjustments. See initial payments, maximum possible payments, and understand how rate caps protect you.
               </p>
+              <TrustLine />
             </header>
 
             <ARMCalculator />

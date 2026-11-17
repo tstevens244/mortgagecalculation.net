@@ -18,6 +18,7 @@ import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip as RechartsTo
 import CurrencyInput from "./CurrencyInput";
 import PercentInput from "./PercentInput";
 import { formatCurrency } from "@/lib/formatters";
+import StickyResult from "./StickyResult";
 
 const RentOrBuyCalculator = () => {
   // Rent Info
@@ -563,7 +564,8 @@ const RentOrBuyCalculator = () => {
           {/* Recommendation Card */}
           <Card className={`border-0 rounded-xl p-6 shadow-xl ${results.shouldBuy ? 'bg-primary' : 'bg-accent'}`}>
             <CardContent className="p-0">
-              <div className="text-center space-y-3">
+              <StickyResult targetId="calc-result" label={"Better choice"} value={results.shouldBuy ? "Buy" : "Rent"} />
+              <div id="calc-result" className="text-center space-y-3">
                 <Scale className="h-10 w-10 mx-auto text-white/80" />
                 <p className="text-white/80 text-sm font-medium">
                   Based on your inputs, it's better to

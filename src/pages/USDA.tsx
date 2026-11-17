@@ -2,6 +2,7 @@ import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import TrustLine from "@/components/TrustLine";
 import USDACalculator from "@/components/USDACalculator";
 
 const USDA = () => {
@@ -136,6 +137,7 @@ const USDA = () => {
                 Calculate your USDA rural development loan payment with 0% down payment. 
                 USDA loans help low-to-moderate income families purchase homes in eligible rural areas.
               </p>
+              <TrustLine />
             </header>
 
             <USDACalculator />

@@ -2,6 +2,7 @@ import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import TrustLine from "@/components/TrustLine";
 import JumboCalculator from "@/components/JumboCalculator";
 import { formatCurrency } from "@/lib/formatters";
 
@@ -127,6 +128,7 @@ const Jumbo = () => {
                 Calculate your monthly payment for jumbo mortgages that exceed conforming loan limits. 
                 Ideal for luxury homes and high-cost real estate markets.
               </p>
+              <TrustLine />
             </header>
 
             <JumboCalculator />

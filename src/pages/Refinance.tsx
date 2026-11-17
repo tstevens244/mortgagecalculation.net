@@ -2,6 +2,7 @@ import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import TrustLine from "@/components/TrustLine";
 import RefinanceCalculator from "@/components/RefinanceCalculator";
 
 const Refinance = () => {
@@ -130,6 +131,7 @@ const Refinance = () => {
                 Unsure if you should refinance? Compare interest savings and equity gains against closing costs 
                 to make an informed decision.
               </p>
+              <TrustLine />
             </header>
 
             <RefinanceCalculator />

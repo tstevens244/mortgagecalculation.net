@@ -19,6 +19,7 @@ import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip as RechartsTo
 import CurrencyInput from "./CurrencyInput";
 import PercentInput from "./PercentInput";
 import { formatCurrency } from "@/lib/formatters";
+import StickyResult from "./StickyResult";
 
 const AffordabilityCalculator = () => {
   // Income-based calculator state
@@ -203,7 +204,8 @@ const AffordabilityCalculator = () => {
       {/* Main Result */}
       <Card className="bg-primary border-0 rounded-xl p-6 shadow-xl">
         <CardContent className="p-0">
-          <div className="text-center space-y-2">
+          <StickyResult targetId="calc-result" label={title} value={formatCurrency(results.homePrice)} />
+          <div id="calc-result" className="text-center space-y-2">
             <p className="text-white/80 text-sm font-medium">
               {title}
             </p>

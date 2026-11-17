@@ -2,6 +2,7 @@
 import { Link } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import TrustLine from "@/components/TrustLine";
 import QualificationCalculator from "@/components/QualificationCalculator";
 
 const Qualification = () => {
@@ -116,6 +117,7 @@ const Qualification = () => {
               <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
                 Calculate the minimum income needed to qualify for your desired home purchase.
               </p>
+              <TrustLine />
             </header>
 
             <QualificationCalculator />

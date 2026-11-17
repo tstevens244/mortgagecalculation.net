@@ -150,6 +150,11 @@
     @apply text-sm font-medium text-foreground flex items-center gap-2;
   }
 
+  /* Keep the result card clear of the sticky header when the mobile result bar jumps to it. */
+  #calc-result {
+    scroll-margin-top: 5rem;
+  }
+
   .result-highlight {
     @apply bg-primary text-primary-foreground rounded-xl p-6;
     box-shadow: var(--shadow-xl);

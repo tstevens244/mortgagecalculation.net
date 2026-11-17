@@ -2,6 +2,7 @@ import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import TrustLine from "@/components/TrustLine";
 import MortgageCalculator from "@/components/MortgageCalculator";
 
 const Index = () => {
@@ -144,6 +145,7 @@ const Index = () => {
                 Estimate your monthly mortgage payment with our free calculator. Includes principal, interest,
                 taxes, insurance, and PMI.
               </p>
+              <TrustLine />
             </header>
 
             <MortgageCalculator />

@@ -18,6 +18,7 @@ import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip as RechartsTo
 import CurrencyInput from "./CurrencyInput";
 import PercentInput from "./PercentInput";
 import { formatCurrency, formatPercent } from "@/lib/formatters";
+import StickyResult from "./StickyResult";
 
 const QualificationCalculator = () => {
   const [homeValue, setHomeValue] = useState(400000);
@@ -323,7 +324,8 @@ const QualificationCalculator = () => {
           {/* Main Result */}
           <Card className="bg-primary border-0 rounded-xl p-6 shadow-xl">
             <CardContent className="p-0">
-              <div className="text-center space-y-4">
+              <StickyResult targetId="calc-result" label={"Income needed"} value={formatCurrency(results.requiredAnnualIncome)} />
+              <div id="calc-result" className="text-center space-y-4">
                 <p className="text-white/80 text-sm font-medium">
                   Minimum Annual Income Required
                 </p>
