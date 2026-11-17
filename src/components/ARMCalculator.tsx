@@ -11,6 +11,7 @@ import AmortizationChart from "./AmortizationChart";
 import CurrencyInput from "./CurrencyInput";
 import PercentInput from "./PercentInput";
 import { formatCurrency } from "@/lib/formatters";
+import { armSchedule } from "@/lib/mortgageMath";
 import StickyResult from "./StickyResult";
 
 interface ARMInputs {
@@ -115,15 +116,23 @@ const ARMCalculator = () => {
     const initialTotalMonthly = initialMonthlyPI + monthlyOtherCosts;
     const maxTotalMonthly = maxMonthlyPI + monthlyOtherCosts;
 
-    // Estimate total interest (simplified - using average rate scenario)
-    const avgRate = (inputs.initialRate + maxRate) / 2;
-    const avgMonthlyRate = avgRate / 100 / 12;
-    const avgMonthlyPI =
-      avgMonthlyRate > 0
-        ? (baseLoanAmount * avgMonthlyRate * Math.pow(1 + avgMonthlyRate, numPayments)) /
-          (Math.pow(1 + avgMonthlyRate, numPayments) - 1)
-        : baseLoanAmount / numPayments;
-    const estimatedTotalInterest = avgMonthlyPI * numPayments - baseLoanAmount;
+    // Expected path: the rate changes by the expected adjustments you entered,
+    // within the lifetime cap, and the payment is recalculated at each change.
+    const schedule = armSchedule({
+      principal: baseLoanAmount,
+      termMonths: numPayments,
+      initialRatePercent: inputs.initialRate,
+      fixedMonths: fixedPeriodPayments,
+      firstAdjustment: inputs.expectedFirstAdjustment,
+      subsequentAdjustment: inputs.expectedSubsequentAdjustment,
+      monthsBetweenAdjustments: inputs.monthsBetweenAdjustments,
+      lifetimeCap: inputs.lifetimeCap,
+    });
+    const estimatedTotalInterest = schedule.reduce((sum, row) => sum + row.interest, 0);
+    const firstAdjustedRow = schedule[fixedPeriodPayments];
+    const adjustedMonthlyPI = firstAdjustedRow ? firstAdjustedRow.payment : initialMonthlyPI;
+    const adjustedRate = firstAdjustedRow ? firstAdjustedRow.rate : inputs.initialRate;
+    const expectedPeakPI = schedule.reduce((max, row) => Math.max(max, row.payment), 0);
     const totalTaxesInsurance = (monthlyTax + monthlyInsurance + monthlyHOA) * numPayments;
 
     return {
@@ -147,36 +156,31 @@ const ARMCalculator = () => {
       avgMonthlyTotal: (baseLoanAmount + estimatedTotalInterest + totalTaxesInsurance) / numPayments,
       numPayments,
       remainingBalance,
+      schedule,
+      adjustedMonthlyPI,
+      adjustedRate,
+      adjustedTotalMonthly: adjustedMonthlyPI + monthlyOtherCosts,
+      expectedPeakTotalMonthly: expectedPeakPI + monthlyOtherCosts,
     };
   }, [inputs]);
 
   // Generate amortization data using initial rate for simplicity
   const amortizationData = useMemo(() => {
-    const data = [];
-    let balance = calculations.baseLoanAmount;
-    const monthlyRate = inputs.initialRate / 100 / 12;
+    // Uses the expected rate path, so payments change after the fixed period.
     const startDate = new Date(inputs.startDate + "-01");
-
-    for (let i = 1; i <= calculations.numPayments && balance > 0; i++) {
-      const interestPayment = balance * monthlyRate;
-      const principalPayment = Math.min(calculations.initialMonthlyPI - interestPayment, balance);
-      balance = Math.max(0, balance - principalPayment);
-
+    return calculations.schedule.map((row) => {
       const paymentDate = new Date(startDate);
-      paymentDate.setMonth(paymentDate.getMonth() + i);
-
-      data.push({
-        month: i,
+      paymentDate.setMonth(paymentDate.getMonth() + row.month);
+      return {
+        month: row.month,
         date: paymentDate,
-        payment: calculations.initialMonthlyPI,
-        principal: principalPayment,
-        interest: interestPayment,
-        balance,
-      });
-    }
-
-    return data;
-  }, [calculations, inputs.initialRate, inputs.startDate]);
+        payment: row.payment,
+        principal: row.principal,
+        interest: row.interest,
+        balance: row.balance,
+      };
+    });
+  }, [calculations, inputs.startDate]);
 
   const armTypeLabel = `${inputs.yearsBeforeFirstAdjustment}/1 ARM`;
 
@@ -614,17 +618,32 @@ const ARMCalculator = () => {
             </p>
           </div>
 
+          {/* After first adjustment (expected) */}
+          <div className="calculator-card p-6">
+            <h3 className="font-semibold text-lg flex items-center gap-2">
+              <TrendingUp className="h-5 w-5 text-accent" aria-hidden="true" />
+              After first adjustment
+            </h3>
+            <p className="text-3xl font-display font-bold mt-2">
+              {formatCurrency(calculations.adjustedTotalMonthly)}
+            </p>
+            <p className="text-muted-foreground text-sm mt-2">
+              Year {inputs.yearsBeforeFirstAdjustment + 1}, at an expected {calculations.adjustedRate.toFixed(2)}%.
+              Highest expected payment: {formatCurrency(calculations.expectedPeakTotalMonthly)}.
+            </p>
+          </div>
+
           {/* Maximum Payment */}
           <div className="calculator-card p-6 border-2 border-destructive/20 bg-destructive/5">
-            <h3 className="font-semibold text-lg flex items-center gap-2 text-destructive">
-              <TrendingUp className="h-5 w-5" />
-              Maximum Payment
+            <h3 className="font-semibold text-lg flex items-center gap-2 text-red-700 dark:text-red-400">
+              <TrendingUp className="h-5 w-5" aria-hidden="true" />
+              Worst-case payment
             </h3>
             <p className="text-3xl font-display font-bold mt-2">
               {formatCurrency(calculations.maxTotalMonthly)}
             </p>
             <p className="text-muted-foreground text-sm mt-2">
-              At max rate of {calculations.maxRate.toFixed(2)}%
+              If the rate hits the {calculations.maxRate.toFixed(2)}% lifetime cap at the first adjustment
             </p>
           </div>
 

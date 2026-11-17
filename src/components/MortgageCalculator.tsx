@@ -9,6 +9,7 @@ import AmortizationChart from "./AmortizationChart";
 import CurrencyInput from "./CurrencyInput";
 import PercentInput from "./PercentInput";
 import { formatCurrency } from "@/lib/formatters";
+import { monthsUntilBalance } from "@/lib/mortgageMath";
 import StickyResult from "./StickyResult";
 
 interface MortgageInputs {
@@ -50,12 +51,11 @@ const MortgageCalculator = () => {
         updated.downPayment = (prev.downPaymentPercent / 100) * Number(value);
       }
 
-      // Auto-calculate PMI if down payment < 20%
-      if (updated.downPaymentPercent < 20) {
+      // Estimate PMI (0.5% of the loan a year) when the price or down payment
+      // changes. A PMI amount the user typed is kept until one of those changes.
+      if (field === "homePrice" || field === "downPayment" || field === "downPaymentPercent") {
         const loanAmount = updated.homePrice - updated.downPayment;
-        updated.pmi = (loanAmount * 0.005) / 12 * 12; // 0.5% annual PMI
-      } else {
-        updated.pmi = 0;
+        updated.pmi = updated.downPaymentPercent < 20 ? loanAmount * 0.005 : 0;
       }
 
       return updated;
@@ -81,7 +81,10 @@ const MortgageCalculator = () => {
 
     const totalMonthly = monthlyPI + monthlyTax + monthlyInsurance + monthlyPMI + monthlyHOA;
     const totalInterest = monthlyPI * numPayments - loanAmount;
-    const totalPayment = totalMonthly * numPayments;
+    // PMI ends automatically when the balance reaches 78% of the original value.
+    const pmiMonths = monthlyPMI > 0 ? monthsUntilBalance(loanAmount, inputs.interestRate, numPayments, inputs.homePrice * 0.78) : 0;
+    const totalPayment =
+      (monthlyPI + monthlyTax + monthlyInsurance + monthlyHOA) * numPayments + monthlyPMI * pmiMonths;
 
     return {
       loanAmount,
@@ -93,6 +96,7 @@ const MortgageCalculator = () => {
       totalMonthly,
       totalInterest,
       totalPayment,
+      pmiMonths,
       numPayments,
     };
   }, [inputs]);
@@ -381,7 +385,9 @@ const MortgageCalculator = () => {
               </div>
               {calculations.monthlyPMI > 0 && (
                 <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">PMI</span>
+                  <span className="text-muted-foreground">
+                    PMI{calculations.pmiMonths > 0 && ` (ends in ~${Math.ceil(calculations.pmiMonths / 12)} yrs)`}
+                  </span>
                   <span className="font-medium">{formatCurrency(calculations.monthlyPMI)}</span>
                 </div>
               )}

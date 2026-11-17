@@ -13,6 +13,7 @@ import PercentInput from "./PercentInput";
 import { formatCurrency } from "@/lib/formatters";
 import StickyResult from "./StickyResult";
 import { FHA_UPFRONT_MIP_RATE, fhaAnnualMipRate, fhaMipMonths } from "@/lib/loanLimits";
+import { totalBalanceBasedFee } from "@/lib/mortgageMath";
 
 interface FHAInputs {
   homePrice: number;
@@ -84,9 +85,12 @@ const FHACalculator = () => {
 
     const totalMonthly = monthlyPI + monthlyTax + monthlyInsurance + monthlyMIP + monthlyHOA;
     const totalInterest = monthlyPI * numPayments - totalLoanAmount;
-    // Annual MIP is charged for 11 years with 10%+ down, otherwise for the full term.
-    // This uses the first-year premium throughout, so it slightly overstates the total.
-    const totalMIP = monthlyMIP * mipMonths + upfrontMIP;
+    // Annual MIP is recalculated each year on the balance, and charged for 11
+    // years with 10%+ down, otherwise for the full term.
+    const totalMIP =
+      totalBalanceBasedFee(totalLoanAmount, inputs.interestRate, numPayments, annualMIPRate, mipMonths) *
+        (baseLoanAmount / totalLoanAmount) +
+      upfrontMIP;
 
     return {
       baseLoanAmount,

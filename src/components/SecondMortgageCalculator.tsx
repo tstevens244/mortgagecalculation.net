@@ -10,6 +10,7 @@ import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip as RechartsTo
 import CurrencyInput from "./CurrencyInput";
 import PercentInput from "./PercentInput";
 import { formatCurrency } from "@/lib/formatters";
+import { monthsUntilBalance } from "@/lib/mortgageMath";
 import StickyResult from "./StickyResult";
 
 interface SecondMortgageInputs {
@@ -101,13 +102,14 @@ const SecondMortgageCalculator = () => {
     const pmiMonthlyPMI = (pmiLoanAmount * (inputs.annualPMI / 100)) / 12;
     const pmiMonthlyPayment = pmiMonthlyPI + pmiMonthlyPMI;
     const pmiTotalInterest = (pmiMonthlyPI * inputs.pmiLoanTerm * 12) - pmiLoanAmount;
-    // Assume PMI drops after 20% equity (simplified: calculate PMI for first X months)
-    const monthsUntil20Percent = Math.ceil(((pmiLoanAmount - (homeValue * 0.8)) / (pmiMonthlyPI - (pmiLoanAmount * inputs.pmiInterestRate / 100 / 12))) || 0);
-    const totalPMIPaid = Math.max(0, monthsUntil20Percent) * pmiMonthlyPMI;
+    // PMI ends automatically once the balance reaches 78% of the home's value.
+    const pmiMonths = monthsUntilBalance(pmiLoanAmount, inputs.pmiInterestRate, inputs.pmiLoanTerm * 12, homeValue * 0.78);
+    const totalPMIPaid = pmiMonths * pmiMonthlyPMI;
 
     // Scenario 2: 80% First + Second Mortgage (Piggyback)
-    const firstMortAmount = homeValue * 0.8; // 80% LTV
-    const secondMortAmount = homeValue - downPayment - firstMortAmount; // Remaining after 80% + down payment
+    // With 20% or more down there's nothing to piggyback: the first mortgage covers it all.
+    const firstMortAmount = Math.min(homeValue * 0.8, homeValue - downPayment);
+    const secondMortAmount = Math.max(0, homeValue - downPayment - firstMortAmount);
     
     const firstMortMonthlyPI = calcMonthlyPayment(firstMortAmount, inputs.firstMortInterestRate, inputs.firstMortLoanTerm);
     const firstMortPointsCost = (inputs.firstMortDiscountPoints / 100) * firstMortAmount;
@@ -157,6 +159,7 @@ const SecondMortgageCalculator = () => {
         upfrontCost: pmiTotalClosing + downPayment,
         totalInterest: pmiTotalInterest,
         totalPMIPaid,
+        pmiMonths,
         totalCost: pmiTotalCost,
       },
       firstMort: {

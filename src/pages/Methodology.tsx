@@ -130,7 +130,8 @@ const Methodology = () => (
       </li>
       <li>
         <strong><Link to="/adjustable-rate-mortgage-calculator/">ARM</Link>:</strong> uses the initial rate for the
-        fixed period, then applies the lifetime cap to show the highest payment the loan allows.
+        fixed period, then applies the rate changes you expect, within the lifetime cap, recalculating the
+        payment at each change. It also shows the worst case: the rate jumping to the cap at the first adjustment.
       </li>
       <li>
         <strong><Link to="/bi-weekly-mortgage-payments-calculator/">Bi-weekly</Link>:</strong> pays half the monthly
@@ -138,10 +139,18 @@ const Methodology = () => (
       </li>
       <li>
         <strong><Link to="/rent-or-buy/">Rent or buy</Link>:</strong> compares the net cost of owning (down
-        payment, mortgage payments, PMI, taxes, insurance and maintenance, less tax savings and the equity you'd keep
-        after selling costs) against rent that rises each year.
+        payment, closing costs, mortgage payments, PMI, taxes, insurance and maintenance, plus the investment return
+        the down payment and closing costs could have earned, less tax savings and the equity you'd keep after
+        selling costs) against rent that rises each year.
       </li>
     </ul>
+
+    <h2>Tax deductions</h2>
+    <p>
+      Mortgage interest only lowers your taxes if you itemize deductions, and most homeowners take the standard
+      deduction instead. Calculators that include a tax rate default it to 0%. Enter your marginal rate only if you
+      itemize. HELOC interest used to pay off other debts is never deductible.
+    </p>
 
     <h2>What the calculators don't do</h2>
     <ul>

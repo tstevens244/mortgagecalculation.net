@@ -18,8 +18,12 @@ import { HelpCircle, Home, DollarSign, PiggyBank, TrendingUp } from "lucide-reac
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip as RechartsTooltip } from "recharts";
 import CurrencyInput from "./CurrencyInput";
 import PercentInput from "./PercentInput";
+import { maxAffordablePrice } from "@/lib/mortgageMath";
 import { formatCurrency } from "@/lib/formatters";
 import StickyResult from "./StickyResult";
+
+// Estimated PMI, % of the loan per year, applied when the down payment is under 20%.
+const PMI_RATE = 0.5;
 
 const AffordabilityCalculator = () => {
   // Income-based calculator state
@@ -78,39 +82,21 @@ const AffordabilityCalculator = () => {
     // Use the lower of the two
     const maxMonthlyPayment = Math.max(0, Math.min(maxHousingFromFrontEnd, maxHousingFromBackEnd));
     
-    // Calculate how much of the payment goes to taxes, insurance, HOA
-    // We need to iterate to find the home price since taxes/insurance depend on it
-    let homePrice = 0;
     const monthlyRate = interestRate / 100 / 12;
     const numberOfPayments = parseInt(loanTerm) * 12;
-    
-    // Iterative approach to find home price
-    for (let price = 10000; price <= 5000000; price += 1000) {
-      const loanAmount = price * (1 - downPaymentPercent / 100);
-      
-      // Monthly P&I
-      let monthlyPI = 0;
-      if (monthlyRate > 0) {
-        monthlyPI = (loanAmount * monthlyRate * Math.pow(1 + monthlyRate, numberOfPayments)) /
-          (Math.pow(1 + monthlyRate, numberOfPayments) - 1);
-      } else {
-        monthlyPI = loanAmount / numberOfPayments;
-      }
-      
-      // Monthly taxes, insurance, HOA
-      const monthlyTaxes = (price * propertyTaxRate / 100) / 12;
-      const monthlyInsurance = (price * insuranceRate / 100) / 12;
-      const monthlyHOA = hoaFee / 12;
-      
-      const totalMonthly = monthlyPI + monthlyTaxes + monthlyInsurance + monthlyHOA;
-      
-      if (totalMonthly > maxMonthlyPayment) {
-        homePrice = price - 1000;
-        break;
-      }
-      homePrice = price;
-    }
-    
+    const homePrice = Math.floor(
+      maxAffordablePrice({
+        maxPayment: maxMonthlyPayment,
+        annualRatePercent: interestRate,
+        months: numberOfPayments,
+        downPaymentPercent,
+        propertyTaxRatePercent: propertyTaxRate,
+        insuranceRatePercent: insuranceRate,
+        pmiRatePercent: PMI_RATE,
+        monthlyHoa: hoaFee,
+      }),
+    );
+
     const downPayment = homePrice * (downPaymentPercent / 100);
     const loanAmount = homePrice - downPayment;
     
@@ -123,8 +109,9 @@ const AffordabilityCalculator = () => {
     
     const monthlyTaxes = (homePrice * propertyTaxRate / 100) / 12;
     const monthlyInsurance = (homePrice * insuranceRate / 100) / 12;
-    const monthlyHOA = hoaFee / 12;
-    const totalMonthlyPayment = monthlyPI + monthlyTaxes + monthlyInsurance + monthlyHOA;
+    const monthlyHOA = hoaFee;
+    const monthlyPMI = downPaymentPercent < 20 ? (loanAmount * PMI_RATE) / 100 / 12 : 0;
+    const totalMonthlyPayment = monthlyPI + monthlyTaxes + monthlyInsurance + monthlyHOA + monthlyPMI;
 
     return {
       homePrice: Math.max(0, homePrice),
@@ -135,6 +122,7 @@ const AffordabilityCalculator = () => {
       monthlyTaxes,
       monthlyInsurance,
       monthlyHOA,
+      monthlyPMI,
     };
   }, [annualIncome, loanTerm, interestRate, monthlyDebts, downPaymentPercent, propertyTaxRate, hoaFee, insuranceRate, dtiRule]);
 
@@ -143,35 +131,19 @@ const AffordabilityCalculator = () => {
     const monthlyRate = budgetInterestRate / 100 / 12;
     const numberOfPayments = parseInt(budgetLoanTerm) * 12;
     
-    // Iterate to find home price that fits budget
-    let homePrice = 0;
-    
-    for (let price = 10000; price <= 5000000; price += 1000) {
-      const loanAmount = price * (1 - budgetDownPaymentPercent / 100);
-      
-      // Monthly P&I
-      let monthlyPI = 0;
-      if (monthlyRate > 0) {
-        monthlyPI = (loanAmount * monthlyRate * Math.pow(1 + monthlyRate, numberOfPayments)) /
-          (Math.pow(1 + monthlyRate, numberOfPayments) - 1);
-      } else {
-        monthlyPI = loanAmount / numberOfPayments;
-      }
-      
-      // Monthly taxes, insurance, HOA
-      const monthlyTaxes = (price * budgetPropertyTaxRate / 100) / 12;
-      const monthlyInsurance = (price * budgetInsuranceRate / 100) / 12;
-      const monthlyHOA = budgetHoaFee / 12;
-      
-      const totalMonthly = monthlyPI + monthlyTaxes + monthlyInsurance + monthlyHOA;
-      
-      if (totalMonthly > monthlyBudget) {
-        homePrice = price - 1000;
-        break;
-      }
-      homePrice = price;
-    }
-    
+    const homePrice = Math.floor(
+      maxAffordablePrice({
+        maxPayment: monthlyBudget,
+        annualRatePercent: budgetInterestRate,
+        months: numberOfPayments,
+        downPaymentPercent: budgetDownPaymentPercent,
+        propertyTaxRatePercent: budgetPropertyTaxRate,
+        insuranceRatePercent: budgetInsuranceRate,
+        pmiRatePercent: PMI_RATE,
+        monthlyHoa: budgetHoaFee,
+      }),
+    );
+
     const downPayment = homePrice * (budgetDownPaymentPercent / 100);
     const loanAmount = homePrice - downPayment;
     
@@ -184,8 +156,9 @@ const AffordabilityCalculator = () => {
     
     const monthlyTaxes = (homePrice * budgetPropertyTaxRate / 100) / 12;
     const monthlyInsurance = (homePrice * budgetInsuranceRate / 100) / 12;
-    const monthlyHOA = budgetHoaFee / 12;
-    const totalMonthlyPayment = monthlyPI + monthlyTaxes + monthlyInsurance + monthlyHOA;
+    const monthlyHOA = budgetHoaFee;
+    const monthlyPMI = budgetDownPaymentPercent < 20 ? (loanAmount * PMI_RATE) / 100 / 12 : 0;
+    const totalMonthlyPayment = monthlyPI + monthlyTaxes + monthlyInsurance + monthlyHOA + monthlyPMI;
 
     return {
       homePrice: Math.max(0, homePrice),
@@ -196,6 +169,7 @@ const AffordabilityCalculator = () => {
       monthlyTaxes,
       monthlyInsurance,
       monthlyHOA,
+      monthlyPMI,
     };
   }, [monthlyBudget, budgetLoanTerm, budgetInterestRate, budgetDownPaymentPercent, budgetPropertyTaxRate, budgetHoaFee, budgetInsuranceRate]);
 
@@ -233,7 +207,8 @@ const AffordabilityCalculator = () => {
                     { name: 'Principal & Interest', value: results.monthlyPI, color: 'hsl(var(--primary))' },
                     { name: 'Property Tax', value: results.monthlyTaxes, color: 'hsl(var(--accent))' },
                     { name: 'Insurance', value: results.monthlyInsurance, color: 'hsl(var(--muted-foreground))' },
-                    ...(results.monthlyHOA > 0 ? [{ name: 'HOA', value: results.monthlyHOA, color: 'hsl(var(--destructive))' }] : []),
+                    ...(results.monthlyPMI > 0 ? [{ name: 'PMI', value: results.monthlyPMI, color: 'hsl(0 84% 60%)' }] : []),
+                    ...(results.monthlyHOA > 0 ? [{ name: 'HOA', value: results.monthlyHOA, color: 'hsl(280 67% 50%)' }] : []),
                   ].filter(item => item.value > 0)}
                   cx="50%"
                   cy="50%"
@@ -246,7 +221,8 @@ const AffordabilityCalculator = () => {
                     { name: 'Principal & Interest', value: results.monthlyPI, color: 'hsl(var(--primary))' },
                     { name: 'Property Tax', value: results.monthlyTaxes, color: 'hsl(var(--accent))' },
                     { name: 'Insurance', value: results.monthlyInsurance, color: 'hsl(var(--muted-foreground))' },
-                    ...(results.monthlyHOA > 0 ? [{ name: 'HOA', value: results.monthlyHOA, color: 'hsl(var(--destructive))' }] : []),
+                    ...(results.monthlyPMI > 0 ? [{ name: 'PMI', value: results.monthlyPMI, color: 'hsl(0 84% 60%)' }] : []),
+                    ...(results.monthlyHOA > 0 ? [{ name: 'HOA', value: results.monthlyHOA, color: 'hsl(280 67% 50%)' }] : []),
                   ].filter(item => item.value > 0).map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={entry.color} />
                   ))}
@@ -412,7 +388,7 @@ const AffordabilityCalculator = () => {
 
                   {/* HOA Fee */}
                   <div className="input-group">
-                    <Label htmlFor="affordability-hoa-fee-per-year" className="input-label">HOA Fee (per year)</Label>
+                    <Label htmlFor="affordability-hoa-fee-per-year" className="input-label">HOA dues (per month)</Label>
                     <CurrencyInput id="affordability-hoa-fee-per-year" value={hoaFee} onChange={setHoaFee} />
                   </div>
 
@@ -553,7 +529,7 @@ const AffordabilityCalculator = () => {
 
                   {/* HOA Fee */}
                   <div className="input-group">
-                    <Label htmlFor="affordability-hoa-fee-per-year-2" className="input-label">HOA Fee (per year)</Label>
+                    <Label htmlFor="affordability-hoa-fee-per-year-2" className="input-label">HOA dues (per month)</Label>
                     <CurrencyInput id="affordability-hoa-fee-per-year-2" value={budgetHoaFee} onChange={setBudgetHoaFee} />
                   </div>
 

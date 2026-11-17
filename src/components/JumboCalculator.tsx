@@ -12,6 +12,7 @@ import AmortizationChart from "./AmortizationChart";
 import CurrencyInput from "./CurrencyInput";
 import PercentInput from "./PercentInput";
 import { formatCurrency } from "@/lib/formatters";
+import { monthsUntilBalance } from "@/lib/mortgageMath";
 import StickyResult from "./StickyResult";
 import { CONFORMING_LIMIT, CONFORMING_LIMIT_HIGH_COST as HIGH_COST_LIMIT } from "@/lib/loanLimits";
 
@@ -87,7 +88,9 @@ const JumboCalculator = () => {
 
     const totalMonthly = monthlyPI + monthlyTax + monthlyInsurance + monthlyPMI + monthlyHOA;
     const totalInterest = monthlyPI * numPayments - loanAmount;
-    const totalPayment = totalMonthly * numPayments;
+    const pmiMonths = monthlyPMI > 0 ? monthsUntilBalance(loanAmount, inputs.interestRate, numPayments, inputs.homePrice * 0.78) : 0;
+    const totalPayment =
+      (monthlyPI + monthlyTax + monthlyInsurance + monthlyHOA) * numPayments + monthlyPMI * pmiMonths;
 
     return {
       loanAmount,

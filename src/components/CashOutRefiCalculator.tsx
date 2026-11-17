@@ -34,7 +34,8 @@ const CashOutRefiCalculator = () => {
     // Maximum LTV is typically 80% for cash-out refi
     const maxLTV = 0.80;
     const maxLoanAmount = homeValue * maxLTV;
-    const maxCashOut = maxLoanAmount - currentMortgageBalance;
+    // Fees rolled into the loan count toward the 80% limit too.
+    const maxCashOut = maxLoanAmount - currentMortgageBalance - (rollFeesIntoLoan ? refinanceFees : 0);
     
     // Adjusted cash out (capped at max)
     const actualCashOut = Math.min(Math.max(0, desiredCashOut), maxCashOut);

@@ -37,7 +37,7 @@ const BiWeeklyCalculator = () => {
   const [loanTerm, setLoanTerm] = useState("30");
 
   // Tax Info
-  const [taxRate, setTaxRate] = useState(25);
+  const [taxRate, setTaxRate] = useState(0);
 
   const loanAmount = Math.max(0, homePrice - downPayment);
 
@@ -278,7 +278,7 @@ const BiWeeklyCalculator = () => {
             <CardContent>
               <div className="flex items-center gap-2">
                 <Label htmlFor="bi-weekly-tax-rate" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
-                  Tax Rate
+                  Tax rate (if itemizing)
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <HelpCircle className="h-3 w-3 sm:h-4 sm:w-4 cursor-help" />

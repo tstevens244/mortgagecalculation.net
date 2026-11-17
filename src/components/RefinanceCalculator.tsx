@@ -43,8 +43,8 @@ const RefinanceCalculator = () => {
     discountPoints: 1.0,
     originationFees: 0.5,
     otherClosingCosts: 1200,
-    federalTaxRate: 25,
-    stateTaxRate: 5,
+    federalTaxRate: 0,
+    stateTaxRate: 0,
   });
 
   const updateInput = (field: keyof RefinanceInputs, value: number) => {
@@ -471,7 +471,7 @@ const RefinanceCalculator = () => {
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="flex items-center gap-3">
                 <Label htmlFor="refinance-federal-tax-rate" className="text-xs sm:text-sm text-muted-foreground min-w-[130px]">
-                  Federal Tax Rate
+                  Federal tax rate (if you itemize)
                 </Label>
                 <div className="flex gap-2 flex-1 items-center">
                   <Input id="refinance-federal-tax-rate"
@@ -487,7 +487,7 @@ const RefinanceCalculator = () => {
 
               <div className="flex items-center gap-3">
                 <Label htmlFor="refinance-state-tax-rate" className="text-xs sm:text-sm text-muted-foreground min-w-[130px]">
-                  State Tax Rate
+                  State tax rate (if you itemize)
                 </Label>
                 <div className="flex gap-2 flex-1 items-center">
                   <Input id="refinance-state-tax-rate"

@@ -27,9 +27,11 @@ const RentOrBuyCalculator = () => {
 
   // Property Info
   const [homePrice, setHomePrice] = useState(400000);
-  const [annualAppreciation, setAnnualAppreciation] = useState(5);
+  const [annualAppreciation, setAnnualAppreciation] = useState(3);
   const [yearsBeforeSell, setYearsBeforeSell] = useState("7");
   const [sellingCost, setSellingCost] = useState(6);
+  const [buyingCost, setBuyingCost] = useState(3);
+  const [investmentReturn, setInvestmentReturn] = useState(4);
 
   // Loan Information
   const [downPaymentPercent, setDownPaymentPercent] = useState(20);
@@ -43,7 +45,7 @@ const RentOrBuyCalculator = () => {
   const [annualMaintenance, setAnnualMaintenance] = useState(2000);
 
   // Tax Info
-  const [incomeTaxRate, setIncomeTaxRate] = useState(25);
+  const [incomeTaxRate, setIncomeTaxRate] = useState(0);
 
   const results = useMemo(() => {
     const years = parseInt(yearsBeforeSell);
@@ -93,9 +95,11 @@ const RentOrBuyCalculator = () => {
     let currentLTV = (loanAmount / homePrice) * 100;
     
     for (let month = 1; month <= years * 12; month++) {
-      const interestPayment = remainingBalance * monthlyRate;
-      const principalPayment = monthlyPI - interestPayment;
-      
+      // After the loan is paid off there's no more principal or interest.
+      const loanActive = month <= totalPayments && remainingBalance > 0.005;
+      const interestPayment = loanActive ? remainingBalance * monthlyRate : 0;
+      const principalPayment = loanActive ? Math.min(monthlyPI - interestPayment, remainingBalance) : 0;
+
       totalInterestPaid += interestPayment;
       remainingBalance -= principalPayment;
       
@@ -107,7 +111,7 @@ const RentOrBuyCalculator = () => {
         totalPMIPaid += monthlyPMI;
       }
       
-      totalOwnershipPayments += monthlyPI + monthlyPropertyTax + monthlyInsurance + monthlyMaintenance;
+      totalOwnershipPayments += (loanActive ? monthlyPI : 0) + monthlyPropertyTax + monthlyInsurance + monthlyMaintenance;
       if (currentLTV > 80 && hasPMI) {
         totalOwnershipPayments += monthlyPMI;
       }
@@ -139,7 +143,13 @@ const RentOrBuyCalculator = () => {
     // Net equity at end = futureHomeValue - sellingCosts - loanBalance - downPayment already paid
     // Total out of pocket for buying = downPayment + totalOwnershipPayments - totalTaxSavings
     // Net cost of buying = out of pocket - equity appreciation
-    const totalBuyCost = downPayment + totalOwnershipPayments - totalTaxSavings - equityAppreciation;
+    // Buying also costs closing costs up front, and the return that money
+    // (plus the down payment) would have earned invested while renting.
+    const buyingClosingCosts = homePrice * (buyingCost / 100);
+    const opportunityCost =
+      (downPayment + buyingClosingCosts) * (Math.pow(1 + investmentReturn / 100, years) - 1);
+    const totalBuyCost =
+      downPayment + buyingClosingCosts + opportunityCost + totalOwnershipPayments - totalTaxSavings - equityAppreciation;
     
     // Should buy when buying costs less than renting
     const netBenefitOfBuying = totalRentCost - totalBuyCost;
@@ -162,6 +172,8 @@ const RentOrBuyCalculator = () => {
       totalTaxDeduction,
       avgAnnualTaxSavings,
       totalTaxSavings,
+      buyingClosingCosts,
+      opportunityCost,
       
       // Appreciation
       // Costs for comparison
@@ -191,7 +203,7 @@ const RentOrBuyCalculator = () => {
     monthlyRent, annualRentIncrease, homePrice, annualAppreciation, 
     yearsBeforeSell, sellingCost, downPaymentPercent, interestRate, 
     loanTerm, annualPMIPercent, annualPropertyTaxRate, annualInsuranceRate,
-    annualMaintenance, incomeTaxRate
+    annualMaintenance, incomeTaxRate, buyingCost, investmentReturn
   ]);
 
   return (
@@ -319,6 +331,52 @@ const RentOrBuyCalculator = () => {
                     <PercentInput id="rent-or-buy-selling-cost"
                       value={sellingCost}
                       onChange={setSellingCost}
+                      min={0}
+                      max={15}
+                      decimalPlaces={1}
+                    />
+                    <span className="flex items-center text-muted-foreground text-xs sm:text-sm">%</span>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Label htmlFor="rent-or-buy-buying-cost" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
+                    Buying Cost
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <HelpCircle className="h-3 w-3 sm:h-4 sm:w-4 cursor-help" />
+                      </TooltipTrigger>
+                      <TooltipContent className="max-w-xs">
+                        <p>Closing costs when you buy, usually 2% to 5% of the price.</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </Label>
+                  <div className="flex gap-1 sm:gap-2 flex-1">
+                    <PercentInput id="rent-or-buy-buying-cost"
+                      value={buyingCost}
+                      onChange={setBuyingCost}
+                      min={0}
+                      max={10}
+                      decimalPlaces={1}
+                    />
+                    <span className="flex items-center text-muted-foreground text-xs sm:text-sm">%</span>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Label htmlFor="rent-or-buy-investment-return" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
+                    Investment Return
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <HelpCircle className="h-3 w-3 sm:h-4 sm:w-4 cursor-help" />
+                      </TooltipTrigger>
+                      <TooltipContent className="max-w-xs">
+                        <p>What your down payment and closing costs could earn if you rented and invested them instead.</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </Label>
+                  <div className="flex gap-1 sm:gap-2 flex-1">
+                    <PercentInput id="rent-or-buy-investment-return"
+                      value={investmentReturn}
+                      onChange={setInvestmentReturn}
                       min={0}
                       max={15}
                       decimalPlaces={1}
@@ -470,7 +528,7 @@ const RentOrBuyCalculator = () => {
 
                 <div className="flex items-center gap-2">
                   <Label htmlFor="rent-or-buy-tax-rate" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
-                    Tax Rate
+                    Tax rate (if itemizing)
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <HelpCircle className="h-3 w-3 sm:h-4 sm:w-4 cursor-help" />
@@ -638,6 +696,29 @@ const RentOrBuyCalculator = () => {
               </CardContent>
             </Card>
           )}
+
+          {/* Upfront and opportunity costs */}
+          <Card className="calculator-card">
+            <CardHeader className="pb-4">
+              <CardTitle className="text-lg font-semibold">Upfront Costs of Buying</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                <div className="flex justify-between items-center py-2 border-b border-border/50">
+                  <span className="text-muted-foreground text-sm">Closing Costs</span>
+                  <span className="font-semibold">{formatCurrency(results.buyingClosingCosts)}</span>
+                </div>
+                <div className="flex justify-between items-center py-2 bg-secondary/50 rounded-lg px-3 -mx-3">
+                  <span className="font-medium text-sm">Investment Return Given Up</span>
+                  <span className="font-bold">{formatCurrency(results.opportunityCost)}</span>
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  What your down payment and closing costs could have earned at {investmentReturn}% a year over{" "}
+                  {yearsBeforeSell} years if you rented instead.
+                </p>
+              </div>
+            </CardContent>
+          </Card>
 
           {/* Appreciation */}
           <Card className="calculator-card">

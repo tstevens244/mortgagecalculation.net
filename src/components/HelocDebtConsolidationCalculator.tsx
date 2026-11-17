@@ -8,6 +8,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import CurrencyInput from "./CurrencyInput";
 import PercentInput from "./PercentInput";
 import { formatCurrency } from "@/lib/formatters";
+import { monthsToPayoff, totalPaidOnBalance } from "@/lib/mortgageMath";
 
 interface Debt {
   id: string;
@@ -37,7 +38,7 @@ const HelocDebtConsolidationCalculator = () => {
     helocTerm: 15,
     helocClosingCosts: 1200,
     helocInterestRate: 6.0,
-    federalTaxRate: 25,
+    federalTaxRate: 0,
   });
 
   const updateInput = (field: keyof HelocInputs, value: number) => {
@@ -73,33 +74,26 @@ const HelocDebtConsolidationCalculator = () => {
     const weightedInterest = debts.reduce((sum, d) => sum + d.balance * d.interestRate, 0);
     const avgInterestRate = totalDebtBalance > 0 ? weightedInterest / totalDebtBalance : 0;
 
-    // Calculate payoff timeline for existing debts (simplified - assumes all debts paid simultaneously)
+    // Pay each debt off on its own schedule with its current payment.
     let existingTotalInterest = 0;
+    let existingTotalPayments = 0;
     let maxMonthsToPayoff = 0;
-
+    let neverPaysOff = false;
     debts.forEach((debt) => {
-      if (debt.balance > 0 && debt.monthlyPayment > 0) {
-        const monthlyRate = debt.interestRate / 100 / 12;
-        if (monthlyRate > 0) {
-          // Calculate months to payoff
-          const monthsToPayoff = Math.ceil(
-            -Math.log(1 - (debt.balance * monthlyRate) / debt.monthlyPayment) / Math.log(1 + monthlyRate)
-          );
-          maxMonthsToPayoff = Math.max(maxMonthsToPayoff, isFinite(monthsToPayoff) ? monthsToPayoff : 360);
-          
-          // Total interest paid
-          const totalPaid = debt.monthlyPayment * monthsToPayoff;
-          existingTotalInterest += totalPaid - debt.balance;
-        } else {
-          const monthsToPayoff = Math.ceil(debt.balance / debt.monthlyPayment);
-          maxMonthsToPayoff = Math.max(maxMonthsToPayoff, monthsToPayoff);
-        }
+      if (debt.balance <= 0) return;
+      const months = monthsToPayoff(debt.balance, debt.interestRate, debt.monthlyPayment);
+      if (!Number.isFinite(months)) {
+        neverPaysOff = true;
+        return;
       }
+      const paid = totalPaidOnBalance(debt.balance, debt.interestRate, debt.monthlyPayment);
+      existingTotalPayments += paid;
+      existingTotalInterest += paid - debt.balance;
+      maxMonthsToPayoff = Math.max(maxMonthsToPayoff, months);
     });
 
     const existingYears = Math.floor(maxMonthsToPayoff / 12);
     const existingMonths = maxMonthsToPayoff % 12;
-    const existingTotalPayments = totalMonthlyPayment * maxMonthsToPayoff;
 
     // HELOC calculations
     const helocLoanAmount = totalDebtBalance;
@@ -115,10 +109,11 @@ const HelocDebtConsolidationCalculator = () => {
     const helocTotalPayments = helocMonthlyPayment * helocNumPayments;
     const helocTotalInterest = helocTotalPayments - helocLoanAmount;
 
-    // Tax deduction (only if using for home improvement - we'll calculate potential savings)
-    const helocDeductibleInterest = helocTotalInterest;
-    const annualTaxSavings = (helocDeductibleInterest / inputs.helocTerm) * (inputs.federalTaxRate / 100);
-    const totalTaxSavings = annualTaxSavings * inputs.helocTerm;
+    // HELOC interest is deductible only when the money improves the home, never
+    // for paying off other debts, so this calculator applies no tax savings.
+    const helocDeductibleInterest = 0;
+    const annualTaxSavings = 0;
+    const totalTaxSavings = 0;
 
     // Comparison
     const existingCostAfterTax = existingTotalPayments; // No tax deduction on consumer debt
@@ -137,6 +132,7 @@ const HelocDebtConsolidationCalculator = () => {
         monthsToPayoff: existingMonths,
         totalPayments: existingTotalPayments,
         totalInterest: existingTotalInterest,
+        neverPaysOff,
         deductibleInterest: 0,
       },
       heloc: {
@@ -217,30 +213,14 @@ const HelocDebtConsolidationCalculator = () => {
                     <span className="text-muted-foreground text-sm">%</span>
                   </div>
                 </div>
-
-                <div className="flex items-center gap-3">
-                  <Label htmlFor="heloc-dc-federal-tax-rate" className="text-xs sm:text-sm text-muted-foreground min-w-[130px]">
-                    Federal Tax Rate
-                  </Label>
-                  <div className="flex gap-2 flex-1 items-center">
-                    <PercentInput id="heloc-dc-federal-tax-rate"
-                      value={inputs.federalTaxRate}
-                      onChange={(value) => updateInput("federalTaxRate", value)}
-                      min={0}
-                      max={50}
-                      decimalPlaces={1}
-                    />
-                    <span className="text-muted-foreground text-sm">%</span>
-                  </div>
-                </div>
               </div>
 
               <Alert className="mt-4 border-amber-500/50 bg-amber-500/10">
                 <AlertTriangle className="h-4 w-4 text-amber-500" />
-                <AlertTitle className="text-amber-600">Tax Deduction Notice</AlertTitle>
+                <AlertTitle className="text-amber-800 dark:text-amber-400">No tax deduction for debt payoff</AlertTitle>
                 <AlertDescription className="text-xs text-muted-foreground">
-                  HELOC interest is only tax deductible if used for home improvements. 
-                  Set tax rate to 0% if not using for home improvements or not itemizing deductions.
+                  HELOC interest is tax deductible only when the money is used to buy, build or improve your home,
+                  so this comparison doesn't include any tax savings.
                 </AlertDescription>
               </Alert>
             </section>
@@ -342,6 +322,13 @@ const HelocDebtConsolidationCalculator = () => {
               Financial Analysis
             </h2>
 
+            {calculations.existing.neverPaysOff && (
+              <p className="mb-4 rounded-lg border border-destructive/40 bg-destructive/10 p-3 text-sm" role="status">
+                At least one debt's monthly payment doesn't cover its interest, so it would never be paid off. It's
+                left out of the "keep existing debts" totals below; raise its payment to include it.
+              </p>
+            )}
+
             <div className="overflow-x-auto">
               <table className="w-full text-xs sm:text-sm">
                 <thead>
@@ -385,16 +372,6 @@ const HelocDebtConsolidationCalculator = () => {
                     <td className="py-3 px-4 text-muted-foreground">Total Interest Paid</td>
                     <td className="py-3 px-4 text-right font-medium">{formatCurrency(calculations.existing.totalInterest)}</td>
                     <td className="py-3 px-4 text-right font-medium">{formatCurrency(calculations.heloc.totalInterest)}</td>
-                  </tr>
-                  <tr>
-                    <td className="py-3 px-4 text-muted-foreground">Tax Deductible Interest</td>
-                    <td className="py-3 px-4 text-right font-medium text-muted-foreground">$0.00</td>
-                    <td className="py-3 px-4 text-right font-medium text-accent-strong">{formatCurrency(calculations.heloc.deductibleInterest)}</td>
-                  </tr>
-                  <tr className="bg-muted/30">
-                    <td className="py-3 px-4 text-muted-foreground">Avg Annual Tax Savings</td>
-                    <td className="py-3 px-4 text-right font-medium text-muted-foreground">$0.00</td>
-                    <td className="py-3 px-4 text-right font-medium text-accent-strong">{formatCurrency(calculations.heloc.annualTaxSavings)}</td>
                   </tr>
                 </tbody>
               </table>

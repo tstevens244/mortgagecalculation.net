@@ -13,6 +13,7 @@ import PercentInput from "./PercentInput";
 import { formatCurrency } from "@/lib/formatters";
 import StickyResult from "./StickyResult";
 import { USDA_UPFRONT_FEE_RATE, USDA_ANNUAL_FEE_RATE } from "@/lib/loanLimits";
+import { totalBalanceBasedFee } from "@/lib/mortgageMath";
 
 interface USDAInputs {
   homePrice: number;
@@ -84,7 +85,11 @@ const USDACalculator = () => {
 
     const totalMonthly = monthlyPI + monthlyTax + monthlyInsurance + monthlyAnnualFee + monthlyHOA;
     const totalInterest = monthlyPI * numPayments - totalLoanAmount;
-    const totalGuaranteeFees = monthlyAnnualFee * numPayments + upfrontGuaranteeFee;
+    // The annual fee is recalculated each year on the outstanding balance.
+    const totalGuaranteeFees =
+      totalBalanceBasedFee(totalLoanAmount, inputs.interestRate, numPayments, ANNUAL_FEE_RATE, numPayments) *
+        (baseLoanAmount / totalLoanAmount) +
+      upfrontGuaranteeFee;
 
     return {
       baseLoanAmount,
