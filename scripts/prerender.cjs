@@ -99,7 +99,17 @@ async function main() {
         continue;
       }
 
-      const html = await page.evaluate(() => "<!doctype html>\n" + document.documentElement.outerHTML);
+      // Vite adds <link rel="modulepreload"> tags as lazy chunks load. Keep the
+      // route's own code, but drop the chart chunks so the saved page doesn't
+      // download recharts before it's needed.
+      const html = await page.evaluate(() => {
+        document
+          .querySelectorAll('link[rel="modulepreload"]')
+          .forEach((l) => {
+            if (/(PaymentPie|AmortizationChartView|generateCategoricalChart|PieChart|BarChart|AreaChart|LineChart|ComposedChart)-/.test(l.getAttribute("href") || "")) l.remove();
+          });
+        return "<!doctype html>\n" + document.documentElement.outerHTML;
+      });
       const outDir = route === "/" ? DIST : path.join(DIST, route);
       fs.mkdirSync(outDir, { recursive: true });
       fs.writeFileSync(path.join(outDir, "index.html"), html);

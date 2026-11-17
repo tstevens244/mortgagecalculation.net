@@ -1,18 +1,20 @@
 import { createRoot } from "react-dom/client";
-// Self-hosted fonts (Latin subset, only the weights the site uses), so pages
-// don't wait on a third-party font server.
-import "@fontsource/inter/latin-400.css";
-import "@fontsource/inter/latin-500.css";
-import "@fontsource/inter/latin-600.css";
-import "@fontsource/inter/latin-700.css";
+// Self-hosted heading font (Latin subset, the two weights in use). Body text
+// uses the system font stack: loading Inter as well re-rendered the main text
+// after the font arrived and pushed LCP from about 1.9 s to 4.5 s on mobile.
 import "@fontsource/playfair-display/latin-600.css";
 import "@fontsource/playfair-display/latin-700.css";
 import App from "./App.tsx";
+import { preloadPage } from "./routes";
 import "./index.css";
 
 const container = document.getElementById("root")!;
 
-// The prerendered HTML is shown until the app loads, then replaced with a fresh
-// client render. Hydrating instead would mismatch on date-based defaults (the
-// loan start month) and Radix-generated ids, so it isn't used.
-createRoot(container).render(<App />);
+// The prerendered HTML stays on screen until the app renders over it. Load the
+// current page's code first, so the first render is the complete page and the
+// screen never flashes empty while a lazy chunk downloads.
+// (Hydrating instead would mismatch on the date-based loan start month and on
+// Radix-generated ids, so the page is re-rendered rather than hydrated.)
+preloadPage(window.location.pathname).then(() => {
+  createRoot(container).render(<App />);
+});

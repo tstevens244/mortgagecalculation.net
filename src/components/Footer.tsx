@@ -52,7 +52,7 @@ const Footer = () => {
           <div className="grid gap-8 md:grid-cols-2">
             <div>
               <Link to="/" className="flex items-center gap-2 text-lg font-display font-bold">
-                <img src="/favicon.png" alt="" className="h-5 w-5" aria-hidden="true" />
+                <img src="/logo-64.png" width={24} height={24} alt="" className="h-5 w-5" aria-hidden="true" />
                 MortgageCalculation.net
               </Link>
               <p className="mt-2 text-sm text-muted-foreground">
