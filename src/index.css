@@ -150,6 +150,27 @@
     @apply text-sm font-medium text-foreground flex items-center gap-2;
   }
 
+  /* Text pages (About, Methodology, Privacy, Terms). Scoped here because the
+     typography plugin isn't enabled for the rest of the site. */
+  .info-content {
+    @apply text-foreground leading-relaxed;
+  }
+  .info-content > * + * {
+    @apply mt-4;
+  }
+  .info-content h2 {
+    @apply font-display text-2xl font-semibold mt-10;
+  }
+  .info-content h3 {
+    @apply text-lg font-semibold mt-6;
+  }
+  .info-content ul {
+    @apply list-disc pl-6 space-y-2;
+  }
+  .info-content a {
+    @apply text-primary underline-offset-2 hover:underline;
+  }
+
   /* Keep the result card clear of the sticky header when the mobile result bar jumps to it. */
   #calc-result {
     scroll-margin-top: 5rem;

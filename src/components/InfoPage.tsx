@@ -54,7 +54,7 @@ const InfoPage = ({ path, title, description, heading, updated, breadcrumbName, 
                 Last updated <time dateTime={updated}>{formatLongDate(updated)}</time>
               </p>
             </header>
-            <div className="prose prose-slate max-w-none prose-headings:font-display prose-a:text-primary">{children}</div>
+            <div className="info-content">{children}</div>
           </article>
         </main>
         <Footer />
