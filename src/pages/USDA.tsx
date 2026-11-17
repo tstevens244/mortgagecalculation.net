@@ -1,5 +1,6 @@
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
+import { ChevronDown } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import TrustLine from "@/components/TrustLine";
@@ -414,36 +415,56 @@ const USDA = () => {
               </div>
 
               <h2 className="text-2xl font-display font-semibold mt-10 mb-4">Frequently Asked Questions About USDA Loans</h2>
-              <div className="space-y-6 not-prose">
-                <div className="calculator-card p-4">
-                  <h3 className="font-semibold text-foreground mb-2 text-base font-sans">Can I use a USDA loan for a manufactured home?</h3>
+              <div className="space-y-3 not-prose">
+                <details className="group calculator-card overflow-hidden" data-faq>
+                  <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-4 hover:bg-secondary/40 [&::-webkit-details-marker]:hidden">
+                    <h3 className="text-base font-semibold text-foreground font-sans">Can I use a USDA loan for a manufactured home?</h3>
+                    <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-open:rotate-180" aria-hidden="true" />
+                  </summary>
+                  <div className="px-4 pb-4">
                   <p className="text-sm text-muted-foreground">
                     Yes, USDA loans can finance manufactured homes if they're new, permanently affixed to a foundation, 
                     and meet HUD standards. The home must be at least 400 sq ft and located on an eligible site.
                   </p>
-                </div>
-                <div className="calculator-card p-4">
-                  <h3 className="font-semibold text-foreground mb-2 text-base font-sans">Do I have to live in a rural area to qualify?</h3>
+                  </div>
+                </details>
+                <details className="group calculator-card overflow-hidden" data-faq>
+                  <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-4 hover:bg-secondary/40 [&::-webkit-details-marker]:hidden">
+                    <h3 className="text-base font-semibold text-foreground font-sans">Do I have to live in a rural area to qualify?</h3>
+                    <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-open:rotate-180" aria-hidden="true" />
+                  </summary>
+                  <div className="px-4 pb-4">
                   <p className="text-sm text-muted-foreground">
                     Many suburban areas qualify as "rural" under USDA guidelines. Towns with populations under 35,000 
                     often qualify. Check specific addresses using the USDA eligibility map—you might be surprised.
                   </p>
-                </div>
-                <div className="calculator-card p-4">
-                  <h3 className="font-semibold text-foreground mb-2 text-base font-sans">Can I build a new home with a USDA loan?</h3>
+                  </div>
+                </details>
+                <details className="group calculator-card overflow-hidden" data-faq>
+                  <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-4 hover:bg-secondary/40 [&::-webkit-details-marker]:hidden">
+                    <h3 className="text-base font-semibold text-foreground font-sans">Can I build a new home with a USDA loan?</h3>
+                    <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-open:rotate-180" aria-hidden="true" />
+                  </summary>
+                  <div className="px-4 pb-4">
                   <p className="text-sm text-muted-foreground">
                     Yes, through the USDA Single Close Construction Loan program, you can combine land purchase, 
                     construction, and permanent financing into one loan. This requires working with a USDA-approved lender.
                   </p>
-                </div>
-                <div className="calculator-card p-4">
-                  <h3 className="font-semibold text-foreground mb-2 text-base font-sans">Can I refinance my USDA loan?</h3>
+                  </div>
+                </details>
+                <details className="group calculator-card overflow-hidden" data-faq>
+                  <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-4 hover:bg-secondary/40 [&::-webkit-details-marker]:hidden">
+                    <h3 className="text-base font-semibold text-foreground font-sans">Can I refinance my USDA loan?</h3>
+                    <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-open:rotate-180" aria-hidden="true" />
+                  </summary>
+                  <div className="px-4 pb-4">
                   <p className="text-sm text-muted-foreground">
                     Yes, USDA offers the Streamlined Assist Refinance program with minimal documentation and no appraisal 
                     required. You can also do a standard <Link to="/refinance-calculator/" className="text-primary hover:underline">rate-and-term refinance</Link> or 
                     refinance into a conventional loan once you have 20% equity.
                   </p>
-                </div>
+                  </div>
+                </details>
               </div>
 
               <div className="calculator-card p-6 mt-10 not-prose">

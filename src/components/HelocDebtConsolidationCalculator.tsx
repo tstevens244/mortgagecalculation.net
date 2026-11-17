@@ -363,7 +363,7 @@ const HelocDebtConsolidationCalculator = () => {
                     </td>
                   </tr>
                   <tr>
-                    <td className="py-3 px-4 text-muted-foreground">Total Monthly Payments</td>
+                    <td className="py-3 px-4 text-muted-foreground">Total Paid</td>
                     <td className="py-3 px-4 text-right font-medium">{formatCurrency(calculations.existing.totalPayments)}</td>
                     <td className="py-3 px-4 text-right font-medium">{formatCurrency(calculations.heloc.totalPayments)}</td>
                   </tr>

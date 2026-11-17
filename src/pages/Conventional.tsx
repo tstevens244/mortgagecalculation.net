@@ -1,5 +1,6 @@
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
+import { ChevronDown } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import TrustLine from "@/components/TrustLine";
@@ -403,36 +404,56 @@ const Conventional = () => {
               </div>
 
               <h2 className="text-2xl font-display font-semibold mt-10 mb-4">Frequently Asked Questions About Conventional Loans</h2>
-              <div className="space-y-6 not-prose">
-                <div className="calculator-card p-4">
-                  <h3 className="font-semibold text-foreground mb-2 text-base font-sans">Can I get a conventional loan with a bankruptcy or foreclosure?</h3>
+              <div className="space-y-3 not-prose">
+                <details className="group calculator-card overflow-hidden" data-faq>
+                  <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-4 hover:bg-secondary/40 [&::-webkit-details-marker]:hidden">
+                    <h3 className="text-base font-semibold text-foreground font-sans">Can I get a conventional loan with a bankruptcy or foreclosure?</h3>
+                    <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-open:rotate-180" aria-hidden="true" />
+                  </summary>
+                  <div className="px-4 pb-4">
                   <p className="text-sm text-muted-foreground">
                     Yes, but waiting periods apply. After Chapter 7 bankruptcy: 4 years. After foreclosure: 7 years 
                     (or 3 years with extenuating circumstances). After Chapter 13 bankruptcy: 2 years from discharge.
                   </p>
-                </div>
-                <div className="calculator-card p-4">
-                  <h3 className="font-semibold text-foreground mb-2 text-base font-sans">What's the difference between HomeReady and Home Possible?</h3>
+                  </div>
+                </details>
+                <details className="group calculator-card overflow-hidden" data-faq>
+                  <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-4 hover:bg-secondary/40 [&::-webkit-details-marker]:hidden">
+                    <h3 className="text-base font-semibold text-foreground font-sans">What's the difference between HomeReady and Home Possible?</h3>
+                    <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-open:rotate-180" aria-hidden="true" />
+                  </summary>
+                  <div className="px-4 pb-4">
                   <p className="text-sm text-muted-foreground">
                     Both are 3% down payment programs. HomeReady (Fannie Mae) allows income from non-borrower household members. 
                     Home Possible (Freddie Mac) has similar features. Both have income limits in most areas.
                   </p>
-                </div>
-                <div className="calculator-card p-4">
-                  <h3 className="font-semibold text-foreground mb-2 text-base font-sans">Should I choose a 15-year or 30-year conventional loan?</h3>
+                  </div>
+                </details>
+                <details className="group calculator-card overflow-hidden" data-faq>
+                  <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-4 hover:bg-secondary/40 [&::-webkit-details-marker]:hidden">
+                    <h3 className="text-base font-semibold text-foreground font-sans">Should I choose a 15-year or 30-year conventional loan?</h3>
+                    <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-open:rotate-180" aria-hidden="true" />
+                  </summary>
+                  <div className="px-4 pb-4">
                   <p className="text-sm text-muted-foreground">
                     15-year loans have lower rates and save significantly on interest but require higher monthly payments. 
                     30-year loans offer lower payments and more flexibility. Consider <Link to="/extra-mortgage-payments-calculator/" className="text-primary hover:underline">making extra payments</Link> on 
                     a 30-year loan for the best of both worlds.
                   </p>
-                </div>
-                <div className="calculator-card p-4">
-                  <h3 className="font-semibold text-foreground mb-2 text-base font-sans">Can I use gift funds for my conventional loan down payment?</h3>
+                  </div>
+                </details>
+                <details className="group calculator-card overflow-hidden" data-faq>
+                  <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-4 hover:bg-secondary/40 [&::-webkit-details-marker]:hidden">
+                    <h3 className="text-base font-semibold text-foreground font-sans">Can I use gift funds for my conventional loan down payment?</h3>
+                    <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-open:rotate-180" aria-hidden="true" />
+                  </summary>
+                  <div className="px-4 pb-4">
                   <p className="text-sm text-muted-foreground">
                     Yes, gift funds are allowed from family members, employers, or other approved sources. For down payments 
                     under 20%, you may need to contribute some of your own funds depending on the program.
                   </p>
-                </div>
+                  </div>
+                </details>
               </div>
 
               <div className="calculator-card p-6 mt-10 not-prose">

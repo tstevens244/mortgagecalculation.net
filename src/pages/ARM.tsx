@@ -1,5 +1,6 @@
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
+import { ChevronDown } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import TrustLine from "@/components/TrustLine";
@@ -365,40 +366,60 @@ const ARM = () => {
               <div className="prose prose-slate max-w-none">
                 <h2 className="text-2xl font-display font-semibold mt-10 mb-4">Frequently Asked Questions About ARMs</h2>
               </div>
-              <div className="space-y-6 not-prose">
-                <div className="calculator-card p-4">
-                  <h3 className="font-semibold text-foreground mb-2 text-base font-sans">Can I refinance out of an ARM before it adjusts?</h3>
+              <div className="space-y-3 not-prose">
+                <details className="group calculator-card overflow-hidden" data-faq>
+                  <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-4 hover:bg-secondary/40 [&::-webkit-details-marker]:hidden">
+                    <h3 className="text-base font-semibold text-foreground font-sans">Can I refinance out of an ARM before it adjusts?</h3>
+                    <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-open:rotate-180" aria-hidden="true" />
+                  </summary>
+                  <div className="px-4 pb-4">
                   <p className="text-sm text-muted-foreground">
                     Yes, and many ARM borrowers do exactly this. If rates are favorable before your fixed period ends, 
                     you can <Link to="/refinance-calculator/" className="text-primary hover:underline">refinance into a fixed-rate mortgage</Link> to 
                     lock in a permanent rate. Just ensure you'll stay long enough to recoup closing costs.
                   </p>
-                </div>
-                <div className="calculator-card p-4">
-                  <h3 className="font-semibold text-foreground mb-2 text-base font-sans">What happens if I can't afford my ARM payment after it adjusts?</h3>
+                  </div>
+                </details>
+                <details className="group calculator-card overflow-hidden" data-faq>
+                  <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-4 hover:bg-secondary/40 [&::-webkit-details-marker]:hidden">
+                    <h3 className="text-base font-semibold text-foreground font-sans">What happens if I can't afford my ARM payment after it adjusts?</h3>
+                    <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-open:rotate-180" aria-hidden="true" />
+                  </summary>
+                  <div className="px-4 pb-4">
                   <p className="text-sm text-muted-foreground">
                     Options include: refinancing to a fixed rate or new ARM, selling the home, or contacting your 
                     lender about modification programs. This is why it's crucial to calculate the worst-case scenario 
                     before choosing an ARM—make sure you can handle the maximum possible payment.
                   </p>
-                </div>
-                <div className="calculator-card p-4">
-                  <h3 className="font-semibold text-foreground mb-2 text-base font-sans">Are ARM rates tied to the Federal Reserve rate?</h3>
+                  </div>
+                </details>
+                <details className="group calculator-card overflow-hidden" data-faq>
+                  <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-4 hover:bg-secondary/40 [&::-webkit-details-marker]:hidden">
+                    <h3 className="text-base font-semibold text-foreground font-sans">Are ARM rates tied to the Federal Reserve rate?</h3>
+                    <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-open:rotate-180" aria-hidden="true" />
+                  </summary>
+                  <div className="px-4 pb-4">
                   <p className="text-sm text-muted-foreground">
                     Indirectly. Most ARMs are tied to the Secured Overnight Financing Rate (SOFR), which is influenced 
                     by the Fed's actions but doesn't move in lockstep. Your new rate = Index (SOFR) + Margin (set at 
                     loan origination, typically 2-3%).
                   </p>
-                </div>
-                <div className="calculator-card p-4">
-                  <h3 className="font-semibold text-foreground mb-2 text-base font-sans">Can I get an ARM for an FHA or VA loan?</h3>
+                  </div>
+                </details>
+                <details className="group calculator-card overflow-hidden" data-faq>
+                  <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-4 hover:bg-secondary/40 [&::-webkit-details-marker]:hidden">
+                    <h3 className="text-base font-semibold text-foreground font-sans">Can I get an ARM for an FHA or VA loan?</h3>
+                    <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-open:rotate-180" aria-hidden="true" />
+                  </summary>
+                  <div className="px-4 pb-4">
                   <p className="text-sm text-muted-foreground">
                     Yes, both <Link to="/fha-loan-calculator/" className="text-primary hover:underline">FHA</Link> and 
                     <Link to="/va-loan-calculator/" className="text-primary hover:underline"> VA</Link> offer ARM programs. 
                     FHA ARMs typically have 1/5/5 or 2/6 cap structures. VA ARMs (called "VA Hybrids") offer 
                     3/1, 5/1, 7/1, and 10/1 options with annual rate caps of 1%.
                   </p>
-                </div>
+                  </div>
+                </details>
               </div>
 
               <div className="calculator-card p-6 mt-10 not-prose">

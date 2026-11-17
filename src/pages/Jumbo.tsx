@@ -1,5 +1,6 @@
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
+import { ChevronDown } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import TrustLine from "@/components/TrustLine";
@@ -362,39 +363,59 @@ const Jumbo = () => {
               </div>
 
               <h2 className="text-2xl font-display font-semibold mt-10 mb-4">Frequently Asked Questions About Jumbo Loans</h2>
-              <div className="space-y-6 not-prose">
-                <div className="calculator-card p-4">
-                  <h3 className="font-semibold text-foreground mb-2 text-base font-sans">Can I get a jumbo loan for an investment property?</h3>
+              <div className="space-y-3 not-prose">
+                <details className="group calculator-card overflow-hidden" data-faq>
+                  <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-4 hover:bg-secondary/40 [&::-webkit-details-marker]:hidden">
+                    <h3 className="text-base font-semibold text-foreground font-sans">Can I get a jumbo loan for an investment property?</h3>
+                    <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-open:rotate-180" aria-hidden="true" />
+                  </summary>
+                  <div className="px-4 pb-4">
                   <p className="text-sm text-muted-foreground">
                     Yes, jumbo loans are available for investment properties. Expect higher rates 
                     (0.25-0.75% more), larger down payments (25-30%), and stricter reserve requirements 
                     (12-18 months) compared to primary residence jumbo loans.
                   </p>
-                </div>
-                <div className="calculator-card p-4">
-                  <h3 className="font-semibold text-foreground mb-2 text-base font-sans">Are jumbo loan interest rates higher?</h3>
+                  </div>
+                </details>
+                <details className="group calculator-card overflow-hidden" data-faq>
+                  <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-4 hover:bg-secondary/40 [&::-webkit-details-marker]:hidden">
+                    <h3 className="text-base font-semibold text-foreground font-sans">Are jumbo loan interest rates higher?</h3>
+                    <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-open:rotate-180" aria-hidden="true" />
+                  </summary>
+                  <div className="px-4 pb-4">
                   <p className="text-sm text-muted-foreground">
                     Not necessarily. While jumbo rates were historically higher, they've become very 
                     competitive in recent years. With excellent credit (760+) and 20%+ down, you may 
                     find jumbo rates equal to or even below conforming rates.
                   </p>
-                </div>
-                <div className="calculator-card p-4">
-                  <h3 className="font-semibold text-foreground mb-2 text-base font-sans">Can I refinance a jumbo loan?</h3>
+                  </div>
+                </details>
+                <details className="group calculator-card overflow-hidden" data-faq>
+                  <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-4 hover:bg-secondary/40 [&::-webkit-details-marker]:hidden">
+                    <h3 className="text-base font-semibold text-foreground font-sans">Can I refinance a jumbo loan?</h3>
+                    <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-open:rotate-180" aria-hidden="true" />
+                  </summary>
+                  <div className="px-4 pb-4">
                   <p className="text-sm text-muted-foreground">
                     Yes, jumbo loans can be refinanced like any mortgage. If your home has appreciated 
                     and your loan is now under conforming limits, you may be able to <Link to="/refinance-calculator/" className="text-primary hover:underline">refinance into a conforming loan</Link> for 
                     potentially easier qualification.
                   </p>
-                </div>
-                <div className="calculator-card p-4">
-                  <h3 className="font-semibold text-foreground mb-2 text-base font-sans">What documents do I need for a jumbo loan?</h3>
+                  </div>
+                </details>
+                <details className="group calculator-card overflow-hidden" data-faq>
+                  <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-4 hover:bg-secondary/40 [&::-webkit-details-marker]:hidden">
+                    <h3 className="text-base font-semibold text-foreground font-sans">What documents do I need for a jumbo loan?</h3>
+                    <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-open:rotate-180" aria-hidden="true" />
+                  </summary>
+                  <div className="px-4 pb-4">
                   <p className="text-sm text-muted-foreground">
                     Prepare: 2 years of tax returns, 2 years of W-2s/1099s, 60 days of bank/investment 
                     statements, proof of reserves, recent pay stubs, and documentation of any other 
                     income sources. Self-employed borrowers need business tax returns and P&L statements.
                   </p>
-                </div>
+                  </div>
+                </details>
               </div>
 
               <div className="calculator-card p-6 mt-10 not-prose">

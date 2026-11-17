@@ -1,5 +1,6 @@
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
+import { ChevronDown } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import TrustLine from "@/components/TrustLine";
@@ -419,36 +420,56 @@ const VA = () => {
               </div>
 
               <h2 className="text-2xl font-display font-semibold mt-10 mb-4">Frequently Asked Questions About VA Loans</h2>
-              <div className="space-y-6 not-prose">
-                <div className="calculator-card p-4">
-                  <h3 className="font-semibold text-foreground mb-2 text-base font-sans">Can I use a VA loan for a second home?</h3>
+              <div className="space-y-3 not-prose">
+                <details className="group calculator-card overflow-hidden" data-faq>
+                  <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-4 hover:bg-secondary/40 [&::-webkit-details-marker]:hidden">
+                    <h3 className="text-base font-semibold text-foreground font-sans">Can I use a VA loan for a second home?</h3>
+                    <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-open:rotate-180" aria-hidden="true" />
+                  </summary>
+                  <div className="px-4 pb-4">
                   <p className="text-sm text-muted-foreground">
                     VA loans are for primary residences only. However, you may use your VA benefit for a new primary residence 
                     while keeping a previous VA-financed home as a rental, subject to remaining entitlement limits.
                   </p>
-                </div>
-                <div className="calculator-card p-4">
-                  <h3 className="font-semibold text-foreground mb-2 text-base font-sans">How do I get my Certificate of Eligibility (COE)?</h3>
+                  </div>
+                </details>
+                <details className="group calculator-card overflow-hidden" data-faq>
+                  <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-4 hover:bg-secondary/40 [&::-webkit-details-marker]:hidden">
+                    <h3 className="text-base font-semibold text-foreground font-sans">How do I get my Certificate of Eligibility (COE)?</h3>
+                    <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-open:rotate-180" aria-hidden="true" />
+                  </summary>
+                  <div className="px-4 pb-4">
                   <p className="text-sm text-muted-foreground">
                     You can obtain your COE through <a href="https://www.va.gov/housing-assistance/home-loans/how-to-request-coe/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">eBenefits</a>, 
                     through your lender (most can retrieve it instantly), or by mail using VA Form 26-1880.
                   </p>
-                </div>
-                <div className="calculator-card p-4">
-                  <h3 className="font-semibold text-foreground mb-2 text-base font-sans">Can I refinance my VA loan?</h3>
+                  </div>
+                </details>
+                <details className="group calculator-card overflow-hidden" data-faq>
+                  <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-4 hover:bg-secondary/40 [&::-webkit-details-marker]:hidden">
+                    <h3 className="text-base font-semibold text-foreground font-sans">Can I refinance my VA loan?</h3>
+                    <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-open:rotate-180" aria-hidden="true" />
+                  </summary>
+                  <div className="px-4 pb-4">
                   <p className="text-sm text-muted-foreground">
                     Yes! The VA offers the Interest Rate Reduction Refinance Loan (IRRRL), also called a "streamline refinance," 
                     which has minimal documentation requirements. You can also do a <Link to="/cash-out-refinance-calculator/" className="text-primary hover:underline">cash-out refinance</Link> with 
                     a VA loan to access your home's equity.
                   </p>
-                </div>
-                <div className="calculator-card p-4">
-                  <h3 className="font-semibold text-foreground mb-2 text-base font-sans">What if I'm buying with a non-veteran spouse?</h3>
+                  </div>
+                </details>
+                <details className="group calculator-card overflow-hidden" data-faq>
+                  <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-4 hover:bg-secondary/40 [&::-webkit-details-marker]:hidden">
+                    <h3 className="text-base font-semibold text-foreground font-sans">What if I'm buying with a non-veteran spouse?</h3>
+                    <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-open:rotate-180" aria-hidden="true" />
+                  </summary>
+                  <div className="px-4 pb-4">
                   <p className="text-sm text-muted-foreground">
                     You can still use a VA loan with a non-veteran co-borrower (spouse or otherwise), but their income can only 
                     be counted if they're on the loan. If they're not a spouse, a 12.5% down payment is typically required.
                   </p>
-                </div>
+                  </div>
+                </details>
               </div>
 
               <div className="calculator-card p-6 mt-10 not-prose">

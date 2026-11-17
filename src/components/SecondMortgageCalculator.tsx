@@ -554,7 +554,7 @@ const SecondMortgageCalculator = () => {
                   <tr>
                     <td className="py-3 px-4 text-muted-foreground">Monthly PMI</td>
                     <td className="py-3 px-4 text-right font-medium">{formatCurrency(calculations.pmi.monthlyPMI)}</td>
-                    <td className="py-3 px-4 text-right font-medium text-accent-strong">$0.00</td>
+                    <td className="py-3 px-4 text-right font-medium text-accent-strong">$0</td>
                   </tr>
                   <tr className="bg-muted/30">
                     <td className="py-3 px-4 text-muted-foreground">Monthly Loan Payment</td>

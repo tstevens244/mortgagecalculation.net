@@ -1,5 +1,6 @@
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
+import { ChevronDown } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import TrustLine from "@/components/TrustLine";
@@ -232,12 +233,15 @@ const Heloc = () => {
               </p>
 
               <h2 className="text-2xl font-display font-semibold mt-10 mb-4">Frequently asked questions</h2>
-              <div className="not-prose space-y-4">
+              <div className="not-prose space-y-3">
                 {faqs.map((f) => (
-                  <div key={f.q} className="calculator-card p-4">
-                    <h3 className="font-semibold text-foreground mb-2 text-base font-sans">{f.q}</h3>
-                    <p className="text-sm text-muted-foreground leading-relaxed">{f.a}</p>
-                  </div>
+                  <details key={f.q} className="group calculator-card overflow-hidden" data-faq>
+                    <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-4 hover:bg-secondary/40 [&::-webkit-details-marker]:hidden">
+                      <h3 className="text-base font-semibold text-foreground font-sans">{f.q}</h3>
+                      <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-open:rotate-180" aria-hidden="true" />
+                    </summary>
+                    <p className="px-4 pb-4 text-sm text-muted-foreground leading-relaxed">{f.a}</p>
+                  </details>
                 ))}
               </div>
             </section>
