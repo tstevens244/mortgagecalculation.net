@@ -389,12 +389,12 @@ const HelocDebtConsolidationCalculator = () => {
                   <tr>
                     <td className="py-3 px-4 text-muted-foreground">Tax Deductible Interest</td>
                     <td className="py-3 px-4 text-right font-medium text-muted-foreground">$0.00</td>
-                    <td className="py-3 px-4 text-right font-medium text-accent">{formatCurrency(calculations.heloc.deductibleInterest)}</td>
+                    <td className="py-3 px-4 text-right font-medium text-accent-strong">{formatCurrency(calculations.heloc.deductibleInterest)}</td>
                   </tr>
                   <tr className="bg-muted/30">
                     <td className="py-3 px-4 text-muted-foreground">Avg Annual Tax Savings</td>
                     <td className="py-3 px-4 text-right font-medium text-muted-foreground">$0.00</td>
-                    <td className="py-3 px-4 text-right font-medium text-accent">{formatCurrency(calculations.heloc.annualTaxSavings)}</td>
+                    <td className="py-3 px-4 text-right font-medium text-accent-strong">{formatCurrency(calculations.heloc.annualTaxSavings)}</td>
                   </tr>
                 </tbody>
               </table>
@@ -404,7 +404,7 @@ const HelocDebtConsolidationCalculator = () => {
             <div className={`mt-6 p-4 rounded-lg ${calculations.betterOption === 'heloc' ? 'bg-accent/10 border border-accent' : 'bg-amber-500/10 border border-amber-500'}`}>
               {calculations.betterOption === 'heloc' ? (
                 <div>
-                  <p className="text-sm sm:text-base font-semibold text-accent mb-2">
+                  <p className="text-sm sm:text-base font-semibold text-accent-strong mb-2">
                     HELOC consolidation could save you money!
                   </p>
                   <p className="text-sm text-muted-foreground">

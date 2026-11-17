@@ -212,30 +212,30 @@ const Jumbo = () => {
               <h2 className="text-2xl font-display font-semibold mt-10 mb-4">Jumbo Loan Pros and Cons</h2>
               <div className="not-prose grid gap-6 md:grid-cols-2">
                 <div className="calculator-card p-4">
-                  <h3 className="font-display font-semibold text-lg mb-3 text-accent">✓ Advantages of Jumbo Loans</h3>
+                  <h3 className="font-display font-semibold text-lg mb-3 text-accent-strong">✓ Advantages of Jumbo Loans</h3>
                   <ul className="space-y-2 text-muted-foreground text-sm">
                     <li className="flex items-start gap-2">
-                      <span className="text-accent">✓</span>
+                      <span className="text-accent-strong">✓</span>
                       <span>Finance expensive properties with a single loan</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-accent">✓</span>
+                      <span className="text-accent-strong">✓</span>
                       <span>Competitive rates—sometimes below conforming rates</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-accent">✓</span>
+                      <span className="text-accent-strong">✓</span>
                       <span>No PMI with 20% down payment</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-accent">✓</span>
+                      <span className="text-accent-strong">✓</span>
                       <span>Various term options: 10, 15, 20, 30-year fixed and ARMs</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-accent">✓</span>
+                      <span className="text-accent-strong">✓</span>
                       <span>Interest-only options available from some lenders</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-accent">✓</span>
+                      <span className="text-accent-strong">✓</span>
                       <span>No upper loan limit—borrow what you need</span>
                     </li>
                   </ul>
@@ -320,7 +320,7 @@ const Jumbo = () => {
                   <tbody className="text-muted-foreground">
                     <tr className="border-b border-border">
                       <td className="p-3">Loan Limit</td>
-                      <td className="p-3 text-accent font-semibold">No upper limit</td>
+                      <td className="p-3 text-accent-strong font-semibold">No upper limit</td>
                       <td className="p-3">Up to $832,750*</td>
                     </tr>
                     <tr className="border-b border-border">

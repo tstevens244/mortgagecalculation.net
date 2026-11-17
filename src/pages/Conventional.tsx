@@ -201,34 +201,34 @@ const Conventional = () => {
               <h2 className="text-2xl font-display font-semibold mt-10 mb-4">Conventional Loan Pros and Cons</h2>
               <div className="not-prose grid gap-6 md:grid-cols-2">
                 <div className="calculator-card p-4">
-                  <h3 className="font-display font-semibold text-lg mb-3 text-accent">✓ Advantages of Conventional Loans</h3>
+                  <h3 className="font-display font-semibold text-lg mb-3 text-accent-strong">✓ Advantages of Conventional Loans</h3>
                   <ul className="space-y-2 text-muted-foreground text-sm">
                     <li className="flex items-start gap-2">
-                      <span className="text-accent">✓</span>
+                      <span className="text-accent-strong">✓</span>
                       <span>No upfront mortgage insurance premium</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-accent">✓</span>
+                      <span className="text-accent-strong">✓</span>
                       <span>PMI can be removed at 20% equity (unlike FHA MIP)</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-accent">✓</span>
+                      <span className="text-accent-strong">✓</span>
                       <span>Competitive rates for borrowers with good credit</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-accent">✓</span>
+                      <span className="text-accent-strong">✓</span>
                       <span>Flexible property types: primary, second home, investment</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-accent">✓</span>
+                      <span className="text-accent-strong">✓</span>
                       <span>Higher loan limits than FHA ($832,750 in most areas)</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-accent">✓</span>
+                      <span className="text-accent-strong">✓</span>
                       <span>Less paperwork and faster closing than government loans</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-accent">✓</span>
+                      <span className="text-accent-strong">✓</span>
                       <span>No occupancy requirements for investment properties</span>
                     </li>
                   </ul>
@@ -369,11 +369,11 @@ const Conventional = () => {
                       <td className="p-3">Min. Down Payment</td>
                       <td className="p-3">3%</td>
                       <td className="p-3">3.5%</td>
-                      <td className="p-3 text-accent font-semibold">0%</td>
+                      <td className="p-3 text-accent-strong font-semibold">0%</td>
                     </tr>
                     <tr className="border-b border-border">
                       <td className="p-3">Mortgage Insurance</td>
-                      <td className="p-3 text-accent font-semibold">PMI (removable)</td>
+                      <td className="p-3 text-accent-strong font-semibold">PMI (removable)</td>
                       <td className="p-3">MIP (11 yrs or loan life)</td>
                       <td className="p-3">Funding fee</td>
                     </tr>
@@ -381,11 +381,11 @@ const Conventional = () => {
                       <td className="p-3">Loan Limits (2026)</td>
                       <td className="p-3">$832,750*</td>
                       <td className="p-3">$541,287*</td>
-                      <td className="p-3 text-accent font-semibold">No limit</td>
+                      <td className="p-3 text-accent-strong font-semibold">No limit</td>
                     </tr>
                     <tr>
                       <td className="p-3">Property Types</td>
-                      <td className="p-3 text-accent font-semibold">All types</td>
+                      <td className="p-3 text-accent-strong font-semibold">All types</td>
                       <td className="p-3">Primary only</td>
                       <td className="p-3">Primary only</td>
                     </tr>

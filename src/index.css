@@ -27,6 +27,7 @@
 
     /* Gold accent for highlights */
     --accent: 38 92% 50%;
+    --accent-text: 32 95% 30%; /* amber dark enough for text (WCAG AA) */
     --accent-foreground: 222 47% 11%;
 
     --destructive: 0 84% 60%;
@@ -82,6 +83,7 @@
     --muted-foreground: 215 20% 65%;
 
     --accent: 38 92% 50%;
+    --accent-text: 38 92% 50%;
     --accent-foreground: 222 47% 11%;
 
     --destructive: 0 63% 31%;
@@ -133,6 +135,13 @@
     button[role="combobox"] {
       font-size: 16px !important;
     }
+  }
+}
+
+@layer utilities {
+  /* Use for amber text; plain text-accent is too light to read on white. */
+  .text-accent-strong {
+    color: hsl(var(--accent-text));
   }
 }
 

@@ -550,7 +550,7 @@ const RentOrBuyCalculator = () => {
               </div>
               <div className="flex justify-between items-center py-2 bg-secondary/50 rounded-lg px-3 mt-3">
                 <span className="font-medium text-sm">Difference</span>
-                <span className="font-bold text-accent text-sm">
+                <span className="font-bold text-accent-strong text-sm">
                   {results.isRentCheaper ? "Rent saves " : "Buying saves "} 
                   {formatCurrency(results.costDifference)}
                 </span>
@@ -601,7 +601,7 @@ const RentOrBuyCalculator = () => {
                 
                 <div className="grid grid-cols-3 gap-2 text-sm py-2 font-semibold">
                   <span>Monthly Difference</span>
-                  <span className="col-span-2 text-center text-accent">
+                  <span className="col-span-2 text-center text-accent-strong">
                     {results.isRentCheaper ? "Rent saves " : "Buying saves "} 
                     {formatCurrency(Math.abs(results.avgMonthlyRent - results.monthlyOwnershipTotal))}/mo
                   </span>
@@ -632,7 +632,7 @@ const RentOrBuyCalculator = () => {
                   </div>
                   <div className="flex justify-between items-center py-2 bg-secondary/50 rounded-lg px-3 -mx-3">
                     <span className="font-medium text-sm">Total Tax Savings</span>
-                    <span className="font-bold text-accent">{formatCurrency(results.totalTaxSavings)}</span>
+                    <span className="font-bold text-accent-strong">{formatCurrency(results.totalTaxSavings)}</span>
                   </div>
                 </div>
               </CardContent>
@@ -660,7 +660,7 @@ const RentOrBuyCalculator = () => {
                 </div>
                 <div className="flex justify-between items-center py-2 bg-secondary/50 rounded-lg px-3 -mx-3">
                   <span className="font-medium text-sm">Equity Appreciation</span>
-                  <span className="font-bold text-accent">{formatCurrency(results.equityAppreciation)}</span>
+                  <span className="font-bold text-accent-strong">{formatCurrency(results.equityAppreciation)}</span>
                 </div>
               </div>
             </CardContent>
@@ -697,7 +697,7 @@ const RentOrBuyCalculator = () => {
                 )}
                 <div className="flex justify-between items-center py-3 bg-primary/10 rounded-lg px-3 -mx-3">
                   <span className="font-medium">Total Monthly</span>
-                  <span className="font-bold text-lg text-accent">{formatCurrency(results.monthlyOwnershipTotal)}</span>
+                  <span className="font-bold text-lg text-accent-strong">{formatCurrency(results.monthlyOwnershipTotal)}</span>
                 </div>
               </div>
             </CardContent>

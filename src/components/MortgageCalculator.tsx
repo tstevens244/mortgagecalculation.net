@@ -321,7 +321,7 @@ const MortgageCalculator = () => {
                   <Percent className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" />
                   PMI
                   {inputs.downPaymentPercent < 20 && (
-                    <span className="text-[10px] sm:text-xs text-accent ml-1">Auto</span>
+                    <span className="text-[10px] sm:text-xs text-accent-strong ml-1">Auto</span>
                   )}
                 </Label>
                 <CurrencyInput

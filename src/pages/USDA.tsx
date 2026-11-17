@@ -227,34 +227,34 @@ const USDA = () => {
               <h2 className="text-2xl font-display font-semibold mt-10 mb-4">USDA Loan Pros and Cons</h2>
               <div className="not-prose grid gap-6 md:grid-cols-2">
                 <div className="calculator-card p-4">
-                  <h3 className="font-display font-semibold text-lg mb-3 text-accent">✓ Advantages of USDA Loans</h3>
+                  <h3 className="font-display font-semibold text-lg mb-3 text-accent-strong">✓ Advantages of USDA Loans</h3>
                   <ul className="space-y-2 text-muted-foreground text-sm">
                     <li className="flex items-start gap-2">
-                      <span className="text-accent">✓</span>
+                      <span className="text-accent-strong">✓</span>
                       <span>No down payment required—100% financing</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-accent">✓</span>
+                      <span className="text-accent-strong">✓</span>
                       <span>Lower annual fee (0.35%) than FHA MIP (0.55%+)</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-accent">✓</span>
+                      <span className="text-accent-strong">✓</span>
                       <span>Competitive interest rates, often below market</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-accent">✓</span>
+                      <span className="text-accent-strong">✓</span>
                       <span>No loan limit—borrow based on ability to repay</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-accent">✓</span>
+                      <span className="text-accent-strong">✓</span>
                       <span>Flexible credit requirements with manual underwriting</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-accent">✓</span>
+                      <span className="text-accent-strong">✓</span>
                       <span>Seller can pay up to 6% of closing costs</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-accent">✓</span>
+                      <span className="text-accent-strong">✓</span>
                       <span>Available to repeat homebuyers, not just first-time</span>
                     </li>
                   </ul>
@@ -367,8 +367,8 @@ const USDA = () => {
                   <tbody className="text-muted-foreground">
                     <tr className="border-b border-border">
                       <td className="p-3">Down Payment</td>
-                      <td className="p-3 text-accent font-semibold">0%</td>
-                      <td className="p-3 text-accent font-semibold">0%</td>
+                      <td className="p-3 text-accent-strong font-semibold">0%</td>
+                      <td className="p-3 text-accent-strong font-semibold">0%</td>
                       <td className="p-3">3.5%</td>
                     </tr>
                     <tr className="border-b border-border">
@@ -379,21 +379,21 @@ const USDA = () => {
                     </tr>
                     <tr className="border-b border-border">
                       <td className="p-3">Annual Fee</td>
-                      <td className="p-3 text-accent font-semibold">0.35%</td>
-                      <td className="p-3 text-accent font-semibold">None</td>
+                      <td className="p-3 text-accent-strong font-semibold">0.35%</td>
+                      <td className="p-3 text-accent-strong font-semibold">None</td>
                       <td className="p-3">0.55%+</td>
                     </tr>
                     <tr className="border-b border-border">
                       <td className="p-3">Location</td>
                       <td className="p-3">Rural/Suburban</td>
-                      <td className="p-3 text-accent font-semibold">Any</td>
-                      <td className="p-3 text-accent font-semibold">Any</td>
+                      <td className="p-3 text-accent-strong font-semibold">Any</td>
+                      <td className="p-3 text-accent-strong font-semibold">Any</td>
                     </tr>
                     <tr className="border-b border-border">
                       <td className="p-3">Income Limits</td>
                       <td className="p-3">Yes (115% AMI)</td>
-                      <td className="p-3 text-accent font-semibold">None</td>
-                      <td className="p-3 text-accent font-semibold">None</td>
+                      <td className="p-3 text-accent-strong font-semibold">None</td>
+                      <td className="p-3 text-accent-strong font-semibold">None</td>
                     </tr>
                     <tr>
                       <td className="p-3">Eligibility</td>

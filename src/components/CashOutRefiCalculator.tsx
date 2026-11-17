@@ -363,7 +363,7 @@ const CashOutRefiCalculator = () => {
                       </TooltipContent>
                     </Tooltip>
                   </span>
-                  <span className="font-semibold text-lg text-accent">{formatCurrency(results.monthlyPayment)}</span>
+                  <span className="font-semibold text-lg text-accent-strong">{formatCurrency(results.monthlyPayment)}</span>
                 </div>
               </div>
             </CardContent>

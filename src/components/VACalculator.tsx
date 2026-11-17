@@ -464,8 +464,8 @@ const VACalculator = () => {
               )}
               {inputs.hasDisability && (
                 <div className="flex justify-between text-sm">
-                  <span className="text-accent font-medium">Funding Fee Exempt</span>
-                  <span className="text-accent font-medium">$0</span>
+                  <span className="text-accent-strong font-medium">Funding Fee Exempt</span>
+                  <span className="text-accent-strong font-medium">$0</span>
                 </div>
               )}
               <div className="flex justify-between text-sm font-medium">

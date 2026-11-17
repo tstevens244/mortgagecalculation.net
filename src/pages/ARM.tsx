@@ -167,23 +167,23 @@ const ARM = () => {
                   <h3 className="text-xl font-display font-semibold mb-4">Common ARM Types</h3>
                   <ul className="space-y-3 text-muted-foreground">
                     <li className="flex items-start gap-2">
-                      <span className="text-accent font-bold">1/1 ARM:</span>
+                      <span className="text-accent-strong font-bold">1/1 ARM:</span>
                       <span>Fixed for 1 year, adjusts annually. Highest risk but lowest initial rate.</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-accent font-bold">3/1 ARM:</span>
+                      <span className="text-accent-strong font-bold">3/1 ARM:</span>
                       <span>Fixed for 3 years. Good for short-term ownership or frequent movers.</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-accent font-bold">5/1 ARM:</span>
+                      <span className="text-accent-strong font-bold">5/1 ARM:</span>
                       <span>Fixed for 5 years. Most popular ARM, balancing savings with stability.</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-accent font-bold">7/1 ARM:</span>
+                      <span className="text-accent-strong font-bold">7/1 ARM:</span>
                       <span>Fixed for 7 years. More stability with moderate initial savings.</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-accent font-bold">10/1 ARM:</span>
+                      <span className="text-accent-strong font-bold">10/1 ARM:</span>
                       <span>Fixed for 10 years. Most stable ARM, closest to fixed-rate behavior.</span>
                     </li>
                   </ul>
@@ -196,15 +196,15 @@ const ARM = () => {
                   </p>
                   <ul className="space-y-3 text-muted-foreground">
                     <li className="flex items-start gap-2">
-                      <span className="text-accent font-bold">Initial Cap:</span>
+                      <span className="text-accent-strong font-bold">Initial Cap:</span>
                       <span>Maximum increase at first adjustment (often 2-5%).</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-accent font-bold">Periodic Cap:</span>
+                      <span className="text-accent-strong font-bold">Periodic Cap:</span>
                       <span>Maximum change per adjustment period (typically 1-2%).</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-accent font-bold">Lifetime Cap:</span>
+                      <span className="text-accent-strong font-bold">Lifetime Cap:</span>
                       <span>Maximum total increase over the loan's life (usually 5-6%).</span>
                     </li>
                   </ul>
@@ -216,30 +216,30 @@ const ARM = () => {
               </div>
               <div className="grid gap-6 md:grid-cols-2 not-prose">
                 <div className="calculator-card p-4">
-                  <h3 className="font-display font-semibold text-lg mb-3 text-accent">✓ Advantages of ARMs</h3>
+                  <h3 className="font-display font-semibold text-lg mb-3 text-accent-strong">✓ Advantages of ARMs</h3>
                   <ul className="space-y-2 text-muted-foreground text-sm">
                     <li className="flex items-start gap-2">
-                      <span className="text-accent">✓</span>
+                      <span className="text-accent-strong">✓</span>
                       <span>Lower initial rate—typically 0.5-1% below fixed rates</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-accent">✓</span>
+                      <span className="text-accent-strong">✓</span>
                       <span>Lower monthly payments during fixed period</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-accent">✓</span>
+                      <span className="text-accent-strong">✓</span>
                       <span>May qualify for a larger loan amount</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-accent">✓</span>
+                      <span className="text-accent-strong">✓</span>
                       <span>Rate caps protect against extreme increases</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-accent">✓</span>
+                      <span className="text-accent-strong">✓</span>
                       <span>Potential savings if rates decrease</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-accent">✓</span>
+                      <span className="text-accent-strong">✓</span>
                       <span>Great for planned short-term ownership</span>
                     </li>
                   </ul>
@@ -327,18 +327,18 @@ const ARM = () => {
                     <tbody className="text-muted-foreground">
                       <tr className="border-b border-border">
                         <td className="py-3 px-4">Initial Rate</td>
-                        <td className="py-3 px-4 text-accent font-semibold">Lower (0.5-1% less)</td>
+                        <td className="py-3 px-4 text-accent-strong font-semibold">Lower (0.5-1% less)</td>
                         <td className="py-3 px-4">Higher</td>
                       </tr>
                       <tr className="border-b border-border">
                         <td className="py-3 px-4">Rate Stability</td>
                         <td className="py-3 px-4">Changes after fixed period</td>
-                        <td className="py-3 px-4 text-accent font-semibold">Never changes</td>
+                        <td className="py-3 px-4 text-accent-strong font-semibold">Never changes</td>
                       </tr>
                       <tr className="border-b border-border">
                         <td className="py-3 px-4">Payment Predictability</td>
                         <td className="py-3 px-4">Uncertain after initial period</td>
-                        <td className="py-3 px-4 text-accent font-semibold">Always the same</td>
+                        <td className="py-3 px-4 text-accent-strong font-semibold">Always the same</td>
                       </tr>
                       <tr className="border-b border-border">
                         <td className="py-3 px-4">Best For</td>
@@ -348,7 +348,7 @@ const ARM = () => {
                       <tr>
                         <td className="py-3 px-4">Risk Level</td>
                         <td className="py-3 px-4">Higher (rate can increase)</td>
-                        <td className="py-3 px-4 text-accent font-semibold">Lower (rate locked)</td>
+                        <td className="py-3 px-4 text-accent-strong font-semibold">Lower (rate locked)</td>
                       </tr>
                     </tbody>
                   </table>

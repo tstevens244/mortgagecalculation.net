@@ -542,13 +542,13 @@ const RefinanceCalculator = () => {
                     <td className="py-4 font-semibold">
                       Net Refinancing {calculations.comparison.shouldRefinance ? 'Benefit' : 'Cost'} Over {inputs.yearsBeforeSell} Years
                     </td>
-                    <td className={`py-4 text-right text-xl font-bold ${calculations.comparison.shouldRefinance ? 'text-accent' : 'text-destructive'}`}>
+                    <td className={`py-4 text-right text-xl font-bold ${calculations.comparison.shouldRefinance ? 'text-accent-strong' : 'text-destructive'}`}>
                       {calculations.comparison.totalBenefit >= 0 ? '' : '-'}{formatCurrency(Math.abs(calculations.comparison.totalBenefit))}
                     </td>
                   </tr>
                   <tr>
                     <td className="py-3 text-muted-foreground">Monthly Payment Change</td>
-                    <td className={`py-3 text-right font-medium ${calculations.comparison.monthlySavings > 0 ? 'text-accent' : 'text-destructive'}`}>
+                    <td className={`py-3 text-right font-medium ${calculations.comparison.monthlySavings > 0 ? 'text-accent-strong' : 'text-destructive'}`}>
                       {calculations.comparison.monthlySavings >= 0 ? 
                         `Save ${formatCurrency(calculations.comparison.monthlySavings)}/mo` : 
                         `Pay ${formatCurrency(Math.abs(calculations.comparison.monthlySavings))}/mo more`}
@@ -633,7 +633,7 @@ const RefinanceCalculator = () => {
                     <tr className="bg-muted/30">
                       <td className="py-3 px-4 text-muted-foreground">Payment Difference Per Month</td>
                       <td className="py-3 px-4 text-right font-medium">—</td>
-                      <td className={`py-3 px-4 text-right font-medium ${calculations.comparison.monthlyPaymentDiff < 0 ? 'text-accent' : 'text-destructive'}`}>
+                      <td className={`py-3 px-4 text-right font-medium ${calculations.comparison.monthlyPaymentDiff < 0 ? 'text-accent-strong' : 'text-destructive'}`}>
                         {calculations.comparison.monthlyPaymentDiff >= 0 ? '+' : ''}{formatCurrency(calculations.comparison.monthlyPaymentDiff)}
                       </td>
                     </tr>
@@ -665,7 +665,7 @@ const RefinanceCalculator = () => {
                     <tr>
                       <td className="py-3 px-4 text-muted-foreground">Interest Savings</td>
                       <td className="py-3 px-4 text-right font-medium">—</td>
-                      <td className="py-3 px-4 text-right font-medium text-accent">{formatCurrency(calculations.comparison.interestSavings)}</td>
+                      <td className="py-3 px-4 text-right font-medium text-accent-strong">{formatCurrency(calculations.comparison.interestSavings)}</td>
                     </tr>
                   </tbody>
                 </table>
@@ -715,7 +715,7 @@ const RefinanceCalculator = () => {
                     <tr className="bg-accent/10">
                       <td className="py-3 px-4 font-semibold">Remaining Balance Difference (Equity Gained)</td>
                       <td className="py-3 px-4 text-right font-medium">—</td>
-                      <td className="py-3 px-4 text-right font-bold text-accent">{formatCurrency(calculations.comparison.balanceDifference)}</td>
+                      <td className="py-3 px-4 text-right font-bold text-accent-strong">{formatCurrency(calculations.comparison.balanceDifference)}</td>
                     </tr>
                   </tbody>
                 </table>

@@ -392,7 +392,7 @@ const QualificationCalculator = () => {
               </div>
               <div className="flex justify-between items-center py-3 bg-secondary/50 rounded-lg px-3 mt-4">
                 <span className="font-medium">Total Housing Payment</span>
-                <span className="font-bold text-lg text-accent">{formatCurrency(results.totalHousingPayment)}</span>
+                <span className="font-bold text-lg text-accent-strong">{formatCurrency(results.totalHousingPayment)}</span>
               </div>
             </CardContent>
           </Card>

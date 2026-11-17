@@ -199,30 +199,30 @@ const FHA = () => {
               <h2 className="text-2xl font-display font-semibold mt-10 mb-4">FHA Loan Pros and Cons</h2>
               <div className="not-prose grid gap-6 md:grid-cols-2">
                 <div className="calculator-card p-4">
-                  <h3 className="font-display font-semibold text-lg mb-3 text-accent">✓ Advantages of FHA Loans</h3>
+                  <h3 className="font-display font-semibold text-lg mb-3 text-accent-strong">✓ Advantages of FHA Loans</h3>
                   <ul className="space-y-2 text-muted-foreground text-sm">
                     <li className="flex items-start gap-2">
-                      <span className="text-accent">✓</span>
+                      <span className="text-accent-strong">✓</span>
                       <span>Low 3.5% down payment makes homeownership more accessible</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-accent">✓</span>
+                      <span className="text-accent-strong">✓</span>
                       <span>Credit scores as low as 500 accepted (with 10% down)</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-accent">✓</span>
+                      <span className="text-accent-strong">✓</span>
                       <span>Higher DTI ratios allowed than conventional loans</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-accent">✓</span>
+                      <span className="text-accent-strong">✓</span>
                       <span>Gift funds can cover entire down payment</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-accent">✓</span>
+                      <span className="text-accent-strong">✓</span>
                       <span>Competitive interest rates, often lower than conventional</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-accent">✓</span>
+                      <span className="text-accent-strong">✓</span>
                       <span>Shorter waiting period after bankruptcy or foreclosure</span>
                     </li>
                   </ul>

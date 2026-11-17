@@ -207,38 +207,38 @@ const VA = () => {
               <h2 className="text-2xl font-display font-semibold mt-10 mb-4">VA Loan Pros and Cons</h2>
               <div className="not-prose grid gap-6 md:grid-cols-2">
                 <div className="calculator-card p-4">
-                  <h3 className="font-display font-semibold text-lg mb-3 text-accent">✓ Advantages of VA Loans</h3>
+                  <h3 className="font-display font-semibold text-lg mb-3 text-accent-strong">✓ Advantages of VA Loans</h3>
                   <ul className="space-y-2 text-muted-foreground text-sm">
                     <li className="flex items-start gap-2">
-                      <span className="text-accent">✓</span>
+                      <span className="text-accent-strong">✓</span>
                       <span>No down payment required—100% financing</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-accent">✓</span>
+                      <span className="text-accent-strong">✓</span>
                       <span>No private mortgage insurance (PMI) ever</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-accent">✓</span>
+                      <span className="text-accent-strong">✓</span>
                       <span>Lower interest rates than conventional or FHA loans</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-accent">✓</span>
+                      <span className="text-accent-strong">✓</span>
                       <span>No loan limit for borrowers with full entitlement</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-accent">✓</span>
+                      <span className="text-accent-strong">✓</span>
                       <span>More lenient credit requirements (no VA minimum)</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-accent">✓</span>
+                      <span className="text-accent-strong">✓</span>
                       <span>No prepayment penalty—pay off early without fees</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-accent">✓</span>
+                      <span className="text-accent-strong">✓</span>
                       <span>Seller can pay up to 4% of closing costs</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-accent">✓</span>
+                      <span className="text-accent-strong">✓</span>
                       <span>Benefit can be used multiple times</span>
                     </li>
                   </ul>
@@ -378,13 +378,13 @@ const VA = () => {
                   <tbody className="text-muted-foreground">
                     <tr className="border-b border-border">
                       <td className="p-3">Min. Down Payment</td>
-                      <td className="p-3 text-accent font-semibold">0%</td>
+                      <td className="p-3 text-accent-strong font-semibold">0%</td>
                       <td className="p-3">3.5%</td>
                       <td className="p-3">3%</td>
                     </tr>
                     <tr className="border-b border-border">
                       <td className="p-3">Mortgage Insurance</td>
-                      <td className="p-3 text-accent font-semibold">None</td>
+                      <td className="p-3 text-accent-strong font-semibold">None</td>
                       <td className="p-3">MIP (lifetime)</td>
                       <td className="p-3">PMI until 20%</td>
                     </tr>
@@ -402,7 +402,7 @@ const VA = () => {
                     </tr>
                     <tr>
                       <td className="p-3">Loan Limit</td>
-                      <td className="p-3 text-accent font-semibold">None (full entitlement)</td>
+                      <td className="p-3 text-accent-strong font-semibold">None (full entitlement)</td>
                       <td className="p-3">Area limits</td>
                       <td className="p-3">Conforming limits</td>
                     </tr>

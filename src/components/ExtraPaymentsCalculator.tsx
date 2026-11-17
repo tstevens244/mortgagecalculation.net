@@ -391,7 +391,7 @@ const ExtraPaymentsCalculator = () => {
                             <TableCell className="text-center font-medium">{row.year}</TableCell>
                             <TableCell className="text-right">{formatCurrency(row.originalBalance)}</TableCell>
                             <TableCell className="text-right">{formatCurrency(row.extraBalance)}</TableCell>
-                            <TableCell className="text-right text-accent font-medium">
+                            <TableCell className="text-right text-accent-strong font-medium">
                               {formatCurrency(row.originalBalance - row.extraBalance)}
                             </TableCell>
                           </TableRow>
@@ -470,7 +470,7 @@ const ExtraPaymentsCalculator = () => {
                 <div className="grid grid-cols-3 gap-2 text-sm py-3 bg-secondary/50 rounded-lg px-3 -mx-3">
                   <span className="font-medium">Interest Savings</span>
                   <span className="text-center">—</span>
-                  <span className="text-center font-bold text-accent">{formatCurrency(results.interestSavings)}</span>
+                  <span className="text-center font-bold text-accent-strong">{formatCurrency(results.interestSavings)}</span>
                 </div>
               </div>
             </CardContent>

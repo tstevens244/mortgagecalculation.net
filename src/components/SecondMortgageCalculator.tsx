@@ -239,6 +239,7 @@ const SecondMortgageCalculator = () => {
                       onChange={(value) => updateInput("downPayment", value)}
                     />
                     <PercentInput
+                      aria-label="Down payment percentage"
                       value={inputs.downPaymentPercent}
                       onChange={(value) => updateInput("downPaymentPercent", value)}
                       min={0}
@@ -555,7 +556,7 @@ const SecondMortgageCalculator = () => {
                   <tr>
                     <td className="py-3 px-4 text-muted-foreground">Monthly PMI</td>
                     <td className="py-3 px-4 text-right font-medium">{formatCurrency(calculations.pmi.monthlyPMI)}</td>
-                    <td className="py-3 px-4 text-right font-medium text-accent">$0.00</td>
+                    <td className="py-3 px-4 text-right font-medium text-accent-strong">$0.00</td>
                   </tr>
                   <tr className="bg-muted/30">
                     <td className="py-3 px-4 text-muted-foreground">Monthly Loan Payment</td>
@@ -653,7 +654,7 @@ const SecondMortgageCalculator = () => {
               <p className="text-sm sm:text-base">
                 {calculations.betterOption === 'piggyback' ? (
                   <>
-                    <strong className="text-accent">The second mortgage option saves you {formatCurrency(calculations.savings)}!</strong>
+                    <strong className="text-accent-strong">The second mortgage option saves you {formatCurrency(calculations.savings)}!</strong>
                     <span className="text-muted-foreground"> Your upfront costs are higher, but your monthly payments are lower and you avoid PMI entirely.</span>
                   </>
                 ) : (
