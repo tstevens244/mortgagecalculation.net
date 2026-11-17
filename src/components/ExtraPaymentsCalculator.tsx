@@ -200,22 +200,22 @@ const ExtraPaymentsCalculator = () => {
             </CardHeader>
             <CardContent>
               <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2">
-                <div className="flex items-center gap-2">
-                  <Label htmlFor="extra-payments-home-price" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap min-w-[80px] sm:min-w-[100px]">
+                <div className="flex flex-col gap-1.5">
+                  <Label htmlFor="extra-payments-home-price" className="text-sm font-medium text-foreground">
                     Home Price
                   </Label>
                   <CurrencyInput id="extra-payments-home-price" value={homePrice} onChange={setHomePrice} />
                 </div>
 
-                <div className="flex items-center gap-2">
-                  <Label htmlFor="extra-payments-down-payment" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap min-w-[80px] sm:min-w-[100px]">
+                <div className="flex flex-col gap-1.5">
+                  <Label htmlFor="extra-payments-down-payment" className="text-sm font-medium text-foreground">
                     Down Payment
                   </Label>
                   <CurrencyInput id="extra-payments-down-payment" value={downPayment} onChange={setDownPayment} />
                 </div>
 
-                <div className="flex items-center gap-2">
-                  <Label htmlFor="extra-payments-interest-rate" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap min-w-[80px] sm:min-w-[100px]">
+                <div className="flex flex-col gap-1.5">
+                  <Label htmlFor="extra-payments-interest-rate" className="text-sm font-medium text-foreground">
                     Interest Rate
                   </Label>
                   <div className="flex gap-1 sm:gap-2 flex-1">
@@ -226,12 +226,11 @@ const ExtraPaymentsCalculator = () => {
                       max={20}
                       decimalPlaces={3}
                     />
-                    <span className="flex items-center text-muted-foreground text-xs sm:text-sm">%</span>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2">
-                  <Label htmlFor="extra-payments-loan-term" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap min-w-[80px] sm:min-w-[100px]">
+                <div className="flex flex-col gap-1.5">
+                  <Label htmlFor="extra-payments-loan-term" className="text-sm font-medium text-foreground">
                     Loan Term
                   </Label>
                   <Select value={loanTerm} onValueChange={setLoanTerm}>
@@ -268,8 +267,8 @@ const ExtraPaymentsCalculator = () => {
             </CardHeader>
             <CardContent>
               <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2">
-                <div className="flex items-center gap-2">
-                  <Label htmlFor="extra-payments-lump-sum" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
+                <div className="flex flex-col gap-1.5">
+                  <Label htmlFor="extra-payments-lump-sum" className="text-sm font-medium text-foreground flex items-center gap-1">
                     Lump Sum
                     <Tooltip>
                       <TooltipTrigger asChild>
@@ -283,8 +282,8 @@ const ExtraPaymentsCalculator = () => {
                   <CurrencyInput id="extra-payments-lump-sum" value={initialExtraPayment} onChange={setInitialExtraPayment} />
                 </div>
 
-                <div className="flex items-center gap-2">
-                  <Label htmlFor="extra-payments-extra-month" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
+                <div className="flex flex-col gap-1.5">
+                  <Label htmlFor="extra-payments-extra-month" className="text-sm font-medium text-foreground flex items-center gap-1">
                     Extra/Month
                     <Tooltip>
                       <TooltipTrigger asChild>
@@ -408,7 +407,7 @@ const ExtraPaymentsCalculator = () => {
         {/* Right Column - Results */}
         <div className="space-y-6 lg:col-span-2">
           {/* Interest Savings Highlight */}
-          <Card className="bg-primary border-0 rounded-xl p-6 shadow-xl">
+          <Card className="result-highlight border-0">
             <CardContent className="p-0">
               <StickyResult targetId="calc-result" label={"Interest saved"} value={formatCurrency(results.interestSavings)} />
               <div id="calc-result" className="text-center space-y-2">

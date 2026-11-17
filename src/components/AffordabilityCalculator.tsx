@@ -176,7 +176,7 @@ const AffordabilityCalculator = () => {
   const ResultsCard = ({ results, title }: { results: typeof incomeResults; title: string }) => (
     <div className="space-y-6 lg:col-span-2">
       {/* Main Result */}
-      <Card className="bg-primary border-0 rounded-xl p-6 shadow-xl">
+      <Card className="result-highlight border-0">
         <CardContent className="p-0">
           <StickyResult targetId="calc-result" label={title} value={formatCurrency(results.homePrice)} />
           <div id="calc-result" className="text-center space-y-2">

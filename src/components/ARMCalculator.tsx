@@ -198,11 +198,10 @@ const ARMCalculator = () => {
 
             <div className="grid gap-2 sm:gap-4 grid-cols-1 sm:grid-cols-2">
               {/* Home Price */}
-              <div className="flex items-center gap-2">
-                <Label htmlFor="home-price" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
+              <div className="flex flex-col gap-1.5">
+                <Label htmlFor="home-price" className="text-sm font-medium text-foreground flex items-center gap-1">
                   <DollarSign className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" />
-                  <span className="hidden sm:inline">Home Price</span>
-                  <span className="sm:hidden">Price</span>
+                  <span>Home Price</span>
                 </Label>
                 <CurrencyInput
                   id="home-price"
@@ -212,8 +211,8 @@ const ARMCalculator = () => {
               </div>
 
               {/* Down Payment */}
-              <div className="flex items-center gap-2">
-                <Label htmlFor="down-payment" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
+              <div className="flex flex-col gap-1.5">
+                <Label htmlFor="down-payment" className="text-sm font-medium text-foreground flex items-center gap-1">
                   <Percent className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" />
                   <span className="hidden lg:inline">Down Payment</span>
                   <span className="lg:hidden">Down</span>
@@ -233,16 +232,14 @@ const ARMCalculator = () => {
                     className="w-16 sm:w-20"
                     aria-label="Down payment percentage"
                   />
-                  <span className="flex items-center text-muted-foreground text-xs sm:text-sm">%</span>
                 </div>
               </div>
 
               {/* Initial APR */}
-              <div className="flex items-center gap-2">
-                <Label htmlFor="initial-rate" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
+              <div className="flex flex-col gap-1.5">
+                <Label htmlFor="initial-rate" className="text-sm font-medium text-foreground flex items-center gap-1">
                   <Percent className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" />
-                  <span className="hidden sm:inline">Initial APR</span>
-                  <span className="sm:hidden">APR</span>
+                  <span>Initial APR</span>
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <Info className="h-3 w-3 text-muted-foreground cursor-help" />
@@ -261,16 +258,14 @@ const ARMCalculator = () => {
                     max={30}
                     decimalPlaces={3}
                   />
-                  <span className="flex items-center text-muted-foreground text-xs sm:text-sm">%</span>
                 </div>
               </div>
 
               {/* Loan Term */}
-              <div className="flex items-center gap-2">
-                <Label htmlFor="loan-term" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
+              <div className="flex flex-col gap-1.5">
+                <Label htmlFor="loan-term" className="text-sm font-medium text-foreground flex items-center gap-1">
                   <Calendar className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" />
-                  <span className="hidden sm:inline">Loan Term</span>
-                  <span className="sm:hidden">Term</span>
+                  <span>Loan Term</span>
                 </Label>
                 <Select
                   value={inputs.loanTerm.toString()}
@@ -287,11 +282,10 @@ const ARMCalculator = () => {
               </div>
 
               {/* Closing Costs */}
-              <div className="flex items-center gap-2">
-                <Label htmlFor="closing-costs" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
+              <div className="flex flex-col gap-1.5">
+                <Label htmlFor="closing-costs" className="text-sm font-medium text-foreground flex items-center gap-1">
                   <DollarSign className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" />
-                  <span className="hidden sm:inline">Closing Costs</span>
-                  <span className="sm:hidden">Closing</span>
+                  <span>Closing Costs</span>
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <Info className="h-3 w-3 text-muted-foreground cursor-help" />
@@ -309,8 +303,8 @@ const ARMCalculator = () => {
               </div>
 
               {/* PMI Rate */}
-              <div className="flex items-center gap-2">
-                <Label htmlFor="pmi-rate" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
+              <div className="flex flex-col gap-1.5">
+                <Label htmlFor="pmi-rate" className="text-sm font-medium text-foreground flex items-center gap-1">
                   <Shield className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" />
                   PMI
                   <Tooltip>
@@ -331,7 +325,6 @@ const ARMCalculator = () => {
                     max={5}
                     decimalPlaces={2}
                   />
-                  <span className="flex items-center text-muted-foreground text-xs sm:text-sm">%</span>
                 </div>
               </div>
             </div>
@@ -346,11 +339,10 @@ const ARMCalculator = () => {
 
             <div className="grid gap-2 sm:gap-4 grid-cols-1 sm:grid-cols-2">
               {/* Years Before First Adjustment */}
-              <div className="flex items-center gap-2">
-                <Label htmlFor="years-first-adj" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
+              <div className="flex flex-col gap-1.5">
+                <Label htmlFor="years-first-adj" className="text-sm font-medium text-foreground flex items-center gap-1">
                   <Calendar className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" />
-                  <span className="hidden sm:inline">Fixed Period</span>
-                  <span className="sm:hidden">Fixed</span>
+                  <span>Fixed Period</span>
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <Info className="h-3 w-3 text-muted-foreground cursor-help" />
@@ -378,11 +370,10 @@ const ARMCalculator = () => {
               </div>
 
               {/* Expected First Adjustment */}
-              <div className="flex items-center gap-2">
-                <Label htmlFor="first-adj" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
+              <div className="flex flex-col gap-1.5">
+                <Label htmlFor="first-adj" className="text-sm font-medium text-foreground flex items-center gap-1">
                   <TrendingUp className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" />
-                  <span className="hidden sm:inline">1st Adjustment</span>
-                  <span className="sm:hidden">1st Adj</span>
+                  <span>1st Adjustment</span>
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <Info className="h-3 w-3 text-muted-foreground cursor-help" />
@@ -393,24 +384,23 @@ const ARMCalculator = () => {
                   </Tooltip>
                 </Label>
                 <div className="flex gap-1 sm:gap-2 flex-1">
-                  <Input
-                    id="first-adj"
-                    type="text"
-                    inputMode="decimal"
+                  <PercentInput id="first-adj"
                     value={inputs.expectedFirstAdjustment}
-                    onChange={(e) => updateInput("expectedFirstAdjustment", parseFloat(e.target.value) || 0)}
+                    onChange={(v) => updateInput("expectedFirstAdjustment", v)}
+                    min={-5}
+                    max={10}
+                    decimalPlaces={2}
+                    allowNegative
                     className="h-8 sm:h-10 text-sm font-medium flex-1"
                   />
-                  <span className="flex items-center text-muted-foreground text-xs sm:text-sm">%</span>
                 </div>
               </div>
 
               {/* Months Between Adjustments */}
-              <div className="flex items-center gap-2">
-                <Label htmlFor="months-between" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
+              <div className="flex flex-col gap-1.5">
+                <Label htmlFor="months-between" className="text-sm font-medium text-foreground flex items-center gap-1">
                   <Calendar className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" />
-                  <span className="hidden sm:inline">Adj. Frequency</span>
-                  <span className="sm:hidden">Freq.</span>
+                  <span>Adj. Frequency</span>
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <Info className="h-3 w-3 text-muted-foreground cursor-help" />
@@ -436,11 +426,10 @@ const ARMCalculator = () => {
               </div>
 
               {/* Expected Subsequent Adjustment */}
-              <div className="flex items-center gap-2">
-                <Label htmlFor="subsequent-adj" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
+              <div className="flex flex-col gap-1.5">
+                <Label htmlFor="subsequent-adj" className="text-sm font-medium text-foreground flex items-center gap-1">
                   <TrendingUp className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" />
-                  <span className="hidden sm:inline">Later Adj.</span>
-                  <span className="sm:hidden">Later</span>
+                  <span>Later Adj.</span>
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <Info className="h-3 w-3 text-muted-foreground cursor-help" />
@@ -451,15 +440,15 @@ const ARMCalculator = () => {
                   </Tooltip>
                 </Label>
                 <div className="flex gap-1 sm:gap-2 flex-1">
-                  <Input
-                    id="subsequent-adj"
-                    type="text"
-                    inputMode="decimal"
+                  <PercentInput id="subsequent-adj"
                     value={inputs.expectedSubsequentAdjustment}
-                    onChange={(e) => updateInput("expectedSubsequentAdjustment", parseFloat(e.target.value) || 0)}
+                    onChange={(v) => updateInput("expectedSubsequentAdjustment", v)}
+                    min={-5}
+                    max={10}
+                    decimalPlaces={2}
+                    allowNegative
                     className="h-8 sm:h-10 text-sm font-medium flex-1"
                   />
-                  <span className="flex items-center text-muted-foreground text-xs sm:text-sm">%</span>
                 </div>
               </div>
 
@@ -479,15 +468,14 @@ const ARMCalculator = () => {
                   </Tooltip>
                 </Label>
                 <div className="flex gap-1 sm:gap-2 flex-1">
-                  <Input
-                    id="lifetime-cap"
-                    type="text"
-                    inputMode="decimal"
+                  <PercentInput id="lifetime-cap"
                     value={inputs.lifetimeCap}
-                    onChange={(e) => updateInput("lifetimeCap", parseFloat(e.target.value) || 0)}
+                    onChange={(v) => updateInput("lifetimeCap", v)}
+                    min={0}
+                    max={15}
+                    decimalPlaces={2}
                     className="h-8 sm:h-10 text-sm font-medium flex-1"
                   />
-                  <span className="flex items-center text-muted-foreground text-xs sm:text-sm">%</span>
                 </div>
               </div>
             </div>
@@ -502,11 +490,10 @@ const ARMCalculator = () => {
 
             <div className="grid gap-2 sm:gap-4 grid-cols-1 sm:grid-cols-2">
               {/* Property Tax */}
-              <div className="flex items-center gap-2">
-                <Label htmlFor="property-tax" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
+              <div className="flex flex-col gap-1.5">
+                <Label htmlFor="property-tax" className="text-sm font-medium text-foreground flex items-center gap-1">
                   <Building className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" />
-                  <span className="hidden sm:inline">Property Tax/yr</span>
-                  <span className="sm:hidden">Tax/yr</span>
+                  <span>Property tax</span> <span className="font-normal text-muted-foreground">(per year)</span>
                 </Label>
                 <CurrencyInput
                   id="property-tax"
@@ -516,11 +503,10 @@ const ARMCalculator = () => {
               </div>
 
               {/* Home Insurance */}
-              <div className="flex items-center gap-2">
-                <Label htmlFor="home-insurance" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
+              <div className="flex flex-col gap-1.5">
+                <Label htmlFor="home-insurance" className="text-sm font-medium text-foreground flex items-center gap-1">
                   <Shield className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" />
-                  <span className="hidden sm:inline">Insurance/yr</span>
-                  <span className="sm:hidden">Ins./yr</span>
+                  <span>Home insurance</span> <span className="font-normal text-muted-foreground">(per year)</span>
                 </Label>
                 <CurrencyInput
                   id="home-insurance"
@@ -530,10 +516,10 @@ const ARMCalculator = () => {
               </div>
 
               {/* HOA Fees */}
-              <div className="flex items-center gap-2">
-                <Label htmlFor="hoa-fees" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
+              <div className="flex flex-col gap-1.5">
+                <Label htmlFor="hoa-fees" className="text-sm font-medium text-foreground flex items-center gap-1">
                   <Users className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" />
-                  HOA/mo
+                  HOA dues <span className="font-normal text-muted-foreground">(per month)</span>
                 </Label>
                 <CurrencyInput
                   id="hoa-fees"
@@ -543,11 +529,10 @@ const ARMCalculator = () => {
               </div>
 
               {/* Start Date */}
-              <div className="flex items-center gap-2">
-                <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
+              <div className="flex flex-col gap-1.5">
+                <Label className="text-sm font-medium text-foreground flex items-center gap-1">
                   <Calendar className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" />
-                  <span className="hidden sm:inline">Start Date</span>
-                  <span className="sm:hidden">Start</span>
+                  <span>Start Date</span>
                 </Label>
                 <div className="flex gap-1 sm:gap-2 flex-1">
                   <Select

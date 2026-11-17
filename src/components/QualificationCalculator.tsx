@@ -110,15 +110,15 @@ const QualificationCalculator = () => {
             </CardHeader>
             <CardContent>
               <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2">
-                <div className="flex items-center gap-2">
-                  <Label htmlFor="qualification-home-value" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap min-w-[80px] sm:min-w-[100px]">
+                <div className="flex flex-col gap-1.5">
+                  <Label htmlFor="qualification-home-value" className="text-sm font-medium text-foreground">
                     Home Value
                   </Label>
                   <CurrencyInput id="qualification-home-value" value={homeValue} onChange={setHomeValue} />
                 </div>
 
-                <div className="flex items-center gap-2">
-                  <Label htmlFor="qualification-down-payment" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap min-w-[80px] sm:min-w-[100px]">
+                <div className="flex flex-col gap-1.5">
+                  <Label htmlFor="qualification-down-payment" className="text-sm font-medium text-foreground">
                     Down Payment
                   </Label>
                   <CurrencyInput id="qualification-down-payment" value={downPayment} onChange={setDownPayment} />
@@ -143,8 +143,8 @@ const QualificationCalculator = () => {
             </CardHeader>
             <CardContent>
               <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2">
-                <div className="flex items-center gap-2">
-                  <Label htmlFor="qualification-loan-term" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap min-w-[80px] sm:min-w-[100px]">
+                <div className="flex flex-col gap-1.5">
+                  <Label htmlFor="qualification-loan-term" className="text-sm font-medium text-foreground">
                     Loan Term
                   </Label>
                   <Select value={loanTerm} onValueChange={setLoanTerm}>
@@ -160,8 +160,8 @@ const QualificationCalculator = () => {
                   </Select>
                 </div>
 
-                <div className="flex items-center gap-2">
-                  <Label htmlFor="qualification-interest-rate" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap min-w-[80px] sm:min-w-[100px]">
+                <div className="flex flex-col gap-1.5">
+                  <Label htmlFor="qualification-interest-rate" className="text-sm font-medium text-foreground">
                     Interest Rate
                   </Label>
                   <div className="flex gap-1 sm:gap-2 flex-1">
@@ -172,19 +172,18 @@ const QualificationCalculator = () => {
                       max={20}
                       decimalPlaces={3}
                     />
-                    <span className="flex items-center text-muted-foreground text-xs sm:text-sm">%</span>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2">
-                  <Label htmlFor="qualification-property-tax" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap min-w-[80px] sm:min-w-[100px]">
+                <div className="flex flex-col gap-1.5">
+                  <Label htmlFor="qualification-property-tax" className="text-sm font-medium text-foreground">
                     Property Tax
                   </Label>
                   <CurrencyInput id="qualification-property-tax" value={annualTaxes} onChange={setAnnualTaxes} />
                 </div>
 
-                <div className="flex items-center gap-2">
-                  <Label htmlFor="qualification-insurance" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap min-w-[80px] sm:min-w-[100px]">
+                <div className="flex flex-col gap-1.5">
+                  <Label htmlFor="qualification-insurance" className="text-sm font-medium text-foreground">
                     Insurance
                   </Label>
                   <CurrencyInput id="qualification-insurance" value={annualInsurance} onChange={setAnnualInsurance} />
@@ -217,8 +216,8 @@ const QualificationCalculator = () => {
             </CardHeader>
             <CardContent>
               <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2">
-                <div className="flex items-center gap-2">
-                  <Label htmlFor="qualification-front-end" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
+                <div className="flex flex-col gap-1.5">
+                  <Label htmlFor="qualification-front-end" className="text-sm font-medium text-foreground flex items-center gap-1">
                     Front-End
                     <Tooltip>
                       <TooltipTrigger asChild>
@@ -237,12 +236,11 @@ const QualificationCalculator = () => {
                       max={100}
                       decimalPlaces={0}
                     />
-                    <span className="flex items-center text-muted-foreground text-xs sm:text-sm">%</span>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2">
-                  <Label htmlFor="qualification-back-end" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
+                <div className="flex flex-col gap-1.5">
+                  <Label htmlFor="qualification-back-end" className="text-sm font-medium text-foreground flex items-center gap-1">
                     Back-End
                     <Tooltip>
                       <TooltipTrigger asChild>
@@ -261,7 +259,6 @@ const QualificationCalculator = () => {
                       max={100}
                       decimalPlaces={0}
                     />
-                    <span className="flex items-center text-muted-foreground text-xs sm:text-sm">%</span>
                   </div>
                 </div>
 
@@ -322,7 +319,7 @@ const QualificationCalculator = () => {
         {/* Results Section */}
         <div className="space-y-6 lg:col-span-2">
           {/* Main Result */}
-          <Card className="bg-primary border-0 rounded-xl p-6 shadow-xl">
+          <Card className="result-highlight border-0">
             <CardContent className="p-0">
               <StickyResult targetId="calc-result" label={"Income needed"} value={formatCurrency(results.requiredAnnualIncome)} />
               <div id="calc-result" className="text-center space-y-4">

@@ -238,8 +238,8 @@ const RefinanceCalculator = () => {
               </h2>
 
               <div className="space-y-3">
-                <div className="flex items-center gap-3">
-                  <Label htmlFor="refinance-original-home-price" className="text-xs sm:text-sm text-muted-foreground min-w-[130px]">
+                <div className="flex flex-col gap-1.5">
+                  <Label htmlFor="refinance-original-home-price" className="text-sm font-medium text-foreground">
                     Original Home Price
                   </Label>
                   <CurrencyInput id="refinance-original-home-price"
@@ -248,8 +248,8 @@ const RefinanceCalculator = () => {
                   />
                 </div>
 
-                <div className="flex items-center gap-3">
-                  <Label htmlFor="refinance-original-down-payment" className="text-xs sm:text-sm text-muted-foreground min-w-[130px]">
+                <div className="flex flex-col gap-1.5">
+                  <Label htmlFor="refinance-original-down-payment" className="text-sm font-medium text-foreground">
                     Original Down Payment
                   </Label>
                   <CurrencyInput id="refinance-original-down-payment"
@@ -258,8 +258,8 @@ const RefinanceCalculator = () => {
                   />
                 </div>
 
-                <div className="flex items-center gap-3">
-                  <Label className="text-xs sm:text-sm text-muted-foreground min-w-[130px]">
+                <div className="flex flex-col gap-1.5">
+                  <Label className="text-sm font-medium text-foreground">
                     Original Loan Amount
                   </Label>
                   <div className="flex-1 h-8 sm:h-10 flex items-center px-3 bg-muted rounded-md text-sm font-medium">
@@ -267,8 +267,8 @@ const RefinanceCalculator = () => {
                   </div>
                 </div>
 
-                <div className="flex items-center gap-3">
-                  <Label htmlFor="refinance-loan-term" className="text-xs sm:text-sm text-muted-foreground min-w-[130px]">
+                <div className="flex flex-col gap-1.5">
+                  <Label htmlFor="refinance-loan-term" className="text-sm font-medium text-foreground">
                     Loan Term
                   </Label>
                   <Select
@@ -287,8 +287,8 @@ const RefinanceCalculator = () => {
                   </Select>
                 </div>
 
-                <div className="flex items-center gap-3">
-                  <Label htmlFor="refinance-interest-rate" className="text-xs sm:text-sm text-muted-foreground min-w-[130px]">
+                <div className="flex flex-col gap-1.5">
+                  <Label htmlFor="refinance-interest-rate" className="text-sm font-medium text-foreground">
                     Interest Rate
                   </Label>
                   <div className="flex gap-2 flex-1 items-center">
@@ -299,12 +299,11 @@ const RefinanceCalculator = () => {
                       max={30}
                       decimalPlaces={3}
                     />
-                    <span className="text-muted-foreground text-sm">%</span>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-3">
-                  <Label htmlFor="refinance-months-already-paid" className="text-xs sm:text-sm text-muted-foreground min-w-[130px]">
+                <div className="flex flex-col gap-1.5">
+                  <Label htmlFor="refinance-months-already-paid" className="text-sm font-medium text-foreground">
                     Months Already Paid
                   </Label>
                   <div className="flex gap-2 flex-1 items-center">
@@ -340,8 +339,8 @@ const RefinanceCalculator = () => {
               </h2>
 
               <div className="space-y-3">
-                <div className="flex items-center gap-3">
-                  <Label htmlFor="refinance-new-loan-term" className="text-xs sm:text-sm text-muted-foreground min-w-[130px]">
+                <div className="flex flex-col gap-1.5">
+                  <Label htmlFor="refinance-new-loan-term" className="text-sm font-medium text-foreground">
                     New Loan Term
                   </Label>
                   <Select
@@ -360,8 +359,8 @@ const RefinanceCalculator = () => {
                   </Select>
                 </div>
 
-                <div className="flex items-center gap-3">
-                  <Label htmlFor="refinance-new-interest-rate" className="text-xs sm:text-sm text-muted-foreground min-w-[130px]">
+                <div className="flex flex-col gap-1.5">
+                  <Label htmlFor="refinance-new-interest-rate" className="text-sm font-medium text-foreground">
                     New Interest Rate
                   </Label>
                   <div className="flex gap-2 flex-1 items-center">
@@ -372,12 +371,11 @@ const RefinanceCalculator = () => {
                       max={30}
                       decimalPlaces={3}
                     />
-                    <span className="text-muted-foreground text-sm">%</span>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-3">
-                  <Label htmlFor="refinance-years-before-sell" className="text-xs sm:text-sm text-muted-foreground min-w-[130px]">
+                <div className="flex flex-col gap-1.5">
+                  <Label htmlFor="refinance-years-before-sell" className="text-sm font-medium text-foreground">
                     Years Before Sell
                   </Label>
                   <div className="flex gap-2 flex-1 items-center">
@@ -407,7 +405,6 @@ const RefinanceCalculator = () => {
                         max={10}
                         decimalPlaces={2}
                       />
-                      <span className="text-muted-foreground text-sm">%</span>
                     </div>
                   </div>
 
@@ -423,12 +420,11 @@ const RefinanceCalculator = () => {
                         max={10}
                         decimalPlaces={2}
                       />
-                      <span className="text-muted-foreground text-sm">%</span>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-3">
-                    <Label htmlFor="refinance-other-closing-costs" className="text-xs sm:text-sm text-muted-foreground min-w-[130px]">
+                  <div className="flex flex-col gap-1.5">
+                    <Label htmlFor="refinance-other-closing-costs" className="text-sm font-medium text-foreground">
                       Other Closing Costs
                     </Label>
                     <CurrencyInput id="refinance-other-closing-costs"
@@ -469,35 +465,35 @@ const RefinanceCalculator = () => {
             </Alert>
 
             <div className="grid gap-4 sm:grid-cols-2">
-              <div className="flex items-center gap-3">
-                <Label htmlFor="refinance-federal-tax-rate" className="text-xs sm:text-sm text-muted-foreground min-w-[130px]">
+              <div className="flex flex-col gap-1.5">
+                <Label htmlFor="refinance-federal-tax-rate" className="text-sm font-medium text-foreground">
                   Federal tax rate (if you itemize)
                 </Label>
                 <div className="flex gap-2 flex-1 items-center">
-                  <Input id="refinance-federal-tax-rate"
-                    type="text"
-                    inputMode="decimal"
+                  <PercentInput id="refinance-federal-tax-rate"
                     value={inputs.federalTaxRate}
-                    onChange={(e) => updateInput("federalTaxRate", parseFloat(e.target.value) || 0)}
+                    onChange={(v) => updateInput("federalTaxRate", v)}
+                    min={0}
+                    max={50}
+                    decimalPlaces={2}
                     className="h-8 sm:h-10 text-sm"
                   />
-                  <span className="text-muted-foreground text-sm">%</span>
                 </div>
               </div>
 
-              <div className="flex items-center gap-3">
-                <Label htmlFor="refinance-state-tax-rate" className="text-xs sm:text-sm text-muted-foreground min-w-[130px]">
+              <div className="flex flex-col gap-1.5">
+                <Label htmlFor="refinance-state-tax-rate" className="text-sm font-medium text-foreground">
                   State tax rate (if you itemize)
                 </Label>
                 <div className="flex gap-2 flex-1 items-center">
-                  <Input id="refinance-state-tax-rate"
-                    type="text"
-                    inputMode="decimal"
+                  <PercentInput id="refinance-state-tax-rate"
                     value={inputs.stateTaxRate}
-                    onChange={(e) => updateInput("stateTaxRate", parseFloat(e.target.value) || 0)}
+                    onChange={(v) => updateInput("stateTaxRate", v)}
+                    min={0}
+                    max={20}
+                    decimalPlaces={2}
                     className="h-8 sm:h-10 text-sm"
                   />
-                  <span className="text-muted-foreground text-sm">%</span>
                 </div>
               </div>
             </div>

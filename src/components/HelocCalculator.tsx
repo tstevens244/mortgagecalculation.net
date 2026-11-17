@@ -111,7 +111,6 @@ const HelocCalculator = () => {
             </Label>
             <div className="flex flex-1 items-center gap-2">
               <PercentInput id="heloc-rate" value={rate} onChange={setRate} min={0} max={25} decimalPlaces={3} />
-              <span className="text-muted-foreground text-sm">%</span>
             </div>
           </div>
 

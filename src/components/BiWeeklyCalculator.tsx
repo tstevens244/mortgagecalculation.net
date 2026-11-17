@@ -209,22 +209,22 @@ const BiWeeklyCalculator = () => {
             </CardHeader>
             <CardContent>
               <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2">
-                <div className="flex items-center gap-2">
-                  <Label htmlFor="bi-weekly-home-price" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap min-w-[80px] sm:min-w-[100px]">
+                <div className="flex flex-col gap-1.5">
+                  <Label htmlFor="bi-weekly-home-price" className="text-sm font-medium text-foreground">
                     Home Price
                   </Label>
                   <CurrencyInput id="bi-weekly-home-price" value={homePrice} onChange={setHomePrice} />
                 </div>
 
-                <div className="flex items-center gap-2">
-                  <Label htmlFor="bi-weekly-down-payment" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap min-w-[80px] sm:min-w-[100px]">
+                <div className="flex flex-col gap-1.5">
+                  <Label htmlFor="bi-weekly-down-payment" className="text-sm font-medium text-foreground">
                     Down Payment
                   </Label>
                   <CurrencyInput id="bi-weekly-down-payment" value={downPayment} onChange={setDownPayment} />
                 </div>
 
-                <div className="flex items-center gap-2">
-                  <Label htmlFor="bi-weekly-interest-rate" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap min-w-[80px] sm:min-w-[100px]">
+                <div className="flex flex-col gap-1.5">
+                  <Label htmlFor="bi-weekly-interest-rate" className="text-sm font-medium text-foreground">
                     Interest Rate
                   </Label>
                   <div className="flex gap-1 sm:gap-2 flex-1">
@@ -235,12 +235,11 @@ const BiWeeklyCalculator = () => {
                       max={20}
                       decimalPlaces={3}
                     />
-                    <span className="flex items-center text-muted-foreground text-xs sm:text-sm">%</span>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2">
-                  <Label htmlFor="bi-weekly-loan-term" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap min-w-[80px] sm:min-w-[100px]">
+                <div className="flex flex-col gap-1.5">
+                  <Label htmlFor="bi-weekly-loan-term" className="text-sm font-medium text-foreground">
                     Loan Term
                   </Label>
                   <Select value={loanTerm} onValueChange={setLoanTerm}>
@@ -276,8 +275,8 @@ const BiWeeklyCalculator = () => {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="flex items-center gap-2">
-                <Label htmlFor="bi-weekly-tax-rate" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
+              <div className="flex flex-col gap-1.5">
+                <Label htmlFor="bi-weekly-tax-rate" className="text-sm font-medium text-foreground flex items-center gap-1">
                   Tax rate (if itemizing)
                   <Tooltip>
                     <TooltipTrigger asChild>
@@ -296,7 +295,6 @@ const BiWeeklyCalculator = () => {
                     max={50}
                     decimalPlaces={0}
                   />
-                  <span className="flex items-center text-muted-foreground text-xs sm:text-sm">%</span>
                 </div>
               </div>
 
@@ -415,7 +413,7 @@ const BiWeeklyCalculator = () => {
         {/* Right Column - Results */}
         <div className="space-y-6 lg:col-span-2">
           {/* Net Benefit Highlight */}
-          <Card className="bg-primary border-0 rounded-xl p-6 shadow-xl">
+          <Card className="result-highlight border-0">
             <CardContent className="p-0">
               <StickyResult targetId="calc-result" label={taxRate > 0 ? "Net benefit" : "Interest saved"} value={formatCurrency(taxRate > 0 ? results.netBenefit : results.interestSavings)} />
               <div id="calc-result" className="text-center space-y-2">

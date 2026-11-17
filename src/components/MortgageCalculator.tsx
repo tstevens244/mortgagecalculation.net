@@ -141,11 +141,10 @@ const MortgageCalculator = () => {
 
             <div className="grid gap-2 sm:gap-4 grid-cols-1 sm:grid-cols-2">
               {/* Home Price */}
-              <div className="flex items-center gap-2">
-                <Label htmlFor="home-price" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
+              <div className="flex flex-col gap-1.5">
+                <Label htmlFor="home-price" className="text-sm font-medium text-foreground flex items-center gap-1">
                   <DollarSign className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" />
-                  <span className="hidden sm:inline">Home Price</span>
-                  <span className="sm:hidden">Price</span>
+                  <span>Home Price</span>
                 </Label>
                 <CurrencyInput
                   id="home-price"
@@ -157,8 +156,8 @@ const MortgageCalculator = () => {
               </div>
 
               {/* Down Payment */}
-              <div className="flex items-center gap-2">
-              <Label htmlFor="down-payment" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
+              <div className="flex flex-col gap-1.5">
+              <Label htmlFor="down-payment" className="text-sm font-medium text-foreground flex items-center gap-1">
                   <Percent className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" />
                   <span className="hidden lg:inline">Down Payment</span>
                   <span className="lg:hidden">Down</span>
@@ -178,16 +177,14 @@ const MortgageCalculator = () => {
                     max={100}
                     aria-label="Down payment percentage"
                   />
-                  <span className="flex items-center text-muted-foreground text-xs sm:text-sm flex-shrink-0">%</span>
                 </div>
               </div>
 
               {/* Loan Term */}
-              <div className="flex items-center gap-2">
-                <Label htmlFor="loan-term" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
+              <div className="flex flex-col gap-1.5">
+                <Label htmlFor="loan-term" className="text-sm font-medium text-foreground flex items-center gap-1">
                   <Calendar className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" />
-                  <span className="hidden sm:inline">Loan Term</span>
-                  <span className="sm:hidden">Term</span>
+                  <span>Loan Term</span>
                 </Label>
                 <Select
                   value={inputs.loanTerm.toString()}
@@ -206,11 +203,10 @@ const MortgageCalculator = () => {
               </div>
 
               {/* Interest Rate */}
-              <div className="flex items-center gap-2">
-                <Label htmlFor="interest-rate" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
+              <div className="flex flex-col gap-1.5">
+                <Label htmlFor="interest-rate" className="text-sm font-medium text-foreground flex items-center gap-1">
                   <Percent className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" />
-                  <span className="hidden sm:inline">Interest Rate</span>
-                  <span className="sm:hidden">Rate</span>
+                  <span>Interest Rate</span>
                 </Label>
                 <div className="flex gap-1 sm:gap-2 flex-1">
                   <PercentInput
@@ -222,16 +218,14 @@ const MortgageCalculator = () => {
                     min={0}
                     max={30}
                   />
-                  <span className="flex items-center text-muted-foreground text-xs sm:text-sm">%</span>
                 </div>
               </div>
 
               {/* Start Date */}
-              <div className="flex items-center gap-2">
-                <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
+              <div className="flex flex-col gap-1.5">
+                <Label className="text-sm font-medium text-foreground flex items-center gap-1">
                   <Calendar className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" />
-                  <span className="hidden sm:inline">Start Date</span>
-                  <span className="sm:hidden">Start</span>
+                  <span>Start Date</span>
                 </Label>
                 <div className="flex gap-1 sm:gap-2 flex-1">
                   <Select
@@ -292,11 +286,10 @@ const MortgageCalculator = () => {
 
             <div className="grid gap-2 sm:gap-4 grid-cols-1 sm:grid-cols-2">
               {/* Property Tax */}
-              <div className="flex items-center gap-2">
-                <Label htmlFor="property-tax" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
+              <div className="flex flex-col gap-1.5">
+                <Label htmlFor="property-tax" className="text-sm font-medium text-foreground flex items-center gap-1">
                   <Building className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" />
-                  <span className="hidden sm:inline">Property Tax</span>
-                  <span className="sm:hidden">Tax</span>
+                  <span>Property tax</span> <span className="font-normal text-muted-foreground">(per year)</span>
                 </Label>
                 <CurrencyInput
                   id="property-tax"
@@ -306,11 +299,10 @@ const MortgageCalculator = () => {
               </div>
 
               {/* Home Insurance */}
-              <div className="flex items-center gap-2">
-                <Label htmlFor="home-insurance" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
+              <div className="flex flex-col gap-1.5">
+                <Label htmlFor="home-insurance" className="text-sm font-medium text-foreground flex items-center gap-1">
                   <Shield className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" />
-                  <span className="hidden sm:inline">Insurance</span>
-                  <span className="sm:hidden">Ins.</span>
+                  <span>Home insurance</span> <span className="font-normal text-muted-foreground">(per year)</span>
                 </Label>
                 <CurrencyInput
                   id="home-insurance"
@@ -320,10 +312,10 @@ const MortgageCalculator = () => {
               </div>
 
               {/* PMI */}
-              <div className="flex items-center gap-2">
-                <Label htmlFor="pmi" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
+              <div className="flex flex-col gap-1.5">
+                <Label htmlFor="pmi" className="text-sm font-medium text-foreground flex items-center gap-1">
                   <Percent className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" />
-                  PMI
+                  PMI <span className="font-normal text-muted-foreground">(per year)</span>
                   {inputs.downPaymentPercent < 20 && (
                     <span className="text-[10px] sm:text-xs text-accent-strong ml-1">Auto</span>
                   )}
@@ -336,10 +328,10 @@ const MortgageCalculator = () => {
               </div>
 
               {/* HOA Fees */}
-              <div className="flex items-center gap-2">
-                <Label htmlFor="hoa-fees" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
+              <div className="flex flex-col gap-1.5">
+                <Label htmlFor="hoa-fees" className="text-sm font-medium text-foreground flex items-center gap-1">
                   <Users className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" />
-                  HOA
+                  HOA dues <span className="font-normal text-muted-foreground">(per month)</span>
                 </Label>
                 <CurrencyInput
                   id="hoa-fees"

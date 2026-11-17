@@ -104,16 +104,16 @@ const CashOutRefiCalculator = () => {
           <CardContent>
             <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2">
               {/* Home Value */}
-              <div className="flex items-center gap-2">
-                <Label htmlFor="cash-out-refi-home-value" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap min-w-[90px] sm:min-w-[110px]">
+              <div className="flex flex-col gap-1.5">
+                <Label htmlFor="cash-out-refi-home-value" className="text-sm font-medium text-foreground">
                   Home Value
                 </Label>
                 <CurrencyInput id="cash-out-refi-home-value" value={homeValue} onChange={setHomeValue} />
               </div>
 
               {/* Current Mortgage Balance */}
-              <div className="flex items-center gap-2">
-                <Label htmlFor="cash-out-refi-current-balance" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[90px] sm:min-w-[110px]">
+              <div className="flex flex-col gap-1.5">
+                <Label htmlFor="cash-out-refi-current-balance" className="text-sm font-medium text-foreground flex items-center gap-1">
                   Current Balance
                   <Tooltip>
                     <TooltipTrigger asChild>
@@ -128,8 +128,8 @@ const CashOutRefiCalculator = () => {
               </div>
 
               {/* Loan Term */}
-              <div className="flex items-center gap-2">
-                <Label htmlFor="cash-out-refi-loan-term" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[90px] sm:min-w-[110px]">
+              <div className="flex flex-col gap-1.5">
+                <Label htmlFor="cash-out-refi-loan-term" className="text-sm font-medium text-foreground flex items-center gap-1">
                   Loan Term
                   <Tooltip>
                     <TooltipTrigger asChild>
@@ -154,8 +154,8 @@ const CashOutRefiCalculator = () => {
               </div>
 
               {/* Interest Rate */}
-              <div className="flex items-center gap-2">
-                <Label htmlFor="cash-out-refi-interest-rate" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[90px] sm:min-w-[110px]">
+              <div className="flex flex-col gap-1.5">
+                <Label htmlFor="cash-out-refi-interest-rate" className="text-sm font-medium text-foreground flex items-center gap-1">
                   Interest Rate
                   <Tooltip>
                     <TooltipTrigger asChild>
@@ -174,13 +174,12 @@ const CashOutRefiCalculator = () => {
                     max={20}
                     decimalPlaces={3}
                   />
-                  <span className="flex items-center text-muted-foreground text-xs sm:text-sm">%</span>
                 </div>
               </div>
 
               {/* Desired Cash Out */}
-              <div className="flex items-center gap-2">
-                <Label htmlFor="cash-out-refi-cash-out" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[90px] sm:min-w-[110px]">
+              <div className="flex flex-col gap-1.5">
+                <Label htmlFor="cash-out-refi-cash-out" className="text-sm font-medium text-foreground flex items-center gap-1">
                   Cash-Out
                   <Tooltip>
                     <TooltipTrigger asChild>
@@ -195,8 +194,8 @@ const CashOutRefiCalculator = () => {
               </div>
 
               {/* Refinance Fees */}
-              <div className="flex items-center gap-2">
-                <Label htmlFor="cash-out-refi-refi-fees" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[90px] sm:min-w-[110px]">
+              <div className="flex flex-col gap-1.5">
+                <Label htmlFor="cash-out-refi-refi-fees" className="text-sm font-medium text-foreground flex items-center gap-1">
                   Refi Fees
                   <Tooltip>
                     <TooltipTrigger asChild>
@@ -295,7 +294,7 @@ const CashOutRefiCalculator = () => {
         {/* Results Section */}
         <div className="space-y-6 lg:col-span-2 lg:row-span-2 lg:row-start-1 lg:col-start-4">
           {/* Main Result */}
-          <Card className="bg-primary border-0 rounded-xl p-6 shadow-xl">
+          <Card className="result-highlight border-0">
             <CardContent className="p-0">
               <StickyResult targetId="calc-result" label={"Max cash-out"} value={formatCurrency(results.maxCashOut)} />
               <div id="calc-result" className="text-center space-y-2">

@@ -172,8 +172,8 @@ const HelocDebtConsolidationCalculator = () => {
               </h2>
 
               <div className="space-y-3">
-                <div className="flex items-center gap-3">
-                  <Label htmlFor="heloc-dc-loan-term" className="text-xs sm:text-sm text-muted-foreground min-w-[130px]">
+                <div className="flex flex-col gap-1.5">
+                  <Label htmlFor="heloc-dc-loan-term" className="text-sm font-medium text-foreground">
                     Loan Term
                   </Label>
                   <div className="flex gap-2 flex-1 items-center">
@@ -188,8 +188,8 @@ const HelocDebtConsolidationCalculator = () => {
                   </div>
                 </div>
 
-                <div className="flex items-center gap-3">
-                  <Label htmlFor="heloc-dc-closing-costs" className="text-xs sm:text-sm text-muted-foreground min-w-[130px]">
+                <div className="flex flex-col gap-1.5">
+                  <Label htmlFor="heloc-dc-closing-costs" className="text-sm font-medium text-foreground">
                     Closing Costs
                   </Label>
                   <CurrencyInput id="heloc-dc-closing-costs"
@@ -198,8 +198,8 @@ const HelocDebtConsolidationCalculator = () => {
                   />
                 </div>
 
-                <div className="flex items-center gap-3">
-                  <Label htmlFor="heloc-dc-interest-rate" className="text-xs sm:text-sm text-muted-foreground min-w-[130px]">
+                <div className="flex flex-col gap-1.5">
+                  <Label htmlFor="heloc-dc-interest-rate" className="text-sm font-medium text-foreground">
                     Interest Rate
                   </Label>
                   <div className="flex gap-2 flex-1 items-center">
@@ -210,7 +210,6 @@ const HelocDebtConsolidationCalculator = () => {
                       max={30}
                       decimalPlaces={3}
                     />
-                    <span className="text-muted-foreground text-sm">%</span>
                   </div>
                 </div>
               </div>
