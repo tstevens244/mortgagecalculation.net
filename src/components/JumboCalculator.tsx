@@ -12,6 +12,7 @@ import AmortizationChart from "./AmortizationChart";
 import CurrencyInput from "./CurrencyInput";
 import PercentInput from "./PercentInput";
 import { formatCurrency } from "@/lib/formatters";
+import { CONFORMING_LIMIT, CONFORMING_LIMIT_HIGH_COST as HIGH_COST_LIMIT } from "@/lib/loanLimits";
 
 interface JumboInputs {
   homePrice: number;
@@ -25,9 +26,9 @@ interface JumboInputs {
   startDate: string;
 }
 
-// 2024 conforming loan limits
-const CONFORMING_LIMIT_STANDARD = 766550;
-const CONFORMING_LIMIT_HIGH_COST = 1149825;
+// Current-year conforming loan limits (see src/lib/loanLimits.ts)
+const CONFORMING_LIMIT_STANDARD = CONFORMING_LIMIT;
+const CONFORMING_LIMIT_HIGH_COST = HIGH_COST_LIMIT;
 
 const JumboCalculator = () => {
   const [inputs, setInputs] = useState<JumboInputs>({
@@ -264,7 +265,7 @@ const JumboCalculator = () => {
                       updateInput("startDate", `${year}-${month}`);
                     }}
                   >
-                    <SelectTrigger className="h-8 sm:h-10 text-xs sm:text-sm flex-1">
+                    <SelectTrigger aria-label="Loan start month" className="h-8 sm:h-10 text-xs sm:text-sm flex-1">
                       <SelectValue placeholder="Month" />
                     </SelectTrigger>
                     <SelectContent>
@@ -289,7 +290,7 @@ const JumboCalculator = () => {
                       updateInput("startDate", `${year}-${month}`);
                     }}
                   >
-                    <SelectTrigger className="h-8 sm:h-10 text-xs sm:text-sm w-20 sm:w-24">
+                    <SelectTrigger aria-label="Loan start year" className="h-8 sm:h-10 text-xs sm:text-sm w-20 sm:w-24">
                       <SelectValue placeholder="Year" />
                     </SelectTrigger>
                     <SelectContent>

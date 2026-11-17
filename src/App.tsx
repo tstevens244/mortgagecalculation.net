@@ -1,5 +1,5 @@
 import { lazy, Suspense } from "react";
-import { HelmetProvider } from "react-helmet-async";
+import { Helmet, HelmetProvider } from "react-helmet-async";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -44,8 +44,23 @@ const TrailingSlashRedirect = () => {
 
 const queryClient = new QueryClient();
 
+// Tags shared by every page. Page components add their own title,
+// description, canonical, robots and structured data.
+const SiteMeta = () => (
+  <Helmet>
+    <meta property="og:site_name" content="MortgageCalculation.net" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:image" content="https://mortgagecalculation.net/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="MortgageCalculation.net: free mortgage calculators" />
+    <meta name="twitter:image" content="https://mortgagecalculation.net/og-image.png" />
+  </Helmet>
+);
+
 const App = () => (
   <HelmetProvider>
+    <SiteMeta />
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <Toaster />

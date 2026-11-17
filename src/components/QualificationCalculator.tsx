@@ -110,17 +110,17 @@ const QualificationCalculator = () => {
             <CardContent>
               <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2">
                 <div className="flex items-center gap-2">
-                  <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap min-w-[80px] sm:min-w-[100px]">
+                  <Label htmlFor="qualification-home-value" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap min-w-[80px] sm:min-w-[100px]">
                     Home Value
                   </Label>
-                  <CurrencyInput value={homeValue} onChange={setHomeValue} />
+                  <CurrencyInput id="qualification-home-value" value={homeValue} onChange={setHomeValue} />
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap min-w-[80px] sm:min-w-[100px]">
+                  <Label htmlFor="qualification-down-payment" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap min-w-[80px] sm:min-w-[100px]">
                     Down Payment
                   </Label>
-                  <CurrencyInput value={downPayment} onChange={setDownPayment} />
+                  <CurrencyInput id="qualification-down-payment" value={downPayment} onChange={setDownPayment} />
                 </div>
               </div>
 
@@ -143,11 +143,11 @@ const QualificationCalculator = () => {
             <CardContent>
               <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2">
                 <div className="flex items-center gap-2">
-                  <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap min-w-[80px] sm:min-w-[100px]">
+                  <Label htmlFor="qualification-loan-term" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap min-w-[80px] sm:min-w-[100px]">
                     Loan Term
                   </Label>
                   <Select value={loanTerm} onValueChange={setLoanTerm}>
-                    <SelectTrigger className="h-8 sm:h-10 text-sm flex-1">
+                    <SelectTrigger id="qualification-loan-term" className="h-8 sm:h-10 text-sm flex-1">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -160,11 +160,11 @@ const QualificationCalculator = () => {
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap min-w-[80px] sm:min-w-[100px]">
+                  <Label htmlFor="qualification-interest-rate" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap min-w-[80px] sm:min-w-[100px]">
                     Interest Rate
                   </Label>
                   <div className="flex gap-1 sm:gap-2 flex-1">
-                    <PercentInput
+                    <PercentInput id="qualification-interest-rate"
                       value={interestRate}
                       onChange={setInterestRate}
                       min={0}
@@ -176,21 +176,21 @@ const QualificationCalculator = () => {
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap min-w-[80px] sm:min-w-[100px]">
+                  <Label htmlFor="qualification-property-tax" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap min-w-[80px] sm:min-w-[100px]">
                     Property Tax
                   </Label>
-                  <CurrencyInput value={annualTaxes} onChange={setAnnualTaxes} />
+                  <CurrencyInput id="qualification-property-tax" value={annualTaxes} onChange={setAnnualTaxes} />
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap min-w-[80px] sm:min-w-[100px]">
+                  <Label htmlFor="qualification-insurance" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap min-w-[80px] sm:min-w-[100px]">
                     Insurance
                   </Label>
-                  <CurrencyInput value={annualInsurance} onChange={setAnnualInsurance} />
+                  <CurrencyInput id="qualification-insurance" value={annualInsurance} onChange={setAnnualInsurance} />
                 </div>
 
                 <div className="flex items-center gap-2 sm:col-span-2 sm:w-1/2">
-                  <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
+                  <Label htmlFor="qualification-annual-pmi" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
                     Annual PMI
                     <Tooltip>
                       <TooltipTrigger asChild>
@@ -201,7 +201,7 @@ const QualificationCalculator = () => {
                       </TooltipContent>
                     </Tooltip>
                   </Label>
-                  <CurrencyInput value={annualPMI} onChange={setAnnualPMI} />
+                  <CurrencyInput id="qualification-annual-pmi" value={annualPMI} onChange={setAnnualPMI} />
                 </div>
               </div>
             </CardContent>
@@ -217,7 +217,7 @@ const QualificationCalculator = () => {
             <CardContent>
               <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2">
                 <div className="flex items-center gap-2">
-                  <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
+                  <Label htmlFor="qualification-front-end" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
                     Front-End
                     <Tooltip>
                       <TooltipTrigger asChild>
@@ -229,7 +229,7 @@ const QualificationCalculator = () => {
                     </Tooltip>
                   </Label>
                   <div className="flex gap-1 sm:gap-2 flex-1">
-                    <PercentInput
+                    <PercentInput id="qualification-front-end"
                       value={frontEndRatio}
                       onChange={setFrontEndRatio}
                       min={0}
@@ -241,7 +241,7 @@ const QualificationCalculator = () => {
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
+                  <Label htmlFor="qualification-back-end" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
                     Back-End
                     <Tooltip>
                       <TooltipTrigger asChild>
@@ -253,7 +253,7 @@ const QualificationCalculator = () => {
                     </Tooltip>
                   </Label>
                   <div className="flex gap-1 sm:gap-2 flex-1">
-                    <PercentInput
+                    <PercentInput id="qualification-back-end"
                       value={backEndRatio}
                       onChange={setBackEndRatio}
                       min={0}
@@ -265,7 +265,7 @@ const QualificationCalculator = () => {
                 </div>
 
                 <div className="flex items-center gap-2 sm:col-span-2 sm:w-1/2">
-                  <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
+                  <Label htmlFor="qualification-other-debts" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
                     Other Debts
                     <Tooltip>
                       <TooltipTrigger asChild>
@@ -276,7 +276,7 @@ const QualificationCalculator = () => {
                       </TooltipContent>
                     </Tooltip>
                   </Label>
-                  <CurrencyInput value={monthlyDebts} onChange={setMonthlyDebts} />
+                  <CurrencyInput id="qualification-other-debts" value={monthlyDebts} onChange={setMonthlyDebts} />
                 </div>
               </div>
 

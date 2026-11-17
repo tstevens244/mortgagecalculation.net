@@ -62,7 +62,7 @@ const ARM = () => {
       },
       {
         "@type": "Question",
-        name: "Should I choose an ARM or fixed-rate mortgage in 2025?",
+        name: "Should I choose an ARM or a fixed-rate mortgage?",
         acceptedAnswer: {
           "@type": "Answer",
           text: "Choose an ARM if: you plan to sell or refinance before the fixed period ends, rates are expected to decrease, you want lower initial payments, or you need to qualify for more house. Choose fixed-rate if: you plan to stay long-term, you value payment predictability, current rates are historically low, or you have a tight budget.",
@@ -98,7 +98,7 @@ const ARM = () => {
   return (
     <>
       <Helmet>
-        <title>ARM Calculator - Adjustable Rate Mortgage Calculator | MortgageCalculation.net</title>
+        <title>Adjustable Rate Mortgage (ARM) Calculator | Payment After Rate Changes</title>
         <meta
           name="description"
           content="Calculate adjustable rate mortgage payments with our free ARM calculator. Compare initial vs maximum payments, understand rate caps, and see payment projections for 3/1, 5/1, 7/1, and 10/1 ARMs."
@@ -142,7 +142,7 @@ const ARM = () => {
             {/* Educational Content */}
             <section className="mt-12 space-y-8">
               <div className="prose prose-slate max-w-none">
-                <h2 className="text-2xl font-display font-semibold mb-4">The Complete Guide to Adjustable Rate Mortgages in 2025</h2>
+                <h2 className="text-2xl font-display font-semibold mb-4">The Complete Guide to Adjustable Rate Mortgages</h2>
                 <p className="text-muted-foreground leading-relaxed">
                   An Adjustable Rate Mortgage (ARM) is a home loan with an interest rate that can change periodically 
                   based on market conditions. Unlike <Link to="/" className="text-primary hover:underline">fixed-rate mortgages</Link> where 
@@ -214,7 +214,7 @@ const ARM = () => {
               </div>
               <div className="grid gap-6 md:grid-cols-2 not-prose">
                 <div className="calculator-card p-4">
-                  <h4 className="font-display font-semibold text-lg mb-3 text-accent">✓ Advantages of ARMs</h4>
+                  <h3 className="font-display font-semibold text-lg mb-3 text-accent">✓ Advantages of ARMs</h3>
                   <ul className="space-y-2 text-muted-foreground text-sm">
                     <li className="flex items-start gap-2">
                       <span className="text-accent">✓</span>
@@ -244,7 +244,7 @@ const ARM = () => {
                 </div>
 
                 <div className="calculator-card p-4">
-                  <h4 className="font-display font-semibold text-lg mb-3 text-primary">✗ Disadvantages of ARMs</h4>
+                  <h3 className="font-display font-semibold text-lg mb-3 text-primary">✗ Disadvantages of ARMs</h3>
                   <ul className="space-y-2 text-muted-foreground text-sm">
                     <li className="flex items-start gap-2">
                       <span className="text-primary">✗</span>
@@ -358,7 +358,7 @@ const ARM = () => {
               </div>
               <div className="space-y-6 not-prose">
                 <div className="calculator-card p-4">
-                  <h4 className="font-semibold text-foreground mb-2">Can I refinance out of an ARM before it adjusts?</h4>
+                  <h3 className="font-semibold text-foreground mb-2 text-base font-sans">Can I refinance out of an ARM before it adjusts?</h3>
                   <p className="text-sm text-muted-foreground">
                     Yes, and many ARM borrowers do exactly this. If rates are favorable before your fixed period ends, 
                     you can <Link to="/refinance-calculator/" className="text-primary hover:underline">refinance into a fixed-rate mortgage</Link> to 
@@ -366,7 +366,7 @@ const ARM = () => {
                   </p>
                 </div>
                 <div className="calculator-card p-4">
-                  <h4 className="font-semibold text-foreground mb-2">What happens if I can't afford my ARM payment after it adjusts?</h4>
+                  <h3 className="font-semibold text-foreground mb-2 text-base font-sans">What happens if I can't afford my ARM payment after it adjusts?</h3>
                   <p className="text-sm text-muted-foreground">
                     Options include: refinancing to a fixed rate or new ARM, selling the home, or contacting your 
                     lender about modification programs. This is why it's crucial to calculate the worst-case scenario 
@@ -374,7 +374,7 @@ const ARM = () => {
                   </p>
                 </div>
                 <div className="calculator-card p-4">
-                  <h4 className="font-semibold text-foreground mb-2">Are ARM rates tied to the Federal Reserve rate?</h4>
+                  <h3 className="font-semibold text-foreground mb-2 text-base font-sans">Are ARM rates tied to the Federal Reserve rate?</h3>
                   <p className="text-sm text-muted-foreground">
                     Indirectly. Most ARMs are tied to the Secured Overnight Financing Rate (SOFR), which is influenced 
                     by the Fed's actions but doesn't move in lockstep. Your new rate = Index (SOFR) + Margin (set at 
@@ -382,7 +382,7 @@ const ARM = () => {
                   </p>
                 </div>
                 <div className="calculator-card p-4">
-                  <h4 className="font-semibold text-foreground mb-2">Can I get an ARM for an FHA or VA loan?</h4>
+                  <h3 className="font-semibold text-foreground mb-2 text-base font-sans">Can I get an ARM for an FHA or VA loan?</h3>
                   <p className="text-sm text-muted-foreground">
                     Yes, both <Link to="/fha-loan-calculator/" className="text-primary hover:underline">FHA</Link> and 
                     <Link to="/va-loan-calculator/" className="text-primary hover:underline"> VA</Link> offer ARM programs. 
@@ -393,7 +393,7 @@ const ARM = () => {
               </div>
 
               <div className="calculator-card p-6 mt-10 not-prose">
-                <h4 className="font-display font-semibold text-lg mb-4">Official Resources & Citations</h4>
+                <h3 className="font-display font-semibold text-lg mb-4">Official Resources & Citations</h3>
                 <ul className="space-y-2 text-sm text-muted-foreground">
                   <li>
                     <a href="https://www.consumerfinance.gov/ask-cfpb/what-is-the-difference-between-a-fixed-rate-and-adjustable-rate-mortgage-arm-loan-en-100/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">

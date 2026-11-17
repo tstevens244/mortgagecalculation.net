@@ -238,20 +238,20 @@ const RefinanceCalculator = () => {
 
               <div className="space-y-3">
                 <div className="flex items-center gap-3">
-                  <Label className="text-xs sm:text-sm text-muted-foreground min-w-[130px]">
+                  <Label htmlFor="refinance-original-home-price" className="text-xs sm:text-sm text-muted-foreground min-w-[130px]">
                     Original Home Price
                   </Label>
-                  <CurrencyInput
+                  <CurrencyInput id="refinance-original-home-price"
                     value={inputs.originalHomePrice}
                     onChange={(value) => updateInput("originalHomePrice", value)}
                   />
                 </div>
 
                 <div className="flex items-center gap-3">
-                  <Label className="text-xs sm:text-sm text-muted-foreground min-w-[130px]">
+                  <Label htmlFor="refinance-original-down-payment" className="text-xs sm:text-sm text-muted-foreground min-w-[130px]">
                     Original Down Payment
                   </Label>
-                  <CurrencyInput
+                  <CurrencyInput id="refinance-original-down-payment"
                     value={inputs.originalDownPayment}
                     onChange={(value) => updateInput("originalDownPayment", value)}
                   />
@@ -267,14 +267,14 @@ const RefinanceCalculator = () => {
                 </div>
 
                 <div className="flex items-center gap-3">
-                  <Label className="text-xs sm:text-sm text-muted-foreground min-w-[130px]">
+                  <Label htmlFor="refinance-loan-term" className="text-xs sm:text-sm text-muted-foreground min-w-[130px]">
                     Loan Term
                   </Label>
                   <Select
                     value={inputs.originalLoanTerm.toString()}
                     onValueChange={(v) => updateInput("originalLoanTerm", parseInt(v))}
                   >
-                    <SelectTrigger className="h-8 sm:h-10 text-sm flex-1">
+                    <SelectTrigger id="refinance-loan-term" className="h-8 sm:h-10 text-sm flex-1">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -287,11 +287,11 @@ const RefinanceCalculator = () => {
                 </div>
 
                 <div className="flex items-center gap-3">
-                  <Label className="text-xs sm:text-sm text-muted-foreground min-w-[130px]">
+                  <Label htmlFor="refinance-interest-rate" className="text-xs sm:text-sm text-muted-foreground min-w-[130px]">
                     Interest Rate
                   </Label>
                   <div className="flex gap-2 flex-1 items-center">
-                    <PercentInput
+                    <PercentInput id="refinance-interest-rate"
                       value={inputs.originalInterestRate}
                       onChange={(value) => updateInput("originalInterestRate", value)}
                       min={0}
@@ -303,11 +303,11 @@ const RefinanceCalculator = () => {
                 </div>
 
                 <div className="flex items-center gap-3">
-                  <Label className="text-xs sm:text-sm text-muted-foreground min-w-[130px]">
+                  <Label htmlFor="refinance-months-already-paid" className="text-xs sm:text-sm text-muted-foreground min-w-[130px]">
                     Months Already Paid
                   </Label>
                   <div className="flex gap-2 flex-1 items-center">
-                    <Input
+                    <Input id="refinance-months-already-paid"
                       type="text"
                       inputMode="numeric"
                       value={inputs.monthsAlreadyPaid}
@@ -340,14 +340,14 @@ const RefinanceCalculator = () => {
 
               <div className="space-y-3">
                 <div className="flex items-center gap-3">
-                  <Label className="text-xs sm:text-sm text-muted-foreground min-w-[130px]">
+                  <Label htmlFor="refinance-new-loan-term" className="text-xs sm:text-sm text-muted-foreground min-w-[130px]">
                     New Loan Term
                   </Label>
                   <Select
                     value={inputs.newLoanTerm.toString()}
                     onValueChange={(v) => updateInput("newLoanTerm", parseInt(v))}
                   >
-                    <SelectTrigger className="h-8 sm:h-10 text-sm flex-1">
+                    <SelectTrigger id="refinance-new-loan-term" className="h-8 sm:h-10 text-sm flex-1">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -360,11 +360,11 @@ const RefinanceCalculator = () => {
                 </div>
 
                 <div className="flex items-center gap-3">
-                  <Label className="text-xs sm:text-sm text-muted-foreground min-w-[130px]">
+                  <Label htmlFor="refinance-new-interest-rate" className="text-xs sm:text-sm text-muted-foreground min-w-[130px]">
                     New Interest Rate
                   </Label>
                   <div className="flex gap-2 flex-1 items-center">
-                    <PercentInput
+                    <PercentInput id="refinance-new-interest-rate"
                       value={inputs.newInterestRate}
                       onChange={(value) => updateInput("newInterestRate", value)}
                       min={0}
@@ -376,11 +376,11 @@ const RefinanceCalculator = () => {
                 </div>
 
                 <div className="flex items-center gap-3">
-                  <Label className="text-xs sm:text-sm text-muted-foreground min-w-[130px]">
+                  <Label htmlFor="refinance-years-before-sell" className="text-xs sm:text-sm text-muted-foreground min-w-[130px]">
                     Years Before Sell
                   </Label>
                   <div className="flex gap-2 flex-1 items-center">
-                    <Input
+                    <Input id="refinance-years-before-sell"
                       type="text"
                       inputMode="numeric"
                       value={inputs.yearsBeforeSell}
@@ -395,11 +395,11 @@ const RefinanceCalculator = () => {
                   <h3 className="text-sm font-medium mb-2">Fees and Points</h3>
                   
                   <div className="flex items-center gap-3 mb-2">
-                    <Label className="text-xs sm:text-sm text-muted-foreground min-w-[130px]">
+                    <Label htmlFor="refinance-discount-points" className="text-xs sm:text-sm text-muted-foreground min-w-[130px]">
                       Discount Points
                     </Label>
                       <div className="flex gap-2 flex-1 items-center">
-                      <PercentInput
+                      <PercentInput id="refinance-discount-points"
                         value={inputs.discountPoints}
                         onChange={(value) => updateInput("discountPoints", value)}
                         min={0}
@@ -411,11 +411,11 @@ const RefinanceCalculator = () => {
                   </div>
 
                   <div className="flex items-center gap-3 mb-2">
-                    <Label className="text-xs sm:text-sm text-muted-foreground min-w-[130px]">
+                    <Label htmlFor="refinance-origination-fees" className="text-xs sm:text-sm text-muted-foreground min-w-[130px]">
                       Origination Fees
                     </Label>
                     <div className="flex gap-2 flex-1 items-center">
-                      <PercentInput
+                      <PercentInput id="refinance-origination-fees"
                         value={inputs.originationFees}
                         onChange={(value) => updateInput("originationFees", value)}
                         min={0}
@@ -427,10 +427,10 @@ const RefinanceCalculator = () => {
                   </div>
 
                   <div className="flex items-center gap-3">
-                    <Label className="text-xs sm:text-sm text-muted-foreground min-w-[130px]">
+                    <Label htmlFor="refinance-other-closing-costs" className="text-xs sm:text-sm text-muted-foreground min-w-[130px]">
                       Other Closing Costs
                     </Label>
-                    <CurrencyInput
+                    <CurrencyInput id="refinance-other-closing-costs"
                       value={inputs.otherClosingCosts}
                       onChange={(value) => updateInput("otherClosingCosts", value)}
                     />
@@ -469,11 +469,11 @@ const RefinanceCalculator = () => {
 
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="flex items-center gap-3">
-                <Label className="text-xs sm:text-sm text-muted-foreground min-w-[130px]">
+                <Label htmlFor="refinance-federal-tax-rate" className="text-xs sm:text-sm text-muted-foreground min-w-[130px]">
                   Federal Tax Rate
                 </Label>
                 <div className="flex gap-2 flex-1 items-center">
-                  <Input
+                  <Input id="refinance-federal-tax-rate"
                     type="text"
                     inputMode="decimal"
                     value={inputs.federalTaxRate}
@@ -485,11 +485,11 @@ const RefinanceCalculator = () => {
               </div>
 
               <div className="flex items-center gap-3">
-                <Label className="text-xs sm:text-sm text-muted-foreground min-w-[130px]">
+                <Label htmlFor="refinance-state-tax-rate" className="text-xs sm:text-sm text-muted-foreground min-w-[130px]">
                   State Tax Rate
                 </Label>
                 <div className="flex gap-2 flex-1 items-center">
-                  <Input
+                  <Input id="refinance-state-tax-rate"
                     type="text"
                     inputMode="decimal"
                     value={inputs.stateTaxRate}

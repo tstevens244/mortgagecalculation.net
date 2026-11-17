@@ -45,7 +45,7 @@ const Footer = () => {
             <div>
               <Link to="/" className="flex items-center gap-2 text-lg font-display font-bold">
                 <img src="/favicon.png" alt="" className="h-5 w-5" aria-hidden="true" />
-                Mortgage Calculation
+                MortgageCalculation.net
               </Link>
               <p className="mt-2 text-sm text-muted-foreground">
                 Free online mortgage calculator to help you estimate your monthly payments and plan your home purchase.
@@ -64,7 +64,7 @@ const Footer = () => {
         </div>
 
         <div className="border-t border-border mt-8 pt-6 text-center text-sm text-muted-foreground">
-          <p>© {currentYear} Mortgage Calculation. All rights reserved.</p>
+          <p>© {currentYear} MortgageCalculation.net. All rights reserved.</p>
         </div>
       </div>
     </footer>

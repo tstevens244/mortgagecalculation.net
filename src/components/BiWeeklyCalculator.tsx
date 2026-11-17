@@ -209,25 +209,25 @@ const BiWeeklyCalculator = () => {
             <CardContent>
               <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2">
                 <div className="flex items-center gap-2">
-                  <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap min-w-[80px] sm:min-w-[100px]">
+                  <Label htmlFor="bi-weekly-home-price" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap min-w-[80px] sm:min-w-[100px]">
                     Home Price
                   </Label>
-                  <CurrencyInput value={homePrice} onChange={setHomePrice} />
+                  <CurrencyInput id="bi-weekly-home-price" value={homePrice} onChange={setHomePrice} />
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap min-w-[80px] sm:min-w-[100px]">
+                  <Label htmlFor="bi-weekly-down-payment" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap min-w-[80px] sm:min-w-[100px]">
                     Down Payment
                   </Label>
-                  <CurrencyInput value={downPayment} onChange={setDownPayment} />
+                  <CurrencyInput id="bi-weekly-down-payment" value={downPayment} onChange={setDownPayment} />
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap min-w-[80px] sm:min-w-[100px]">
+                  <Label htmlFor="bi-weekly-interest-rate" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap min-w-[80px] sm:min-w-[100px]">
                     Interest Rate
                   </Label>
                   <div className="flex gap-1 sm:gap-2 flex-1">
-                    <PercentInput
+                    <PercentInput id="bi-weekly-interest-rate"
                       value={interestRate}
                       onChange={setInterestRate}
                       min={0}
@@ -239,11 +239,11 @@ const BiWeeklyCalculator = () => {
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap min-w-[80px] sm:min-w-[100px]">
+                  <Label htmlFor="bi-weekly-loan-term" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap min-w-[80px] sm:min-w-[100px]">
                     Loan Term
                   </Label>
                   <Select value={loanTerm} onValueChange={setLoanTerm}>
-                    <SelectTrigger className="h-8 sm:h-10 text-sm flex-1">
+                    <SelectTrigger id="bi-weekly-loan-term" className="h-8 sm:h-10 text-sm flex-1">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -276,7 +276,7 @@ const BiWeeklyCalculator = () => {
             </CardHeader>
             <CardContent>
               <div className="flex items-center gap-2">
-                <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
+                <Label htmlFor="bi-weekly-tax-rate" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
                   Tax Rate
                   <Tooltip>
                     <TooltipTrigger asChild>
@@ -288,7 +288,7 @@ const BiWeeklyCalculator = () => {
                   </Tooltip>
                 </Label>
                 <div className="flex gap-1 sm:gap-2 flex-1">
-                  <PercentInput
+                  <PercentInput id="bi-weekly-tax-rate"
                     value={taxRate}
                     onChange={setTaxRate}
                     min={0}

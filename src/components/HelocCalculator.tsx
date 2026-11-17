@@ -177,11 +177,11 @@ const HelocCalculator = () => {
 
               <div className="space-y-3">
                 <div className="flex items-center gap-3">
-                  <Label className="text-xs sm:text-sm text-muted-foreground min-w-[130px]">
+                  <Label htmlFor="heloc-loan-term" className="text-xs sm:text-sm text-muted-foreground min-w-[130px]">
                     Loan Term
                   </Label>
                   <div className="flex gap-2 flex-1 items-center">
-                    <Input
+                    <Input id="heloc-loan-term"
                       type="text"
                       inputMode="numeric"
                       value={inputs.helocTerm}
@@ -193,21 +193,21 @@ const HelocCalculator = () => {
                 </div>
 
                 <div className="flex items-center gap-3">
-                  <Label className="text-xs sm:text-sm text-muted-foreground min-w-[130px]">
+                  <Label htmlFor="heloc-closing-costs" className="text-xs sm:text-sm text-muted-foreground min-w-[130px]">
                     Closing Costs
                   </Label>
-                  <CurrencyInput
+                  <CurrencyInput id="heloc-closing-costs"
                     value={inputs.helocClosingCosts}
                     onChange={(value) => updateInput("helocClosingCosts", value)}
                   />
                 </div>
 
                 <div className="flex items-center gap-3">
-                  <Label className="text-xs sm:text-sm text-muted-foreground min-w-[130px]">
+                  <Label htmlFor="heloc-interest-rate" className="text-xs sm:text-sm text-muted-foreground min-w-[130px]">
                     Interest Rate
                   </Label>
                   <div className="flex gap-2 flex-1 items-center">
-                    <PercentInput
+                    <PercentInput id="heloc-interest-rate"
                       value={inputs.helocInterestRate}
                       onChange={(value) => updateInput("helocInterestRate", value)}
                       min={0}
@@ -219,11 +219,11 @@ const HelocCalculator = () => {
                 </div>
 
                 <div className="flex items-center gap-3">
-                  <Label className="text-xs sm:text-sm text-muted-foreground min-w-[130px]">
+                  <Label htmlFor="heloc-federal-tax-rate" className="text-xs sm:text-sm text-muted-foreground min-w-[130px]">
                     Federal Tax Rate
                   </Label>
                   <div className="flex gap-2 flex-1 items-center">
-                    <PercentInput
+                    <PercentInput id="heloc-federal-tax-rate"
                       value={inputs.federalTaxRate}
                       onChange={(value) => updateInput("federalTaxRate", value)}
                       min={0}
@@ -268,6 +268,7 @@ const HelocCalculator = () => {
                     <div className="col-span-3">
                       <Input
                         type="text"
+                        aria-label="Debt name"
                         value={debt.name}
                         onChange={(e) => updateDebt(debt.id, "name", e.target.value)}
                         className="h-8 text-xs"
@@ -275,6 +276,7 @@ const HelocCalculator = () => {
                     </div>
                     <div className="col-span-3">
                       <CurrencyInput
+                        aria-label={`${debt.name || "Debt"} balance`}
                         value={debt.balance}
                         onChange={(value) => updateDebt(debt.id, "balance", value)}
                         className="h-8 text-xs"
@@ -282,6 +284,7 @@ const HelocCalculator = () => {
                     </div>
                     <div className="col-span-3">
                       <CurrencyInput
+                        aria-label={`${debt.name || "Debt"} monthly payment`}
                         value={debt.monthlyPayment}
                         onChange={(value) => updateDebt(debt.id, "monthlyPayment", value)}
                         className="h-8 text-xs"
@@ -290,6 +293,7 @@ const HelocCalculator = () => {
                     <div className="col-span-2">
                       <div className="flex items-center gap-1">
                         <PercentInput
+                          aria-label={`${debt.name || "Debt"} interest rate`}
                           value={debt.interestRate}
                           onChange={(value) => updateDebt(debt.id, "interestRate", value)}
                           min={0}
@@ -305,9 +309,10 @@ const HelocCalculator = () => {
                         size="icon"
                         className="h-8 w-8"
                         onClick={() => removeDebt(debt.id)}
+                        aria-label={`Remove ${debt.name || "debt"}`}
                         disabled={debts.length <= 1}
                       >
-                        <Trash2 className="h-3 w-3 text-muted-foreground" />
+                        <Trash2 className="h-3 w-3 text-muted-foreground" aria-hidden="true" />
                       </Button>
                     </div>
                   </div>

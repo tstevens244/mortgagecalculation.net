@@ -236,7 +236,7 @@ const MortgageCalculator = () => {
                       updateInput("startDate", `${year}-${month}`);
                     }}
                   >
-                    <SelectTrigger className="h-8 sm:h-10 text-xs sm:text-sm flex-1">
+                    <SelectTrigger aria-label="Loan start month" className="h-8 sm:h-10 text-xs sm:text-sm flex-1">
                       <SelectValue placeholder="Month" />
                     </SelectTrigger>
                     <SelectContent>
@@ -261,7 +261,7 @@ const MortgageCalculator = () => {
                       updateInput("startDate", `${year}-${month}`);
                     }}
                   >
-                    <SelectTrigger className="h-8 sm:h-10 text-xs sm:text-sm w-20 sm:w-24">
+                    <SelectTrigger aria-label="Loan start year" className="h-8 sm:h-10 text-xs sm:text-sm w-20 sm:w-24">
                       <SelectValue placeholder="Year" />
                     </SelectTrigger>
                     <SelectContent>

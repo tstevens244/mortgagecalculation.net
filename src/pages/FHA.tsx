@@ -98,7 +98,7 @@ const FHA = () => {
   return (
     <>
       <Helmet>
-        <title>FHA Loan Calculator | Estimate FHA Mortgage Payments | Mortgage Calculation</title>
+        <title>FHA Loan Calculator With MIP | Estimate Your FHA Payment</title>
         <meta
           name="description"
           content="Calculate your FHA loan payment including upfront and annual MIP. See how FHA mortgage insurance affects your monthly payment with our free FHA calculator."
@@ -141,7 +141,7 @@ const FHA = () => {
             <FHACalculator />
 
             <section className="mt-12 prose prose-slate max-w-none">
-              <h2 className="text-2xl font-display font-semibold mb-4">The Complete Guide to FHA Loans in 2025</h2>
+              <h2 className="text-2xl font-display font-semibold mb-4">The Complete Guide to FHA Loans</h2>
               <p className="text-muted-foreground leading-relaxed">
                 An FHA loan is a mortgage insured by the <a href="https://www.hud.gov/program_offices/housing/fhahistory" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Federal Housing Administration (FHA)</a>, 
                 a government agency within the U.S. Department of Housing and Urban Development. Created in 1934 during the Great Depression, 
@@ -157,37 +157,37 @@ const FHA = () => {
               </p>
               <div className="grid md:grid-cols-2 gap-6 not-prose">
                 <div className="calculator-card p-4">
-                  <h4 className="font-semibold text-foreground mb-2">Credit Score Requirements</h4>
+                  <h3 className="font-semibold text-foreground mb-2 text-base font-sans">Credit Score Requirements</h3>
                   <p className="text-sm text-muted-foreground">
                     Minimum 580 for 3.5% down payment. Scores 500-579 require 10% down. Most lenders prefer 620+ for easier approval.
                   </p>
                 </div>
                 <div className="calculator-card p-4">
-                  <h4 className="font-semibold text-foreground mb-2">Down Payment</h4>
+                  <h3 className="font-semibold text-foreground mb-2 text-base font-sans">Down Payment</h3>
                   <p className="text-sm text-muted-foreground">
                     As low as 3.5% with credit score of 580+. Gift funds from family are allowed for the entire down payment amount.
                   </p>
                 </div>
                 <div className="calculator-card p-4">
-                  <h4 className="font-semibold text-foreground mb-2">Debt-to-Income Ratio (DTI)</h4>
+                  <h3 className="font-semibold text-foreground mb-2 text-base font-sans">Debt-to-Income Ratio (DTI)</h3>
                   <p className="text-sm text-muted-foreground">
                     Front-end ratio up to 31%, back-end up to 43%. Some lenders may accept up to 50% with compensating factors.
                   </p>
                 </div>
                 <div className="calculator-card p-4">
-                  <h4 className="font-semibold text-foreground mb-2">Employment & Income</h4>
+                  <h3 className="font-semibold text-foreground mb-2 text-base font-sans">Employment & Income</h3>
                   <p className="text-sm text-muted-foreground">
                     Two years of steady employment history. Self-employed borrowers need 2 years of tax returns showing consistent income.
                   </p>
                 </div>
                 <div className="calculator-card p-4">
-                  <h4 className="font-semibold text-foreground mb-2">Property Requirements</h4>
+                  <h3 className="font-semibold text-foreground mb-2 text-base font-sans">Property Requirements</h3>
                   <p className="text-sm text-muted-foreground">
                     Must be your primary residence. Property must pass FHA appraisal for safety, security, and soundness standards.
                   </p>
                 </div>
                 <div className="calculator-card p-4">
-                  <h4 className="font-semibold text-foreground mb-2">Bankruptcy & Foreclosure</h4>
+                  <h3 className="font-semibold text-foreground mb-2 text-base font-sans">Bankruptcy & Foreclosure</h3>
                   <p className="text-sm text-muted-foreground">
                     2 years after Chapter 7 bankruptcy, 3 years after foreclosure. Chapter 13 may qualify after 1 year of on-time payments.
                   </p>
@@ -197,7 +197,7 @@ const FHA = () => {
               <h2 className="text-2xl font-display font-semibold mt-10 mb-4">FHA Loan Pros and Cons</h2>
               <div className="not-prose grid gap-6 md:grid-cols-2">
                 <div className="calculator-card p-4">
-                  <h4 className="font-display font-semibold text-lg mb-3 text-accent">✓ Advantages of FHA Loans</h4>
+                  <h3 className="font-display font-semibold text-lg mb-3 text-accent">✓ Advantages of FHA Loans</h3>
                   <ul className="space-y-2 text-muted-foreground text-sm">
                     <li className="flex items-start gap-2">
                       <span className="text-accent">✓</span>
@@ -227,7 +227,7 @@ const FHA = () => {
                 </div>
 
                 <div className="calculator-card p-4">
-                  <h4 className="font-display font-semibold text-lg mb-3 text-primary">✗ Disadvantages of FHA Loans</h4>
+                  <h3 className="font-display font-semibold text-lg mb-3 text-primary">✗ Disadvantages of FHA Loans</h3>
                   <ul className="space-y-2 text-muted-foreground text-sm">
                     <li className="flex items-start gap-2">
                       <span className="text-primary">✗</span>
@@ -295,7 +295,7 @@ const FHA = () => {
                 Your FHA calculator results should guide your decision-making in several ways:
               </p>
               <div className="calculator-card p-6 not-prose">
-                <h4 className="font-semibold text-foreground mb-4">Making Sense of Your FHA Payment Estimate</h4>
+                <h3 className="font-semibold text-foreground mb-4 text-base font-sans">Making Sense of Your FHA Payment Estimate</h3>
                 <ul className="space-y-3 text-muted-foreground text-sm">
                   <li>
                     <strong>Compare MIP costs:</strong> If your annual MIP adds $150+ monthly, calculate whether 
@@ -357,28 +357,28 @@ const FHA = () => {
               <h2 className="text-2xl font-display font-semibold mt-10 mb-4">Frequently Asked Questions About FHA Loans</h2>
               <div className="space-y-6 not-prose">
                 <div className="calculator-card p-4">
-                  <h4 className="font-semibold text-foreground mb-2">Can I get an FHA loan for a fixer-upper?</h4>
+                  <h3 className="font-semibold text-foreground mb-2 text-base font-sans">Can I get an FHA loan for a fixer-upper?</h3>
                   <p className="text-sm text-muted-foreground">
                     Yes! The FHA 203(k) loan program allows you to finance both the purchase and renovation costs in a single mortgage. 
                     This is ideal for homes that don't meet FHA's minimum property standards in their current condition.
                   </p>
                 </div>
                 <div className="calculator-card p-4">
-                  <h4 className="font-semibold text-foreground mb-2">How long do I have to live in an FHA home?</h4>
+                  <h3 className="font-semibold text-foreground mb-2 text-base font-sans">How long do I have to live in an FHA home?</h3>
                   <p className="text-sm text-muted-foreground">
                     FHA requires you to occupy the property as your primary residence within 60 days of closing and live there 
                     for at least one year. After that, you can convert it to a rental property.
                   </p>
                 </div>
                 <div className="calculator-card p-4">
-                  <h4 className="font-semibold text-foreground mb-2">Can I refinance out of an FHA loan later?</h4>
+                  <h3 className="font-semibold text-foreground mb-2 text-base font-sans">Can I refinance out of an FHA loan later?</h3>
                   <p className="text-sm text-muted-foreground">
                     Absolutely. Many borrowers use an FHA loan to purchase their first home, then <Link to="/refinance-calculator/" className="text-primary hover:underline">refinance into a conventional loan</Link> once 
                     they've built 20% equity to eliminate mortgage insurance entirely.
                   </p>
                 </div>
                 <div className="calculator-card p-4">
-                  <h4 className="font-semibold text-foreground mb-2">Are FHA closing costs higher than conventional?</h4>
+                  <h3 className="font-semibold text-foreground mb-2 text-base font-sans">Are FHA closing costs higher than conventional?</h3>
                   <p className="text-sm text-muted-foreground">
                     FHA closing costs are comparable to conventional loans, typically 2-5% of the loan amount. The main difference 
                     is the 1.75% upfront MIP, which is usually financed into the loan rather than paid at closing.
@@ -387,7 +387,7 @@ const FHA = () => {
               </div>
 
               <div className="calculator-card p-6 mt-10 not-prose">
-                <h4 className="font-display font-semibold text-lg mb-4">Official Resources & Citations</h4>
+                <h3 className="font-display font-semibold text-lg mb-4">Official Resources & Citations</h3>
                 <ul className="space-y-2 text-sm text-muted-foreground">
                   <li>
                     <a href="https://www.hud.gov/program_offices/housing/sfh/fharesourcectr" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">

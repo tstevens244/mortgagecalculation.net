@@ -11,6 +11,7 @@ import AmortizationChart from "./AmortizationChart";
 import CurrencyInput from "./CurrencyInput";
 import PercentInput from "./PercentInput";
 import { formatCurrency } from "@/lib/formatters";
+import { USDA_UPFRONT_FEE_RATE, USDA_ANNUAL_FEE_RATE } from "@/lib/loanLimits";
 
 interface USDAInputs {
   homePrice: number;
@@ -24,9 +25,8 @@ interface USDAInputs {
   startDate: string;
 }
 
-// USDA loan fees (as of 2024)
-const UPFRONT_GUARANTEE_FEE_RATE = 1.0; // 1% upfront guarantee fee
-const ANNUAL_FEE_RATE = 0.35; // 0.35% annual fee
+const UPFRONT_GUARANTEE_FEE_RATE = USDA_UPFRONT_FEE_RATE;
+const ANNUAL_FEE_RATE = USDA_ANNUAL_FEE_RATE;
 
 const USDACalculator = () => {
   const [inputs, setInputs] = useState<USDAInputs>({
@@ -248,7 +248,7 @@ const USDACalculator = () => {
                       updateInput("startDate", `${year}-${month}`);
                     }}
                   >
-                    <SelectTrigger className="h-8 sm:h-10 text-xs sm:text-sm flex-1">
+                    <SelectTrigger aria-label="Loan start month" className="h-8 sm:h-10 text-xs sm:text-sm flex-1">
                       <SelectValue placeholder="Month" />
                     </SelectTrigger>
                     <SelectContent>
@@ -273,7 +273,7 @@ const USDACalculator = () => {
                       updateInput("startDate", `${year}-${month}`);
                     }}
                   >
-                    <SelectTrigger className="h-8 sm:h-10 text-xs sm:text-sm w-20 sm:w-24">
+                    <SelectTrigger aria-label="Loan start year" className="h-8 sm:h-10 text-xs sm:text-sm w-20 sm:w-24">
                       <SelectValue placeholder="Year" />
                     </SelectTrigger>
                     <SelectContent>

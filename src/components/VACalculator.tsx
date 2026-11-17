@@ -12,6 +12,7 @@ import AmortizationChart from "./AmortizationChart";
 import CurrencyInput from "./CurrencyInput";
 import PercentInput from "./PercentInput";
 import { formatCurrency } from "@/lib/formatters";
+import { vaFundingFeeRate } from "@/lib/loanLimits";
 
 interface VAInputs {
   homePrice: number;
@@ -23,34 +24,10 @@ interface VAInputs {
   homeInsurance: number;
   hoaFees: number;
   startDate: string;
-  eligibilityType: "active" | "reserves";
   firstTimeUse: boolean;
   hasDisability: boolean;
   financeFundingFee: boolean;
 }
-
-// VA Funding Fee rates (as of 2024)
-const getFundingFeeRate = (
-  eligibilityType: "active" | "reserves",
-  firstTimeUse: boolean,
-  downPaymentPercent: number,
-  hasDisability: boolean
-): number => {
-  // Exempt from funding fee
-  if (hasDisability) return 0;
-
-  // First-time use rates
-  if (firstTimeUse) {
-    if (downPaymentPercent >= 10) return 1.25;
-    if (downPaymentPercent >= 5) return 1.5;
-    return eligibilityType === "active" ? 2.15 : 2.4;
-  }
-  
-  // Subsequent use rates
-  if (downPaymentPercent >= 10) return 1.25;
-  if (downPaymentPercent >= 5) return 1.5;
-  return eligibilityType === "active" ? 3.3 : 3.3;
-};
 
 const VACalculator = () => {
   const [inputs, setInputs] = useState<VAInputs>({
@@ -63,7 +40,6 @@ const VACalculator = () => {
     homeInsurance: 1500,
     hoaFees: 0,
     startDate: new Date().toISOString().slice(0, 7),
-    eligibilityType: "active",
     firstTimeUse: true,
     hasDisability: false,
     financeFundingFee: true,
@@ -89,12 +65,7 @@ const VACalculator = () => {
     const baseLoanAmount = inputs.homePrice - inputs.downPayment;
     
     // Calculate VA funding fee
-    const fundingFeeRate = getFundingFeeRate(
-      inputs.eligibilityType,
-      inputs.firstTimeUse,
-      inputs.downPaymentPercent,
-      inputs.hasDisability
-    );
+    const fundingFeeRate = vaFundingFeeRate(inputs.firstTimeUse, inputs.downPaymentPercent, inputs.hasDisability);
     const fundingFee = baseLoanAmount * (fundingFeeRate / 100);
     
     // Total loan amount depends on whether funding fee is financed
@@ -271,7 +242,7 @@ const VACalculator = () => {
 
               {/* Start Date */}
               <div className="flex items-center gap-2">
-                <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
+                <Label htmlFor="va-start-month" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
                   <Calendar className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" />
                   <span className="hidden sm:inline">Start Date</span>
                   <span className="sm:hidden">Start</span>
@@ -284,7 +255,7 @@ const VACalculator = () => {
                       updateInput("startDate", `${year}-${month}`);
                     }}
                   >
-                    <SelectTrigger className="h-8 sm:h-10 text-xs sm:text-sm flex-1">
+                    <SelectTrigger aria-label="Loan start month" id="va-start-month" className="h-8 sm:h-10 text-xs sm:text-sm flex-1">
                       <SelectValue placeholder="Month" />
                     </SelectTrigger>
                     <SelectContent>
@@ -309,7 +280,7 @@ const VACalculator = () => {
                       updateInput("startDate", `${year}-${month}`);
                     }}
                   >
-                    <SelectTrigger className="h-8 sm:h-10 text-xs sm:text-sm w-20 sm:w-24">
+                    <SelectTrigger aria-label="Loan start year" className="h-8 sm:h-10 text-xs sm:text-sm w-20 sm:w-24">
                       <SelectValue placeholder="Year" />
                     </SelectTrigger>
                     <SelectContent>
@@ -334,28 +305,9 @@ const VACalculator = () => {
             </h2>
 
             <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2">
-              {/* Eligibility Type */}
-              <div className="flex items-center gap-2">
-                <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
-                  Service Type
-                </Label>
-                <Select
-                  value={inputs.eligibilityType}
-                  onValueChange={(v) => updateInput("eligibilityType", v as "active" | "reserves")}
-                >
-                  <SelectTrigger className="h-8 sm:h-10 text-xs sm:text-sm flex-1">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="active">Active Duty / Veteran</SelectItem>
-                    <SelectItem value="reserves">Reserves / National Guard</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
               {/* First Time Use */}
               <div className="flex items-center gap-2">
-                <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
+                <Label htmlFor="va-first-va-loan" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
                   First VA Loan?
                   <Tooltip>
                     <TooltipTrigger asChild>
@@ -367,7 +319,7 @@ const VACalculator = () => {
                   </Tooltip>
                 </Label>
                 <div className="flex items-center gap-2 flex-1">
-                  <Switch
+                  <Switch id="va-first-va-loan"
                     checked={inputs.firstTimeUse}
                     onCheckedChange={(checked) => updateInput("firstTimeUse", checked)}
                   />
@@ -377,7 +329,7 @@ const VACalculator = () => {
 
               {/* Disability Exemption */}
               <div className="flex items-center gap-2">
-                <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
+                <Label htmlFor="va-disability-10" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
                   Disability 10%+?
                   <Tooltip>
                     <TooltipTrigger asChild>
@@ -389,7 +341,7 @@ const VACalculator = () => {
                   </Tooltip>
                 </Label>
                 <div className="flex items-center gap-2 flex-1">
-                  <Switch
+                  <Switch id="va-disability-10"
                     checked={inputs.hasDisability}
                     onCheckedChange={(checked) => updateInput("hasDisability", checked)}
                   />
@@ -399,7 +351,7 @@ const VACalculator = () => {
 
               {/* Finance Funding Fee */}
               <div className="flex items-center gap-2">
-                <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
+                <Label htmlFor="va-finance-fee" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
                   Finance Fee?
                   <Tooltip>
                     <TooltipTrigger asChild>
@@ -411,7 +363,7 @@ const VACalculator = () => {
                   </Tooltip>
                 </Label>
                 <div className="flex items-center gap-2 flex-1">
-                  <Switch
+                  <Switch id="va-finance-fee"
                     checked={inputs.financeFundingFee}
                     onCheckedChange={(checked) => updateInput("financeFundingFee", checked)}
                     disabled={inputs.hasDisability}

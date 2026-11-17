@@ -98,10 +98,10 @@ const VA = () => {
   return (
     <>
       <Helmet>
-        <title>VA Loan Calculator | Military Home Loan Payment Estimator | Mortgage Calculation</title>
+        <title>VA Loan Calculator | Payment With Funding Fee, No PMI</title>
         <meta
           name="description"
-          content="Calculate your VA loan payment with 0% down and no PMI. Estimate VA funding fees based on your service type and eligibility. Free VA mortgage calculator."
+          content="Calculate your VA loan payment with 0% down and no PMI. Estimate the VA funding fee based on your down payment and prior VA loan use. Free VA mortgage calculator."
         />
         <meta name="robots" content="index, follow" />
         <link rel="canonical" href={canonicalUrl} />
@@ -141,7 +141,7 @@ const VA = () => {
             <VACalculator />
 
             <section className="mt-12 prose prose-slate max-w-none">
-              <h2 className="text-2xl font-display font-semibold mb-4">The Complete Guide to VA Home Loans in 2025</h2>
+              <h2 className="text-2xl font-display font-semibold mb-4">The Complete Guide to VA Home Loans</h2>
               <p className="text-muted-foreground leading-relaxed">
                 A VA loan is a mortgage guaranteed by the <a href="https://www.va.gov/housing-assistance/home-loans/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">U.S. Department of Veterans Affairs</a>. 
                 Originally created in 1944 as part of the GI Bill, VA loans have helped more than 25 million veterans and service members 
@@ -177,25 +177,25 @@ const VA = () => {
               </p>
               <div className="grid md:grid-cols-2 gap-6 not-prose">
                 <div className="calculator-card p-4">
-                  <h4 className="font-semibold text-foreground mb-2">Active Duty Service Members</h4>
+                  <h3 className="font-semibold text-foreground mb-2 text-base font-sans">Active Duty Service Members</h3>
                   <p className="text-sm text-muted-foreground">
                     Currently serving at least 90 continuous days, or completed the required service time based on when you served.
                   </p>
                 </div>
                 <div className="calculator-card p-4">
-                  <h4 className="font-semibold text-foreground mb-2">Veterans</h4>
+                  <h3 className="font-semibold text-foreground mb-2 text-base font-sans">Veterans</h3>
                   <p className="text-sm text-muted-foreground">
                     Served 90 days during wartime, 181 days during peacetime, or 6 years in the Reserves/National Guard.
                   </p>
                 </div>
                 <div className="calculator-card p-4">
-                  <h4 className="font-semibold text-foreground mb-2">National Guard / Reserves</h4>
+                  <h3 className="font-semibold text-foreground mb-2 text-base font-sans">National Guard / Reserves</h3>
                   <p className="text-sm text-muted-foreground">
                     6 years of service in the Selected Reserve or National Guard, or 90 days of active federal service.
                   </p>
                 </div>
                 <div className="calculator-card p-4">
-                  <h4 className="font-semibold text-foreground mb-2">Surviving Spouses</h4>
+                  <h3 className="font-semibold text-foreground mb-2 text-base font-sans">Surviving Spouses</h3>
                   <p className="text-sm text-muted-foreground">
                     Unremarried surviving spouse of a veteran who died in service or from a service-connected disability.
                   </p>
@@ -205,7 +205,7 @@ const VA = () => {
               <h2 className="text-2xl font-display font-semibold mt-10 mb-4">VA Loan Pros and Cons</h2>
               <div className="not-prose grid gap-6 md:grid-cols-2">
                 <div className="calculator-card p-4">
-                  <h4 className="font-display font-semibold text-lg mb-3 text-accent">✓ Advantages of VA Loans</h4>
+                  <h3 className="font-display font-semibold text-lg mb-3 text-accent">✓ Advantages of VA Loans</h3>
                   <ul className="space-y-2 text-muted-foreground text-sm">
                     <li className="flex items-start gap-2">
                       <span className="text-accent">✓</span>
@@ -243,7 +243,7 @@ const VA = () => {
                 </div>
 
                 <div className="calculator-card p-4">
-                  <h4 className="font-display font-semibold text-lg mb-3 text-primary">✗ Disadvantages of VA Loans</h4>
+                  <h3 className="font-display font-semibold text-lg mb-3 text-primary">✗ Disadvantages of VA Loans</h3>
                   <ul className="space-y-2 text-muted-foreground text-sm">
                     <li className="flex items-start gap-2">
                       <span className="text-primary">✗</span>
@@ -276,17 +276,16 @@ const VA = () => {
               <h2 className="text-2xl font-display font-semibold mt-10 mb-4">Understanding the VA Funding Fee</h2>
               <p className="text-muted-foreground leading-relaxed mb-4">
                 The VA funding fee is a one-time payment that helps sustain the VA loan program so it remains available 
-                for future veterans. The fee varies based on your military category, down payment amount, and whether 
-                you've used a VA loan before:
+                for future veterans. For a purchase loan, the fee depends on your down payment and whether you've used a
+                VA loan before. Since 2020, Reserves and National Guard members pay the same rates as other service members:
               </p>
-              
+
               <div className="overflow-x-auto not-prose">
                 <table className="w-full text-sm border-collapse calculator-card">
                   <thead>
                     <tr className="border-b border-border">
                       <th className="p-3 text-left text-foreground font-semibold">Down Payment</th>
-                      <th className="p-3 text-left text-foreground font-semibold">First Use (Active)</th>
-                      <th className="p-3 text-left text-foreground font-semibold">First Use (Reserves)</th>
+                      <th className="p-3 text-left text-foreground font-semibold">First Use</th>
                       <th className="p-3 text-left text-foreground font-semibold">Subsequent Use</th>
                     </tr>
                   </thead>
@@ -294,18 +293,15 @@ const VA = () => {
                     <tr className="border-b border-border">
                       <td className="p-3">Less than 5%</td>
                       <td className="p-3">2.15%</td>
-                      <td className="p-3">2.40%</td>
                       <td className="p-3">3.30%</td>
                     </tr>
                     <tr className="border-b border-border">
                       <td className="p-3">5% - 9.99%</td>
                       <td className="p-3">1.50%</td>
                       <td className="p-3">1.50%</td>
-                      <td className="p-3">1.50%</td>
                     </tr>
                     <tr>
                       <td className="p-3">10% or more</td>
-                      <td className="p-3">1.25%</td>
                       <td className="p-3">1.25%</td>
                       <td className="p-3">1.25%</td>
                     </tr>
@@ -344,7 +340,7 @@ const VA = () => {
 
               <h2 className="text-2xl font-display font-semibold mt-10 mb-4">How to Interpret Your Calculator Results</h2>
               <div className="calculator-card p-6 not-prose">
-                <h4 className="font-semibold text-foreground mb-4">Making Sense of Your VA Loan Estimate</h4>
+                <h3 className="font-semibold text-foreground mb-4 text-base font-sans">Making Sense of Your VA Loan Estimate</h3>
                 <ul className="space-y-3 text-muted-foreground text-sm">
                   <li>
                     <strong>Check funding fee exemption:</strong> If you have a service-connected disability rating, 
@@ -415,21 +411,21 @@ const VA = () => {
               <h2 className="text-2xl font-display font-semibold mt-10 mb-4">Frequently Asked Questions About VA Loans</h2>
               <div className="space-y-6 not-prose">
                 <div className="calculator-card p-4">
-                  <h4 className="font-semibold text-foreground mb-2">Can I use a VA loan for a second home?</h4>
+                  <h3 className="font-semibold text-foreground mb-2 text-base font-sans">Can I use a VA loan for a second home?</h3>
                   <p className="text-sm text-muted-foreground">
                     VA loans are for primary residences only. However, you may use your VA benefit for a new primary residence 
                     while keeping a previous VA-financed home as a rental, subject to remaining entitlement limits.
                   </p>
                 </div>
                 <div className="calculator-card p-4">
-                  <h4 className="font-semibold text-foreground mb-2">How do I get my Certificate of Eligibility (COE)?</h4>
+                  <h3 className="font-semibold text-foreground mb-2 text-base font-sans">How do I get my Certificate of Eligibility (COE)?</h3>
                   <p className="text-sm text-muted-foreground">
                     You can obtain your COE through <a href="https://www.va.gov/housing-assistance/home-loans/how-to-request-coe/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">eBenefits</a>, 
                     through your lender (most can retrieve it instantly), or by mail using VA Form 26-1880.
                   </p>
                 </div>
                 <div className="calculator-card p-4">
-                  <h4 className="font-semibold text-foreground mb-2">Can I refinance my VA loan?</h4>
+                  <h3 className="font-semibold text-foreground mb-2 text-base font-sans">Can I refinance my VA loan?</h3>
                   <p className="text-sm text-muted-foreground">
                     Yes! The VA offers the Interest Rate Reduction Refinance Loan (IRRRL), also called a "streamline refinance," 
                     which has minimal documentation requirements. You can also do a <Link to="/cash-out-refinance-calculator/" className="text-primary hover:underline">cash-out refinance</Link> with 
@@ -437,7 +433,7 @@ const VA = () => {
                   </p>
                 </div>
                 <div className="calculator-card p-4">
-                  <h4 className="font-semibold text-foreground mb-2">What if I'm buying with a non-veteran spouse?</h4>
+                  <h3 className="font-semibold text-foreground mb-2 text-base font-sans">What if I'm buying with a non-veteran spouse?</h3>
                   <p className="text-sm text-muted-foreground">
                     You can still use a VA loan with a non-veteran co-borrower (spouse or otherwise), but their income can only 
                     be counted if they're on the loan. If they're not a spouse, a 12.5% down payment is typically required.
@@ -446,7 +442,7 @@ const VA = () => {
               </div>
 
               <div className="calculator-card p-6 mt-10 not-prose">
-                <h4 className="font-display font-semibold text-lg mb-4">Official Resources & Citations</h4>
+                <h3 className="font-display font-semibold text-lg mb-4">Official Resources & Citations</h3>
                 <ul className="space-y-2 text-sm text-muted-foreground">
                   <li>
                     <a href="https://www.va.gov/housing-assistance/home-loans/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">

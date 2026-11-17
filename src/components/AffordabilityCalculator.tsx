@@ -320,7 +320,7 @@ const AffordabilityCalculator = () => {
                 <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2">
                   {/* Annual Income */}
                   <div className="input-group">
-                    <Label className="input-label">
+                    <Label htmlFor="affordability-annual-household-income" className="input-label">
                       Annual Household Income
                       <Tooltip>
                         <TooltipTrigger asChild>
@@ -331,12 +331,12 @@ const AffordabilityCalculator = () => {
                         </TooltipContent>
                       </Tooltip>
                     </Label>
-                    <CurrencyInput value={annualIncome} onChange={setAnnualIncome} />
+                    <CurrencyInput id="affordability-annual-household-income" value={annualIncome} onChange={setAnnualIncome} />
                   </div>
 
                   {/* Monthly Debts */}
                   <div className="input-group">
-                    <Label className="input-label">
+                    <Label htmlFor="affordability-monthly-debt-payments" className="input-label">
                       Monthly Debt Payments
                       <Tooltip>
                         <TooltipTrigger asChild>
@@ -347,14 +347,14 @@ const AffordabilityCalculator = () => {
                         </TooltipContent>
                       </Tooltip>
                     </Label>
-                    <CurrencyInput value={monthlyDebts} onChange={setMonthlyDebts} />
+                    <CurrencyInput id="affordability-monthly-debt-payments" value={monthlyDebts} onChange={setMonthlyDebts} />
                   </div>
 
                   {/* Loan Term */}
                   <div className="input-group">
-                    <Label className="input-label">Loan Term</Label>
+                    <Label htmlFor="affordability-loan-term" className="input-label">Loan Term</Label>
                     <Select value={loanTerm} onValueChange={setLoanTerm}>
-                      <SelectTrigger>
+                      <SelectTrigger id="affordability-loan-term">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -368,9 +368,9 @@ const AffordabilityCalculator = () => {
 
                   {/* Interest Rate */}
                   <div className="input-group">
-                    <Label className="input-label">Interest Rate</Label>
+                    <Label htmlFor="affordability-interest-rate" className="input-label">Interest Rate</Label>
                     <div className="relative">
-                      <PercentInput
+                      <PercentInput id="affordability-interest-rate"
                         value={interestRate}
                         onChange={setInterestRate}
                         min={0}
@@ -382,9 +382,9 @@ const AffordabilityCalculator = () => {
 
                   {/* Down Payment */}
                   <div className="input-group">
-                    <Label className="input-label">Down Payment</Label>
+                    <Label htmlFor="affordability-down-payment" className="input-label">Down Payment</Label>
                     <div className="relative">
-                      <PercentInput
+                      <PercentInput id="affordability-down-payment"
                         value={downPaymentPercent}
                         onChange={setDownPaymentPercent}
                         min={0}
@@ -396,9 +396,9 @@ const AffordabilityCalculator = () => {
 
                   {/* Property Tax Rate */}
                   <div className="input-group">
-                    <Label className="input-label">Property Tax Rate (per year)</Label>
+                    <Label htmlFor="affordability-property-tax-rate-per-year" className="input-label">Property Tax Rate (per year)</Label>
                     <div className="relative">
-                      <PercentInput
+                      <PercentInput id="affordability-property-tax-rate-per-year"
                         value={propertyTaxRate}
                         onChange={setPropertyTaxRate}
                         min={0}
@@ -410,15 +410,15 @@ const AffordabilityCalculator = () => {
 
                   {/* HOA Fee */}
                   <div className="input-group">
-                    <Label className="input-label">HOA Fee (per year)</Label>
-                    <CurrencyInput value={hoaFee} onChange={setHoaFee} />
+                    <Label htmlFor="affordability-hoa-fee-per-year" className="input-label">HOA Fee (per year)</Label>
+                    <CurrencyInput id="affordability-hoa-fee-per-year" value={hoaFee} onChange={setHoaFee} />
                   </div>
 
                   {/* Insurance Rate */}
                   <div className="input-group">
-                    <Label className="input-label">Home Insurance Rate (per year)</Label>
+                    <Label htmlFor="affordability-home-insurance-rate-per-year" className="input-label">Home Insurance Rate (per year)</Label>
                     <div className="relative">
-                      <PercentInput
+                      <PercentInput id="affordability-home-insurance-rate-per-year"
                         value={insuranceRate}
                         onChange={setInsuranceRate}
                         min={0}
@@ -430,7 +430,7 @@ const AffordabilityCalculator = () => {
 
                   {/* DTI Rule */}
                   <div className="input-group">
-                    <Label className="input-label">
+                    <Label htmlFor="affordability-debt-to-income-dti-ratio" className="input-label">
                       Debt-to-Income (DTI) Ratio
                       <Tooltip>
                         <TooltipTrigger asChild>
@@ -442,7 +442,7 @@ const AffordabilityCalculator = () => {
                       </Tooltip>
                     </Label>
                     <Select value={dtiRule} onValueChange={setDtiRule}>
-                      <SelectTrigger>
+                      <SelectTrigger id="affordability-debt-to-income-dti-ratio">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -477,7 +477,7 @@ const AffordabilityCalculator = () => {
                 <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2">
                   {/* Monthly Budget */}
                   <div className="input-group">
-                    <Label className="input-label">
+                    <Label htmlFor="affordability-monthly-housing-budget" className="input-label">
                       Monthly Housing Budget
                       <Tooltip>
                         <TooltipTrigger asChild>
@@ -488,14 +488,14 @@ const AffordabilityCalculator = () => {
                         </TooltipContent>
                       </Tooltip>
                     </Label>
-                    <CurrencyInput value={monthlyBudget} onChange={setMonthlyBudget} />
+                    <CurrencyInput id="affordability-monthly-housing-budget" value={monthlyBudget} onChange={setMonthlyBudget} />
                   </div>
 
                   {/* Loan Term */}
                   <div className="input-group">
-                    <Label className="input-label">Loan Term</Label>
+                    <Label htmlFor="affordability-loan-term-2" className="input-label">Loan Term</Label>
                     <Select value={budgetLoanTerm} onValueChange={setBudgetLoanTerm}>
-                      <SelectTrigger>
+                      <SelectTrigger id="affordability-loan-term-2">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -509,9 +509,9 @@ const AffordabilityCalculator = () => {
 
                   {/* Interest Rate */}
                   <div className="input-group">
-                    <Label className="input-label">Interest Rate</Label>
+                    <Label htmlFor="affordability-interest-rate-2" className="input-label">Interest Rate</Label>
                     <div className="relative">
-                      <PercentInput
+                      <PercentInput id="affordability-interest-rate-2"
                         value={budgetInterestRate}
                         onChange={setBudgetInterestRate}
                         min={0}
@@ -523,9 +523,9 @@ const AffordabilityCalculator = () => {
 
                   {/* Down Payment */}
                   <div className="input-group">
-                    <Label className="input-label">Down Payment</Label>
+                    <Label htmlFor="affordability-down-payment-2" className="input-label">Down Payment</Label>
                     <div className="relative">
-                      <PercentInput
+                      <PercentInput id="affordability-down-payment-2"
                         value={budgetDownPaymentPercent}
                         onChange={setBudgetDownPaymentPercent}
                         min={0}
@@ -537,9 +537,9 @@ const AffordabilityCalculator = () => {
 
                   {/* Property Tax Rate */}
                   <div className="input-group">
-                    <Label className="input-label">Property Tax Rate (per year)</Label>
+                    <Label htmlFor="affordability-property-tax-rate-per-year-2" className="input-label">Property Tax Rate (per year)</Label>
                     <div className="relative">
-                      <PercentInput
+                      <PercentInput id="affordability-property-tax-rate-per-year-2"
                         value={budgetPropertyTaxRate}
                         onChange={setBudgetPropertyTaxRate}
                         min={0}
@@ -551,15 +551,15 @@ const AffordabilityCalculator = () => {
 
                   {/* HOA Fee */}
                   <div className="input-group">
-                    <Label className="input-label">HOA Fee (per year)</Label>
-                    <CurrencyInput value={budgetHoaFee} onChange={setBudgetHoaFee} />
+                    <Label htmlFor="affordability-hoa-fee-per-year-2" className="input-label">HOA Fee (per year)</Label>
+                    <CurrencyInput id="affordability-hoa-fee-per-year-2" value={budgetHoaFee} onChange={setBudgetHoaFee} />
                   </div>
 
                   {/* Insurance Rate */}
                   <div className="input-group">
-                    <Label className="input-label">Home Insurance Rate (per year)</Label>
+                    <Label htmlFor="affordability-home-insurance-rate-per-year-2" className="input-label">Home Insurance Rate (per year)</Label>
                     <div className="relative">
-                      <PercentInput
+                      <PercentInput id="affordability-home-insurance-rate-per-year-2"
                         value={budgetInsuranceRate}
                         onChange={setBudgetInsuranceRate}
                         min={0}

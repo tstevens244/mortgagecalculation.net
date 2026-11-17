@@ -23,7 +23,7 @@
     --secondary-foreground: 222 47% 20%;
 
     --muted: 210 20% 96%;
-    --muted-foreground: 215 16% 47%;
+    --muted-foreground: 215 16% 40%; /* 4.5:1+ on the light backgrounds (WCAG AA) */
 
     /* Gold accent for highlights */
     --accent: 38 92% 50%;

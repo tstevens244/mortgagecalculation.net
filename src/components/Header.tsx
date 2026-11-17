@@ -89,7 +89,7 @@ const Header = () => {
             className="flex items-center gap-2 text-xl font-display font-bold text-foreground hover:text-primary transition-colors"
           >
             <img src="/favicon.png" alt="" className="h-6 w-6" aria-hidden="true" />
-            <span>Mortgage Calculation</span>
+            <span>MortgageCalculation.net</span>
           </Link>
 
           {/* Desktop Navigation */}

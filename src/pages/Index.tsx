@@ -83,6 +83,24 @@ const Index = () => {
     },
   };
 
+  // Tells Google the site's name (shown above the result in search) and links
+  // the brand to the domain, so searches for it don't land on similarly named sites.
+  const websiteSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: "MortgageCalculation.net",
+    alternateName: ["Mortgage Calculation", "mortgagecalculation.net"],
+    url: canonicalUrl,
+  };
+
+  const organizationSchema = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: "MortgageCalculation.net",
+    url: canonicalUrl,
+    logo: "https://mortgagecalculation.net/favicon.png",
+  };
+
   return (
     <>
       <Helmet>
@@ -109,6 +127,8 @@ const Index = () => {
         <script type="application/ld+json">{JSON.stringify(breadcrumbSchema)}</script>
         <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
         <script type="application/ld+json">{JSON.stringify(webAppSchema)}</script>
+        <script type="application/ld+json">{JSON.stringify(websiteSchema)}</script>
+        <script type="application/ld+json">{JSON.stringify(organizationSchema)}</script>
       </Helmet>
 
       <div className="min-h-screen flex flex-col">
@@ -251,7 +271,7 @@ const Index = () => {
                 </li>
                 <li>
                   <Link to="/jumbo-loan-calculator/" className="text-primary hover:underline font-medium">Jumbo Loans</Link>: 
-                  Loans exceeding conforming limits (${">"}$806,500 in most areas for 2025).
+                  Loans exceeding conforming limits (over $832,750 in most areas for 2026).
                 </li>
               </ul>
 

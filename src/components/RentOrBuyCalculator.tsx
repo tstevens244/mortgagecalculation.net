@@ -209,14 +209,14 @@ const RentOrBuyCalculator = () => {
             <CardContent>
               <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2">
                 <div className="flex items-center gap-2">
-                  <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap min-w-[80px] sm:min-w-[100px]">
+                  <Label htmlFor="rent-or-buy-monthly-rent" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap min-w-[80px] sm:min-w-[100px]">
                     Monthly Rent
                   </Label>
-                  <CurrencyInput value={monthlyRent} onChange={setMonthlyRent} />
+                  <CurrencyInput id="rent-or-buy-monthly-rent" value={monthlyRent} onChange={setMonthlyRent} />
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
+                  <Label htmlFor="rent-or-buy-rent-increase" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
                     Rent Increase
                     <Tooltip>
                       <TooltipTrigger asChild>
@@ -228,7 +228,7 @@ const RentOrBuyCalculator = () => {
                     </Tooltip>
                   </Label>
                   <div className="flex gap-1 sm:gap-2 flex-1">
-                    <PercentInput
+                    <PercentInput id="rent-or-buy-rent-increase"
                       value={annualRentIncrease}
                       onChange={setAnnualRentIncrease}
                       min={0}
@@ -254,14 +254,14 @@ const RentOrBuyCalculator = () => {
               {/* Property Section */}
               <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2">
                 <div className="flex items-center gap-2">
-                  <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap min-w-[80px] sm:min-w-[100px]">
+                  <Label htmlFor="rent-or-buy-home-price" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap min-w-[80px] sm:min-w-[100px]">
                     Home Price
                   </Label>
-                  <CurrencyInput value={homePrice} onChange={setHomePrice} />
+                  <CurrencyInput id="rent-or-buy-home-price" value={homePrice} onChange={setHomePrice} />
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
+                  <Label htmlFor="rent-or-buy-appreciation" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
                     Appreciation
                     <Tooltip>
                       <TooltipTrigger asChild>
@@ -273,7 +273,7 @@ const RentOrBuyCalculator = () => {
                     </Tooltip>
                   </Label>
                   <div className="flex gap-1 sm:gap-2 flex-1">
-                    <PercentInput
+                    <PercentInput id="rent-or-buy-appreciation"
                       value={annualAppreciation}
                       onChange={setAnnualAppreciation}
                       min={-10}
@@ -285,11 +285,11 @@ const RentOrBuyCalculator = () => {
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap min-w-[80px] sm:min-w-[100px]">
+                  <Label htmlFor="rent-or-buy-years-to-sell" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap min-w-[80px] sm:min-w-[100px]">
                     Years to Sell
                   </Label>
                   <Select value={yearsBeforeSell} onValueChange={setYearsBeforeSell}>
-                    <SelectTrigger className="h-8 sm:h-10 text-sm flex-1">
+                    <SelectTrigger id="rent-or-buy-years-to-sell" className="h-8 sm:h-10 text-sm flex-1">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -303,7 +303,7 @@ const RentOrBuyCalculator = () => {
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
+                  <Label htmlFor="rent-or-buy-selling-cost" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
                     Selling Cost
                     <Tooltip>
                       <TooltipTrigger asChild>
@@ -315,7 +315,7 @@ const RentOrBuyCalculator = () => {
                     </Tooltip>
                   </Label>
                   <div className="flex gap-1 sm:gap-2 flex-1">
-                    <PercentInput
+                    <PercentInput id="rent-or-buy-selling-cost"
                       value={sellingCost}
                       onChange={setSellingCost}
                       min={0}
@@ -333,11 +333,11 @@ const RentOrBuyCalculator = () => {
               {/* Loan Section */}
               <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2">
                 <div className="flex items-center gap-2">
-                  <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap min-w-[80px] sm:min-w-[100px]">
+                  <Label htmlFor="rent-or-buy-down-payment" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap min-w-[80px] sm:min-w-[100px]">
                     Down Payment
                   </Label>
                   <div className="flex gap-1 sm:gap-2 flex-1">
-                    <PercentInput
+                    <PercentInput id="rent-or-buy-down-payment"
                       value={downPaymentPercent}
                       onChange={setDownPaymentPercent}
                       min={0}
@@ -349,11 +349,11 @@ const RentOrBuyCalculator = () => {
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap min-w-[80px] sm:min-w-[100px]">
+                  <Label htmlFor="rent-or-buy-interest-rate" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap min-w-[80px] sm:min-w-[100px]">
                     Interest Rate
                   </Label>
                   <div className="flex gap-1 sm:gap-2 flex-1">
-                    <PercentInput
+                    <PercentInput id="rent-or-buy-interest-rate"
                       value={interestRate}
                       onChange={setInterestRate}
                       min={0}
@@ -365,11 +365,11 @@ const RentOrBuyCalculator = () => {
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap min-w-[80px] sm:min-w-[100px]">
+                  <Label htmlFor="rent-or-buy-loan-term" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap min-w-[80px] sm:min-w-[100px]">
                     Loan Term
                   </Label>
                   <Select value={loanTerm} onValueChange={setLoanTerm}>
-                    <SelectTrigger className="h-8 sm:h-10 text-sm flex-1">
+                    <SelectTrigger id="rent-or-buy-loan-term" className="h-8 sm:h-10 text-sm flex-1">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -383,7 +383,7 @@ const RentOrBuyCalculator = () => {
 
                 {downPaymentPercent < 20 && (
                   <div className="flex items-center gap-2">
-                    <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
+                    <Label htmlFor="rent-or-buy-pmi-rate" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
                       PMI Rate
                       <Tooltip>
                         <TooltipTrigger asChild>
@@ -395,7 +395,7 @@ const RentOrBuyCalculator = () => {
                       </Tooltip>
                     </Label>
                     <div className="flex gap-1 sm:gap-2 flex-1">
-                      <PercentInput
+                      <PercentInput id="rent-or-buy-pmi-rate"
                         value={annualPMIPercent}
                         onChange={setAnnualPMIPercent}
                         min={0}
@@ -429,11 +429,11 @@ const RentOrBuyCalculator = () => {
               {/* Ownership Costs Section */}
               <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2">
                 <div className="flex items-center gap-2">
-                  <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap min-w-[80px] sm:min-w-[100px]">
+                  <Label htmlFor="rent-or-buy-property-tax" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap min-w-[80px] sm:min-w-[100px]">
                     Property Tax
                   </Label>
                   <div className="flex gap-1 sm:gap-2 flex-1">
-                    <PercentInput
+                    <PercentInput id="rent-or-buy-property-tax"
                       value={annualPropertyTaxRate}
                       onChange={setAnnualPropertyTaxRate}
                       min={0}
@@ -445,11 +445,11 @@ const RentOrBuyCalculator = () => {
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap min-w-[80px] sm:min-w-[100px]">
+                  <Label htmlFor="rent-or-buy-insurance" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap min-w-[80px] sm:min-w-[100px]">
                     Insurance
                   </Label>
                   <div className="flex gap-1 sm:gap-2 flex-1">
-                    <PercentInput
+                    <PercentInput id="rent-or-buy-insurance"
                       value={annualInsuranceRate}
                       onChange={setAnnualInsuranceRate}
                       min={0}
@@ -461,14 +461,14 @@ const RentOrBuyCalculator = () => {
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap min-w-[80px] sm:min-w-[100px]">
+                  <Label htmlFor="rent-or-buy-maintenance" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap min-w-[80px] sm:min-w-[100px]">
                     Maintenance
                   </Label>
-                  <CurrencyInput value={annualMaintenance} onChange={setAnnualMaintenance} />
+                  <CurrencyInput id="rent-or-buy-maintenance" value={annualMaintenance} onChange={setAnnualMaintenance} />
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
+                  <Label htmlFor="rent-or-buy-tax-rate" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
                     Tax Rate
                     <Tooltip>
                       <TooltipTrigger asChild>
@@ -480,7 +480,7 @@ const RentOrBuyCalculator = () => {
                     </Tooltip>
                   </Label>
                   <div className="flex gap-1 sm:gap-2 flex-1">
-                    <PercentInput
+                    <PercentInput id="rent-or-buy-tax-rate"
                       value={incomeTaxRate}
                       onChange={setIncomeTaxRate}
                       min={0}

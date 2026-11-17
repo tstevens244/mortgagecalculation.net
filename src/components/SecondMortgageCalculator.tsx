@@ -211,17 +211,17 @@ const SecondMortgageCalculator = () => {
 
               <div className="space-y-3">
                 <div className="flex items-center gap-3">
-                  <Label className="text-xs sm:text-sm text-muted-foreground min-w-[120px]">
+                  <Label htmlFor="second-mortgage-home-value" className="text-xs sm:text-sm text-muted-foreground min-w-[120px]">
                     Home Value
                   </Label>
-                  <CurrencyInput
+                  <CurrencyInput id="second-mortgage-home-value"
                     value={inputs.homeValue}
                     onChange={(value) => updateInput("homeValue", value)}
                   />
                 </div>
 
                 <div className="flex items-center gap-3">
-                  <Label className="text-xs sm:text-sm text-muted-foreground min-w-[120px] flex items-center gap-1">
+                  <Label htmlFor="second-mortgage-down-payment" className="text-xs sm:text-sm text-muted-foreground min-w-[120px] flex items-center gap-1">
                     Down Payment
                     <Tooltip>
                       <TooltipTrigger>
@@ -233,7 +233,7 @@ const SecondMortgageCalculator = () => {
                     </Tooltip>
                   </Label>
                   <div className="flex gap-2 flex-1">
-                    <CurrencyInput
+                    <CurrencyInput id="second-mortgage-down-payment"
                       value={inputs.downPayment}
                       onChange={(value) => updateInput("downPayment", value)}
                     />
@@ -250,11 +250,11 @@ const SecondMortgageCalculator = () => {
                 </div>
 
                 <div className="flex items-center gap-3">
-                  <Label className="text-xs sm:text-sm text-muted-foreground min-w-[120px]">
+                  <Label htmlFor="second-mortgage-annual-pmi-rate" className="text-xs sm:text-sm text-muted-foreground min-w-[120px]">
                     Annual PMI Rate
                   </Label>
                   <div className="flex gap-2 flex-1">
-                    <PercentInput
+                    <PercentInput id="second-mortgage-annual-pmi-rate"
                       value={inputs.annualPMI}
                       onChange={(value) => updateInput("annualPMI", value)}
                       min={0}
@@ -273,30 +273,30 @@ const SecondMortgageCalculator = () => {
 
               <div className="space-y-3">
                 <div className="flex items-center gap-3">
-                  <Label className="text-xs sm:text-sm text-muted-foreground min-w-[120px]">
+                  <Label htmlFor="second-mortgage-annual-property-tax" className="text-xs sm:text-sm text-muted-foreground min-w-[120px]">
                     Annual Property Tax
                   </Label>
-                  <CurrencyInput
+                  <CurrencyInput id="second-mortgage-annual-property-tax"
                     value={inputs.propertyTax}
                     onChange={(value) => updateInput("propertyTax", value)}
                   />
                 </div>
 
                 <div className="flex items-center gap-3">
-                  <Label className="text-xs sm:text-sm text-muted-foreground min-w-[120px]">
+                  <Label htmlFor="second-mortgage-annual-insurance" className="text-xs sm:text-sm text-muted-foreground min-w-[120px]">
                     Annual Insurance
                   </Label>
-                  <CurrencyInput
+                  <CurrencyInput id="second-mortgage-annual-insurance"
                     value={inputs.homeInsurance}
                     onChange={(value) => updateInput("homeInsurance", value)}
                   />
                 </div>
 
                 <div className="flex items-center gap-3">
-                  <Label className="text-xs sm:text-sm text-muted-foreground min-w-[120px]">
+                  <Label htmlFor="second-mortgage-monthly-hoa" className="text-xs sm:text-sm text-muted-foreground min-w-[120px]">
                     Monthly HOA
                   </Label>
-                  <CurrencyInput
+                  <CurrencyInput id="second-mortgage-monthly-hoa"
                     value={inputs.hoaFees}
                     onChange={(value) => updateInput("hoaFees", value)}
                   />
@@ -326,7 +326,7 @@ const SecondMortgageCalculator = () => {
                       <td className="py-2">Interest Rate</td>
                       <td className="py-2 text-center">
                         <div className="flex items-center justify-center gap-1">
-                          <PercentInput
+                          <PercentInput aria-label="With pmi loan interest rate"
                             value={inputs.pmiInterestRate}
                             onChange={(value) => updateInput("pmiInterestRate", value)}
                             min={0}
@@ -339,7 +339,7 @@ const SecondMortgageCalculator = () => {
                       </td>
                       <td className="py-2 text-center">
                         <div className="flex items-center justify-center gap-1">
-                          <PercentInput
+                          <PercentInput aria-label="80% first mortgage interest rate"
                             value={inputs.firstMortInterestRate}
                             onChange={(value) => updateInput("firstMortInterestRate", value)}
                             min={0}
@@ -352,7 +352,7 @@ const SecondMortgageCalculator = () => {
                       </td>
                       <td className="py-2 text-center">
                         <div className="flex items-center justify-center gap-1">
-                          <PercentInput
+                          <PercentInput aria-label="Second mortgage interest rate"
                             value={inputs.secondMortInterestRate}
                             onChange={(value) => updateInput("secondMortInterestRate", value)}
                             min={0}
@@ -371,7 +371,7 @@ const SecondMortgageCalculator = () => {
                           value={inputs.pmiLoanTerm.toString()}
                           onValueChange={(v) => updateInput("pmiLoanTerm", parseInt(v))}
                         >
-                          <SelectTrigger className="h-7 w-20 text-xs mx-auto">
+                          <SelectTrigger aria-label="With pmi loan loan term" className="h-7 w-20 text-xs mx-auto">
                             <SelectValue />
                           </SelectTrigger>
                           <SelectContent>
@@ -387,7 +387,7 @@ const SecondMortgageCalculator = () => {
                           value={inputs.firstMortLoanTerm.toString()}
                           onValueChange={(v) => updateInput("firstMortLoanTerm", parseInt(v))}
                         >
-                          <SelectTrigger className="h-7 w-20 text-xs mx-auto">
+                          <SelectTrigger aria-label="80% first mortgage loan term" className="h-7 w-20 text-xs mx-auto">
                             <SelectValue />
                           </SelectTrigger>
                           <SelectContent>
@@ -403,7 +403,7 @@ const SecondMortgageCalculator = () => {
                           value={inputs.secondMortLoanTerm.toString()}
                           onValueChange={(v) => updateInput("secondMortLoanTerm", parseInt(v))}
                         >
-                          <SelectTrigger className="h-7 w-20 text-xs mx-auto">
+                          <SelectTrigger aria-label="Second mortgage loan term" className="h-7 w-20 text-xs mx-auto">
                             <SelectValue />
                           </SelectTrigger>
                           <SelectContent>
@@ -419,7 +419,7 @@ const SecondMortgageCalculator = () => {
                       <td className="py-2">Discount Points</td>
                       <td className="py-2 text-center">
                         <div className="flex items-center justify-center gap-1">
-                          <Input
+                          <Input aria-label="With pmi loan discount points"
                             type="text"
                             inputMode="decimal"
                             value={inputs.pmiDiscountPoints}
@@ -431,7 +431,7 @@ const SecondMortgageCalculator = () => {
                       </td>
                       <td className="py-2 text-center">
                         <div className="flex items-center justify-center gap-1">
-                          <Input
+                          <Input aria-label="80% first mortgage discount points"
                             type="text"
                             inputMode="decimal"
                             value={inputs.firstMortDiscountPoints}
@@ -443,7 +443,7 @@ const SecondMortgageCalculator = () => {
                       </td>
                       <td className="py-2 text-center">
                         <div className="flex items-center justify-center gap-1">
-                          <Input
+                          <Input aria-label="Second mortgage discount points"
                             type="text"
                             inputMode="decimal"
                             value={inputs.secondMortDiscountPoints}
@@ -457,21 +457,21 @@ const SecondMortgageCalculator = () => {
                     <tr>
                       <td className="py-2">Other Closing</td>
                       <td className="py-2 text-center">
-                        <CurrencyInput
+                        <CurrencyInput aria-label="With pmi loan other closing costs"
                           value={inputs.pmiClosingCosts}
                           onChange={(value) => updateInput("pmiClosingCosts", value)}
                           className="h-7 w-20 text-center text-xs mx-auto"
                         />
                       </td>
                       <td className="py-2 text-center">
-                        <CurrencyInput
+                        <CurrencyInput aria-label="80% first mortgage other closing costs"
                           value={inputs.firstMortClosingCosts}
                           onChange={(value) => updateInput("firstMortClosingCosts", value)}
                           className="h-7 w-20 text-center text-xs mx-auto"
                         />
                       </td>
                       <td className="py-2 text-center">
-                        <CurrencyInput
+                        <CurrencyInput aria-label="Second mortgage other closing costs"
                           value={inputs.secondMortClosingCosts}
                           onChange={(value) => updateInput("secondMortClosingCosts", value)}
                           className="h-7 w-20 text-center text-xs mx-auto"

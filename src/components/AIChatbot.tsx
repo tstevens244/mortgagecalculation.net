@@ -534,8 +534,9 @@ export default function AIChatbot() {
               size="icon" 
               className="rounded-full h-10 w-10 flex-shrink-0" 
               disabled={!input.trim()}
+              aria-label="Send message"
             >
-              <Send className="h-4 w-4" />
+              <Send className="h-4 w-4" aria-hidden="true" />
             </Button>
           </div>
         </form>

@@ -200,25 +200,25 @@ const ExtraPaymentsCalculator = () => {
             <CardContent>
               <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2">
                 <div className="flex items-center gap-2">
-                  <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap min-w-[80px] sm:min-w-[100px]">
+                  <Label htmlFor="extra-payments-home-price" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap min-w-[80px] sm:min-w-[100px]">
                     Home Price
                   </Label>
-                  <CurrencyInput value={homePrice} onChange={setHomePrice} />
+                  <CurrencyInput id="extra-payments-home-price" value={homePrice} onChange={setHomePrice} />
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap min-w-[80px] sm:min-w-[100px]">
+                  <Label htmlFor="extra-payments-down-payment" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap min-w-[80px] sm:min-w-[100px]">
                     Down Payment
                   </Label>
-                  <CurrencyInput value={downPayment} onChange={setDownPayment} />
+                  <CurrencyInput id="extra-payments-down-payment" value={downPayment} onChange={setDownPayment} />
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap min-w-[80px] sm:min-w-[100px]">
+                  <Label htmlFor="extra-payments-interest-rate" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap min-w-[80px] sm:min-w-[100px]">
                     Interest Rate
                   </Label>
                   <div className="flex gap-1 sm:gap-2 flex-1">
-                    <PercentInput
+                    <PercentInput id="extra-payments-interest-rate"
                       value={interestRate}
                       onChange={setInterestRate}
                       min={0}
@@ -230,11 +230,11 @@ const ExtraPaymentsCalculator = () => {
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap min-w-[80px] sm:min-w-[100px]">
+                  <Label htmlFor="extra-payments-loan-term" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap min-w-[80px] sm:min-w-[100px]">
                     Loan Term
                   </Label>
                   <Select value={loanTerm} onValueChange={setLoanTerm}>
-                    <SelectTrigger className="h-8 sm:h-10 text-sm flex-1">
+                    <SelectTrigger id="extra-payments-loan-term" className="h-8 sm:h-10 text-sm flex-1">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -268,7 +268,7 @@ const ExtraPaymentsCalculator = () => {
             <CardContent>
               <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2">
                 <div className="flex items-center gap-2">
-                  <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
+                  <Label htmlFor="extra-payments-lump-sum" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
                     Lump Sum
                     <Tooltip>
                       <TooltipTrigger asChild>
@@ -279,11 +279,11 @@ const ExtraPaymentsCalculator = () => {
                       </TooltipContent>
                     </Tooltip>
                   </Label>
-                  <CurrencyInput value={initialExtraPayment} onChange={setInitialExtraPayment} />
+                  <CurrencyInput id="extra-payments-lump-sum" value={initialExtraPayment} onChange={setInitialExtraPayment} />
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
+                  <Label htmlFor="extra-payments-extra-month" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
                     Extra/Month
                     <Tooltip>
                       <TooltipTrigger asChild>
@@ -294,7 +294,7 @@ const ExtraPaymentsCalculator = () => {
                       </TooltipContent>
                     </Tooltip>
                   </Label>
-                  <CurrencyInput value={monthlyExtraPayment} onChange={setMonthlyExtraPayment} />
+                  <CurrencyInput id="extra-payments-extra-month" value={monthlyExtraPayment} onChange={setMonthlyExtraPayment} />
                 </div>
               </div>
             </CardContent>

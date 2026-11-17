@@ -82,7 +82,7 @@ const AI = () => {
           name="description"
           content="Chat with our AI assistant to find the right mortgage calculator for your needs. Get personalized recommendations and answers to your mortgage questions."
         />
-        <meta name="robots" content="index, follow" />
+        <meta name="robots" content="noindex, follow" />
         <link rel="canonical" href={canonicalUrl} />
         <meta property="og:title" content="AI Mortgage Assistant" />
         <meta property="og:description" content="Get personalized mortgage calculator recommendations with our AI assistant." />

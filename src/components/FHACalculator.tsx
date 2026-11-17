@@ -11,6 +11,7 @@ import AmortizationChart from "./AmortizationChart";
 import CurrencyInput from "./CurrencyInput";
 import PercentInput from "./PercentInput";
 import { formatCurrency } from "@/lib/formatters";
+import { FHA_UPFRONT_MIP_RATE, fhaAnnualMipRate, fhaMipMonths } from "@/lib/loanLimits";
 
 interface FHAInputs {
   homePrice: number;
@@ -23,20 +24,6 @@ interface FHAInputs {
   hoaFees: number;
   startDate: string;
 }
-
-// FHA MIP rates (as of 2024)
-const getAnnualMIPRate = (loanTerm: number, ltvPercent: number): number => {
-  // For loans > 15 years
-  if (loanTerm > 15) {
-    if (ltvPercent <= 95) return 0.50;
-    return 0.55;
-  }
-  // For loans <= 15 years
-  if (ltvPercent <= 90) return 0.15;
-  return 0.40;
-};
-
-const UPFRONT_MIP_RATE = 1.75; // 1.75% upfront MIP
 
 const FHACalculator = () => {
   const [inputs, setInputs] = useState<FHAInputs>({
@@ -72,11 +59,12 @@ const FHACalculator = () => {
     const ltvPercent = (baseLoanAmount / inputs.homePrice) * 100;
     
     // FHA requires upfront MIP to be financed into the loan
-    const upfrontMIP = baseLoanAmount * (UPFRONT_MIP_RATE / 100);
+    const upfrontMIP = baseLoanAmount * (FHA_UPFRONT_MIP_RATE / 100);
     const totalLoanAmount = baseLoanAmount + upfrontMIP;
     
     // Annual MIP rate based on loan term and LTV
-    const annualMIPRate = getAnnualMIPRate(inputs.loanTerm, ltvPercent);
+    const annualMIPRate = fhaAnnualMipRate(inputs.loanTerm, ltvPercent, baseLoanAmount);
+    const mipMonths = fhaMipMonths(inputs.loanTerm, ltvPercent);
     const monthlyMIP = (baseLoanAmount * (annualMIPRate / 100)) / 12;
 
     const monthlyRate = inputs.interestRate / 100 / 12;
@@ -95,7 +83,9 @@ const FHACalculator = () => {
 
     const totalMonthly = monthlyPI + monthlyTax + monthlyInsurance + monthlyMIP + monthlyHOA;
     const totalInterest = monthlyPI * numPayments - totalLoanAmount;
-    const totalMIP = monthlyMIP * numPayments + upfrontMIP;
+    // Annual MIP is charged for 11 years with 10%+ down, otherwise for the full term.
+    // This uses the first-year premium throughout, so it slightly overstates the total.
+    const totalMIP = monthlyMIP * mipMonths + upfrontMIP;
 
     return {
       baseLoanAmount,
@@ -111,6 +101,7 @@ const FHACalculator = () => {
       totalMonthly,
       totalInterest,
       totalMIP,
+      mipMonths,
       numPayments,
     };
   }, [inputs]);
@@ -258,7 +249,7 @@ const FHACalculator = () => {
                       updateInput("startDate", `${year}-${month}`);
                     }}
                   >
-                    <SelectTrigger className="h-8 sm:h-10 text-xs sm:text-sm flex-1">
+                    <SelectTrigger aria-label="Loan start month" className="h-8 sm:h-10 text-xs sm:text-sm flex-1">
                       <SelectValue placeholder="Month" />
                     </SelectTrigger>
                     <SelectContent>
@@ -283,7 +274,7 @@ const FHACalculator = () => {
                       updateInput("startDate", `${year}-${month}`);
                     }}
                   >
-                    <SelectTrigger className="h-8 sm:h-10 text-xs sm:text-sm w-20 sm:w-24">
+                    <SelectTrigger aria-label="Loan start year" className="h-8 sm:h-10 text-xs sm:text-sm w-20 sm:w-24">
                       <SelectValue placeholder="Year" />
                     </SelectTrigger>
                     <SelectContent>
@@ -402,7 +393,7 @@ const FHACalculator = () => {
                       <Info className="h-3 w-3 text-muted-foreground cursor-help" />
                     </TooltipTrigger>
                     <TooltipContent className="max-w-xs">
-                      <p>FHA loans require annual mortgage insurance premiums. For most 30-year loans, this is required for the life of the loan.</p>
+                      <p>FHA loans require an annual mortgage insurance premium, paid monthly. With less than 10% down it lasts for the life of the loan; with 10% or more down it ends after 11 years.</p>
                     </TooltipContent>
                   </Tooltip>
                 </span>
@@ -428,7 +419,9 @@ const FHACalculator = () => {
                 <span className="font-medium">{formatCurrency(calculations.totalInterest)}</span>
               </div>
               <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Total MIP (life of loan)</span>
+                <span className="text-muted-foreground">
+                  Total MIP ({calculations.mipMonths === calculations.numPayments ? "life of loan" : `${calculations.mipMonths / 12} years`})
+                </span>
                 <span className="font-medium">{formatCurrency(calculations.totalMIP)}</span>
               </div>
             </div>
