@@ -3,7 +3,10 @@ import { SITE_URL } from "@/lib/site";
 import {
   Activity,
   Banknote,
+  ArrowLeftRight,
   CalendarDays,
+  CalendarRange,
+  Coins,
   Calculator,
   CreditCard,
   FileCheck,
@@ -12,6 +15,7 @@ import {
   KeyRound,
   Landmark,
   Layers,
+  ListChecks,
   Medal,
   PiggyBank,
   RefreshCw,
@@ -34,6 +38,8 @@ export interface CalculatorInfo {
 export interface CalculatorGroup {
   id: string;
   title: string;
+  /** Shorter title for the desktop header menu. */
+  navTitle: string;
   description: string;
   /** URL of the group's hub page, with leading and trailing slash. */
   hubPath: string;
@@ -49,6 +55,7 @@ export const calculatorGroups: CalculatorGroup[] = [
     hubPath: "/home-buying-calculators/",
     hubName: "Home Buying Calculators",
     title: "Buying a home",
+    navTitle: "Buying",
     description: "Payments, budget and whether to buy at all.",
     calculators: [
       { path: "/", name: "Mortgage Calculator", shortName: "Mortgage", description: "Monthly payment with taxes, insurance and PMI.", icon: Calculator },
@@ -62,6 +69,7 @@ export const calculatorGroups: CalculatorGroup[] = [
     hubPath: "/mortgage-loan-types/",
     hubName: "Mortgage Loan Types",
     title: "Loan types",
+    navTitle: "Loan types",
     description: "Payments with each program's own fees and rules.",
     calculators: [
       { path: "/conventional-mortgage-calculator/", name: "Conventional Loan", shortName: "Conventional", description: "Standard loans with PMI under 20% down.", icon: Landmark },
@@ -73,10 +81,25 @@ export const calculatorGroups: CalculatorGroup[] = [
     ],
   },
   {
+    id: "compare",
+    hubPath: "/compare-mortgage-options/",
+    hubName: "Compare Mortgage Options",
+    title: "Compare options",
+    navTitle: "Compare",
+    description: "Side by side: terms, loan types, points and offers.",
+    calculators: [
+      { path: "/15-vs-30-year-mortgage-calculator/", name: "15 vs. 30-Year Mortgage", shortName: "15 vs. 30 Year", description: "Payment, interest and equity for each term.", icon: CalendarRange },
+      { path: "/fha-vs-conventional-calculator/", name: "FHA vs. Conventional", shortName: "FHA vs. Conventional", description: "Which loan costs less for your down payment.", icon: ArrowLeftRight },
+      { path: "/mortgage-points-calculator/", name: "Mortgage Points", shortName: "Points", description: "Is buying down the rate worth it?", icon: Coins },
+      { path: "/mortgage-comparison-calculator/", name: "Compare Loan Offers", shortName: "Loan Offers", description: "Up to 3 offers by APR and total cost.", icon: ListChecks },
+    ],
+  },
+  {
     id: "equity",
     hubPath: "/refinance-and-home-equity-calculators/",
     hubName: "Refinance & Home Equity Calculators",
     title: "Refinance & home equity",
+    navTitle: "Refinance & equity",
     description: "Lower your rate or borrow against your home.",
     calculators: [
       { path: "/refinance-calculator/", name: "Refinance", shortName: "Refinance", description: "Savings and break-even point of a new loan.", icon: RefreshCw },
@@ -91,6 +114,7 @@ export const calculatorGroups: CalculatorGroup[] = [
     hubPath: "/pay-off-mortgage-early/",
     hubName: "Pay Off Your Mortgage Early",
     title: "Pay off faster",
+    navTitle: "Pay off early",
     description: "Save interest and own your home sooner.",
     calculators: [
       { path: "/extra-mortgage-payments-calculator/", name: "Extra Payments", shortName: "Extra Payments", description: "Interest saved by paying a little more.", icon: PiggyBank },

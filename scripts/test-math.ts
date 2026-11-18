@@ -115,3 +115,42 @@ test("FHA MIP and VA funding fee rules", () => {
   assert.equal(vaFundingFeeRate(true, 10, false), 1.25);
   assert.equal(vaFundingFeeRate(false, 0, true), 0);
 });
+
+import { apr, termComparison, pointsAnalysis, fhaVsConventional, compareOffers } from "../src/lib/compareMath.ts";
+
+test("15 vs 30 years", () => {
+  const t = termComparison(300_000, 6.5, 5.75);
+  near(t.thirty.payment, 1896.2);
+  near(t.thirty.interest, 382_633.47, 0.5);
+  near(t.fifteen.payment, 2491.23);
+  near(t.fifteen.interest, 148_421.45, 0.5);
+  near(t.balances[1].thirty, 254_328.38, 0.5); // after 10 years
+  assert.equal(t.balances[2].fifteen, 0);
+});
+
+test("APR includes up-front finance charges", () => {
+  near(apr(300_000, 6.5, 360, 6_000), 6.6953, 0.0005);
+  assert.equal(apr(300_000, 6.5, 360, 0), 6.5);
+  const [a, b] = compareOffers(300_000, 360, 84, [
+    { rate: 6.5, upfront: 6_000 },
+    { rate: 6.75, upfront: 0 },
+  ]);
+  near(a.apr, 6.6953, 0.0005);
+  assert.equal(b.apr, 6.75);
+});
+
+test("points break-even and net savings", () => {
+  const p = pointsAnalysis({ loan: 300_000, baseRate: 6.75, points: 1, reductionPerPoint: 0.25, termMonths: 360, horizonMonths: 84 });
+  near(p.cost, 3_000);
+  near(p.monthlySavings, 49.59);
+  assert.equal(p.breakEvenMonths, 61);
+  near(p.netSavings, 2_279.26, 0.5);
+});
+
+test("FHA vs conventional over 7 years", () => {
+  const r = fhaVsConventional({ price: 400_000, downPercent: 5, termYears: 30, fhaRate: 6.5, convRate: 6.5, pmiRate: 0.5, horizonYears: 7 });
+  near(r.fha.payment, 2602.22);
+  near(r.conv.payment, 2560.19);
+  near(r.fha.cost, 187_682.03, 0.5);
+  near(r.conv.cost, 178_637.84, 0.5);
+});
