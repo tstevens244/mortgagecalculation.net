@@ -8,7 +8,7 @@ export const SITE_URL = "https://mortgagecalculation.net";
  * contacting us show the address only when this is set. Search engines and
  * visitors trust finance sites more when there is a real way to reach them.
  */
-export const CONTACT_EMAIL = "";
+export const CONTACT_EMAIL = "tstevens244@gmail.com";
 
 /**
  * Optional expert reviewer shown on calculator pages, e.g.
