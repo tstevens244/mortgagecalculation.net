@@ -8,34 +8,12 @@ import GuideContents from "@/components/GuideContents";
 import RelatedCalculators from "@/components/RelatedCalculators";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import MortgageCalculator from "@/components/MortgageCalculator";
+import { calculatorBreadcrumbSchema } from "@/lib/calculators";
 
 const Conventional = () => {
   const canonicalUrl = "https://mortgagecalculation.net/conventional-mortgage-calculator/";
 
-  const breadcrumbSchema = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      {
-        "@type": "ListItem",
-        position: 1,
-        name: "Home",
-        item: "https://mortgagecalculation.net/",
-      },
-      {
-        "@type": "ListItem",
-        position: 2,
-        name: "Loan Programs",
-        item: "https://mortgagecalculation.net/conventional-mortgage-calculator",
-      },
-      {
-        "@type": "ListItem",
-        position: 3,
-        name: "Conventional",
-        item: canonicalUrl,
-      },
-    ],
-  };
+  const breadcrumbSchema = calculatorBreadcrumbSchema("/conventional-mortgage-calculator/");
 
   const faqSchema = {
     "@context": "https://schema.org",

@@ -8,34 +8,12 @@ import GuideContents from "@/components/GuideContents";
 import RelatedCalculators from "@/components/RelatedCalculators";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import ARMCalculator from "@/components/ARMCalculator";
+import { calculatorBreadcrumbSchema } from "@/lib/calculators";
 
 const ARM = () => {
   const canonicalUrl = "https://mortgagecalculation.net/adjustable-rate-mortgage-calculator/";
 
-  const breadcrumbSchema = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      {
-        "@type": "ListItem",
-        position: 1,
-        name: "Home",
-        item: "https://mortgagecalculation.net/",
-      },
-      {
-        "@type": "ListItem",
-        position: 2,
-        name: "Loan Programs",
-        item: "https://mortgagecalculation.net/fha-loan-calculator",
-      },
-      {
-        "@type": "ListItem",
-        position: 3,
-        name: "ARM",
-        item: canonicalUrl,
-      },
-    ],
-  };
+  const breadcrumbSchema = calculatorBreadcrumbSchema("/adjustable-rate-mortgage-calculator/");
 
   const faqSchema = {
     "@context": "https://schema.org",

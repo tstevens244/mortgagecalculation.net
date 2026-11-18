@@ -8,34 +8,12 @@ import GuideContents from "@/components/GuideContents";
 import RelatedCalculators from "@/components/RelatedCalculators";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import FHACalculator from "@/components/FHACalculator";
+import { calculatorBreadcrumbSchema } from "@/lib/calculators";
 
 const FHA = () => {
   const canonicalUrl = "https://mortgagecalculation.net/fha-loan-calculator/";
 
-  const breadcrumbSchema = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      {
-        "@type": "ListItem",
-        position: 1,
-        name: "Home",
-        item: "https://mortgagecalculation.net/",
-      },
-      {
-        "@type": "ListItem",
-        position: 2,
-        name: "Loan Programs",
-        item: "https://mortgagecalculation.net/fha-loan-calculator",
-      },
-      {
-        "@type": "ListItem",
-        position: 3,
-        name: "FHA Loan",
-        item: canonicalUrl,
-      },
-    ],
-  };
+  const breadcrumbSchema = calculatorBreadcrumbSchema("/fha-loan-calculator/");
 
   const faqSchema = {
     "@context": "https://schema.org",

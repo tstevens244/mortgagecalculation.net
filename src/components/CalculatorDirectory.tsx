@@ -15,8 +15,24 @@ const CalculatorDirectory = () => (
     <div className="grid gap-6 md:grid-cols-2">
       {calculatorGroups.map((group) => (
         <div key={group.id} className="calculator-card p-5 sm:p-6">
-          <h3 className="text-lg font-display font-semibold text-foreground">{group.title}</h3>
-          <p className="mb-4 text-sm text-muted-foreground">{group.description}</p>
+          <div className="mb-4 flex items-start justify-between gap-3">
+            <div>
+              <h3 className="text-lg font-display font-semibold text-foreground">
+                <Link to={group.hubPath} className="hover:text-primary">
+                  {group.title}
+                </Link>
+              </h3>
+              <p className="text-sm text-muted-foreground">{group.description}</p>
+            </div>
+            <Link
+              to={group.hubPath}
+              className="flex shrink-0 items-center gap-1 pt-1 text-sm font-semibold text-primary hover:underline"
+              aria-label={`See all calculators in ${group.title}`}
+            >
+              See all
+              <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+            </Link>
+          </div>
           <ul className="grid gap-2 sm:grid-cols-2" role="list">
             {group.calculators.map((calc) => (
               <li key={calc.path}>

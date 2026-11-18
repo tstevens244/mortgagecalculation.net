@@ -7,28 +7,12 @@ import GuideContents from "@/components/GuideContents";
 import RelatedCalculators from "@/components/RelatedCalculators";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import AffordabilityCalculator from "@/components/AffordabilityCalculator";
+import { calculatorBreadcrumbSchema } from "@/lib/calculators";
 
 const Affordability = () => {
   const canonicalUrl = "https://mortgagecalculation.net/house-affordability/";
 
-  const breadcrumbSchema = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      {
-        "@type": "ListItem",
-        position: 1,
-        name: "Home",
-        item: "https://mortgagecalculation.net/",
-      },
-      {
-        "@type": "ListItem",
-        position: 2,
-        name: "Affordability Calculator",
-        item: canonicalUrl,
-      },
-    ],
-  };
+  const breadcrumbSchema = calculatorBreadcrumbSchema("/house-affordability/");
 
   const faqSchema = {
     "@context": "https://schema.org",

@@ -8,6 +8,7 @@ import GuideContents from "@/components/GuideContents";
 import RelatedCalculators from "@/components/RelatedCalculators";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import HelocCalculator from "@/components/HelocCalculator";
+import { calculatorBreadcrumbSchema } from "@/lib/calculators";
 
 const faqs = [
   {
@@ -39,14 +40,7 @@ const faqs = [
 const Heloc = () => {
   const canonicalUrl = "https://mortgagecalculation.net/heloc-calculator/";
 
-  const breadcrumbSchema = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: "https://mortgagecalculation.net/" },
-      { "@type": "ListItem", position: 2, name: "HELOC Calculator", item: canonicalUrl },
-    ],
-  };
+  const breadcrumbSchema = calculatorBreadcrumbSchema("/heloc-calculator/");
 
   const faqSchema = {
     "@context": "https://schema.org",
