@@ -7,28 +7,12 @@ import GuideContents from "@/components/GuideContents";
 import RelatedCalculators from "@/components/RelatedCalculators";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import HelocDebtConsolidationCalculator from "@/components/HelocDebtConsolidationCalculator";
+import { calculatorBreadcrumbSchema } from "@/lib/calculators";
 
 const HelocDebtConsolidation = () => {
   const canonicalUrl = "https://mortgagecalculation.net/heloc-debt-consolidation-calculator/";
 
-  const breadcrumbSchema = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      {
-        "@type": "ListItem",
-        position: 1,
-        name: "Home",
-        item: "https://mortgagecalculation.net/",
-      },
-      {
-        "@type": "ListItem",
-        position: 2,
-        name: "HELOC Debt Consolidation Calculator",
-        item: canonicalUrl,
-      },
-    ],
-  };
+  const breadcrumbSchema = calculatorBreadcrumbSchema("/heloc-debt-consolidation-calculator/");
 
   const faqSchema = {
     "@context": "https://schema.org",

@@ -1,4 +1,5 @@
 import type { LucideIcon } from "lucide-react";
+import { SITE_URL } from "@/lib/site";
 import {
   Activity,
   Banknote,
@@ -34,6 +35,10 @@ export interface CalculatorGroup {
   id: string;
   title: string;
   description: string;
+  /** URL of the group's hub page, with leading and trailing slash. */
+  hubPath: string;
+  /** Hub page name, used in its H1, breadcrumbs and "see all" links. */
+  hubName: string;
   calculators: CalculatorInfo[];
 }
 
@@ -41,6 +46,8 @@ export interface CalculatorGroup {
 export const calculatorGroups: CalculatorGroup[] = [
   {
     id: "buying",
+    hubPath: "/home-buying-calculators/",
+    hubName: "Home Buying Calculators",
     title: "Buying a home",
     description: "Payments, budget and whether to buy at all.",
     calculators: [
@@ -52,6 +59,8 @@ export const calculatorGroups: CalculatorGroup[] = [
   },
   {
     id: "loan-types",
+    hubPath: "/mortgage-loan-types/",
+    hubName: "Mortgage Loan Types",
     title: "Loan types",
     description: "Payments with each program's own fees and rules.",
     calculators: [
@@ -65,6 +74,8 @@ export const calculatorGroups: CalculatorGroup[] = [
   },
   {
     id: "equity",
+    hubPath: "/refinance-and-home-equity-calculators/",
+    hubName: "Refinance & Home Equity Calculators",
     title: "Refinance & home equity",
     description: "Lower your rate or borrow against your home.",
     calculators: [
@@ -77,6 +88,8 @@ export const calculatorGroups: CalculatorGroup[] = [
   },
   {
     id: "payoff",
+    hubPath: "/pay-off-mortgage-early/",
+    hubName: "Pay Off Your Mortgage Early",
     title: "Pay off faster",
     description: "Save interest and own your home sooner.",
     calculators: [
@@ -87,6 +100,27 @@ export const calculatorGroups: CalculatorGroup[] = [
 ];
 
 export const allCalculators = calculatorGroups.flatMap((g) => g.calculators);
+
+/** Group whose hub page is at `pathname`. */
+export function findHub(pathname: string): CalculatorGroup | null {
+  const normalized = `${pathname.replace(/\/+$/, "")}/`;
+  return calculatorGroups.find((g) => g.hubPath === normalized) ?? null;
+}
+
+/** BreadcrumbList schema matching the visible Home › Hub › Calculator trail. */
+export function calculatorBreadcrumbSchema(path: string) {
+  const found = findCalculator(path);
+  if (!found) throw new Error(`Unknown calculator path ${path}`);
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: `${SITE_URL}/` },
+      { "@type": "ListItem", position: 2, name: found.group.hubName, item: `${SITE_URL}${found.group.hubPath}` },
+      { "@type": "ListItem", position: 3, name: found.calculator.name, item: `${SITE_URL}${found.calculator.path}` },
+    ],
+  };
+}
 
 /** Calculator and group for a URL path, with or without the trailing slash. */
 export function findCalculator(pathname: string): { calculator: CalculatorInfo; group: CalculatorGroup } | null {

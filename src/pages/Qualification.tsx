@@ -7,28 +7,12 @@ import GuideContents from "@/components/GuideContents";
 import RelatedCalculators from "@/components/RelatedCalculators";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import QualificationCalculator from "@/components/QualificationCalculator";
+import { calculatorBreadcrumbSchema } from "@/lib/calculators";
 
 const Qualification = () => {
   const canonicalUrl = "https://mortgagecalculation.net/mortgage-qualification-calculator/";
 
-  const breadcrumbSchema = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      {
-        "@type": "ListItem",
-        position: 1,
-        name: "Home",
-        item: "https://mortgagecalculation.net/",
-      },
-      {
-        "@type": "ListItem",
-        position: 2,
-        name: "Qualification Calculator",
-        item: canonicalUrl,
-      },
-    ],
-  };
+  const breadcrumbSchema = calculatorBreadcrumbSchema("/mortgage-qualification-calculator/");
 
   const faqSchema = {
     "@context": "https://schema.org",

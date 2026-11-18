@@ -1,4 +1,4 @@
-import { Menu, Sparkles, LayoutGrid } from "lucide-react";
+import { ArrowRight, Menu, Sparkles, LayoutGrid } from "lucide-react";
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
@@ -63,6 +63,17 @@ const Header = () => {
                           </NavigationMenuLink>
                         </li>
                       ))}
+                      <li className={cn("border-t border-border pt-1", group.calculators.length > 3 && "col-span-2")}>
+                        <NavigationMenuLink asChild>
+                          <Link
+                            to={group.hubPath}
+                            className="flex items-center justify-between rounded-xl px-3 py-2.5 text-sm font-semibold text-primary outline-none transition-colors hover:bg-secondary focus-visible:bg-secondary"
+                          >
+                            Compare all {group.calculators.length} side by side
+                            <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                          </Link>
+                        </NavigationMenuLink>
+                      </li>
                     </ul>
                   </NavigationMenuContent>
                 </NavigationMenuItem>
@@ -98,9 +109,17 @@ const Header = () => {
               <nav className="flex-1 overflow-y-auto px-3 py-4" aria-label="Calculators">
                 {calculatorGroups.map((group) => (
                   <div key={group.id} className="mb-5">
-                    <p className="px-2 pb-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                    <Link
+                      to={group.hubPath}
+                      onClick={() => setSheetOpen(false)}
+                      className="flex items-center justify-between rounded-md px-2 pb-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground hover:text-foreground"
+                    >
                       {group.title}
-                    </p>
+                      <span className="flex items-center gap-0.5 normal-case tracking-normal text-primary">
+                        See all
+                        <ArrowRight className="h-3 w-3" aria-hidden="true" />
+                      </span>
+                    </Link>
                     <ul role="list">
                       {group.calculators.map((calc) => (
                         <li key={calc.path}>

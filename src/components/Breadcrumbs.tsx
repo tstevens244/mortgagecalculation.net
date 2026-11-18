@@ -1,12 +1,25 @@
+import { Fragment } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { ChevronRight } from "lucide-react";
-import { findCalculator } from "@/lib/calculators";
+import { findCalculator, findHub } from "@/lib/calculators";
 
-/** Home › Group › Calculator, shown above a calculator's heading. Matches the BreadcrumbList schema. */
+/**
+ * Home › Hub › Calculator above a calculator's heading, or Home › Hub on a hub
+ * page. Matches the BreadcrumbList schema on those pages.
+ */
 const Breadcrumbs = () => {
   const { pathname } = useLocation();
   const found = findCalculator(pathname);
-  if (!found || found.calculator.path === "/") return null;
+  const hub = findHub(pathname);
+
+  let trail: { label: string; to?: string }[];
+  if (found && found.calculator.path !== "/") {
+    trail = [{ label: found.group.hubName, to: found.group.hubPath }, { label: found.calculator.shortName }];
+  } else if (hub) {
+    trail = [{ label: hub.hubName }];
+  } else {
+    return null;
+  }
 
   return (
     <nav aria-label="Breadcrumb" className="mb-3">
@@ -16,20 +29,24 @@ const Breadcrumbs = () => {
             Home
           </Link>
         </li>
-        <li aria-hidden="true">
-          <ChevronRight className="h-3.5 w-3.5" />
-        </li>
-        <li>
-          <Link to="/#calculators" className="hover:text-foreground hover:underline">
-            {found.group.title}
-          </Link>
-        </li>
-        <li aria-hidden="true">
-          <ChevronRight className="h-3.5 w-3.5" />
-        </li>
-        <li aria-current="page" className="font-medium text-foreground">
-          {found.calculator.shortName}
-        </li>
+        {trail.map((step) => (
+          <Fragment key={step.label}>
+            <li aria-hidden="true">
+              <ChevronRight className="h-3.5 w-3.5" />
+            </li>
+            {step.to ? (
+              <li>
+                <Link to={step.to} className="hover:text-foreground hover:underline">
+                  {step.label}
+                </Link>
+              </li>
+            ) : (
+              <li aria-current="page" className="font-medium text-foreground">
+                {step.label}
+              </li>
+            )}
+          </Fragment>
+        ))}
       </ol>
     </nav>
   );

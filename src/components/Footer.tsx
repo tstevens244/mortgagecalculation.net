@@ -38,7 +38,11 @@ const Footer = () => {
           <nav aria-label="All calculators" className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
             {calculatorGroups.map((group) => (
               <div key={group.id}>
-                <h2 className="mb-3 font-sans text-sm font-semibold text-foreground">{group.title}</h2>
+                <h2 className="mb-3 font-sans text-sm font-semibold text-foreground">
+                  <Link to={group.hubPath} className="hover:text-primary hover:underline">
+                    {group.title}
+                  </Link>
+                </h2>
                 <ul className="space-y-2 text-sm" role="list">
                   {group.calculators.map((calc) => (
                     <li key={calc.path}>

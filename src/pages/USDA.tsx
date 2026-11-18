@@ -8,34 +8,12 @@ import GuideContents from "@/components/GuideContents";
 import RelatedCalculators from "@/components/RelatedCalculators";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import USDACalculator from "@/components/USDACalculator";
+import { calculatorBreadcrumbSchema } from "@/lib/calculators";
 
 const USDA = () => {
   const canonicalUrl = "https://mortgagecalculation.net/usda-loan-calculator/";
 
-  const breadcrumbSchema = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      {
-        "@type": "ListItem",
-        position: 1,
-        name: "Home",
-        item: "https://mortgagecalculation.net/",
-      },
-      {
-        "@type": "ListItem",
-        position: 2,
-        name: "Loan Programs",
-        item: "https://mortgagecalculation.net/fha-loan-calculator",
-      },
-      {
-        "@type": "ListItem",
-        position: 3,
-        name: "USDA Loan",
-        item: canonicalUrl,
-      },
-    ],
-  };
+  const breadcrumbSchema = calculatorBreadcrumbSchema("/usda-loan-calculator/");
 
   const faqSchema = {
     "@context": "https://schema.org",

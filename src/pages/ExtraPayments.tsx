@@ -7,28 +7,12 @@ import GuideContents from "@/components/GuideContents";
 import RelatedCalculators from "@/components/RelatedCalculators";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import ExtraPaymentsCalculator from "@/components/ExtraPaymentsCalculator";
+import { calculatorBreadcrumbSchema } from "@/lib/calculators";
 
 const ExtraPayments = () => {
   const canonicalUrl = "https://mortgagecalculation.net/extra-mortgage-payments-calculator/";
 
-  const breadcrumbSchema = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      {
-        "@type": "ListItem",
-        position: 1,
-        name: "Home",
-        item: "https://mortgagecalculation.net/",
-      },
-      {
-        "@type": "ListItem",
-        position: 2,
-        name: "Extra Payments Calculator",
-        item: canonicalUrl,
-      },
-    ],
-  };
+  const breadcrumbSchema = calculatorBreadcrumbSchema("/extra-mortgage-payments-calculator/");
 
   const faqSchema = {
     "@context": "https://schema.org",
