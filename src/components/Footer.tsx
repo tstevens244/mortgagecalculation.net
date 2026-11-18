@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { calculatorGroups } from "@/lib/calculators";
 
 const siteLinks = [
+  { to: "/mortgage-calculator-by-state/", label: "Mortgage Calculator by State" },
   { to: "/about/", label: "About" },
   { to: "/methodology/", label: "How We Calculate" },
   { to: "/mortgage-assistant/", label: "AI Assistant" },

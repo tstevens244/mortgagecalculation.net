@@ -95,7 +95,9 @@ const buying: HubContent = {
         </li>
         <li>
           <strong>Price specific homes.</strong> The <Link to="/">mortgage calculator</Link> gives the monthly payment
-          for a listing, with property tax, insurance, PMI and HOA.
+          for a listing, with property tax, insurance, PMI and HOA. The{" "}
+          <Link to="/mortgage-calculator-by-state/">state mortgage calculators</Link> fill in your state's and county's
+          tax rate and average insurance.
         </li>
         <li>
           <strong>Confirm you qualify.</strong> The{" "}
