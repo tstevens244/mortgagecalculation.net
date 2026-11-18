@@ -172,7 +172,7 @@ const CategoryHub = ({ groupId, content }: CategoryHubProps) => {
               <h2 id="hub-more" className="mb-4 text-xl font-display font-semibold text-foreground">
                 More calculators
               </h2>
-              <ul className="grid gap-3 sm:grid-cols-3" role="list">
+              <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4" role="list">
                 {others.map((g) => (
                   <li key={g.id}>
                     <Link

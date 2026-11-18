@@ -536,7 +536,70 @@ const payoff: HubContent = {
   ],
 };
 
+// ---------------------------------------------------------------------------
+// Compare options
+// ---------------------------------------------------------------------------
+
+const compare: HubContent = {
+  title: "Compare Mortgage Options: 15 vs. 30 Years, FHA vs. Conventional, Points & Offers",
+  description:
+    "Side-by-side mortgage comparison calculators: 15-year vs. 30-year, FHA vs. conventional, whether to pay points, and up to three loan offers by APR and total cost.",
+  intro: (
+    <p>
+      Most mortgage decisions are a choice between two or three options. These calculators put them side by side and
+      show which costs less for how long you'll keep the loan.
+    </p>
+  ),
+  useWhen: {
+    "/15-vs-30-year-mortgage-calculator/": "You're choosing a loan term and want to see the payment and interest trade-off.",
+    "/fha-vs-conventional-calculator/": "You qualify for both and want to know which costs less with your credit and down payment.",
+    "/mortgage-points-calculator/": "A lender offered a lower rate for points and you want the break-even point.",
+    "/mortgage-comparison-calculator/": "You have Loan Estimates from several lenders and want to pick the cheapest.",
+  },
+  body: (
+    <>
+      <h2>The one number that changes every answer</h2>
+      <p>
+        How long you'll keep the loan decides most of these comparisons. Paying points, choosing a lower rate with
+        higher fees, or picking conventional over FHA all cost more up front and pay off over time. If you're likely
+        to sell or refinance within a few years, the option with lower up-front costs usually wins. Each calculator
+        asks for this number, so try a few.
+      </p>
+
+      <h2>Where to get the numbers</h2>
+      <ul>
+        <li>
+          <strong>Rates and fees:</strong> from each lender's Loan Estimate. The rate is on page 1; points and lender
+          fees are in section A on page 2.
+        </li>
+        <li>
+          <strong>PMI rate:</strong> ask the lender, or use 0.5% a year as a starting point and adjust for your credit.
+        </li>
+        <li>
+          <strong>Loan amount:</strong> the home price minus your down payment. The{" "}
+          <Link to="/house-affordability/">affordability calculator</Link> helps if you don't have a price yet.
+        </li>
+      </ul>
+    </>
+  ),
+  faqs: [
+    {
+      q: "Should I choose the mortgage with the lowest rate or the lowest APR?",
+      a: "Neither on its own. The lowest rate may come with high fees, and APR assumes you keep the loan for the full term. Compare total cost over the years you expect to keep the loan.",
+    },
+    {
+      q: "How many mortgage offers should I get?",
+      a: "At least three. Rates and fees for the same borrower can differ meaningfully between lenders, and multiple mortgage credit checks within a short window count as one inquiry.",
+    },
+    {
+      q: "Is it better to pay points or take a higher rate with no fees?",
+      a: "Points pay off only if you keep the loan past the break-even point, often 5 to 7 years. If you might move or refinance sooner, the no-fee option usually costs less.",
+    },
+  ],
+};
+
 export const BuyingHub = () => <CategoryHub groupId="buying" content={buying} />;
 export const LoanTypesHub = () => <CategoryHub groupId="loan-types" content={loanTypes} />;
 export const EquityHub = () => <CategoryHub groupId="equity" content={equity} />;
 export const PayoffHub = () => <CategoryHub groupId="payoff" content={payoff} />;
+export const CompareHub = () => <CategoryHub groupId="compare" content={compare} />;

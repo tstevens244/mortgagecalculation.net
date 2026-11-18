@@ -1,4 +1,4 @@
-import { ArrowRight, Menu, Sparkles, LayoutGrid } from "lucide-react";
+import { ArrowRight, BookOpen, Menu, Sparkles, LayoutGrid } from "lucide-react";
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
@@ -37,7 +37,7 @@ const Header = () => {
               {calculatorGroups.map((group) => (
                 <NavigationMenuItem key={group.id}>
                   <NavigationMenuTrigger className="bg-transparent text-sm font-medium text-muted-foreground hover:text-foreground data-[state=open]:text-foreground">
-                    {group.title}
+                    {group.navTitle}
                   </NavigationMenuTrigger>
                   <NavigationMenuContent>
                     <ul className={cn("grid gap-1 p-3", group.calculators.length > 3 ? "w-[560px] grid-cols-2" : "w-[300px]")}>
@@ -78,6 +78,16 @@ const Header = () => {
                   </NavigationMenuContent>
                 </NavigationMenuItem>
               ))}
+              <NavigationMenuItem>
+                <NavigationMenuLink asChild>
+                  <Link
+                    to="/guides/"
+                    className="rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+                  >
+                    Guides
+                  </Link>
+                </NavigationMenuLink>
+              </NavigationMenuItem>
               <NavigationMenuItem>
                 <NavigationMenuLink asChild>
                   <Link
@@ -140,6 +150,14 @@ const Header = () => {
                     </ul>
                   </div>
                 ))}
+                <Link
+                  to="/guides/"
+                  onClick={() => setSheetOpen(false)}
+                  className="mx-2 mb-2 flex items-center gap-2 rounded-lg border border-border px-3 py-2.5 text-sm font-medium text-foreground hover:bg-secondary"
+                >
+                  <BookOpen className="h-4 w-4 text-primary" aria-hidden="true" />
+                  Mortgage guides
+                </Link>
                 <Link
                   to="/mortgage-assistant/"
                   onClick={() => setSheetOpen(false)}

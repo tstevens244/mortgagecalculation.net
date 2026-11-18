@@ -3,6 +3,7 @@ import { calculatorGroups } from "@/lib/calculators";
 
 const siteLinks = [
   { to: "/mortgage-calculator-by-state/", label: "Mortgage Calculator by State" },
+  { to: "/guides/", label: "Mortgage Guides" },
   { to: "/about/", label: "About" },
   { to: "/methodology/", label: "How We Calculate" },
   { to: "/mortgage-assistant/", label: "AI Assistant" },
@@ -36,7 +37,7 @@ const Footer = () => {
             </ul>
           </div>
 
-          <nav aria-label="All calculators" className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+          <nav aria-label="All calculators" className="grid gap-8 sm:grid-cols-3 lg:grid-cols-5">
             {calculatorGroups.map((group) => (
               <div key={group.id}>
                 <h2 className="mb-3 font-sans text-sm font-semibold text-foreground">
