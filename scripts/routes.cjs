@@ -4,6 +4,21 @@
 // path:    URL path without the trailing slash (the site serves "/path/").
 // sources: files whose last git commit date becomes the sitemap <lastmod>.
 // indexed: false keeps the page out of the sitemap (the page itself sets noindex).
+// One page per state, from the data files in src/data/states/ (file name = URL slug).
+const fs = require("fs");
+const path = require("path");
+const stateRoutes = fs
+  .readdirSync(path.join(__dirname, "..", "src", "data", "states"))
+  .filter((f) => f.endsWith(".json"))
+  .sort()
+  .map((f) => {
+    const slug = f.replace(/\.json$/, "");
+    return {
+      path: `/${slug}-mortgage-calculator`,
+      sources: ["src/pages/StateMortgage.tsx", "src/lib/states.ts", `src/data/states/${f}`],
+    };
+  });
+
 const routes = [
   { path: "/", sources: ["src/pages/Index.tsx", "src/components/MortgageCalculator.tsx"] },
   { path: "/conventional-mortgage-calculator", sources: ["src/pages/Conventional.tsx", "src/components/MortgageCalculator.tsx"] },
@@ -26,6 +41,8 @@ const routes = [
   { path: "/mortgage-loan-types", sources: ["src/pages/Hubs.tsx", "src/components/CategoryHub.tsx", "src/lib/calculators.ts"] },
   { path: "/refinance-and-home-equity-calculators", sources: ["src/pages/Hubs.tsx", "src/components/CategoryHub.tsx", "src/lib/calculators.ts"] },
   { path: "/pay-off-mortgage-early", sources: ["src/pages/Hubs.tsx", "src/components/CategoryHub.tsx", "src/lib/calculators.ts"] },
+  { path: "/mortgage-calculator-by-state", sources: ["src/pages/StatesIndex.tsx", "src/lib/states.ts"] },
+  ...stateRoutes,
   { path: "/about", sources: ["src/pages/About.tsx"] },
   { path: "/methodology", sources: ["src/pages/Methodology.tsx", "src/lib/loanLimits.ts"] },
   { path: "/privacy-policy", sources: ["src/pages/Privacy.tsx"] },

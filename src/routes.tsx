@@ -1,4 +1,5 @@
 import { ComponentType, lazy } from "react";
+import { states, statePath, type CountyRow } from "./lib/states";
 
 type PageModule = { default: ComponentType };
 
@@ -26,6 +27,22 @@ function lazyPage(load: () => Promise<PageModule>): LazyPage {
   return Page;
 }
 
+/** A state's mortgage calculator page: the shared page code plus that state's county data. */
+function statePage(slug: string): LazyPage {
+  const state = states.find((s) => s.slug === slug)!;
+  let Bound: ComponentType | null = null;
+  return lazyPage(() =>
+    Promise.all([import("./pages/StateMortgage"), import(`./data/states/${slug}.json`)]).then(([m, data]) => {
+      if (!Bound) {
+        const Page = m.default;
+        const counties = (data as { default: { counties: CountyRow[] } }).default.counties;
+        Bound = () => <Page state={state} counties={counties} />;
+      }
+      return { default: Bound };
+    }),
+  );
+}
+
 /** Public pages. Keep in sync with scripts/routes.cjs (prerender, sitemap, SEO check). */
 export const pages: { path: string; Component: LazyPage }[] = [
   { path: "/", Component: lazyPage(() => import("./pages/Index")) },
@@ -50,6 +67,8 @@ export const pages: { path: string; Component: LazyPage }[] = [
   { path: "/mortgage-loan-types", Component: lazyPage(() => import("./pages/Hubs").then((m) => ({ default: m.LoanTypesHub }))) },
   { path: "/refinance-and-home-equity-calculators", Component: lazyPage(() => import("./pages/Hubs").then((m) => ({ default: m.EquityHub }))) },
   { path: "/pay-off-mortgage-early", Component: lazyPage(() => import("./pages/Hubs").then((m) => ({ default: m.PayoffHub }))) },
+  { path: "/mortgage-calculator-by-state", Component: lazyPage(() => import("./pages/StatesIndex")) },
+  ...states.map((s) => ({ path: statePath(s).slice(0, -1), Component: statePage(s.slug) })),
   { path: "/about", Component: lazyPage(() => import("./pages/About")) },
   { path: "/methodology", Component: lazyPage(() => import("./pages/Methodology")) },
   { path: "/privacy-policy", Component: lazyPage(() => import("./pages/Privacy")) },

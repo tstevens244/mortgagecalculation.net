@@ -1,5 +1,6 @@
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
+import { ArrowRight } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import TrustLine from "@/components/TrustLine";
@@ -152,6 +153,21 @@ const Index = () => {
 
             <MortgageCalculator />
 
+            <Link
+              to="/mortgage-calculator-by-state/"
+              className="group mt-8 flex flex-col gap-1 rounded-2xl border border-border bg-card p-5 transition-all hover:border-primary/30 hover:shadow-md sm:flex-row sm:items-center sm:justify-between"
+            >
+              <span>
+                <span className="block font-semibold text-foreground">Use your state's property tax and insurance</span>
+                <span className="block text-sm text-muted-foreground">
+                  Calculators for all 50 states and DC, with tax rates for every county.
+                </span>
+              </span>
+              <span className="flex items-center gap-1 text-sm font-semibold text-primary">
+                Choose your state
+                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
+              </span>
+            </Link>
 
             <CalculatorDirectory />
 

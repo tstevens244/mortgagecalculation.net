@@ -3,17 +3,25 @@ import { Link, useLocation } from "react-router-dom";
 import { ChevronRight } from "lucide-react";
 import { findCalculator, findHub } from "@/lib/calculators";
 
+interface Step {
+  label: string;
+  to?: string;
+}
+
 /**
  * Home › Hub › Calculator above a calculator's heading, or Home › Hub on a hub
- * page. Matches the BreadcrumbList schema on those pages.
+ * page. Pages outside the calculator groups pass their own `trail`. Matches the
+ * BreadcrumbList schema on those pages.
  */
-const Breadcrumbs = () => {
+const Breadcrumbs = ({ trail: given }: { trail?: Step[] } = {}) => {
   const { pathname } = useLocation();
   const found = findCalculator(pathname);
   const hub = findHub(pathname);
 
-  let trail: { label: string; to?: string }[];
-  if (found && found.calculator.path !== "/") {
+  let trail: Step[];
+  if (given) {
+    trail = given;
+  } else if (found && found.calculator.path !== "/") {
     trail = [{ label: found.group.hubName, to: found.group.hubPath }, { label: found.calculator.shortName }];
   } else if (hub) {
     trail = [{ label: hub.hubName }];

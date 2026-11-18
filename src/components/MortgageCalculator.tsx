@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { Calculator, Home, Percent, Calendar, DollarSign, Shield, Building, Users } from "lucide-react";
+import { Calculator, Home, Percent, Calendar, DollarSign, Shield, Building, Users, MapPin } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -23,17 +23,38 @@ interface MortgageInputs {
   pmi: number;
   hoaFees: number;
   startDate: string;
+  /** Property tax as % of price a year. While set, the tax follows the home price; typing a tax amount clears it. */
+  taxRate: number | null;
 }
 
-const MortgageCalculator = () => {
+export interface TaxArea {
+  /** Shown in the picker, e.g. "Travis County". */
+  label: string;
+  /** Effective property tax rate, % of home value a year. */
+  rate: number;
+}
+
+interface MortgageCalculatorProps {
+  /** Starting values, e.g. a state's median home value, tax rate and insurance. */
+  initial?: { homePrice: number; propertyTaxRate: number; homeInsurance: number };
+  /** Areas (such as counties) the visitor can pick to set the property tax rate. The first is the default. */
+  taxAreas?: TaxArea[];
+  /** Label for the area picker, e.g. "County". */
+  taxAreaLabel?: string;
+}
+
+const MortgageCalculator = ({ initial, taxAreas, taxAreaLabel = "Area" }: MortgageCalculatorProps = {}) => {
+  const startPrice = initial?.homePrice ?? 300000;
+  const [areaIndex, setAreaIndex] = useState(0);
   const [inputs, setInputs] = useState<MortgageInputs>({
-    homePrice: 300000,
-    downPayment: 60000,
+    homePrice: startPrice,
+    downPayment: startPrice * 0.2,
     downPaymentPercent: 20,
     loanTerm: 30,
     interestRate: 6.5,
-    propertyTax: 3600,
-    homeInsurance: 1200,
+    propertyTax: initial ? Math.round((startPrice * initial.propertyTaxRate) / 100) : 3600,
+    taxRate: initial ? initial.propertyTaxRate : null,
+    homeInsurance: initial?.homeInsurance ?? 1200,
     pmi: 0,
     hoaFees: 0,
     startDate: new Date().toISOString().slice(0, 7),
@@ -43,6 +64,13 @@ const MortgageCalculator = () => {
     setInputs((prev) => {
       const updated = { ...prev, [field]: value };
       
+      if (field === "propertyTax") {
+        updated.taxRate = null;
+      }
+      if (field === "homePrice" && prev.taxRate !== null) {
+        updated.propertyTax = Math.round((Number(value) * prev.taxRate) / 100);
+      }
+
       if (field === "downPayment") {
         updated.downPaymentPercent = (Number(value) / prev.homePrice) * 100;
       } else if (field === "downPaymentPercent") {
@@ -285,6 +313,35 @@ const MortgageCalculator = () => {
             </h2>
 
             <div className="grid gap-2 sm:gap-4 grid-cols-1 sm:grid-cols-2">
+              {taxAreas && taxAreas.length > 1 && (
+                <div className="flex flex-col gap-1.5 sm:col-span-2">
+                  <Label htmlFor="tax-area" className="text-sm font-medium text-foreground flex items-center gap-1">
+                    <MapPin className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" />
+                    {taxAreaLabel} <span className="font-normal text-muted-foreground">(sets the property tax rate)</span>
+                  </Label>
+                  <Select
+                    value={String(areaIndex)}
+                    onValueChange={(v) => {
+                      const i = Number(v);
+                      setAreaIndex(i);
+                      const rate = taxAreas[i].rate;
+                      setInputs((prev) => ({ ...prev, taxRate: rate, propertyTax: Math.round((prev.homePrice * rate) / 100) }));
+                    }}
+                  >
+                    <SelectTrigger id="tax-area" className="h-8 sm:h-10 text-sm font-medium">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="max-h-80">
+                      {taxAreas.map((a, i) => (
+                        <SelectItem key={a.label} value={String(i)}>
+                          {a.label} ({a.rate.toFixed(2)}%)
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
+
               {/* Property Tax */}
               <div className="flex flex-col gap-1.5">
                 <Label htmlFor="property-tax" className="text-sm font-medium text-foreground flex items-center gap-1">
@@ -295,7 +352,13 @@ const MortgageCalculator = () => {
                   id="property-tax"
                   value={inputs.propertyTax}
                   onChange={(value) => updateInput("propertyTax", value)}
+                  aria-describedby={inputs.taxRate !== null ? "property-tax-rate" : undefined}
                 />
+                {inputs.taxRate !== null && (
+                  <span id="property-tax-rate" className="text-xs text-muted-foreground">
+                    {inputs.taxRate.toFixed(2)}% of the home price
+                  </span>
+                )}
               </div>
 
               {/* Home Insurance */}
