@@ -172,3 +172,35 @@ export function maxAffordablePrice(opts: {
   if (budget <= 0 || perDollar <= 0) return 0;
   return budget / perDollar;
 }
+
+/**
+ * Highest USDA home price a buyer qualifies for with no down payment: the
+ * full payment (principal and interest on the price plus the financed upfront
+ * guarantee fee, the annual fee, property tax, insurance and HOA) must fit
+ * within 29% of gross monthly income and, with other debts, 41%.
+ */
+export function usdaMaxPrice(opts: {
+  monthlyIncome: number;
+  monthlyDebts: number;
+  annualRatePercent: number;
+  propertyTaxRatePercent: number;
+  annualInsurance: number;
+  monthlyHoa: number;
+  upfrontFeePercent: number;
+  annualFeePercent: number;
+  housingRatio?: number;
+  totalRatio?: number;
+}): { price: number; maxPayment: number; limitedBy: "housing" | "total" } {
+  const housing = (opts.housingRatio ?? 29) / 100;
+  const total = (opts.totalRatio ?? 41) / 100;
+  const byHousing = opts.monthlyIncome * housing;
+  const byTotal = opts.monthlyIncome * total - opts.monthlyDebts;
+  const maxPayment = Math.max(0, Math.min(byHousing, byTotal));
+  const perDollar =
+    monthlyPayment(1 + opts.upfrontFeePercent / 100, opts.annualRatePercent, 360) +
+    opts.annualFeePercent / 100 / 12 +
+    opts.propertyTaxRatePercent / 100 / 12;
+  const fixed = opts.annualInsurance / 12 + opts.monthlyHoa;
+  const price = Math.max(0, (maxPayment - fixed) / perDollar);
+  return { price, maxPayment, limitedBy: byHousing <= byTotal ? "housing" : "total" };
+}

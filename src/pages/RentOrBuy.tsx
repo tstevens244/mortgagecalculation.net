@@ -8,6 +8,7 @@ import RelatedCalculators from "@/components/RelatedCalculators";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import RentOrBuyCalculator from "@/components/RentOrBuyCalculator";
 import { calculatorBreadcrumbSchema } from "@/lib/calculators";
+import FaqSection, { faqsFromSchema } from "@/components/FaqList";
 
 const RentOrBuy = () => {
   const canonicalUrl = "https://mortgagecalculation.net/rent-or-buy/";
@@ -373,6 +374,7 @@ const RentOrBuy = () => {
                 </ul>
               </div>
             </section>
+            <FaqSection faqs={faqsFromSchema(faqSchema)} />
           </article>
         </main>
 

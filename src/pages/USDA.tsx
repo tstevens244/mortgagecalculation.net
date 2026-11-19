@@ -8,7 +8,43 @@ import GuideContents from "@/components/GuideContents";
 import RelatedCalculators from "@/components/RelatedCalculators";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import USDACalculator from "@/components/USDACalculator";
+import USDAQualifier from "@/components/USDAQualifier";
 import { calculatorBreadcrumbSchema } from "@/lib/calculators";
+
+const faqs = [
+  {
+    q: "What is a USDA Rural Development (RD) loan?",
+    a: "A USDA loan, also called a Rural Development or RD loan, is a mortgage backed by the U.S. Department of Agriculture for low- to moderate-income buyers in eligible rural and suburban areas. The guaranteed program, offered through private lenders, requires no down payment.",
+  },
+  {
+    q: "How much USDA loan do I qualify for?",
+    a: "USDA guidelines generally cap your housing payment at 29% of gross monthly income and all debt payments at 41%. On a $72,000 household income with $400 a month of other debts, that's a payment of about $1,740 a month. Use the qualification calculator on this page with your own income, debts and local taxes.",
+  },
+  {
+    q: "What are the income limits for USDA loans?",
+    a: "Household income can't exceed 115% of the area median income. In most counties the 2026 limit is about $119,850 for a household of 1 to 4 people and $158,250 for 5 to 8, and it's higher in many high-cost counties. Income from everyone living in the home counts. Check your county with the USDA income eligibility lookup.",
+  },
+  {
+    q: "What areas qualify for USDA loans?",
+    a: "Rural areas and many small towns and suburbs, generally places with populations under 35,000. Much of the country qualifies, including areas you might not think of as rural. Check a specific address on the USDA property eligibility map.",
+  },
+  {
+    q: "Are USDA loans only for first-time homebuyers?",
+    a: "No. Repeat buyers qualify too, as long as the home will be your primary residence and you don't already own an adequate home nearby.",
+  },
+  {
+    q: "Can I use a USDA loan for a manufactured home?",
+    a: "Yes, if it's permanently affixed to a foundation, meets HUD standards and has at least 400 square feet of living space. Lenders apply extra rules, such as limits on the home's age.",
+  },
+  {
+    q: "Can I build a new home with a USDA loan?",
+    a: "Yes. The USDA single-close construction loan combines the land, construction and permanent mortgage into one loan through a USDA-approved lender.",
+  },
+  {
+    q: "Can I refinance my USDA loan?",
+    a: "Yes. The USDA Streamlined Assist refinance needs little documentation and no appraisal. You can also refinance into a conventional loan once you have about 20% equity, which ends the annual fee.",
+  },
+];
 
 const USDA = () => {
   const canonicalUrl = "https://mortgagecalculation.net/usda-loan-calculator/";
@@ -18,40 +54,7 @@ const USDA = () => {
   const faqSchema = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
-    mainEntity: [
-      {
-        "@type": "Question",
-        name: "What is a USDA loan?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "A USDA loan (also called a Rural Development loan) is a government-backed mortgage offered by the United States Department of Agriculture. These loans are designed to help low-to-moderate income borrowers purchase homes in eligible rural and suburban areas with no down payment required.",
-        },
-      },
-      {
-        "@type": "Question",
-        name: "What areas qualify for USDA loans?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "USDA loans are available in rural areas and many suburban communities with populations under 35,000. About 97% of U.S. land area qualifies. Use the USDA's eligibility map at rd.usda.gov to check if a specific property address qualifies.",
-        },
-      },
-      {
-        "@type": "Question",
-        name: "What are the income limits for USDA loans?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "USDA income limits are set at 115% of the area median income (AMI). Limits vary by location and household size. For a family of 4 in most areas, the limit is approximately $103,500, though this can be higher in certain regions.",
-        },
-      },
-      {
-        "@type": "Question",
-        name: "Are USDA loans only for first-time homebuyers?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "No, USDA loans are available to both first-time and repeat homebuyers. However, you cannot own another adequate home at the time of purchase. If you currently own a home, you may still qualify if your current home doesn't meet your family's needs.",
-        },
-      },
-    ],
+    mainEntity: faqs.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })),
   };
 
   const webAppSchema = {
@@ -68,6 +71,7 @@ const USDA = () => {
       "Include upfront guarantee fee (1%)",
       "Calculate annual guarantee fee (0.35%)",
       "Rural area eligibility information",
+      "How much USDA loan you qualify for (29% / 41% guidelines)",
       "Income limit guidelines",
       "Compare USDA vs FHA vs conventional",
     ],
@@ -81,14 +85,14 @@ const USDA = () => {
   return (
     <>
       <Helmet>
-        <title>USDA Loan Calculator | Payment With Guarantee Fees</title>
+        <title>USDA Loan Calculator: Rural Development Payment & Qualifying</title>
         <meta
           name="description"
-          content="Calculate your USDA loan payment with 0% down. See how USDA guarantee fees affect your monthly payment. Free calculator for rural home buyers."
+          content="Free USDA Rural Development (RD) loan calculator: your monthly payment with 0% down and guarantee fees, how much USDA loan you qualify for, and 2026 income limits."
         />
         <meta name="robots" content="index, follow" />
         <link rel="canonical" href={canonicalUrl} />
-        <meta property="og:title" content="USDA Loan Calculator | Rural Home Loan Payment Estimator" />
+        <meta property="og:title" content="USDA Rural Development Loan Calculator" />
         <meta
           property="og:description"
           content="Calculate your USDA loan payment with 0% down. See how USDA guarantee fees affect your monthly payment."
@@ -117,13 +121,19 @@ const USDA = () => {
                 USDA Loan Calculator
               </h1>
               <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                Calculate your USDA rural development loan payment with 0% down payment. 
-                USDA loans help low-to-moderate income families purchase homes in eligible rural areas.
+                Estimate your USDA Rural Development (RD) home loan payment with 0% down, including the guarantee
+                fees, and{" "}
+                <a href="#usda-qualify" className="text-primary underline-offset-2 hover:underline">
+                  see how much you qualify for
+                </a>
+                .
               </p>
               <TrustLine />
             </header>
 
             <USDACalculator />
+
+            <USDAQualifier />
 
 
             <RelatedCalculators />
@@ -394,55 +404,15 @@ const USDA = () => {
 
               <h2 className="text-2xl font-display font-semibold mt-10 mb-4">Frequently Asked Questions About USDA Loans</h2>
               <div className="space-y-3 not-prose">
-                <details className="group calculator-card overflow-hidden" data-faq>
-                  <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-4 hover:bg-secondary/40 [&::-webkit-details-marker]:hidden">
-                    <h3 className="text-base font-semibold text-foreground font-sans">Can I use a USDA loan for a manufactured home?</h3>
-                    <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-open:rotate-180" aria-hidden="true" />
-                  </summary>
-                  <div className="px-4 pb-4">
-                  <p className="text-sm text-muted-foreground">
-                    Yes, USDA loans can finance manufactured homes if they're new, permanently affixed to a foundation, 
-                    and meet HUD standards. The home must be at least 400 sq ft and located on an eligible site.
-                  </p>
-                  </div>
-                </details>
-                <details className="group calculator-card overflow-hidden" data-faq>
-                  <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-4 hover:bg-secondary/40 [&::-webkit-details-marker]:hidden">
-                    <h3 className="text-base font-semibold text-foreground font-sans">Do I have to live in a rural area to qualify?</h3>
-                    <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-open:rotate-180" aria-hidden="true" />
-                  </summary>
-                  <div className="px-4 pb-4">
-                  <p className="text-sm text-muted-foreground">
-                    Many suburban areas qualify as "rural" under USDA guidelines. Towns with populations under 35,000 
-                    often qualify. Check specific addresses using the USDA eligibility map—you might be surprised.
-                  </p>
-                  </div>
-                </details>
-                <details className="group calculator-card overflow-hidden" data-faq>
-                  <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-4 hover:bg-secondary/40 [&::-webkit-details-marker]:hidden">
-                    <h3 className="text-base font-semibold text-foreground font-sans">Can I build a new home with a USDA loan?</h3>
-                    <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-open:rotate-180" aria-hidden="true" />
-                  </summary>
-                  <div className="px-4 pb-4">
-                  <p className="text-sm text-muted-foreground">
-                    Yes, through the USDA Single Close Construction Loan program, you can combine land purchase, 
-                    construction, and permanent financing into one loan. This requires working with a USDA-approved lender.
-                  </p>
-                  </div>
-                </details>
-                <details className="group calculator-card overflow-hidden" data-faq>
-                  <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-4 hover:bg-secondary/40 [&::-webkit-details-marker]:hidden">
-                    <h3 className="text-base font-semibold text-foreground font-sans">Can I refinance my USDA loan?</h3>
-                    <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-open:rotate-180" aria-hidden="true" />
-                  </summary>
-                  <div className="px-4 pb-4">
-                  <p className="text-sm text-muted-foreground">
-                    Yes, USDA offers the Streamlined Assist Refinance program with minimal documentation and no appraisal 
-                    required. You can also do a standard <Link to="/refinance-calculator/" className="text-primary hover:underline">rate-and-term refinance</Link> or 
-                    refinance into a conventional loan once you have 20% equity.
-                  </p>
-                  </div>
-                </details>
+                {faqs.map((f) => (
+                  <details key={f.q} className="group calculator-card overflow-hidden" data-faq>
+                    <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-4 hover:bg-secondary/40 [&::-webkit-details-marker]:hidden">
+                      <h3 className="text-base font-semibold text-foreground font-sans">{f.q}</h3>
+                      <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-open:rotate-180" aria-hidden="true" />
+                    </summary>
+                    <p className="px-4 pb-4 text-sm text-muted-foreground">{f.a}</p>
+                  </details>
+                ))}
               </div>
 
               <div className="calculator-card p-6 mt-10 not-prose">

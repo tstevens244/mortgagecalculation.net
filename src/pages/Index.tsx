@@ -7,6 +7,7 @@ import TrustLine from "@/components/TrustLine";
 import GuideContents from "@/components/GuideContents";
 import CalculatorDirectory from "@/components/CalculatorDirectory";
 import MortgageCalculator from "@/components/MortgageCalculator";
+import FaqSection, { faqsFromSchema } from "@/components/FaqList";
 
 const Index = () => {
   const canonicalUrl = "https://mortgagecalculation.net/";
@@ -369,6 +370,7 @@ const Index = () => {
                 </ul>
               </div>
             </section>
+            <FaqSection faqs={faqsFromSchema(faqSchema)} />
           </article>
         </main>
 

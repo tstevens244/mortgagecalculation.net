@@ -10,6 +10,41 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 import ARMCalculator from "@/components/ARMCalculator";
 import { calculatorBreadcrumbSchema } from "@/lib/calculators";
 
+const faqs = [
+  {
+    q: "What is a 5/6 ARM?",
+    a: "A 5/6 ARM has a fixed rate for the first 5 years, then adjusts every 6 months. It's the most common ARM today, tied to the SOFR index. A 7/6 ARM is fixed for 7 years and a 10/6 ARM for 10, both then adjusting every 6 months.",
+  },
+  {
+    q: "What's the difference between a 5/1 and a 5/6 ARM?",
+    a: "Both are fixed for 5 years. A 5/1 then adjusts once a year; a 5/6 adjusts every 6 months. Most new conventional ARMs are 5/6, 7/6 or 10/6 since lenders moved from LIBOR to SOFR; 5/1-style annual ARMs are still common for FHA, VA and some jumbo loans.",
+  },
+  {
+    q: "What index is used to adjust ARM rates?",
+    a: "Most ARMs today use the Secured Overnight Financing Rate (SOFR), which replaced LIBOR in 2023. Your new rate equals the index plus a margin set when you take the loan, often 2 to 3 points, within the rate caps.",
+  },
+  {
+    q: "What are ARM rate caps?",
+    a: "Caps limit how much the rate can rise: at the first adjustment, at each later adjustment, and over the life of the loan. A 5/6 ARM sold to Fannie Mae or Freddie Mac usually has 2/1/5 caps: up to 2 points at the first change, 1 point at each later change, and 5 points in total. 7/6 and 10/6 ARMs usually have 5/1/5 caps.",
+  },
+  {
+    q: "Should I choose an ARM or a fixed-rate mortgage?",
+    a: "An ARM can save money if you'll sell or refinance before the fixed period ends. A fixed rate is safer if you'll stay long-term or your budget couldn't absorb a higher payment. Check the worst-case payment in the calculator before choosing an ARM.",
+  },
+  {
+    q: "Can I refinance out of an ARM before it adjusts?",
+    a: "Yes, and many borrowers do. If rates are reasonable before the fixed period ends, you can refinance into a fixed-rate loan. Make sure you'll keep the new loan long enough to recover its closing costs.",
+  },
+  {
+    q: "What happens if I can't afford my ARM payment after it adjusts?",
+    a: "Your options are refinancing, selling, or asking your servicer about a loan modification. That's why it's important to check the worst-case payment at the lifetime cap before you choose an ARM.",
+  },
+  {
+    q: "Can I get an ARM with an FHA or VA loan?",
+    a: "Yes. FHA and VA ARMs adjust once a year after the fixed period. Shorter fixed periods usually have 1/1/5 caps, and 7- and 10-year fixed periods have larger caps, often 2/2/6.",
+  },
+];
+
 const ARM = () => {
   const canonicalUrl = "https://mortgagecalculation.net/adjustable-rate-mortgage-calculator/";
 
@@ -18,40 +53,7 @@ const ARM = () => {
   const faqSchema = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
-    mainEntity: [
-      {
-        "@type": "Question",
-        name: "What is an Adjustable Rate Mortgage (ARM)?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "An Adjustable Rate Mortgage (ARM) is a home loan with an interest rate that can change periodically. Unlike fixed-rate mortgages, ARMs start with an initial fixed-rate period, after which the rate adjusts based on market conditions and a reference index. ARMs are named by their structure: a 5/1 ARM has a fixed rate for 5 years, then adjusts annually.",
-        },
-      },
-      {
-        "@type": "Question",
-        name: "What index is used to adjust ARM rates?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "Most ARMs today are tied to the Secured Overnight Financing Rate (SOFR), which replaced LIBOR in 2023. Your ARM rate equals the index value plus a margin (typically 2-3%). For example, if SOFR is 4% and your margin is 2.5%, your rate would adjust to 6.5%, subject to rate caps.",
-        },
-      },
-      {
-        "@type": "Question",
-        name: "What are ARM rate caps and how do they protect borrowers?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "ARM rate caps limit how much your interest rate can change. There are three types: Initial cap (maximum first adjustment, often 2-5%), Periodic cap (maximum change per adjustment, typically 1-2%), and Lifetime cap (maximum total increase, usually 5-6% above start rate). These caps protect against extreme rate spikes.",
-        },
-      },
-      {
-        "@type": "Question",
-        name: "Should I choose an ARM or a fixed-rate mortgage?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "Choose an ARM if: you plan to sell or refinance before the fixed period ends, rates are expected to decrease, you want lower initial payments, or you need to qualify for more house. Choose fixed-rate if: you plan to stay long-term, you value payment predictability, current rates are historically low, or you have a tight budget.",
-        },
-      },
-    ],
+    mainEntity: faqs.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })),
   };
 
   const webAppSchema = {
@@ -67,7 +69,7 @@ const ARM = () => {
       "Calculate ARM payments before and after adjustments",
       "Compare initial vs maximum possible payments",
       "Understand rate cap protection",
-      "Support for 1/1, 3/1, 5/1, 7/1, 10/1 ARMs",
+      "5/6, 7/6 and 10/6 SOFR ARMs and 3/1, 5/1, 7/1 and 10/1 annual ARMs",
       "Compare ARM vs fixed-rate mortgages",
       "Payment projection over loan term",
     ],
@@ -81,14 +83,14 @@ const ARM = () => {
   return (
     <>
       <Helmet>
-        <title>Adjustable Rate Mortgage (ARM) Calculator | Payment After Rate Changes</title>
+        <title>ARM Calculator: 5/6, 7/6 & 10/6 Adjustable-Rate Mortgages</title>
         <meta
           name="description"
-          content="Calculate adjustable rate mortgage payments with our free ARM calculator. Compare initial vs maximum payments, understand rate caps, and see payment projections for 3/1, 5/1, 7/1, and 10/1 ARMs."
+          content="Free ARM calculator for 5/6, 7/6 and 10/6 SOFR ARMs and 5/1-style annual ARMs: your payment after each rate adjustment, the worst case at the cap, and the full schedule."
         />
         <meta name="robots" content="index, follow" />
         <link rel="canonical" href={canonicalUrl} />
-        <meta property="og:title" content="ARM Calculator - Adjustable Rate Mortgage Calculator" />
+        <meta property="og:title" content="ARM Calculator: 5/6, 7/6 & 10/6 Adjustable-Rate Mortgages" />
         <meta
           property="og:description"
           content="Calculate adjustable rate mortgage payments with our free ARM calculator. Compare initial vs maximum payments and understand rate adjustment caps."
@@ -112,11 +114,13 @@ const ARM = () => {
         <main id="main-content" className="flex-1">
           <article className="container py-8">
             <header className="mb-8 text-center">
+              <Breadcrumbs />
               <h1 className="text-3xl md:text-4xl lg:text-5xl font-display font-bold text-foreground">
-                Adjustable Rate Mortgage Calculator
+                Adjustable-Rate Mortgage (ARM) Calculator
               </h1>
               <p className="text-muted-foreground mt-2 text-base sm:text-lg max-w-3xl mx-auto">
-                Calculate your ARM payments before and after rate adjustments. See initial payments, maximum possible payments, and understand how rate caps protect you.
+                See your payment on a 5/6, 7/6 or 10/6 ARM, or a 5/1-style annual ARM, before and after the rate
+                adjusts, and the worst case if it rises to the cap.
               </p>
               <TrustLine />
             </header>
@@ -142,9 +146,10 @@ const ARM = () => {
                 <h3 className="text-xl font-display font-semibold mt-8 mb-3">How ARM Naming Works</h3>
                 <p className="text-muted-foreground leading-relaxed">
                   ARMs are named by their structure: the first number is the fixed-rate period (in years), 
-                  and the second is how often the rate adjusts afterward. A <strong>5/1 ARM</strong> has a 
-                  fixed rate for 5 years, then adjusts annually. A <strong>7/6 ARM</strong> is fixed for 
-                  7 years, then adjusts every 6 months.
+                  and the second is how often the rate adjusts afterward. In a <strong>5/6 ARM</strong> the
+                  second number is months: fixed for 5 years, then adjusting every 6 months. In a{" "}
+                  <strong>5/1 ARM</strong> it's years: fixed for 5 years, then adjusting once a year. Since lenders
+                  moved from LIBOR to the SOFR index, most new conventional ARMs are 5/6, 7/6 or 10/6.
                 </p>
               </div>
 
@@ -152,33 +157,25 @@ const ARM = () => {
                 <div className="calculator-card p-6">
                   <h3 className="text-xl font-display font-semibold mb-4">Common ARM Types</h3>
                   <ul className="space-y-3 text-muted-foreground">
-                    <li className="flex items-start gap-2">
-                      <span className="text-accent-strong font-bold">1/1 ARM:</span>
-                      <span>Fixed for 1 year, adjusts annually. Highest risk but lowest initial rate.</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="text-accent-strong font-bold">3/1 ARM:</span>
-                      <span>Fixed for 3 years. Good for short-term ownership or frequent movers.</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="text-accent-strong font-bold">5/1 ARM:</span>
-                      <span>Fixed for 5 years. Most popular ARM, balancing savings with stability.</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="text-accent-strong font-bold">7/1 ARM:</span>
-                      <span>Fixed for 7 years. More stability with moderate initial savings.</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="text-accent-strong font-bold">10/1 ARM:</span>
-                      <span>Fixed for 10 years. Most stable ARM, closest to fixed-rate behavior.</span>
-                    </li>
+                    {[
+                      ["5/6 ARM", "Fixed for 5 years, then adjusts every 6 months. The most common ARM today; caps usually 2/1/5."],
+                      ["7/6 ARM", "Fixed for 7 years, then every 6 months. A middle ground; caps usually 5/1/5."],
+                      ["10/6 ARM", "Fixed for 10 years, then every 6 months. Closest to a fixed rate; caps usually 5/1/5."],
+                      ["5/1, 7/1, 10/1 ARM", "Adjust once a year after the fixed period. Common for FHA, VA and some jumbo loans."],
+                      ["3/1 ARM", "Fixed for 3 years. Lowest starting rate, most rate risk; less common today."],
+                    ].map(([name, text]) => (
+                      <li key={name} className="flex items-start gap-2">
+                        <span className="shrink-0 font-bold text-accent-strong">{name}:</span>
+                        <span>{text}</span>
+                      </li>
+                    ))}
                   </ul>
                 </div>
 
                 <div className="calculator-card p-6">
                   <h3 className="text-xl font-display font-semibold mb-4">Understanding Rate Caps</h3>
                   <p className="text-muted-foreground mb-4">
-                    Rate caps protect borrowers from extreme rate increases. Most ARMs have a "2/2/5" or "5/2/5" cap structure:
+                    Rate caps protect borrowers from extreme rate increases. Caps are written as three numbers, such as 2/1/5 on a 5/6 ARM:
                   </p>
                   <ul className="space-y-3 text-muted-foreground">
                     <li className="flex items-start gap-2">
@@ -187,7 +184,7 @@ const ARM = () => {
                     </li>
                     <li className="flex items-start gap-2">
                       <span className="text-accent-strong font-bold">Periodic Cap:</span>
-                      <span>Maximum change per adjustment period (typically 1-2%).</span>
+                      <span>Maximum change at each later adjustment (typically 1% on 6-month ARMs, 1-2% on annual ARMs).</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <span className="text-accent-strong font-bold">Lifetime Cap:</span>
@@ -345,59 +342,15 @@ const ARM = () => {
                 <h2 className="text-2xl font-display font-semibold mt-10 mb-4">Frequently Asked Questions About ARMs</h2>
               </div>
               <div className="space-y-3 not-prose">
-                <details className="group calculator-card overflow-hidden" data-faq>
-                  <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-4 hover:bg-secondary/40 [&::-webkit-details-marker]:hidden">
-                    <h3 className="text-base font-semibold text-foreground font-sans">Can I refinance out of an ARM before it adjusts?</h3>
-                    <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-open:rotate-180" aria-hidden="true" />
-                  </summary>
-                  <div className="px-4 pb-4">
-                  <p className="text-sm text-muted-foreground">
-                    Yes, and many ARM borrowers do exactly this. If rates are favorable before your fixed period ends, 
-                    you can <Link to="/refinance-calculator/" className="text-primary hover:underline">refinance into a fixed-rate mortgage</Link> to 
-                    lock in a permanent rate. Just ensure you'll stay long enough to recoup closing costs.
-                  </p>
-                  </div>
-                </details>
-                <details className="group calculator-card overflow-hidden" data-faq>
-                  <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-4 hover:bg-secondary/40 [&::-webkit-details-marker]:hidden">
-                    <h3 className="text-base font-semibold text-foreground font-sans">What happens if I can't afford my ARM payment after it adjusts?</h3>
-                    <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-open:rotate-180" aria-hidden="true" />
-                  </summary>
-                  <div className="px-4 pb-4">
-                  <p className="text-sm text-muted-foreground">
-                    Options include: refinancing to a fixed rate or new ARM, selling the home, or contacting your 
-                    lender about modification programs. This is why it's crucial to calculate the worst-case scenario 
-                    before choosing an ARM—make sure you can handle the maximum possible payment.
-                  </p>
-                  </div>
-                </details>
-                <details className="group calculator-card overflow-hidden" data-faq>
-                  <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-4 hover:bg-secondary/40 [&::-webkit-details-marker]:hidden">
-                    <h3 className="text-base font-semibold text-foreground font-sans">Are ARM rates tied to the Federal Reserve rate?</h3>
-                    <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-open:rotate-180" aria-hidden="true" />
-                  </summary>
-                  <div className="px-4 pb-4">
-                  <p className="text-sm text-muted-foreground">
-                    Indirectly. Most ARMs are tied to the Secured Overnight Financing Rate (SOFR), which is influenced 
-                    by the Fed's actions but doesn't move in lockstep. Your new rate = Index (SOFR) + Margin (set at 
-                    loan origination, typically 2-3%).
-                  </p>
-                  </div>
-                </details>
-                <details className="group calculator-card overflow-hidden" data-faq>
-                  <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-4 hover:bg-secondary/40 [&::-webkit-details-marker]:hidden">
-                    <h3 className="text-base font-semibold text-foreground font-sans">Can I get an ARM for an FHA or VA loan?</h3>
-                    <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-open:rotate-180" aria-hidden="true" />
-                  </summary>
-                  <div className="px-4 pb-4">
-                  <p className="text-sm text-muted-foreground">
-                    Yes, both <Link to="/fha-loan-calculator/" className="text-primary hover:underline">FHA</Link> and 
-                    <Link to="/va-loan-calculator/" className="text-primary hover:underline"> VA</Link> offer ARM programs. 
-                    FHA ARMs typically have 1/5/5 or 2/6 cap structures. VA ARMs (called "VA Hybrids") offer 
-                    3/1, 5/1, 7/1, and 10/1 options with annual rate caps of 1%.
-                  </p>
-                  </div>
-                </details>
+                {faqs.map((f) => (
+                  <details key={f.q} className="group calculator-card overflow-hidden" data-faq>
+                    <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-4 hover:bg-secondary/40 [&::-webkit-details-marker]:hidden">
+                      <h3 className="text-base font-semibold text-foreground font-sans">{f.q}</h3>
+                      <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-open:rotate-180" aria-hidden="true" />
+                    </summary>
+                    <p className="px-4 pb-4 text-sm text-muted-foreground">{f.a}</p>
+                  </details>
+                ))}
               </div>
 
               <div className="calculator-card p-6 mt-10 not-prose">

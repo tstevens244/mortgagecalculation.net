@@ -24,37 +24,6 @@ const AI = () => {
     ],
   };
 
-  const faqSchema = {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: [
-      {
-        "@type": "Question",
-        name: "What can the AI Mortgage Assistant help with?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "The AI Mortgage Assistant can help you find the right mortgage calculator for your needs, answer questions about different loan types (FHA, VA, USDA, Conventional, Jumbo, ARM), explain mortgage terms and concepts, and provide personalized recommendations based on your situation.",
-        },
-      },
-      {
-        "@type": "Question",
-        name: "Is the Mortgage Assistant free to use?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "Yes, the AI Mortgage Assistant is completely free to use. It's designed to help you navigate our suite of mortgage calculators and understand your home financing options.",
-        },
-      },
-      {
-        "@type": "Question",
-        name: "What types of questions can I ask the Mortgage Assistant?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "You can ask about: Which calculator is right for your situation, Differences between loan types (FHA vs Conventional, ARM vs Fixed), How much house you can afford, Whether to rent or buy, Refinancing options, Extra payment strategies, and General mortgage terminology.",
-        },
-      },
-    ],
-  };
-
   const webAppSchema = {
     "@context": "https://schema.org",
     "@type": "WebApplication",
@@ -92,7 +61,6 @@ const AI = () => {
         <meta name="twitter:title" content="AI Mortgage Assistant" />
         <meta name="twitter:description" content="Chat with our AI to find the right mortgage calculator for your needs." />
         <script type="application/ld+json">{JSON.stringify(breadcrumbSchema)}</script>
-        <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
         <script type="application/ld+json">{JSON.stringify(webAppSchema)}</script>
       </Helmet>
 

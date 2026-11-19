@@ -10,6 +10,7 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 import JumboCalculator from "@/components/JumboCalculator";
 import { formatCurrency } from "@/lib/formatters";
 import { calculatorBreadcrumbSchema } from "@/lib/calculators";
+import { FaqItems, faqsFromSchema } from "@/components/FaqList";
 
 const Jumbo = () => {
   const canonicalUrl = "https://mortgagecalculation.net/jumbo-loan-calculator/";
@@ -342,6 +343,7 @@ const Jumbo = () => {
 
               <h2 className="text-2xl font-display font-semibold mt-10 mb-4">Frequently Asked Questions About Jumbo Loans</h2>
               <div className="space-y-3 not-prose">
+                <FaqItems faqs={faqsFromSchema(faqSchema)} />
                 <details className="group calculator-card overflow-hidden" data-faq>
                   <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-4 hover:bg-secondary/40 [&::-webkit-details-marker]:hidden">
                     <h3 className="text-base font-semibold text-foreground font-sans">Can I get a jumbo loan for an investment property?</h3>

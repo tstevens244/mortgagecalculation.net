@@ -8,6 +8,7 @@ import RelatedCalculators from "@/components/RelatedCalculators";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import BiWeeklyCalculator from "@/components/BiWeeklyCalculator";
 import { calculatorBreadcrumbSchema } from "@/lib/calculators";
+import FaqSection, { faqsFromSchema } from "@/components/FaqList";
 
 const BiWeeklyPayments = () => {
   const canonicalUrl = "https://mortgagecalculation.net/bi-weekly-mortgage-payments-calculator/";
@@ -31,7 +32,7 @@ const BiWeeklyPayments = () => {
         name: "How much can I save with bi-weekly mortgage payments?",
         acceptedAnswer: {
           "@type": "Answer",
-          text: "On a $300,000 30-year mortgage at 7% interest, bi-weekly payments can save you approximately $65,000-$75,000 in total interest and pay off your loan 4-5 years early. The exact savings depend on your loan amount, interest rate, and how long you've been paying.",
+          text: "On a $300,000 30-year mortgage at 7% interest, bi-weekly payments save about $103,000 in total interest and pay off the loan about 6 years early. The exact savings depend on your loan amount, interest rate, and how long you've been paying.",
         },
       },
       {
@@ -75,7 +76,7 @@ const BiWeeklyPayments = () => {
   return (
     <>
       <Helmet>
-        <title>Bi-Weekly Mortgage Payment Calculator | Pay Off Your Loan 4-5 Years Early</title>
+        <title>Bi-Weekly Mortgage Payment Calculator | Pay Off Your Loan Years Early</title>
         <meta
           name="description"
           content="Calculate how bi-weekly mortgage payments can save you thousands in interest and pay off your loan years early. Compare monthly vs bi-weekly payment schedules."
@@ -253,7 +254,7 @@ const BiWeeklyPayments = () => {
                   over the life of your loan. This is often $50,000-$100,000+.
                 </li>
                 <li>
-                  <strong>Payoff Date Comparison:</strong> See your new payoff date—typically 4-5 years 
+                  <strong>Payoff Date Comparison:</strong> See your new payoff date—typically 5 to 6 years 
                   earlier than your original schedule.
                 </li>
                 <li>
@@ -351,6 +352,7 @@ const BiWeeklyPayments = () => {
                 </ul>
               </div>
             </section>
+            <FaqSection faqs={faqsFromSchema(faqSchema)} />
           </article>
         </main>
 

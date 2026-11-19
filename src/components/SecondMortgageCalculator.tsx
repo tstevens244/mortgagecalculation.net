@@ -1,10 +1,9 @@
 import { useState, useMemo } from "react";
-import { Home, Percent, Calendar, DollarSign, Shield, Building, Users, Calculator, Info } from "lucide-react";
+import { Home, Percent, Calendar, DollarSign, Shield, Building, Users, Calculator } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip as RechartsTooltip, Cell } from "recharts";
 import CurrencyInput from "./CurrencyInput";
@@ -225,16 +224,40 @@ const SecondMortgageCalculator = () => {
                 </div>
 
                 <div className="flex flex-col gap-1.5">
-                  <Label htmlFor="second-mortgage-down-payment" className="text-sm font-medium text-foreground flex items-center gap-1">
+                  <span className="text-sm font-medium text-foreground">Loan structure</span>
+                  <div className="flex flex-wrap gap-2" role="group" aria-label="Piggyback loan structure">
+                    {[
+                      { label: "80/10/10", down: 10 },
+                      { label: "80/15/5", down: 5 },
+                      { label: "80/20", down: 0 },
+                    ].map((preset) => {
+                      const active = Math.abs(inputs.downPaymentPercent - preset.down) < 0.05;
+                      return (
+                        <button
+                          key={preset.label}
+                          type="button"
+                          aria-pressed={active}
+                          onClick={() => updateInput("downPaymentPercent", preset.down)}
+                          className={`rounded-full border px-3 py-1 text-sm font-medium transition-colors ${
+                            active
+                              ? "border-primary bg-primary text-primary-foreground"
+                              : "border-border bg-background text-foreground hover:border-primary/40 hover:bg-secondary"
+                          }`}
+                        >
+                          {preset.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                  <span className="text-xs text-muted-foreground">
+                    80% first mortgage / {Math.max(0, 20 - inputs.downPaymentPercent).toFixed(1).replace(/\.0$/, "")}% second mortgage /{" "}
+                    {inputs.downPaymentPercent.toFixed(1).replace(/\.0$/, "")}% down
+                  </span>
+                </div>
+
+                <div className="flex flex-col gap-1.5">
+                  <Label htmlFor="second-mortgage-down-payment" className="text-sm font-medium text-foreground">
                     Down Payment
-                    <Tooltip>
-                      <TooltipTrigger>
-                        <Info className="h-3 w-3" />
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        Values below 20 will be treated as a percent
-                      </TooltipContent>
-                    </Tooltip>
                   </Label>
                   <div className="flex gap-2 flex-1">
                     <CurrencyInput id="second-mortgage-down-payment"

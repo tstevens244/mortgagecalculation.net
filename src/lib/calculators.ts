@@ -106,7 +106,7 @@ export const calculatorGroups: CalculatorGroup[] = [
       { path: "/cash-out-refinance-calculator/", name: "Cash-Out Refinance", shortName: "Cash-Out Refi", description: "How much equity you can take out.", icon: Banknote },
       { path: "/heloc-calculator/", name: "HELOC", shortName: "HELOC", description: "Credit line and draw and repayment payments.", icon: KeyRound },
       { path: "/heloc-debt-consolidation-calculator/", name: "HELOC Debt Consolidation", shortName: "HELOC Debt Payoff", description: "Pay off debts with a HELOC, or keep them?", icon: CreditCard },
-      { path: "/second-mortgage-calculator/", name: "Second Mortgage", shortName: "Second Mortgage", description: "Piggyback loan vs. paying PMI.", icon: Layers },
+      { path: "/second-mortgage-calculator/", name: "Piggyback Loan (80/10/10)", shortName: "Piggyback Loan", description: "80/10/10 or 80/15/5 second mortgage vs. paying PMI.", icon: Layers },
     ],
   },
   {

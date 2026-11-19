@@ -9,6 +9,7 @@ import RelatedCalculators from "@/components/RelatedCalculators";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import MortgageCalculator from "@/components/MortgageCalculator";
 import { calculatorBreadcrumbSchema } from "@/lib/calculators";
+import { FaqItems, faqsFromSchema } from "@/components/FaqList";
 
 const Conventional = () => {
   const canonicalUrl = "https://mortgagecalculation.net/conventional-mortgage-calculator/";
@@ -48,7 +49,7 @@ const Conventional = () => {
         name: "When can I remove PMI from my conventional loan?",
         acceptedAnswer: {
           "@type": "Answer",
-          text: "You can request PMI removal once you reach 20% equity based on the original purchase price. Lenders are required to automatically cancel PMI when you reach 22% equity. You may also be able to remove PMI earlier if your home has appreciated significantly, through a new appraisal.",
+          text: "You can ask your servicer to cancel PMI once your balance reaches 80% of the home's original value. It must end automatically when the balance is scheduled to reach 78%. If your home has gained value, you may be able to remove it sooner with a new appraisal, subject to your loan's investor rules.",
         },
       },
     ],
@@ -383,6 +384,7 @@ const Conventional = () => {
 
               <h2 className="text-2xl font-display font-semibold mt-10 mb-4">Frequently Asked Questions About Conventional Loans</h2>
               <div className="space-y-3 not-prose">
+                <FaqItems faqs={faqsFromSchema(faqSchema)} />
                 <details className="group calculator-card overflow-hidden" data-faq>
                   <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-4 hover:bg-secondary/40 [&::-webkit-details-marker]:hidden">
                     <h3 className="text-base font-semibold text-foreground font-sans">Can I get a conventional loan with a bankruptcy or foreclosure?</h3>

@@ -9,6 +9,7 @@ import RelatedCalculators from "@/components/RelatedCalculators";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import FHACalculator from "@/components/FHACalculator";
 import { calculatorBreadcrumbSchema } from "@/lib/calculators";
+import { FaqItems, faqsFromSchema } from "@/components/FaqList";
 
 const FHA = () => {
   const canonicalUrl = "https://mortgagecalculation.net/fha-loan-calculator/";
@@ -48,7 +49,7 @@ const FHA = () => {
         name: "Can I get an FHA loan if I've had a bankruptcy?",
         acceptedAnswer: {
           "@type": "Answer",
-          text: "Yes, you can qualify for an FHA loan after bankruptcy. For Chapter 7 bankruptcy, you must wait 2 years from the discharge date. For Chapter 13 bankruptcy, you may qualify after 1 year of on-time payments with court approval, or immediately after discharge with a good payment history.",
+          text: "Yes, you can qualify for an FHA loan after bankruptcy. For Chapter 7 bankruptcy, you must wait 2 years from the discharge date. For Chapter 13 bankruptcy, you may qualify after 12 months of on-time plan payments, with the court's permission.",
         },
       },
     ],
@@ -345,6 +346,7 @@ const FHA = () => {
 
               <h2 className="text-2xl font-display font-semibold mt-10 mb-4">Frequently Asked Questions About FHA Loans</h2>
               <div className="space-y-3 not-prose">
+                <FaqItems faqs={faqsFromSchema(faqSchema)} />
                 <details className="group calculator-card overflow-hidden" data-faq>
                   <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-4 hover:bg-secondary/40 [&::-webkit-details-marker]:hidden">
                     <h3 className="text-base font-semibold text-foreground font-sans">Can I get an FHA loan for a fixer-upper?</h3>

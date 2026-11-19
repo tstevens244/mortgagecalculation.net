@@ -8,6 +8,7 @@ import RelatedCalculators from "@/components/RelatedCalculators";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import ExtraPaymentsCalculator from "@/components/ExtraPaymentsCalculator";
 import { calculatorBreadcrumbSchema } from "@/lib/calculators";
+import FaqSection, { faqsFromSchema } from "@/components/FaqList";
 
 const ExtraPayments = () => {
   const canonicalUrl = "https://mortgagecalculation.net/extra-mortgage-payments-calculator/";
@@ -23,7 +24,7 @@ const ExtraPayments = () => {
         name: "How much can I save by making extra mortgage payments?",
         acceptedAnswer: {
           "@type": "Answer",
-          text: "The savings depend on your loan amount, interest rate, and how much extra you pay. For example, on a $300,000 loan at 7% for 30 years, paying an extra $200/month could save over $80,000 in interest and pay off your mortgage 7 years early. Even modest extra payments can save tens of thousands over time.",
+          text: "The savings depend on your loan amount, interest rate, and how much extra you pay. For example, on a $300,000 loan at 7% for 30 years, paying an extra $200 a month saves about $116,000 in interest and pays off the mortgage about 7 years early. Even modest extra payments can save tens of thousands over time.",
         },
       },
       {
@@ -350,6 +351,7 @@ const ExtraPayments = () => {
                 </ul>
               </div>
             </section>
+            <FaqSection faqs={faqsFromSchema(faqSchema)} />
           </article>
         </main>
 

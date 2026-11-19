@@ -34,6 +34,15 @@ interface ARMInputs {
   lifetimeCap: number;
 }
 
+const ARM_TYPES = [
+  { label: "5/6", years: 5, months: 6 },
+  { label: "7/6", years: 7, months: 6 },
+  { label: "10/6", years: 10, months: 6 },
+  { label: "5/1", years: 5, months: 12 },
+  { label: "7/1", years: 7, months: 12 },
+  { label: "10/1", years: 10, months: 12 },
+];
+
 const ARMCalculator = () => {
   const [inputs, setInputs] = useState<ARMInputs>({
     homePrice: 400000,
@@ -47,10 +56,10 @@ const ARMCalculator = () => {
     closingCosts: 0,
     pmiRate: 0.5,
     startDate: new Date().toISOString().slice(0, 7),
-    // ARM defaults (5/1 ARM common structure)
+    // ARM defaults: a 5/6 SOFR ARM, the most common structure today
     yearsBeforeFirstAdjustment: 5,
     expectedFirstAdjustment: 1.0,
-    monthsBetweenAdjustments: 12,
+    monthsBetweenAdjustments: 6,
     expectedSubsequentAdjustment: 0.25,
     lifetimeCap: 5.0,
   });
@@ -337,6 +346,37 @@ const ARMCalculator = () => {
               Rate Adjustments
             </h2>
 
+            <div className="mb-4 flex flex-col gap-1.5">
+              <span className="text-sm font-medium text-foreground">ARM type</span>
+              <div className="flex flex-wrap gap-2" role="group" aria-label="ARM type">
+                {ARM_TYPES.map((t) => {
+                  const active =
+                    inputs.yearsBeforeFirstAdjustment === t.years && inputs.monthsBetweenAdjustments === t.months;
+                  return (
+                    <button
+                      key={t.label}
+                      type="button"
+                      aria-pressed={active}
+                      onClick={() => {
+                        updateInput("yearsBeforeFirstAdjustment", t.years);
+                        updateInput("monthsBetweenAdjustments", t.months);
+                      }}
+                      className={`rounded-full border px-3 py-1 text-sm font-medium transition-colors ${
+                        active
+                          ? "border-primary bg-primary text-primary-foreground"
+                          : "border-border bg-background text-foreground hover:border-primary/40 hover:bg-secondary"
+                      }`}
+                    >
+                      {t.label}
+                    </button>
+                  );
+                })}
+              </div>
+              <span className="text-xs text-muted-foreground">
+                5/6, 7/6 and 10/6 ARMs adjust every 6 months after the fixed period; 5/1, 7/1 and 10/1 adjust once a year.
+              </span>
+            </div>
+
             <div className="grid gap-2 sm:gap-4 grid-cols-1 sm:grid-cols-2">
               {/* Years Before First Adjustment */}
               <div className="flex flex-col gap-1.5">
@@ -348,7 +388,7 @@ const ARMCalculator = () => {
                       <Info className="h-3 w-3 text-muted-foreground cursor-help" />
                     </TooltipTrigger>
                     <TooltipContent className="max-w-xs">
-                      <p>Years before the first rate adjustment. For a 5/1 ARM, this is 5 years.</p>
+                      <p>Years before the first rate adjustment. For a 5/6 or 5/1 ARM, this is 5 years.</p>
                     </TooltipContent>
                   </Tooltip>
                 </Label>
@@ -360,11 +400,11 @@ const ARMCalculator = () => {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="1">1 year (1/1 ARM)</SelectItem>
-                    <SelectItem value="3">3 years (3/1 ARM)</SelectItem>
-                    <SelectItem value="5">5 years (5/1 ARM)</SelectItem>
-                    <SelectItem value="7">7 years (7/1 ARM)</SelectItem>
-                    <SelectItem value="10">10 years (10/1 ARM)</SelectItem>
+                    <SelectItem value="1">1 year</SelectItem>
+                    <SelectItem value="3">3 years</SelectItem>
+                    <SelectItem value="5">5 years</SelectItem>
+                    <SelectItem value="7">7 years</SelectItem>
+                    <SelectItem value="10">10 years</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -406,7 +446,7 @@ const ARMCalculator = () => {
                       <Info className="h-3 w-3 text-muted-foreground cursor-help" />
                     </TooltipTrigger>
                     <TooltipContent className="max-w-xs">
-                      <p>Months between subsequent rate adjustments. Typically 12 months for most ARMs.</p>
+                      <p>Months between later rate adjustments: 6 for 5/6, 7/6 and 10/6 ARMs, 12 for 5/1-style ARMs.</p>
                     </TooltipContent>
                   </Tooltip>
                 </Label>

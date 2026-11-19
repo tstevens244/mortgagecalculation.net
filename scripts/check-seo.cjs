@@ -7,6 +7,14 @@ const { routes, SITE } = require("./routes.cjs");
 
 const dist = path.join(__dirname, "..", "dist");
 const problems = [];
+const decode = (text) =>
+  text
+    .replace(/&#x27;|&#39;/g, "'")
+    .replace(/&quot;/g, '"')
+    .replace(/&amp;/g, "&")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&nbsp;/g, " ");
 const titlesSeen = new Map();
 const sitemap = fs.existsSync(path.join(dist, "sitemap.xml")) ? fs.readFileSync(path.join(dist, "sitemap.xml"), "utf8") : "";
 
@@ -34,6 +42,24 @@ for (const { path: route, indexed } of routes) {
   if (jsonLd.length === 0) problems.push(`${route}: no JSON-LD structured data`);
   if (h1s.length !== 1) problems.push(`${route}: ${h1s.length} <h1> elements`);
   if (/\b2025\b/.test(titles[0] || "")) problems.push(`${route}: title mentions 2025`);
+
+  // Google requires FAQ structured data to match questions visible on the page.
+  const body = decode(html.slice(html.indexOf("</head>")).replace(/<script[\s\S]*?<\/script>/g, "").replace(/<[^>]+>/g, " "))
+    .replace(/\s+/g, " ");
+  for (const block of html.matchAll(/<script[^>]*application\/ld\+json[^>]*>([\s\S]*?)<\/script>/g)) {
+    let data;
+    try {
+      data = JSON.parse(block[1]);
+    } catch {
+      problems.push(`${route}: invalid JSON-LD`);
+      continue;
+    }
+    if (data["@type"] !== "FAQPage") continue;
+    for (const q of data.mainEntity || []) {
+      const name = decode(q.name).replace(/\s+/g, " ");
+      if (!body.includes(name)) problems.push(`${route}: FAQ schema question not visible on page: "${name}"`);
+    }
+  }
 
   if (titles[0]) {
     if (titlesSeen.has(titles[0])) problems.push(`${route}: same title as ${titlesSeen.get(titles[0])}`);

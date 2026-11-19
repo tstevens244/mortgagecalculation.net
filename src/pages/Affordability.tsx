@@ -8,6 +8,7 @@ import RelatedCalculators from "@/components/RelatedCalculators";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import AffordabilityCalculator from "@/components/AffordabilityCalculator";
 import { calculatorBreadcrumbSchema } from "@/lib/calculators";
+import FaqSection, { faqsFromSchema } from "@/components/FaqList";
 
 const Affordability = () => {
   const canonicalUrl = "https://mortgagecalculation.net/house-affordability/";
@@ -23,7 +24,7 @@ const Affordability = () => {
         name: "How much house can I afford on my salary?",
         acceptedAnswer: {
           "@type": "Answer",
-          text: "A common rule of thumb is that you can afford a home 2-3 times your annual gross income. However, the more precise approach uses debt-to-income ratios. With the 28/36 rule, your housing costs shouldn't exceed 28% of gross income, and total debts shouldn't exceed 36%. For example, with a $100,000 income and the 28% rule, your maximum monthly housing payment would be about $2,333.",
+          text: "At today's rates, a common result is a home price around 3 times your gross annual income, but the more precise approach uses debt-to-income ratios. With the 28/36 rule, your housing costs shouldn't exceed 28% of gross income, and total debts shouldn't exceed 36%. For example, with a $100,000 income and the 28% rule, your maximum monthly housing payment would be about $2,333.",
         },
       },
       {
@@ -371,6 +372,7 @@ const Affordability = () => {
                 </ul>
               </div>
             </section>
+            <FaqSection faqs={faqsFromSchema(faqSchema)} />
           </article>
         </main>
         <Footer />
