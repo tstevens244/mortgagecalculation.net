@@ -8,6 +8,7 @@ import RelatedCalculators from "@/components/RelatedCalculators";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import HelocDebtConsolidationCalculator from "@/components/HelocDebtConsolidationCalculator";
 import { calculatorBreadcrumbSchema } from "@/lib/calculators";
+import FaqSection, { faqsFromSchema } from "@/components/FaqList";
 
 const HelocDebtConsolidation = () => {
   const canonicalUrl = "https://mortgagecalculation.net/heloc-debt-consolidation-calculator/";
@@ -384,6 +385,7 @@ const HelocDebtConsolidation = () => {
                 </ul>
               </div>
             </section>
+            <FaqSection faqs={faqsFromSchema(faqSchema)} />
           </article>
         </main>
 

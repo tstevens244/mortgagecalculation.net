@@ -8,6 +8,7 @@ import RelatedCalculators from "@/components/RelatedCalculators";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import RefinanceCalculator from "@/components/RefinanceCalculator";
 import { calculatorBreadcrumbSchema } from "@/lib/calculators";
+import FaqSection, { faqsFromSchema } from "@/components/FaqList";
 
 const Refinance = () => {
   const canonicalUrl = "https://mortgagecalculation.net/refinance-calculator/";
@@ -357,6 +358,7 @@ const Refinance = () => {
                 </ul>
               </div>
             </section>
+            <FaqSection faqs={faqsFromSchema(faqSchema)} />
           </article>
         </main>
 

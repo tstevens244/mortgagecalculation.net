@@ -8,6 +8,24 @@ import RelatedCalculators from "@/components/RelatedCalculators";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import SecondMortgageCalculator from "@/components/SecondMortgageCalculator";
 import { calculatorBreadcrumbSchema } from "@/lib/calculators";
+import { formatCurrency } from "@/lib/formatters";
+import { monthlyPayment } from "@/lib/mortgageMath";
+import FaqSection, { faqsFromSchema } from "@/components/FaqList";
+
+// Example table: payments for each piggyback structure vs. one loan with PMI.
+const EX_PRICE = 400_000;
+const structures = [
+  { label: "80/10/10", downPct: 10 },
+  { label: "80/15/5", downPct: 5 },
+  { label: "80/20", downPct: 0 },
+].map(({ label, downPct }) => {
+  const down = (EX_PRICE * downPct) / 100;
+  const second = EX_PRICE * 0.2 - down;
+  const piggyback = monthlyPayment(EX_PRICE * 0.8, 6, 360) + monthlyPayment(second, 8, 180);
+  const single = EX_PRICE - down;
+  const withPmi = downPct >= 3 ? monthlyPayment(single, 6, 360) + (single * 0.005) / 12 : 0;
+  return { label, down, second, piggyback, withPmi };
+});
 
 const SecondMortgage = () => {
   const canonicalUrl = "https://mortgagecalculation.net/second-mortgage-calculator/";
@@ -56,15 +74,15 @@ const SecondMortgage = () => {
   const webAppSchema = {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    name: "Second Mortgage Calculator",
+    name: "Piggyback Loan Calculator",
     applicationCategory: "FinanceApplication",
     description:
-      "Free calculator to compare PMI costs versus taking a second mortgage (piggyback loan) to avoid PMI.",
+      "Free piggyback loan calculator to compare an 80/10/10, 80/15/5 or 80/20 second mortgage with paying PMI.",
     operatingSystem: "Any",
     url: canonicalUrl,
     featureList: [
       "Compare PMI vs second mortgage costs",
-      "80/10/10 and 80/20 loan analysis",
+      "80/10/10, 80/15/5 and 80/20 loan structures",
       "Calculate total interest over loan term",
       "Include closing costs comparison",
       "Monthly payment breakdown",
@@ -80,25 +98,25 @@ const SecondMortgage = () => {
   return (
     <>
       <Helmet>
-        <title>Second Mortgage Calculator | PMI vs Piggyback Loan Comparison</title>
+        <title>Piggyback Loan Calculator: 80/10/10 & 80/15/5 vs. PMI</title>
         <meta
           name="description"
-          content="Compare the cost of PMI versus a second mortgage (piggyback loan). Calculate if an 80/10/10 or 80/20 loan structure saves you money vs paying PMI."
+          content="Free piggyback loan calculator for 80/10/10, 80/15/5 and 80/20 mortgages. Compare a piggyback second mortgage with paying PMI: monthly payment, total cost and which saves more."
         />
         <meta name="robots" content="index, follow" />
         <link rel="canonical" href={canonicalUrl} />
-        <meta property="og:title" content="Second Mortgage Calculator | PMI vs Piggyback Loan" />
+        <meta property="og:title" content="Piggyback Loan Calculator: 80/10/10 vs. PMI" />
         <meta
           property="og:description"
-          content="Should you pay PMI or take a second mortgage? Use our calculator to compare costs and find the best option for your home purchase."
+          content="Should you pay PMI or use an 80/10/10 piggyback loan? Compare payments and total cost for your home purchase."
         />
         <meta property="og:type" content="website" />
         <meta property="og:url" content={canonicalUrl} />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Second Mortgage Calculator" />
+        <meta name="twitter:title" content="Piggyback Loan Calculator (80/10/10)" />
         <meta
           name="twitter:description"
-          content="Compare PMI costs vs second mortgage to find the best financing option."
+          content="Compare an 80/10/10 or 80/15/5 piggyback loan with paying PMI."
         />
         <script type="application/ld+json">{JSON.stringify(breadcrumbSchema)}</script>
         <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
@@ -113,11 +131,11 @@ const SecondMortgage = () => {
             <header className="text-center mb-8">
               <Breadcrumbs />
               <h1 className="text-3xl sm:text-4xl lg:text-5xl font-display font-bold text-foreground mb-4">
-                Second Mortgage Calculator
+                Piggyback Loan Calculator (80/10/10)
               </h1>
               <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                Compare obtaining a piggyback home equity loan versus paying PMI. 
-                Find out which option saves you more money.
+                Compare an 80/10/10, 80/15/5 or 80/20 piggyback second mortgage with putting less than 20% down and
+                paying PMI. See which costs less each month and over the life of the loan.
               </p>
               <TrustLine />
             </header>
@@ -130,7 +148,7 @@ const SecondMortgage = () => {
             <GuideContents />
             {/* Comprehensive Guide Section */}
             <section className="mt-16 prose prose-slate max-w-none">
-              <h2 className="text-2xl font-display font-semibold mb-4">Complete Guide to Second Mortgages & Piggyback Loans</h2>
+              <h2 className="text-2xl font-display font-semibold mb-4">Piggyback Loan Guide: 80/10/10, 80/15/5 and 80/20</h2>
               <p className="text-muted-foreground leading-relaxed">
                 When you can't make a 20% down payment, you face a choice: pay Private Mortgage Insurance (PMI) 
                 or use a second mortgage to avoid it. According to the{" "}
@@ -146,19 +164,51 @@ const SecondMortgage = () => {
                 A piggyback loan uses two mortgages to finance your home purchase while keeping the primary 
                 mortgage at 80% loan-to-value (LTV), which eliminates the need for PMI:
               </p>
-              <div className="bg-muted/50 p-4 rounded-lg mt-4">
-                <h4 className="font-semibold text-foreground mb-2">Common Piggyback Structures</h4>
-                <p className="text-sm text-muted-foreground">
-                  <strong>80/10/10:</strong> 80% first mortgage + 10% second mortgage + 10% down payment<br />
-                  <strong>80/15/5:</strong> 80% first mortgage + 15% second mortgage + 5% down payment<br />
-                  <strong>80/20:</strong> 80% first mortgage + 20% second mortgage + 0% down payment (rare)<br />
-                  <br />
-                  <strong>Example ($400,000 home with 80/10/10):</strong><br />
-                  First mortgage: $320,000 (80%)<br />
-                  Second mortgage: $40,000 (10%)<br />
-                  Down payment: $40,000 (10%)
-                </p>
+              <div className="overflow-x-auto mt-4 not-prose">
+                <table className="w-full text-sm border-collapse calculator-card tabular-nums">
+                  <caption className="sr-only">Piggyback loan structures on a $400,000 home</caption>
+                  <thead>
+                    <tr className="border-b border-border">
+                      <th className="p-3 text-left font-semibold">Structure</th>
+                      <th className="p-3 text-right font-semibold">Down</th>
+                      <th className="p-3 text-right font-semibold">First + second</th>
+                      <th className="p-3 text-right font-semibold">Piggyback payment</th>
+                      <th className="p-3 text-right font-semibold">One loan with PMI</th>
+                    </tr>
+                  </thead>
+                  <tbody className="text-muted-foreground">
+                    {structures.map((r) => (
+                      <tr key={r.label} className="border-b border-border last:border-0">
+                        <th scope="row" className="p-3 text-left font-semibold text-foreground">{r.label}</th>
+                        <td className="p-3 text-right">{formatCurrency(r.down)}</td>
+                        <td className="p-3 text-right">
+                          {formatCurrency(EX_PRICE * 0.8)} + {formatCurrency(r.second)}
+                        </td>
+                        <td className="p-3 text-right font-medium text-foreground">{formatCurrency(r.piggyback)}/mo</td>
+                        <td className="p-3 text-right">{r.withPmi ? `${formatCurrency(r.withPmi)}/mo` : "Not available"}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
+              <p className="text-sm text-muted-foreground mt-2">
+                $400,000 home. First mortgage 6% for 30 years, second mortgage 8% for 15 years; single loan 6% for 30
+                years plus PMI at 0.5% a year. Principal, interest and PMI only. Conventional loans need at least 3%
+                down, so there's no single-loan option at 0% down. The calculator above also counts closing costs,
+                points and how long PMI lasts.
+              </p>
+              <p className="text-muted-foreground leading-relaxed">
+                Looking for a second mortgage on a home you already own? That's a home equity loan or line of credit;
+                use the{" "}
+                <Link to="/heloc-calculator/" className="text-primary hover:underline">
+                  HELOC calculator
+                </Link>{" "}
+                or the{" "}
+                <Link to="/cash-out-refinance-calculator/" className="text-primary hover:underline">
+                  cash-out refinance calculator
+                </Link>
+                .
+              </p>
 
               {/* PMI vs Second Mortgage */}
               <h3 className="text-xl font-display font-semibold mt-8 mb-3">PMI vs. Second Mortgage: Comparison</h3>
@@ -358,6 +408,7 @@ const SecondMortgage = () => {
                 </ul>
               </div>
             </section>
+            <FaqSection faqs={faqsFromSchema(faqSchema)} />
           </article>
         </main>
 

@@ -8,6 +8,7 @@ import RelatedCalculators from "@/components/RelatedCalculators";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import QualificationCalculator from "@/components/QualificationCalculator";
 import { calculatorBreadcrumbSchema } from "@/lib/calculators";
+import FaqSection, { faqsFromSchema } from "@/components/FaqList";
 
 const Qualification = () => {
   const canonicalUrl = "https://mortgagecalculation.net/mortgage-qualification-calculator/";
@@ -23,7 +24,7 @@ const Qualification = () => {
         name: "What income do I need to qualify for a mortgage?",
         acceptedAnswer: {
           "@type": "Answer",
-          text: "The income needed depends on the home price, your down payment, interest rate, and existing debts. As a rough guide, you typically need an income of about 2.5-4 times the home price for a 30-year mortgage. For example, a $300,000 home might require $75,000-$120,000 annual income, depending on your other debts and down payment.",
+          text: "The income needed depends on the home price, your down payment, interest rate, and existing debts. As a rough guide, a home price of about 2.5 to 4 times your annual income is typical for a 30-year mortgage. For example, a $300,000 home might require $75,000 to $120,000 of annual income, depending on your other debts and down payment.",
         },
       },
       {
@@ -372,6 +373,7 @@ const Qualification = () => {
                 </ul>
               </div>
             </section>
+            <FaqSection faqs={faqsFromSchema(faqSchema)} />
           </article>
         </main>
         <Footer />

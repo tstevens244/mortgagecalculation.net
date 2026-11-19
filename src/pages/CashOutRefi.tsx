@@ -8,6 +8,7 @@ import RelatedCalculators from "@/components/RelatedCalculators";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import CashOutRefiCalculator from "@/components/CashOutRefiCalculator";
 import { calculatorBreadcrumbSchema } from "@/lib/calculators";
+import FaqSection, { faqsFromSchema } from "@/components/FaqList";
 
 const CashOutRefi = () => {
   const canonicalUrl = "https://mortgagecalculation.net/cash-out-refinance-calculator/";
@@ -377,6 +378,7 @@ const CashOutRefi = () => {
                 </ul>
               </div>
             </section>
+            <FaqSection faqs={faqsFromSchema(faqSchema)} />
           </article>
         </main>
         <Footer />

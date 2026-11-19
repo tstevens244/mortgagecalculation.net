@@ -11,6 +11,7 @@ import {
   totalPaidOnBalance,
   armSchedule,
   maxAffordablePrice,
+  usdaMaxPrice,
 } from "../src/lib/mortgageMath.ts";
 import { fhaAnnualMipRate, fhaMipMonths, vaFundingFeeRate } from "../src/lib/loanLimits.ts";
 
@@ -153,4 +154,22 @@ test("FHA vs conventional over 7 years", () => {
   near(r.conv.payment, 2560.19);
   near(r.fha.cost, 187_682.03, 0.5);
   near(r.conv.cost, 178_637.84, 0.5);
+});
+
+test("USDA qualifying price under 29/41", () => {
+  const r = usdaMaxPrice({
+    monthlyIncome: 6_000,
+    monthlyDebts: 500,
+    annualRatePercent: 6.5,
+    propertyTaxRatePercent: 1,
+    annualInsurance: 1_500,
+    monthlyHoa: 0,
+    upfrontFeePercent: 1,
+    annualFeePercent: 0.35,
+  });
+  near(r.maxPayment, 1_740);
+  assert.equal(r.limitedBy, "housing");
+  near(r.price, 215_078.48, 0.5);
+  // Heavier debts make the 41% total limit the binding one.
+  assert.equal(usdaMaxPrice({ monthlyIncome: 6_000, monthlyDebts: 1_000, annualRatePercent: 6.5, propertyTaxRatePercent: 1, annualInsurance: 1_500, monthlyHoa: 0, upfrontFeePercent: 1, annualFeePercent: 0.35 }).limitedBy, "total");
 });
