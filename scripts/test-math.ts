@@ -173,3 +173,80 @@ test("USDA qualifying price under 29/41", () => {
   // Heavier debts make the 41% total limit the binding one.
   assert.equal(usdaMaxPrice({ monthlyIncome: 6_000, monthlyDebts: 1_000, annualRatePercent: 6.5, propertyTaxRatePercent: 1, annualInsurance: 1_500, monthlyHoa: 0, upfrontFeePercent: 1, annualFeePercent: 0.35 }).limitedBy, "total");
 });
+
+// --- Chart and schedule summaries -------------------------------------------
+
+import { byLoanYear, milestones, crossingYear, type AmortizationRow } from "../src/lib/amortization.ts";
+import { rentVsBuy, rentVsBuyByYear } from "../src/lib/rentVsBuy.ts";
+
+const schedule = (loan: number, rate: number, months: number, start = new Date(2026, 10, 1)): AmortizationRow[] => {
+  const pay = monthlyPayment(loan, rate, months);
+  const rows: AmortizationRow[] = [];
+  let balance = loan;
+  for (let m = 1; m <= months; m++) {
+    const interest = (balance * rate) / 100 / 12;
+    const principal = Math.min(pay - interest, balance);
+    balance = Math.max(0, balance - principal);
+    rows.push({ month: m, date: new Date(start.getFullYear(), start.getMonth() + m, 1), payment: pay, principal, interest, balance });
+  }
+  return rows;
+};
+
+test("loan-year summary groups 12 payments per year and keeps running totals", () => {
+  const rows = schedule(300_000, 6.5, 360);
+  const years = byLoanYear(rows);
+  assert.equal(years.length, 30);
+  // A November start still gives a full first year (not two calendar-year months).
+  near(years[0].principal + years[0].interest, rows[0].payment * 12, 0.01);
+  near(years[29].balance, 0, 0.01);
+  near(years[29].cumPrincipal, 300_000, 0.01);
+  near(years[29].paidOff, 1, 1e-9);
+  near(years[29].cumInterest, rows[0].payment * 360 - 300_000, 0.05);
+});
+
+test("milestones: principal passes interest, half paid off", () => {
+  const m = milestones(schedule(300_000, 6.5, 360));
+  near(m.loanAmount, 300_000, 0.01);
+  // At 6.5% / 30 years, principal (271.20 x 1.0054167^(k-1)) first reaches half
+  // the 1,896.20 payment at k = 233 (year 20). The balance halves when
+  // 1.0054167^k >= (1.0054167^360 + 1) / 2, at k = 257 (year 22).
+  assert.equal(m.crossoverMonth, 233);
+  assert.equal(m.halfwayMonth, 257);
+  assert.equal(m.payoffMonth, 360);
+  // 15 years at 5%: 748.26 x 1.0041667^(k-1) passes half of 1,581.59 at k = 15.
+  assert.equal(milestones(schedule(200_000, 5, 180)).crossoverMonth, 15);
+  // 10 years at 3% is principal-heavy from the first payment.
+  assert.equal(milestones(schedule(100_000, 3, 120)).crossoverMonth, 1);
+});
+
+test("break-even year is interpolated where the line crosses zero", () => {
+  near(crossingYear([{ year: 0, value: -100 }, { year: 1, value: -50 }, { year: 2, value: 50 }])!, 1.5, 1e-9);
+  assert.equal(crossingYear([{ year: 0, value: -100 }, { year: 1, value: -10 }]), null);
+  assert.equal(crossingYear([{ year: 0, value: 10 }, { year: 1, value: 20 }]), null);
+});
+
+const rvb = {
+  monthlyRent: 0, annualRentIncrease: 0, homePrice: 100_000, annualAppreciation: 0, sellingCost: 0, buyingCost: 0,
+  investmentReturn: 0, downPaymentPercent: 100, interestRate: 6, termYears: 30, annualPMIPercent: 0,
+  annualPropertyTaxRate: 0, annualInsuranceRate: 0, annualMaintenance: 0, incomeTaxRate: 0,
+};
+
+test("rent vs. buy: the down payment comes back when you sell (not counted twice)", () => {
+  // Pay cash, no costs, no appreciation, sell for what you paid: buying costs nothing.
+  near(rentVsBuy({ ...rvb, years: 5 }).totalBuyCost, 0, 0.01);
+  // With 20% down, the cost of buying is the interest paid (principal comes back at sale).
+  const r = rentVsBuy({ ...rvb, downPaymentPercent: 20, years: 5 });
+  const loan = 80_000;
+  const pay = monthlyPayment(loan, 6, 360);
+  const interest = pay * 60 - (loan - balanceAfter(loan, 6, pay, 60));
+  near(r.totalBuyCost, interest, 0.5);
+  // 5% appreciation over one year with cash: buying comes out $5,000 ahead.
+  near(rentVsBuy({ ...rvb, annualAppreciation: 5, years: 1 }).totalBuyCost, -5000, 0.01);
+});
+
+test("rent vs. buy by year reruns the model for each holding period", () => {
+  const series = rentVsBuyByYear({ ...rvb, monthlyRent: 1000 }, 10);
+  assert.equal(series.length, 10);
+  near(series[0].rent, 12_000, 0.01);
+  near(series[9].advantage, 120_000, 0.01); // rent paid, while cash buying costs nothing
+});

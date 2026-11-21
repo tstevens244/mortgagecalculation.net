@@ -15,7 +15,9 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { HelpCircle, Home, DollarSign, PiggyBank, TrendingUp } from "lucide-react";
-import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip as RechartsTooltip } from "recharts";
+import VizCard from "./viz/VizCard";
+import StackedBar from "./viz/StackedBar";
+import { SERIES } from "./viz/theme";
 import CurrencyInput from "./CurrencyInput";
 import PercentInput from "./PercentInput";
 import { maxAffordablePrice } from "@/lib/mortgageMath";
@@ -123,6 +125,8 @@ const AffordabilityCalculator = () => {
       monthlyInsurance,
       monthlyHOA,
       monthlyPMI,
+      frontEndLimit,
+      backEndLimit,
     };
   }, [annualIncome, loanTerm, interestRate, monthlyDebts, downPaymentPercent, propertyTaxRate, hoaFee, insuranceRate, dtiRule]);
 
@@ -173,7 +177,15 @@ const AffordabilityCalculator = () => {
     };
   }, [monthlyBudget, budgetLoanTerm, budgetInterestRate, budgetDownPaymentPercent, budgetPropertyTaxRate, budgetHoaFee, budgetInsuranceRate]);
 
-  const ResultsCard = ({ results, title }: { results: typeof incomeResults; title: string }) => (
+  const ResultsCard = ({
+    results,
+    title,
+    income,
+  }: {
+    results: typeof budgetResults;
+    title: string;
+    income?: { monthly: number; debts: number; front: number; back: number };
+  }) => (
     <div className="space-y-6 lg:col-span-2">
       {/* Main Result */}
       <Card className="result-highlight border-0">
@@ -190,65 +202,44 @@ const AffordabilityCalculator = () => {
         </CardContent>
       </Card>
 
-      {/* Payment Breakdown Chart */}
-      <Card className="calculator-card">
-        <CardHeader className="pb-4">
-          <CardTitle className="text-lg font-semibold flex items-center gap-2">
-            <TrendingUp className="h-5 w-5 text-accent" />
-            Monthly Payment Breakdown
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="h-[180px]">
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie isAnimationActive={false}
-                  data={[
-                    { name: 'Principal & Interest', value: results.monthlyPI, color: 'hsl(var(--primary))' },
-                    { name: 'Property Tax', value: results.monthlyTaxes, color: 'hsl(var(--accent))' },
-                    { name: 'Insurance', value: results.monthlyInsurance, color: 'hsl(var(--muted-foreground))' },
-                    ...(results.monthlyPMI > 0 ? [{ name: 'PMI', value: results.monthlyPMI, color: 'hsl(0 84% 60%)' }] : []),
-                    ...(results.monthlyHOA > 0 ? [{ name: 'HOA', value: results.monthlyHOA, color: 'hsl(280 67% 50%)' }] : []),
-                  ].filter(item => item.value > 0)}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={45}
-                  outerRadius={65}
-                  paddingAngle={2}
-                  dataKey="value"
-                >
-                  {[
-                    { name: 'Principal & Interest', value: results.monthlyPI, color: 'hsl(var(--primary))' },
-                    { name: 'Property Tax', value: results.monthlyTaxes, color: 'hsl(var(--accent))' },
-                    { name: 'Insurance', value: results.monthlyInsurance, color: 'hsl(var(--muted-foreground))' },
-                    ...(results.monthlyPMI > 0 ? [{ name: 'PMI', value: results.monthlyPMI, color: 'hsl(0 84% 60%)' }] : []),
-                    ...(results.monthlyHOA > 0 ? [{ name: 'HOA', value: results.monthlyHOA, color: 'hsl(280 67% 50%)' }] : []),
-                  ].filter(item => item.value > 0).map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} />
-                  ))}
-                </Pie>
-                <RechartsTooltip
-                  formatter={(value: number) => formatCurrency(value)}
-                  contentStyle={{
-                    backgroundColor: 'hsl(var(--card))',
-                    border: '1px solid hsl(var(--border))',
-                    borderRadius: '8px',
-                    fontSize: '12px',
-                  }}
-                />
-                <Legend 
-                  wrapperStyle={{ fontSize: '10px' }}
-                  formatter={(value) => <span className="text-foreground">{value}</span>}
-                />
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
-          <div className="flex justify-between items-center py-3 bg-secondary/50 rounded-lg px-3 mt-4">
-            <span className="font-medium">Total Monthly Payment</span>
-            <span className="font-bold text-lg text-accent-strong">{formatCurrency(results.monthlyPayment)}</span>
-          </div>
-        </CardContent>
-      </Card>
+      {/* Payment breakdown */}
+      <VizCard title="Monthly payment at this price" description={`${formatCurrency(results.monthlyPayment)} a month, split into its parts.`}>
+        <StackedBar
+          legend
+          segments={[
+            { label: "Principal & interest", value: results.monthlyPI, color: SERIES.principal },
+            { label: "Property tax", value: results.monthlyTaxes, color: SERIES.tax },
+            { label: "Home insurance", value: results.monthlyInsurance, color: SERIES.insurance },
+            { label: "PMI", value: results.monthlyPMI, color: SERIES.pmi, note: "Until you reach 20% equity" },
+            { label: "HOA dues", value: results.monthlyHOA, color: SERIES.hoa },
+          ]}
+        />
+      </VizCard>
+
+      {income && (
+        <VizCard
+          title="Where your income goes"
+          description={`Lenders compare your payments to your ${formatCurrency(income.monthly)} gross monthly income. The lines are the limits for the ${dtiRule} rule.`}
+        >
+          <StackedBar
+            legend
+            max={income.monthly}
+            markers={
+              income.front === income.back
+                ? [{ value: income.monthly * income.back, label: `${Math.round(income.back * 100)}% limit` }]
+                : [
+                    { value: income.monthly * income.front, label: `${Math.round(income.front * 100)}% housing` },
+                    { value: income.monthly * income.back, label: `${Math.round(income.back * 100)}% all debts` },
+                  ]
+            }
+            segments={[
+              { label: "Housing payment", value: results.monthlyPayment, color: SERIES.principal, note: `${((results.monthlyPayment / income.monthly) * 100).toFixed(0)}% of income (limit ${Math.round(income.front * 100)}%)` },
+              { label: "Other debt payments", value: income.debts, color: SERIES.interest, note: `Housing + debts: ${(((results.monthlyPayment + income.debts) / income.monthly) * 100).toFixed(0)}% (limit ${Math.round(income.back * 100)}%)` },
+              { label: "Left for everything else", value: Math.max(0, income.monthly - results.monthlyPayment - income.debts), color: SERIES.other, muted: true, note: "Before taxes" },
+            ]}
+          />
+        </VizCard>
+      )}
 
       {/* Loan Summary */}
       <Card className="calculator-card bg-secondary/30">
@@ -437,7 +428,11 @@ const AffordabilityCalculator = () => {
               </CardContent>
             </Card>
 
-            <ResultsCard results={incomeResults} title="You Can Afford a Home Up To" />
+            <ResultsCard
+              results={incomeResults}
+              title="You Can Afford a Home Up To"
+              income={{ monthly: annualIncome / 12, debts: monthlyDebts, front: incomeResults.frontEndLimit, back: incomeResults.backEndLimit }}
+            />
           </div>
         </TabsContent>
 

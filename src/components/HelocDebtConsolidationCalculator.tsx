@@ -8,6 +8,11 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import CurrencyInput from "./CurrencyInput";
 import PercentInput from "./PercentInput";
 import { formatCurrency } from "@/lib/formatters";
+import CompareTable from "./viz/CompareTable";
+import StackedBar from "./viz/StackedBar";
+import { Legend } from "./viz/VizCard";
+import { SERIES } from "./viz/theme";
+import { yearsMonths } from "@/lib/amortization";
 import { monthsToPayoff, totalPaidOnBalance } from "@/lib/mortgageMath";
 
 interface Debt {
@@ -328,82 +333,87 @@ const HelocDebtConsolidationCalculator = () => {
               </p>
             )}
 
-            <div className="overflow-x-auto">
-              <table className="w-full text-xs sm:text-sm">
-                <thead>
-                  <tr className="border-b border-border bg-primary text-primary-foreground">
-                    <th className="text-left py-3 px-4 font-medium">Category</th>
-                    <th className="text-right py-3 px-4 font-medium">Keep Existing Debts</th>
-                    <th className="text-right py-3 px-4 font-medium">HELOC Consolidation</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-border">
-                  <tr>
-                    <td className="py-3 px-4 text-muted-foreground">Total Debt Amount</td>
-                    <td className="py-3 px-4 text-right font-medium">{formatCurrency(calculations.existing.totalBalance)}</td>
-                    <td className="py-3 px-4 text-right font-medium">{formatCurrency(calculations.heloc.loanAmount)}</td>
-                  </tr>
-                  <tr className="bg-muted/30">
-                    <td className="py-3 px-4 text-muted-foreground">Monthly Payment</td>
-                    <td className="py-3 px-4 text-right font-medium">{formatCurrency(calculations.existing.monthlyPayment)}</td>
-                    <td className="py-3 px-4 text-right font-medium">{formatCurrency(calculations.heloc.monthlyPayment)}</td>
-                  </tr>
-                  <tr>
-                    <td className="py-3 px-4 text-muted-foreground">Average Interest Rate</td>
-                    <td className="py-3 px-4 text-right font-medium">{calculations.existing.avgInterestRate.toFixed(2)}%</td>
-                    <td className="py-3 px-4 text-right font-medium">{calculations.heloc.interestRate.toFixed(2)}%</td>
-                  </tr>
-                  <tr className="bg-muted/30">
-                    <td className="py-3 px-4 text-muted-foreground">Payoff Timeline</td>
-                    <td className="py-3 px-4 text-right font-medium">
-                      {calculations.existing.yearsToPayoff} Yrs {calculations.existing.monthsToPayoff} Mts
-                    </td>
-                    <td className="py-3 px-4 text-right font-medium">
-                      {calculations.heloc.yearsToPayoff} Yrs {calculations.heloc.monthsToPayoff} Mts
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="py-3 px-4 text-muted-foreground">Total Paid</td>
-                    <td className="py-3 px-4 text-right font-medium">{formatCurrency(calculations.existing.totalPayments)}</td>
-                    <td className="py-3 px-4 text-right font-medium">{formatCurrency(calculations.heloc.totalPayments)}</td>
-                  </tr>
-                  <tr className="bg-muted/30">
-                    <td className="py-3 px-4 text-muted-foreground">Total Interest Paid</td>
-                    <td className="py-3 px-4 text-right font-medium">{formatCurrency(calculations.existing.totalInterest)}</td>
-                    <td className="py-3 px-4 text-right font-medium">{formatCurrency(calculations.heloc.totalInterest)}</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+            {(() => {
+              const e = calculations.existing;
+              const h = calculations.heloc;
+              const existingMonths = e.yearsToPayoff * 12 + e.monthsToPayoff;
+              const helocMonths = h.yearsToPayoff * 12;
+              const max = Math.max(e.totalPayments, h.totalPayments + h.closingCosts);
+              const consolidate = calculations.betterOption === "heloc";
+              return (
+                <>
+                  <p className="mb-5 text-sm text-muted-foreground sm:text-base">
+                    <strong className="text-foreground">
+                      {consolidate ? "Consolidating" : "Keeping your current debts"} costs {formatCurrency(Math.abs(calculations.totalSavings))} less
+                    </strong>{" "}
+                    in total.{" "}
+                    {calculations.monthlySavings > 0
+                      ? `The home equity loan lowers your payment by ${formatCurrency(calculations.monthlySavings)} a month`
+                      : `The home equity loan raises your payment by ${formatCurrency(-calculations.monthlySavings)} a month`}
+                    {helocMonths > existingMonths
+                      ? `, but stretches payoff from ${yearsMonths(existingMonths)} to ${yearsMonths(helocMonths)}${consolidate ? "." : ", and the extra time adds interest."}`
+                      : ` and pays everything off in ${yearsMonths(helocMonths)} instead of ${yearsMonths(existingMonths)}.`}{" "}
+                    Your home secures the new loan, so missed payments put it at risk.
+                  </p>
 
-            {/* Summary */}
-            <div className={`mt-6 p-4 rounded-lg ${calculations.betterOption === 'heloc' ? 'bg-accent/10 border border-accent' : 'bg-amber-500/10 border border-amber-500'}`}>
-              {calculations.betterOption === 'heloc' ? (
-                <div>
-                  <p className="text-sm sm:text-base font-semibold text-accent-strong mb-2">
-                    HELOC consolidation could save you money!
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    Your monthly payment drops by <strong>{formatCurrency(calculations.monthlySavings)}</strong>.
-                    However, the HELOC will take {calculations.heloc.yearsToPayoff} years to pay off, 
-                    compared to {calculations.existing.yearsToPayoff} years {calculations.existing.monthsToPayoff} months 
-                    for your current debts. Total interest is higher with HELOC, but potential tax savings may offset this 
-                    if used for home improvements.
-                  </p>
-                </div>
-              ) : (
-                <div>
-                  <p className="text-sm sm:text-base font-semibold text-amber-600 mb-2">
-                    Keeping your current debts may be more cost-effective.
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    While HELOC offers lower monthly payments of <strong>{formatCurrency(calculations.heloc.monthlyPayment)}</strong> vs 
-                    <strong> {formatCurrency(calculations.existing.monthlyPayment)}</strong>, the extended payoff period 
-                    results in more total interest paid. Consider your cash flow needs and long-term financial goals.
-                  </p>
-                </div>
-              )}
-            </div>
+                  <h3 className="mb-3 font-display text-base font-semibold">Total you'd pay</h3>
+                  <div className="space-y-4">
+                    <StackedBar
+                      title="Keep current debts"
+                      total={formatCurrency(e.totalPayments)}
+                      max={max}
+                      segments={[
+                        { label: "Balance", value: e.totalBalance, color: SERIES.principal },
+                        { label: "Interest", value: e.totalInterest, color: SERIES.interest },
+                      ]}
+                    />
+                    <StackedBar
+                      title="Home equity loan"
+                      total={formatCurrency(h.totalPayments + h.closingCosts)}
+                      max={max}
+                      segments={[
+                        { label: "Balance", value: h.loanAmount, color: SERIES.principal },
+                        { label: "Interest", value: h.totalInterest, color: SERIES.interest },
+                        { label: "Closing costs", value: h.closingCosts, color: SERIES.fees },
+                      ]}
+                    />
+                    <Legend
+                      items={[
+                        { label: "Balance you owe", color: SERIES.principal },
+                        { label: "Interest", color: SERIES.interest },
+                        { label: "Closing costs", color: SERIES.fees },
+                      ]}
+                    />
+                  </div>
+
+                  <h3 className="mb-1 mt-8 font-display text-base font-semibold">Line by line</h3>
+                  <CompareTable
+                    columns={[{ label: "Keep debts" }, { label: "Home equity loan" }]}
+                    recommended={consolidate ? 1 : 0}
+                    recommendedLabel="Costs less"
+                    groups={[
+                      {
+                        rows: [
+                          { label: "Amount owed", values: [e.totalBalance, h.loanAmount] },
+                          { label: "Monthly payment", values: [e.monthlyPayment, h.monthlyPayment], better: "lower" },
+                          {
+                            label: "Interest rate",
+                            values: [e.avgInterestRate, h.interestRate],
+                            format: (v) => `${v.toFixed(2)}%`,
+                            better: "lower",
+                            note: "Current debts: balance-weighted average",
+                          },
+                          { label: "Paid off in", values: [existingMonths, helocMonths], format: yearsMonths, better: "lower" },
+                          { label: "Total interest", values: [e.totalInterest, h.totalInterest], better: "lower" },
+                          { label: "Closing costs", values: [0, h.closingCosts] },
+                          { label: "Total paid", values: [e.totalPayments, h.totalPayments + h.closingCosts], better: "lower", emphasis: true },
+                        ],
+                      },
+                    ]}
+                  />
+                </>
+              );
+            })()}
           </section>
         </TabsContent>
 

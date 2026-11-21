@@ -13,17 +13,11 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { HelpCircle, Home, DollarSign, TrendingDown, Calendar, PiggyBank, TableIcon, ChartLine } from "lucide-react";
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, Legend } from "recharts";
+import { HelpCircle, Home, TrendingDown, PiggyBank } from "lucide-react";
+import VizCard from "./viz/VizCard";
+import CompareTable from "./viz/CompareTable";
+import PayoffComparison from "./viz/PayoffComparison";
+import { yearsMonths } from "@/lib/amortization";
 import CurrencyInput from "./CurrencyInput";
 import PercentInput from "./PercentInput";
 import { formatCurrency } from "@/lib/formatters";
@@ -105,6 +99,7 @@ const ExtraPaymentsCalculator = () => {
       totalPaid: number;
     }> = [];
 
+    let extraPrincipal = initialExtraPayment;
     let yearlyPrincipal = initialExtraPayment;
     let yearlyInterest = 0;
 
@@ -112,6 +107,7 @@ const ExtraPaymentsCalculator = () => {
       const interestPayment = extraBalance * monthlyRate;
       const standardPrincipal = standardMonthlyPI - interestPayment;
       const totalPrincipalPayment = Math.min(standardPrincipal + monthlyExtraPayment, extraBalance);
+      extraPrincipal += Math.max(0, totalPrincipalPayment - standardPrincipal);
       const actualPayment = interestPayment + totalPrincipalPayment;
 
       extraBalance -= totalPrincipalPayment;
@@ -182,6 +178,9 @@ const ExtraPaymentsCalculator = () => {
       
       // Chart
       chartData,
+      originalMonths,
+      extraMonths,
+      extraPrincipal,
     };
   }, [loanAmount, interestRate, loanTerm, initialExtraPayment, monthlyExtraPayment]);
 
@@ -300,108 +299,16 @@ const ExtraPaymentsCalculator = () => {
             </CardContent>
           </Card>
 
-          {/* Amortization Tabs - Fills remaining space */}
-          <Tabs defaultValue="chart" className="w-full">
-            <TabsList className="grid w-full grid-cols-2 mb-4">
-              <TabsTrigger value="chart" className="text-sm">
-                <ChartLine className="h-4 w-4 mr-2" />
-                <span className="hidden sm:inline">Balance Comparison</span>
-                <span className="sm:hidden">Chart</span>
-              </TabsTrigger>
-              <TabsTrigger value="schedule" className="text-sm">
-                <TableIcon className="h-4 w-4 mr-2" />
-                <span className="hidden sm:inline">Yearly Schedule</span>
-                <span className="sm:hidden">Schedule</span>
-              </TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="chart" className="mt-0">
-              <Card className="calculator-card">
-                <CardContent className="pt-6">
-                  <div className="h-[300px]">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <AreaChart data={results.chartData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
-                        <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                        <XAxis 
-                          dataKey="year" 
-                          tick={{ fontSize: 11, fill: 'hsl(var(--muted-foreground))' }}
-                          tickLine={false}
-                          axisLine={{ stroke: 'hsl(var(--border))' }}
-                        />
-                        <YAxis 
-                          tickFormatter={(value) => `$${(value / 1000).toFixed(0)}k`}
-                          tick={{ fontSize: 11, fill: 'hsl(var(--muted-foreground))' }}
-                          tickLine={false}
-                          axisLine={{ stroke: 'hsl(var(--border))' }}
-                          width={50}
-                        />
-                        <RechartsTooltip
-                          formatter={(value: number) => [formatCurrency(value), '']}
-                          contentStyle={{
-                            backgroundColor: 'hsl(var(--card))',
-                            border: '1px solid hsl(var(--border))',
-                            borderRadius: '8px',
-                            fontSize: '12px',
-                          }}
-                        />
-                        <Legend 
-                          wrapperStyle={{ fontSize: '12px' }}
-                          formatter={(value) => value === 'originalBalance' ? 'Original' : 'With Extra'}
-                        />
-                        <Area isAnimationActive={false}
-                          type="monotone"
-                          dataKey="originalBalance"
-                          name="originalBalance"
-                          stroke="hsl(var(--muted-foreground))"
-                          fill="hsl(var(--muted-foreground) / 0.3)"
-                          strokeWidth={2}
-                        />
-                        <Area isAnimationActive={false}
-                          type="monotone"
-                          dataKey="extraBalance"
-                          name="extraBalance"
-                          stroke="hsl(var(--accent))"
-                          fill="hsl(var(--accent) / 0.3)"
-                          strokeWidth={2}
-                        />
-                      </AreaChart>
-                    </ResponsiveContainer>
-                  </div>
-                </CardContent>
-              </Card>
-            </TabsContent>
-
-            <TabsContent value="schedule" className="mt-0">
-              <Card className="calculator-card">
-                <CardContent className="pt-6">
-                  <div className="max-h-[300px] overflow-y-auto">
-                    <Table>
-                      <TableHeader>
-                        <TableRow>
-                          <TableHead className="text-center">Year</TableHead>
-                          <TableHead className="text-right">Original Balance</TableHead>
-                          <TableHead className="text-right">With Extra</TableHead>
-                          <TableHead className="text-right">Savings</TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {results.chartData.map((row, index) => (
-                          <TableRow key={index}>
-                            <TableCell className="text-center font-medium">{row.year}</TableCell>
-                            <TableCell className="text-right">{formatCurrency(row.originalBalance)}</TableCell>
-                            <TableCell className="text-right">{formatCurrency(row.extraBalance)}</TableCell>
-                            <TableCell className="text-right text-accent-strong font-medium">
-                              {formatCurrency(row.originalBalance - row.extraBalance)}
-                            </TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </div>
-                </CardContent>
-              </Card>
-            </TabsContent>
-          </Tabs>
+          <PayoffComparison
+            loanAmount={loanAmount}
+            standard={results.originalSchedule}
+            plan={results.extraSchedule}
+            standardLabel="Regular payments"
+            planLabel="With extra payments"
+            standardMonths={results.originalMonths}
+            planMonths={results.extraMonths}
+            extraPaid={results.extraPrincipal}
+          />
         </div>
 
         {/* Right Column - Results */}
@@ -425,77 +332,23 @@ const ExtraPaymentsCalculator = () => {
             </CardContent>
           </Card>
 
-          {/* Comparison Table */}
-          <Card className="calculator-card">
-            <CardHeader className="pb-4">
-              <CardTitle className="text-lg font-semibold">Payment Comparison</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                <div className="grid grid-cols-3 gap-2 text-sm font-medium pb-2 border-b border-border">
-                  <span></span>
-                  <span className="text-center">Original</span>
-                  <span className="text-center">With Extra</span>
-                </div>
-                
-                <div className="grid grid-cols-3 gap-2 text-sm py-2 border-b border-border/50">
-                  <span className="text-muted-foreground">Monthly P&I</span>
-                  <span className="text-center">{formatCurrency(results.originalMonthlyPayment)}</span>
-                  <span className="text-center">{formatCurrency(results.extraMonthlyPayment)}</span>
-                </div>
-                
-                <div className="grid grid-cols-3 gap-2 text-sm py-2 border-b border-border/50">
-                  <span className="text-muted-foreground">Total Payments</span>
-                  <span className="text-center">{formatCurrency(results.originalTotalPayments)}</span>
-                  <span className="text-center">{formatCurrency(results.extraTotalPayments)}</span>
-                </div>
-                
-                <div className="grid grid-cols-3 gap-2 text-sm py-2 border-b border-border/50">
-                  <span className="text-muted-foreground">Total Interest</span>
-                  <span className="text-center">{formatCurrency(results.originalTotalInterest)}</span>
-                  <span className="text-center">{formatCurrency(results.extraTotalInterest)}</span>
-                </div>
-                
-                <div className="grid grid-cols-3 gap-2 text-sm py-2 border-b border-border/50">
-                  <span className="text-muted-foreground">Loan Length</span>
-                  <span className="text-center">
-                    {results.originalYears} yrs {results.originalRemainingMonths > 0 ? `${results.originalRemainingMonths} mo` : ''}
-                  </span>
-                  <span className="text-center">
-                    {results.extraYears} yrs {results.extraRemainingMonths > 0 ? `${results.extraRemainingMonths} mo` : ''}
-                  </span>
-                </div>
-                
-                <div className="grid grid-cols-3 gap-2 text-sm py-3 bg-secondary/50 rounded-lg px-3 -mx-3">
-                  <span className="font-medium">Interest Savings</span>
-                  <span className="text-center">—</span>
-                  <span className="text-center font-bold text-accent-strong">{formatCurrency(results.interestSavings)}</span>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Time Saved */}
-          <Card className="calculator-card bg-secondary/30">
-            <CardContent className="pt-6">
-              <div className="grid grid-cols-2 gap-4 text-center">
-                <div>
-                  <Calendar className="h-6 w-6 mx-auto mb-2 text-accent" />
-                  <p className="text-sm text-muted-foreground mb-1">Time Saved</p>
-                  <p className="text-xl font-bold text-foreground">
-                    {results.yearsSaved} yrs {results.remainingMonthsSaved > 0 ? `${results.remainingMonthsSaved} mo` : ''}
-                  </p>
-                </div>
-                <div>
-                  <DollarSign className="h-6 w-6 mx-auto mb-2 text-accent" />
-                  <p className="text-sm text-muted-foreground mb-1">Extra/Month</p>
-                  <p className="text-xl font-bold text-foreground">
-                    {formatCurrency(monthlyExtraPayment)}
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          <VizCard title="Regular vs. extra payments" description="Lower is better in every row; the check marks the winner.">
+            <CompareTable
+              columns={[{ label: "Regular" }, { label: "With extra" }]}
+              recommended={results.interestSavings > 0 ? 1 : null}
+              recommendedLabel="Saves more"
+              groups={[
+                {
+                  rows: [
+                    { label: "Monthly payment", values: [results.originalMonthlyPayment, results.extraMonthlyPayment], note: "Principal and interest" },
+                    { label: "Paid off in", values: [results.originalMonths, results.extraMonths], format: yearsMonths, better: "lower" },
+                    { label: "Total interest", values: [results.originalTotalInterest, results.extraTotalInterest], better: "lower" },
+                    { label: "Total paid", values: [results.originalTotalPayments, results.extraTotalPayments], better: "lower", emphasis: true },
+                  ],
+                },
+              ]}
+            />
+          </VizCard>
         </div>
       </div>
     </div>

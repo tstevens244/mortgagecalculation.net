@@ -456,13 +456,7 @@ const USDACalculator = () => {
           </TabsContent>
 
           <TabsContent value="chart">
-            <AmortizationChart 
-              data={amortizationData}
-              monthlyTax={calculations.monthlyTax}
-              monthlyInsurance={calculations.monthlyInsurance}
-              monthlyPMI={calculations.monthlyAnnualFee}
-              monthlyHOA={calculations.monthlyHOA}
-            />
+            <AmortizationChart data={amortizationData} />
           </TabsContent>
 
           <TabsContent value="schedule">

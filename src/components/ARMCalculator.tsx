@@ -761,8 +761,8 @@ const ARMCalculator = () => {
           <TabsContent value="breakdown" className="mt-4">
             <div className="calculator-card p-4 sm:p-6">
               <PaymentBreakdown
-                principal={calculations.initialMonthlyPI * 0.3}
-                interest={calculations.initialMonthlyPI * 0.7}
+                principal={amortizationData[0]?.principal ?? 0}
+                interest={amortizationData[0]?.interest ?? 0}
                 tax={calculations.monthlyTax}
                 insurance={calculations.monthlyInsurance}
                 pmi={calculations.monthlyPMI}
@@ -773,13 +773,7 @@ const ARMCalculator = () => {
 
           <TabsContent value="chart" className="mt-4">
             <div className="calculator-card p-4 sm:p-6">
-              <AmortizationChart
-                data={amortizationData}
-                monthlyTax={calculations.monthlyTax}
-                monthlyInsurance={calculations.monthlyInsurance}
-                monthlyPMI={calculations.monthlyPMI}
-                monthlyHOA={calculations.monthlyHOA}
-              />
+              <AmortizationChart data={amortizationData} />
             </div>
           </TabsContent>
 

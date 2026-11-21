@@ -32,7 +32,7 @@ const Refinance = () => {
         name: "What is the break-even point for refinancing?",
         acceptedAnswer: {
           "@type": "Answer",
-          text: "The break-even point is how long it takes for your monthly savings to exceed your closing costs. Calculate it by dividing your total closing costs by your monthly savings. For example, if refinancing costs $6,000 and saves you $200/month, your break-even point is 30 months (2.5 years).",
+          text: "The break-even point is how long it takes for your monthly savings to exceed your closing costs. Calculate it by dividing your total closing costs by your monthly savings. For example, if refinancing costs $6,000 and saves you $200/month, your break-even point is 30 months (2.5 years). That quick estimate ignores that a new 30-year term pays more interest early on, so this calculator finds the month when the interest you actually save has covered the closing costs.",
         },
       },
       {
@@ -257,7 +257,7 @@ const Refinance = () => {
                   savings equals $1,200/year.
                 </li>
                 <li>
-                  <strong>Break-Even Point:</strong> How many months until your savings exceed closing costs. If you 
+                  <strong>Break-Even Point:</strong> How many months until the interest you save covers the closing costs (the chart shows it). If you 
                   plan to move before this date, refinancing may not make sense.
                 </li>
                 <li>

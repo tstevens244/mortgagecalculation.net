@@ -13,17 +13,11 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { HelpCircle, Home, Calendar, TrendingDown, DollarSign, TableIcon, ChartLine } from "lucide-react";
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, Legend } from "recharts";
+import { HelpCircle, Home, TrendingDown, DollarSign } from "lucide-react";
+import VizCard from "./viz/VizCard";
+import CompareTable from "./viz/CompareTable";
+import PayoffComparison from "./viz/PayoffComparison";
+import { yearsMonths } from "@/lib/amortization";
 import CurrencyInput from "./CurrencyInput";
 import PercentInput from "./PercentInput";
 import { formatCurrency } from "@/lib/formatters";
@@ -191,6 +185,8 @@ const BiWeeklyCalculator = () => {
 
       // Chart
       chartData,
+      standardMonths,
+      biWeeklyTotalMonths,
     };
   }, [loanAmount, interestRate, loanTerm, taxRate]);
 
@@ -306,108 +302,17 @@ const BiWeeklyCalculator = () => {
             </CardContent>
         </Card>
 
-          {/* Amortization Tabs - Fills remaining space */}
-          <Tabs defaultValue="chart" className="w-full">
-            <TabsList className="grid w-full grid-cols-2 mb-4">
-              <TabsTrigger value="chart" className="text-sm">
-                <ChartLine className="h-4 w-4 mr-2" />
-                <span className="hidden sm:inline">Balance Comparison</span>
-                <span className="sm:hidden">Chart</span>
-              </TabsTrigger>
-              <TabsTrigger value="schedule" className="text-sm">
-                <TableIcon className="h-4 w-4 mr-2" />
-                <span className="hidden sm:inline">Yearly Schedule</span>
-                <span className="sm:hidden">Schedule</span>
-              </TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="chart" className="mt-0">
-              <Card className="calculator-card">
-                <CardContent className="pt-6">
-                  <div className="h-[300px]">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <AreaChart data={results.chartData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
-                        <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                        <XAxis 
-                          dataKey="year" 
-                          tick={{ fontSize: 11, fill: 'hsl(var(--muted-foreground))' }}
-                          tickLine={false}
-                          axisLine={{ stroke: 'hsl(var(--border))' }}
-                        />
-                        <YAxis 
-                          tickFormatter={(value) => `$${(value / 1000).toFixed(0)}k`}
-                          tick={{ fontSize: 11, fill: 'hsl(var(--muted-foreground))' }}
-                          tickLine={false}
-                          axisLine={{ stroke: 'hsl(var(--border))' }}
-                          width={50}
-                        />
-                        <RechartsTooltip
-                          formatter={(value: number) => [formatCurrency(value), '']}
-                          contentStyle={{
-                            backgroundColor: 'hsl(var(--card))',
-                            border: '1px solid hsl(var(--border))',
-                            borderRadius: '8px',
-                            fontSize: '12px',
-                          }}
-                        />
-                        <Legend 
-                          wrapperStyle={{ fontSize: '12px' }}
-                          formatter={(value) => value === 'standardBalance' ? 'Standard' : 'Bi-Weekly'}
-                        />
-                        <Area isAnimationActive={false}
-                          type="monotone"
-                          dataKey="standardBalance"
-                          name="standardBalance"
-                          stroke="hsl(var(--muted-foreground))"
-                          fill="hsl(var(--muted-foreground) / 0.3)"
-                          strokeWidth={2}
-                        />
-                        <Area isAnimationActive={false}
-                          type="monotone"
-                          dataKey="biWeeklyBalance"
-                          name="biWeeklyBalance"
-                          stroke="hsl(var(--accent))"
-                          fill="hsl(var(--accent) / 0.3)"
-                          strokeWidth={2}
-                        />
-                      </AreaChart>
-                    </ResponsiveContainer>
-                  </div>
-                </CardContent>
-              </Card>
-            </TabsContent>
-
-            <TabsContent value="schedule" className="mt-0">
-              <Card className="calculator-card">
-                <CardContent className="pt-6">
-                  <div className="max-h-[300px] overflow-y-auto">
-                    <Table>
-                      <TableHeader>
-                        <TableRow>
-                          <TableHead className="text-center">Year</TableHead>
-                          <TableHead className="text-right">Standard Balance</TableHead>
-                          <TableHead className="text-right">Bi-Weekly Balance</TableHead>
-                          <TableHead className="text-right">Difference</TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {results.chartData.map((row, index) => (
-                          <TableRow key={index}>
-                            <TableCell className="text-center font-medium">{row.year}</TableCell>
-                            <TableCell className="text-right">{formatCurrency(row.standardBalance)}</TableCell>
-                            <TableCell className="text-right">{formatCurrency(row.biWeeklyBalance)}</TableCell>
-                            <TableCell className="text-right text-accent-strong font-medium">
-                              {formatCurrency(row.standardBalance - row.biWeeklyBalance)}
-                            </TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </div>
-                </CardContent>
-              </Card>
-            </TabsContent>
-          </Tabs>
+          <PayoffComparison
+            loanAmount={loanAmount}
+            standard={results.standardSchedule}
+            plan={results.biWeeklySchedule}
+            standardLabel="Monthly payments"
+            planLabel="Bi-weekly payments"
+            standardMonths={results.standardMonths}
+            planMonths={results.biWeeklyTotalMonths}
+            extraPaid={results.standardMonthlyPayment}
+            extraPaidLabel="Extra you pay a year"
+          />
         </div>
 
         {/* Right Column - Results */}
@@ -431,113 +336,42 @@ const BiWeeklyCalculator = () => {
             </CardContent>
           </Card>
 
-          {/* Payment Comparison */}
-          <Card className="calculator-card">
-            <CardHeader className="pb-4">
-              <CardTitle className="text-lg font-semibold">Payment Comparison</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                <div className="grid grid-cols-3 gap-2 text-sm font-medium pb-2 border-b border-border">
-                  <span></span>
-                  <span className="text-center">Standard</span>
-                  <span className="text-center">Bi-Weekly</span>
-                </div>
-
-                <div className="grid grid-cols-3 gap-2 text-sm py-2 border-b border-border/50">
-                  <span className="text-muted-foreground">Loan Term</span>
-                  <span className="text-center">
-                    {results.standardYears} yrs {results.standardRemainingMonths > 0 ? `${results.standardRemainingMonths} mo` : ''}
-                  </span>
-                  <span className="text-center">
-                    {results.biWeeklyYears} yrs {results.biWeeklyRemainingMonths > 0 ? `${results.biWeeklyRemainingMonths} mo` : ''}
-                  </span>
-                </div>
-
-                <div className="grid grid-cols-3 gap-2 text-sm py-2 border-b border-border/50">
-                  <span className="text-muted-foreground">Bi-Weekly Payment</span>
-                  <span className="text-center">—</span>
-                  <span className="text-center">{formatCurrency(results.biWeeklyPayment)}</span>
-                </div>
-
-                <div className="grid grid-cols-3 gap-2 text-sm py-2 border-b border-border/50">
-                  <span className="text-muted-foreground">Monthly Payment</span>
-                  <span className="text-center">{formatCurrency(results.standardMonthlyPayment)}</span>
-                  <span className="text-center">{formatCurrency(results.effectiveMonthlyBiWeekly)}</span>
-                </div>
-
-                <div className="grid grid-cols-3 gap-2 text-sm py-2 border-b border-border/50">
-                  <span className="text-muted-foreground">Total Interest</span>
-                  <span className="text-center">{formatCurrency(results.standardTotalInterest)}</span>
-                  <span className="text-center">{formatCurrency(results.biWeeklyTotalInterest)}</span>
-                </div>
-
-                <div className="grid grid-cols-3 gap-2 text-sm py-3 bg-secondary/50 rounded-lg px-3 -mx-3">
-                  <span className="font-medium">Interest Savings</span>
-                  <span className="text-center">—</span>
-                  <span className="text-center font-bold text-accent-strong">{formatCurrency(results.interestSavings)}</span>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Tax Savings Impact */}
-          {taxRate > 0 && (
-            <Card className="calculator-card">
-              <CardHeader className="pb-4">
-                <CardTitle className="text-lg font-semibold">Tax Savings Impact</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  <div className="grid grid-cols-3 gap-2 text-sm font-medium pb-2 border-b border-border">
-                    <span></span>
-                    <span className="text-center">Standard</span>
-                    <span className="text-center">Bi-Weekly</span>
-                  </div>
-
-                  <div className="grid grid-cols-3 gap-2 text-sm py-2 border-b border-border/50">
-                    <span className="text-muted-foreground">Tax Savings</span>
-                    <span className="text-center">{formatCurrency(results.standardTaxSavings)}</span>
-                    <span className="text-center">{formatCurrency(results.biWeeklyTaxSavings)}</span>
-                  </div>
-
-                  <div className="grid grid-cols-3 gap-2 text-sm py-2 border-b border-border/50">
-                    <span className="text-muted-foreground">Tax Savings Loss</span>
-                    <span className="text-center">—</span>
-                    <span className="text-center text-destructive">{formatCurrency(results.taxSavingsLoss)}</span>
-                  </div>
-
-                  <div className="grid grid-cols-3 gap-2 text-sm py-3 bg-secondary/50 rounded-lg px-3 -mx-3">
-                    <span className="font-medium">Net Benefit</span>
-                    <span className="text-center">—</span>
-                    <span className="text-center font-bold text-accent-strong">{formatCurrency(results.netBenefit)}</span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          )}
-
-          {/* Time Saved Summary */}
-          <Card className="calculator-card bg-secondary/30">
-            <CardContent className="pt-6">
-              <div className="grid grid-cols-2 gap-4 text-center">
-                <div>
-                  <Calendar className="h-6 w-6 mx-auto mb-2 text-accent" />
-                  <p className="text-sm text-muted-foreground mb-1">Time Saved</p>
-                  <p className="text-xl font-bold text-foreground">
-                    {results.yearsSaved} yrs {results.remainingMonthsSaved > 0 ? `${results.remainingMonthsSaved} mo` : ''}
-                  </p>
-                </div>
-                <div>
-                  <DollarSign className="h-6 w-6 mx-auto mb-2 text-accent" />
-                  <p className="text-sm text-muted-foreground mb-1">Extra/Year</p>
-                  <p className="text-xl font-bold text-foreground">
-                    {formatCurrency(results.standardMonthlyPayment)}
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          <VizCard
+            title="Monthly vs. bi-weekly"
+            description="Bi-weekly means 26 half-payments a year: the same as 13 monthly payments instead of 12."
+          >
+            <CompareTable
+              columns={[{ label: "Monthly" }, { label: "Bi-weekly" }]}
+              recommended={(taxRate > 0 ? results.netBenefit : results.interestSavings) > 0 ? 1 : null}
+              recommendedLabel="Saves more"
+              groups={[
+                {
+                  rows: [
+                    {
+                      label: "Each payment",
+                      values: [results.standardMonthlyPayment, results.biWeeklyPayment],
+                      note: "Principal and interest",
+                      display: [`${formatCurrency(results.standardMonthlyPayment)} / mo`, `${formatCurrency(results.biWeeklyPayment)} / 2 wks`],
+                    },
+                    { label: "Paid per year", values: [results.standardMonthlyPayment * 12, results.biWeeklyPayment * 26] },
+                    { label: "Paid off in", values: [results.standardMonths, results.biWeeklyTotalMonths], format: yearsMonths, better: "lower" },
+                    { label: "Total interest", values: [results.standardTotalInterest, results.biWeeklyTotalInterest], better: "lower", emphasis: true },
+                  ],
+                },
+                ...(taxRate > 0
+                  ? [
+                      {
+                        title: "If you itemize",
+                        rows: [
+                          { label: "Tax saved on interest", values: [results.standardTaxSavings, results.biWeeklyTaxSavings], note: `At your ${taxRate}% tax rate` },
+                          { label: "Interest saved after tax", values: [null, results.netBenefit], emphasis: true },
+                        ],
+                      },
+                    ]
+                  : []),
+              ]}
+            />
+          </VizCard>
         </div>
       </div>
     </div>

@@ -15,7 +15,9 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { HelpCircle, TrendingUp, DollarSign, Percent, Home } from "lucide-react";
-import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip as RechartsTooltip } from "recharts";
+import VizCard, { StatRow } from "./viz/VizCard";
+import StackedBar from "./viz/StackedBar";
+import { SERIES } from "./viz/theme";
 import CurrencyInput from "./CurrencyInput";
 import PercentInput from "./PercentInput";
 import { formatCurrency, formatPercent } from "@/lib/formatters";
@@ -232,64 +234,38 @@ const CashOutRefiCalculator = () => {
           </CardContent>
         </Card>
 
-        {/* Equity Breakdown Chart - Fills left column space */}
-        <Card className="calculator-card lg:col-span-3">
-          <CardHeader className="pb-4">
-            <CardTitle className="text-lg font-semibold">Equity Breakdown</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="h-[220px]">
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie isAnimationActive={false}
-                    data={[
-                      { name: 'Cash Out', value: results.actualCashOut, color: 'hsl(var(--accent))' },
-                      { name: 'Remaining Equity', value: Math.max(0, results.equity - results.actualCashOut), color: 'hsl(var(--primary))' },
-                      { name: 'Current Mortgage', value: currentMortgageBalance, color: 'hsl(var(--muted))' },
-                    ].filter(item => item.value > 0)}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={60}
-                    outerRadius={85}
-                    paddingAngle={2}
-                    dataKey="value"
-                  >
-                    {[
-                      { name: 'Cash Out', value: results.actualCashOut, color: 'hsl(var(--accent))' },
-                      { name: 'Remaining Equity', value: Math.max(0, results.equity - results.actualCashOut), color: 'hsl(var(--primary))' },
-                      { name: 'Current Mortgage', value: currentMortgageBalance, color: 'hsl(var(--muted))' },
-                    ].filter(item => item.value > 0).map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
-                    ))}
-                  </Pie>
-                  <RechartsTooltip
-                    formatter={(value: number) => formatCurrency(value)}
-                    contentStyle={{
-                      backgroundColor: 'hsl(var(--card))',
-                      border: '1px solid hsl(var(--border))',
-                      borderRadius: '8px',
-                      fontSize: '12px',
-                    }}
-                  />
-                  <Legend 
-                    wrapperStyle={{ fontSize: '12px' }}
-                    formatter={(value) => <span className="text-foreground">{value}</span>}
-                  />
-                </PieChart>
-              </ResponsiveContainer>
-            </div>
-            <div className="grid grid-cols-2 gap-4 text-center mt-4 pt-4 border-t border-border">
-              <div>
-                <p className="text-sm text-muted-foreground mb-1">Current Equity</p>
-                <p className="text-xl font-bold text-foreground">{formatCurrency(results.equity)}</p>
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground mb-1">Total Interest</p>
-                <p className="text-xl font-bold text-foreground">{formatCurrency(results.totalInterest)}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+        {/* Home value split: what you owe, what you take out, what you keep */}
+        <VizCard
+          className="lg:col-span-3"
+          title="Your home's value, split up"
+          description="Lenders usually cap a cash-out refinance at 80% of the home's value. Everything past the line stays as equity."
+        >
+          <StackedBar
+            size="lg"
+            legend
+            max={homeValue}
+            markers={[{ value: homeValue * 0.8, label: "80% limit" }]}
+            segments={[
+              { label: "Current mortgage", value: currentMortgageBalance, color: SERIES.principal, note: "Paid off by the new loan" },
+              ...(rollFeesIntoLoan ? [{ label: "Fees added to the loan", value: refinanceFees, color: SERIES.fees }] : []),
+              {
+                label: "Cash out",
+                value: results.actualCashOut,
+                color: SERIES.interest,
+                note: rollFeesIntoLoan ? undefined : `About ${formatCurrency(results.adjustedCashOut)} after ${formatCurrency(refinanceFees)} in fees`,
+              },
+              { label: "Equity you keep", value: Math.max(0, homeValue - results.newLoanBalance), color: SERIES.equity, muted: true },
+            ]}
+          />
+          <StatRow
+            className="mt-5"
+            stats={[
+              { label: "Equity today", value: formatCurrency(results.equity) },
+              { label: "New loan", value: formatCurrency(results.newLoanBalance), hint: `${results.combinedLTV.toFixed(0)}% of the home's value` },
+              { label: "Interest over the loan", value: formatCurrency(results.totalInterest) },
+            ]}
+          />
+        </VizCard>
 
         {/* Results Section */}
         <div className="space-y-6 lg:col-span-2 lg:row-span-2 lg:row-start-1 lg:col-start-4">
