@@ -52,8 +52,8 @@ const BreakEvenChartView = ({
       <Legend
         className="mb-3"
         items={[
-          { label: aheadLabel, color: SERIES.positive, shape: "area" },
-          { label: behindLabel, color: SERIES.negative, shape: "area" },
+          { label: aheadLabel, color: SERIES.positive, shape: "area", description: "Above the zero line: this choice has come out cheaper by that amount." },
+          { label: behindLabel, color: SERIES.negative, shape: "area", description: "Below the zero line: it hasn't yet made back its up-front costs." },
         ]}
       />
       <div className="h-[240px] sm:h-[300px]" role="img" aria-label={summary}>

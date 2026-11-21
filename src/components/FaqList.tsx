@@ -30,7 +30,7 @@ export const FaqItems = ({ faqs }: { faqs: FaqItem[] }) => (
 
 /** A "Frequently asked questions" section. */
 const FaqSection = ({ faqs }: { faqs: FaqItem[] }) => (
-  <section aria-labelledby="page-faq" className="mx-auto mt-14 max-w-3xl">
+  <section aria-labelledby="page-faq" className="page-section">
     <h2 id="page-faq" className="mb-4 text-2xl font-display font-semibold text-foreground">
       Frequently asked questions
     </h2>

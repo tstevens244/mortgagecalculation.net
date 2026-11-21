@@ -110,9 +110,9 @@ const FHA = () => {
       <div className="min-h-screen flex flex-col">
         <Header />
 
-        <main id="main-content" className="flex-1 container py-8">
+        <main id="main-content" className="flex-1 container py-8 sm:py-12">
           <article>
-            <header className="text-center mb-8">
+            <header className="page-header">
               <Breadcrumbs />
               <h1 className="text-3xl sm:text-4xl lg:text-5xl font-display font-bold text-foreground mb-4">
                 FHA Loan Calculator
@@ -130,7 +130,7 @@ const FHA = () => {
             <RelatedCalculators />
 
             <GuideContents />
-            <section className="mt-12 prose prose-slate max-w-none">
+            <section className="page-section guide">
               <h2 className="text-2xl font-display font-semibold mb-4">The Complete Guide to FHA Loans</h2>
               <p className="text-muted-foreground leading-relaxed">
                 An FHA loan is a mortgage insured by the <a href="https://www.hud.gov/program_offices/housing/fhahistory" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Federal Housing Administration (FHA)</a>, 

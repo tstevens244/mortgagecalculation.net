@@ -1,19 +1,6 @@
 import { useState, useMemo } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { HelpCircle, Home, TrendingDown, DollarSign } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { TrendingDown } from "lucide-react";
 import VizCard from "./viz/VizCard";
 import CompareTable from "./viz/CompareTable";
 import PayoffComparison from "./viz/PayoffComparison";
@@ -22,6 +9,7 @@ import CurrencyInput from "./CurrencyInput";
 import PercentInput from "./PercentInput";
 import { formatCurrency } from "@/lib/formatters";
 import StickyResult from "./StickyResult";
+import { InputCard, FieldGrid, Field, TermChoice, MoreOptions } from "./calc/Form";
 
 const BiWeeklyCalculator = () => {
   // Loan Information
@@ -192,115 +180,36 @@ const BiWeeklyCalculator = () => {
 
   return (
     <div className="space-y-6">
-      <div className="grid lg:grid-cols-5 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
         {/* Left Column - Inputs */}
         <div className="space-y-6 lg:col-span-3">
-          {/* Loan Information */}
-          <Card className="calculator-card">
-            <CardHeader className="pb-4">
-              <CardTitle className="text-lg font-semibold flex items-center gap-2">
-                <Home className="h-5 w-5 text-accent" />
-                Loan Information
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2">
-                <div className="flex flex-col gap-1.5">
-                  <Label htmlFor="bi-weekly-home-price" className="text-sm font-medium text-foreground">
-                    Home Price
-                  </Label>
-                  <CurrencyInput id="bi-weekly-home-price" value={homePrice} onChange={setHomePrice} />
-                </div>
-
-                <div className="flex flex-col gap-1.5">
-                  <Label htmlFor="bi-weekly-down-payment" className="text-sm font-medium text-foreground">
-                    Down Payment
-                  </Label>
-                  <CurrencyInput id="bi-weekly-down-payment" value={downPayment} onChange={setDownPayment} />
-                </div>
-
-                <div className="flex flex-col gap-1.5">
-                  <Label htmlFor="bi-weekly-interest-rate" className="text-sm font-medium text-foreground">
-                    Interest Rate
-                  </Label>
-                  <div className="flex gap-1 sm:gap-2 flex-1">
-                    <PercentInput id="bi-weekly-interest-rate"
-                      value={interestRate}
-                      onChange={setInterestRate}
-                      min={0}
-                      max={20}
-                      decimalPlaces={3}
-                    />
-                  </div>
-                </div>
-
-                <div className="flex flex-col gap-1.5">
-                  <Label htmlFor="bi-weekly-loan-term" className="text-sm font-medium text-foreground">
-                    Loan Term
-                  </Label>
-                  <Select value={loanTerm} onValueChange={setLoanTerm}>
-                    <SelectTrigger id="bi-weekly-loan-term" className="h-8 sm:h-10 text-sm flex-1">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="30">30 years</SelectItem>
-                      <SelectItem value="25">25 years</SelectItem>
-                      <SelectItem value="20">20 years</SelectItem>
-                      <SelectItem value="15">15 years</SelectItem>
-                      <SelectItem value="10">10 years</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-
-              <div className="mt-4 pt-4 border-t border-border">
-                <div className="flex justify-between items-center text-sm">
-                  <span className="text-muted-foreground">Loan Amount</span>
-                  <span className="font-semibold">{formatCurrency(loanAmount)}</span>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Tax Information */}
-          <Card className="calculator-card">
-            <CardHeader className="pb-4">
-              <CardTitle className="text-lg font-semibold flex items-center gap-2">
-                <DollarSign className="h-5 w-5 text-accent" />
-                Tax Information
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex flex-col gap-1.5">
-                <Label htmlFor="bi-weekly-tax-rate" className="text-sm font-medium text-foreground flex items-center gap-1">
-                  Tax rate (if itemizing)
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <HelpCircle className="h-3 w-3 sm:h-4 sm:w-4 cursor-help" />
-                    </TooltipTrigger>
-                    <TooltipContent className="max-w-xs">
-                      <p>Enter your combined state & federal marginal tax rate if you itemize deductions. Enter 0 if you take the standard deduction.</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </Label>
-                <div className="flex gap-1 sm:gap-2 flex-1">
-                  <PercentInput id="bi-weekly-tax-rate"
-                    value={taxRate}
-                    onChange={setTaxRate}
-                    min={0}
-                    max={50}
-                    decimalPlaces={0}
-                  />
-                </div>
-              </div>
-
-              <div className="p-3 bg-secondary/50 rounded-lg mt-4">
-                <p className="text-xs text-muted-foreground">
-                  <strong>Note:</strong> Most taxpayers use standard deductions. If you're not itemizing, enter 0% for an accurate comparison.
-                </p>
-              </div>
-            </CardContent>
-        </Card>
+          <InputCard id="loan-details" title="Your loan" description="Bi-weekly payments are half your monthly payment every two weeks.">
+            <FieldGrid>
+              <Field id="bi-weekly-home-price" label="Home price">
+                <CurrencyInput id="bi-weekly-home-price" value={homePrice} onChange={setHomePrice} />
+              </Field>
+              <Field id="bi-weekly-down-payment" label="Down payment" hint={`Loan amount: ${formatCurrency(loanAmount)}`}>
+                <CurrencyInput id="bi-weekly-down-payment" value={downPayment} onChange={setDownPayment} aria-describedby="bi-weekly-down-payment-hint" />
+              </Field>
+              <Field id="bi-weekly-interest-rate" label="Interest rate">
+                <PercentInput id="bi-weekly-interest-rate" value={interestRate} onChange={setInterestRate} min={0} max={20} decimalPlaces={3} />
+              </Field>
+              <Field id="bi-weekly-loan-term" label="Loan term">
+                <TermChoice id="bi-weekly-loan-term" value={Number(loanTerm)} onChange={(y) => setLoanTerm(String(y))} terms={[30, 20, 15, 10]} />
+              </Field>
+            </FieldGrid>
+            <MoreOptions title="Taxes (only if you itemize)" summary={taxRate > 0 ? `${taxRate}% tax rate on mortgage interest` : "Not itemizing (most people)"}>
+              <FieldGrid>
+                <Field
+                  id="bi-weekly-tax-rate"
+                  label="Tax rate if itemizing"
+                  info="Your combined federal and state marginal rate, only if you itemize deductions. Most people take the standard deduction: leave it at 0."
+                >
+                  <PercentInput id="bi-weekly-tax-rate" value={taxRate} onChange={setTaxRate} min={0} max={50} decimalPlaces={0} />
+                </Field>
+              </FieldGrid>
+            </MoreOptions>
+          </InputCard>
 
           <PayoffComparison
             loanAmount={loanAmount}

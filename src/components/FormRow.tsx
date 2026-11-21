@@ -9,20 +9,18 @@ interface FormRowProps {
   children: ReactNode;
 }
 
-/** Label above the field on phones, beside it from the small breakpoint up. */
+/** Label above its field, matching the calculator forms (calc/Form Field). */
 const FormRow = ({ id, label, hint, children }: FormRowProps) => (
-  <div className="flex flex-col gap-1.5 sm:flex-row sm:items-start sm:gap-3">
-    <Label htmlFor={id} className="text-sm text-muted-foreground sm:w-[200px] sm:shrink-0 sm:pt-2.5">
+  <div className="flex min-w-0 flex-col gap-1.5">
+    <Label htmlFor={id} className="text-sm font-medium text-foreground">
       {label}
     </Label>
-    <div className="flex flex-1 flex-col gap-1">
-      {children}
-      {hint && (
-        <span id={`${id}-hint`} className="text-xs text-muted-foreground">
-          {hint}
-        </span>
-      )}
-    </div>
+    {children}
+    {hint && (
+      <span id={`${id}-hint`} className="text-xs text-muted-foreground">
+        {hint}
+      </span>
+    )}
   </div>
 );
 

@@ -96,9 +96,9 @@ const CategoryHub = ({ groupId, content }: CategoryHubProps) => {
       <div className="min-h-screen flex flex-col">
         <Header />
 
-        <main id="main-content" className="flex-1 container py-8">
+        <main id="main-content" className="flex-1 container py-8 sm:py-12">
           <article>
-            <header className="mx-auto mb-10 max-w-3xl text-center">
+            <header className="page-header">
               <Breadcrumbs />
               <h1 className="mb-4 text-3xl font-display font-bold text-foreground sm:text-4xl lg:text-5xl">
                 {group.hubName}
@@ -146,9 +146,9 @@ const CategoryHub = ({ groupId, content }: CategoryHubProps) => {
               </ul>
             </section>
 
-            <div className="hub-content mx-auto mt-16 max-w-3xl">{content.body}</div>
+            <div className="hub-content page-section">{content.body}</div>
 
-            <section aria-labelledby="hub-faq" className="mx-auto mt-14 max-w-3xl">
+            <section aria-labelledby="hub-faq" className="page-section">
               <h2 id="hub-faq" className="mb-4 text-2xl font-display font-semibold text-foreground">
                 Frequently asked questions
               </h2>
@@ -168,7 +168,7 @@ const CategoryHub = ({ groupId, content }: CategoryHubProps) => {
               </div>
             </section>
 
-            <nav aria-labelledby="hub-more" className="mx-auto mt-14 max-w-4xl">
+            <nav aria-labelledby="hub-more" className="page-section-wide">
               <h2 id="hub-more" className="mb-4 text-xl font-display font-semibold text-foreground">
                 More calculators
               </h2>

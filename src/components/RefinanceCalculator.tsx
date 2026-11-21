@@ -1,14 +1,12 @@
 import { useState, useMemo } from "react";
-import { Home, Percent, DollarSign, Calculator, Calendar, TrendingDown, AlertTriangle } from "lucide-react";
+import { TrendingDown } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import CurrencyInput from "./CurrencyInput";
 import PercentInput from "./PercentInput";
 import { formatCurrency } from "@/lib/formatters";
 import StickyResult from "./StickyResult";
+import { InputCard, FieldGrid, Field, TermChoice, MoreOptions, summarize } from "./calc/Form";
 import VizCard from "./viz/VizCard";
 import CompareTable from "./viz/CompareTable";
 import { BreakEvenChart } from "./viz/LazyCharts";
@@ -246,275 +244,111 @@ const RefinanceCalculator = () => {
         </TabsList>
 
         <TabsContent value="calculator" className="space-y-6">
-          <div className="grid gap-6 lg:grid-cols-2">
-            {/* Original Loan Details */}
-            <section className="calculator-card p-4 sm:p-6" aria-labelledby="original-loan-heading">
-              <h2 id="original-loan-heading" className="text-base sm:text-xl font-display font-semibold mb-4 flex items-center gap-2">
-                <Home className="h-4 w-4 sm:h-5 sm:w-5 text-accent" aria-hidden="true" />
-                Original Loan Details
-              </h2>
-
-              <div className="space-y-3">
-                <div className="flex flex-col gap-1.5">
-                  <Label htmlFor="refinance-original-home-price" className="text-sm font-medium text-foreground">
-                    Original Home Price
-                  </Label>
-                  <CurrencyInput id="refinance-original-home-price"
-                    value={inputs.originalHomePrice}
-                    onChange={(value) => updateInput("originalHomePrice", value)}
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+            <InputCard id="original-loan" title="Your current loan">
+              <FieldGrid>
+                <Field id="refinance-original-home-price" label="Purchase price">
+                  <CurrencyInput id="refinance-original-home-price" value={inputs.originalHomePrice} onChange={(value) => updateInput("originalHomePrice", value)} />
+                </Field>
+                <Field id="refinance-original-down-payment" label="Down payment">
+                  <CurrencyInput id="refinance-original-down-payment" value={inputs.originalDownPayment} onChange={(value) => updateInput("originalDownPayment", value)} />
+                </Field>
+                <Field id="refinance-interest-rate" label="Interest rate">
+                  <PercentInput id="refinance-interest-rate" value={inputs.originalInterestRate} onChange={(value) => updateInput("originalInterestRate", value)} min={0} max={20} decimalPlaces={3} />
+                </Field>
+                <Field id="refinance-months-already-paid" label="Payments made so far" hint={`About ${(inputs.monthsAlreadyPaid / 12).toFixed(1).replace(/\.0$/, "")} years`}>
+                  <Input
+                    id="refinance-months-already-paid"
+                    type="text"
+                    inputMode="numeric"
+                    value={inputs.monthsAlreadyPaid}
+                    onChange={(e) => updateInput("monthsAlreadyPaid", parseInt(e.target.value) || 0)}
+                    aria-describedby="refinance-months-already-paid-hint"
                   />
+                </Field>
+                <Field id="refinance-loan-term" label="Original term" className="sm:col-span-2">
+                  <TermChoice id="refinance-loan-term" value={inputs.originalLoanTerm} onChange={(y) => updateInput("originalLoanTerm", y)} />
+                </Field>
+              </FieldGrid>
+              <dl className="mt-5 grid grid-cols-2 gap-3 border-t border-border pt-4 text-sm">
+                <div>
+                  <dt className="text-muted-foreground">Balance today</dt>
+                  <dd className="text-base font-semibold tabular-nums text-foreground">{formatCurrency(calculations.original.remainingBalance)}</dd>
                 </div>
+                <div>
+                  <dt className="text-muted-foreground">Payment today</dt>
+                  <dd className="text-base font-semibold tabular-nums text-foreground">{formatCurrency(calculations.original.monthlyPayment)}</dd>
+                </div>
+              </dl>
+            </InputCard>
 
-                <div className="flex flex-col gap-1.5">
-                  <Label htmlFor="refinance-original-down-payment" className="text-sm font-medium text-foreground">
-                    Original Down Payment
-                  </Label>
-                  <CurrencyInput id="refinance-original-down-payment"
-                    value={inputs.originalDownPayment}
-                    onChange={(value) => updateInput("originalDownPayment", value)}
+            <InputCard id="refinance" title="The new loan">
+              <FieldGrid>
+                <Field id="refinance-new-interest-rate" label="New interest rate">
+                  <PercentInput id="refinance-new-interest-rate" value={inputs.newInterestRate} onChange={(value) => updateInput("newInterestRate", value)} min={0} max={20} decimalPlaces={3} />
+                </Field>
+                <Field id="refinance-years-before-sell" label="Years you'll keep it" info="Until you expect to sell or refinance again. Refinancing only pays off if you keep the loan past the break-even point.">
+                  <Input
+                    id="refinance-years-before-sell"
+                    type="text"
+                    inputMode="numeric"
+                    value={inputs.yearsBeforeSell}
+                    onChange={(e) => updateInput("yearsBeforeSell", parseInt(e.target.value) || 0)}
                   />
+                </Field>
+                <Field id="refinance-new-loan-term" label="New term" className="sm:col-span-2">
+                  <TermChoice id="refinance-new-loan-term" value={inputs.newLoanTerm} onChange={(y) => updateInput("newLoanTerm", y)} />
+                </Field>
+              </FieldGrid>
+
+              <MoreOptions
+                title="Closing costs"
+                summary={summarize(
+                  `${inputs.discountPoints} pts`,
+                  `${inputs.originationFees}% origination`,
+                  `${formatCurrency(inputs.otherClosingCosts)} other`,
+                  `${formatCurrency(calculations.refinanced.totalClosingCosts)} total`,
+                )}
+              >
+                <FieldGrid>
+                  <Field id="refinance-discount-points" label="Discount points" unit="% of loan" info="Each point costs 1% of the loan and usually lowers the rate about 0.25%.">
+                    <PercentInput id="refinance-discount-points" value={inputs.discountPoints} onChange={(value) => updateInput("discountPoints", value)} min={0} max={10} decimalPlaces={2} />
+                  </Field>
+                  <Field id="refinance-origination-fees" label="Origination fee" unit="% of loan">
+                    <PercentInput id="refinance-origination-fees" value={inputs.originationFees} onChange={(value) => updateInput("originationFees", value)} min={0} max={10} decimalPlaces={2} />
+                  </Field>
+                  <Field id="refinance-other-closing-costs" label="Other closing costs" info="Appraisal, title, recording and other fees.">
+                    <CurrencyInput id="refinance-other-closing-costs" value={inputs.otherClosingCosts} onChange={(value) => updateInput("otherClosingCosts", value)} />
+                  </Field>
+                </FieldGrid>
+              </MoreOptions>
+
+              <MoreOptions
+                title="Taxes (only if you itemize)"
+                summary={inputs.federalTaxRate + inputs.stateTaxRate > 0 ? `${inputs.federalTaxRate + inputs.stateTaxRate}% combined tax rate` : "Not itemizing (most people)"}
+              >
+                <FieldGrid>
+                  <Field id="refinance-federal-tax-rate" label="Federal tax rate" info="Your marginal rate, only if you itemize. Most people take the standard deduction: leave at 0.">
+                    <PercentInput id="refinance-federal-tax-rate" value={inputs.federalTaxRate} onChange={(v) => updateInput("federalTaxRate", v)} min={0} max={50} decimalPlaces={0} />
+                  </Field>
+                  <Field id="refinance-state-tax-rate" label="State tax rate">
+                    <PercentInput id="refinance-state-tax-rate" value={inputs.stateTaxRate} onChange={(v) => updateInput("stateTaxRate", v)} min={0} max={20} decimalPlaces={1} />
+                  </Field>
+                </FieldGrid>
+              </MoreOptions>
+
+              <dl className="mt-5 grid grid-cols-2 gap-3 border-t border-border pt-4 text-sm">
+                <div>
+                  <dt className="text-muted-foreground">New payment</dt>
+                  <dd className="text-base font-semibold tabular-nums text-foreground">{formatCurrency(calculations.refinanced.monthlyPayment)}</dd>
                 </div>
-
-                <div className="flex flex-col gap-1.5">
-                  <Label className="text-sm font-medium text-foreground">
-                    Original Loan Amount
-                  </Label>
-                  <div className="flex-1 h-8 sm:h-10 flex items-center px-3 bg-muted rounded-md text-sm font-medium">
-                    {formatCurrency(inputs.originalHomePrice - inputs.originalDownPayment)}
-                  </div>
+                <div>
+                  <dt className="text-muted-foreground">Closing costs</dt>
+                  <dd className="text-base font-semibold tabular-nums text-foreground">{formatCurrency(calculations.refinanced.totalClosingCosts)}</dd>
                 </div>
-
-                <div className="flex flex-col gap-1.5">
-                  <Label htmlFor="refinance-loan-term" className="text-sm font-medium text-foreground">
-                    Loan Term
-                  </Label>
-                  <Select
-                    value={inputs.originalLoanTerm.toString()}
-                    onValueChange={(v) => updateInput("originalLoanTerm", parseInt(v))}
-                  >
-                    <SelectTrigger id="refinance-loan-term" className="h-8 sm:h-10 text-sm flex-1">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="10">10 years</SelectItem>
-                      <SelectItem value="15">15 years</SelectItem>
-                      <SelectItem value="20">20 years</SelectItem>
-                      <SelectItem value="30">30 years</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="flex flex-col gap-1.5">
-                  <Label htmlFor="refinance-interest-rate" className="text-sm font-medium text-foreground">
-                    Interest Rate
-                  </Label>
-                  <div className="flex gap-2 flex-1 items-center">
-                    <PercentInput id="refinance-interest-rate"
-                      value={inputs.originalInterestRate}
-                      onChange={(value) => updateInput("originalInterestRate", value)}
-                      min={0}
-                      max={30}
-                      decimalPlaces={3}
-                    />
-                  </div>
-                </div>
-
-                <div className="flex flex-col gap-1.5">
-                  <Label htmlFor="refinance-months-already-paid" className="text-sm font-medium text-foreground">
-                    Months Already Paid
-                  </Label>
-                  <div className="flex gap-2 flex-1 items-center">
-                    <Input id="refinance-months-already-paid"
-                      type="text"
-                      inputMode="numeric"
-                      value={inputs.monthsAlreadyPaid}
-                      onChange={(e) => updateInput("monthsAlreadyPaid", parseInt(e.target.value) || 0)}
-                      className="h-8 sm:h-10 text-sm"
-                    />
-                    <span className="text-muted-foreground text-sm">months</span>
-                  </div>
-                </div>
-
-                <div className="pt-2 border-t border-border">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">Current Remaining Balance</span>
-                    <span className="font-semibold">{formatCurrency(calculations.original.remainingBalance)}</span>
-                  </div>
-                  <div className="flex justify-between text-sm mt-1">
-                    <span className="text-muted-foreground">Current Monthly Payment</span>
-                    <span className="font-semibold">{formatCurrency(calculations.original.monthlyPayment)}</span>
-                  </div>
-                </div>
-              </div>
-            </section>
-
-            {/* Refinanced Loan Details */}
-            <section className="calculator-card p-4 sm:p-6" aria-labelledby="refinance-heading">
-              <h2 id="refinance-heading" className="text-base sm:text-xl font-display font-semibold mb-4 flex items-center gap-2">
-                <Calculator className="h-4 w-4 sm:h-5 sm:w-5 text-accent" aria-hidden="true" />
-                Refinanced Loan Details
-              </h2>
-
-              <div className="space-y-3">
-                <div className="flex flex-col gap-1.5">
-                  <Label htmlFor="refinance-new-loan-term" className="text-sm font-medium text-foreground">
-                    New Loan Term
-                  </Label>
-                  <Select
-                    value={inputs.newLoanTerm.toString()}
-                    onValueChange={(v) => updateInput("newLoanTerm", parseInt(v))}
-                  >
-                    <SelectTrigger id="refinance-new-loan-term" className="h-8 sm:h-10 text-sm flex-1">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="10">10 years</SelectItem>
-                      <SelectItem value="15">15 years</SelectItem>
-                      <SelectItem value="20">20 years</SelectItem>
-                      <SelectItem value="30">30 years</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="flex flex-col gap-1.5">
-                  <Label htmlFor="refinance-new-interest-rate" className="text-sm font-medium text-foreground">
-                    New Interest Rate
-                  </Label>
-                  <div className="flex gap-2 flex-1 items-center">
-                    <PercentInput id="refinance-new-interest-rate"
-                      value={inputs.newInterestRate}
-                      onChange={(value) => updateInput("newInterestRate", value)}
-                      min={0}
-                      max={30}
-                      decimalPlaces={3}
-                    />
-                  </div>
-                </div>
-
-                <div className="flex flex-col gap-1.5">
-                  <Label htmlFor="refinance-years-before-sell" className="text-sm font-medium text-foreground">
-                    Years Before Sell
-                  </Label>
-                  <div className="flex gap-2 flex-1 items-center">
-                    <Input id="refinance-years-before-sell"
-                      type="text"
-                      inputMode="numeric"
-                      value={inputs.yearsBeforeSell}
-                      onChange={(e) => updateInput("yearsBeforeSell", parseInt(e.target.value) || 0)}
-                      className="h-8 sm:h-10 text-sm"
-                    />
-                    <span className="text-muted-foreground text-sm">years</span>
-                  </div>
-                </div>
-
-                <div className="pt-3 border-t border-border">
-                  <h3 className="text-sm font-medium mb-2">Fees and Points</h3>
-                  
-                  <div className="flex items-center gap-3 mb-2">
-                    <Label htmlFor="refinance-discount-points" className="text-xs sm:text-sm text-muted-foreground min-w-[130px]">
-                      Discount Points
-                    </Label>
-                      <div className="flex gap-2 flex-1 items-center">
-                      <PercentInput id="refinance-discount-points"
-                        value={inputs.discountPoints}
-                        onChange={(value) => updateInput("discountPoints", value)}
-                        min={0}
-                        max={10}
-                        decimalPlaces={2}
-                      />
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-3 mb-2">
-                    <Label htmlFor="refinance-origination-fees" className="text-xs sm:text-sm text-muted-foreground min-w-[130px]">
-                      Origination Fees
-                    </Label>
-                    <div className="flex gap-2 flex-1 items-center">
-                      <PercentInput id="refinance-origination-fees"
-                        value={inputs.originationFees}
-                        onChange={(value) => updateInput("originationFees", value)}
-                        min={0}
-                        max={10}
-                        decimalPlaces={2}
-                      />
-                    </div>
-                  </div>
-
-                  <div className="flex flex-col gap-1.5">
-                    <Label htmlFor="refinance-other-closing-costs" className="text-sm font-medium text-foreground">
-                      Other Closing Costs
-                    </Label>
-                    <CurrencyInput id="refinance-other-closing-costs"
-                      value={inputs.otherClosingCosts}
-                      onChange={(value) => updateInput("otherClosingCosts", value)}
-                    />
-                  </div>
-                </div>
-
-                <div className="pt-2 border-t border-border">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">New Monthly Payment</span>
-                    <span className="font-semibold">{formatCurrency(calculations.refinanced.monthlyPayment)}</span>
-                  </div>
-                  <div className="flex justify-between text-sm mt-1">
-                    <span className="text-muted-foreground">Total Closing Costs</span>
-                    <span className="font-semibold">{formatCurrency(calculations.refinanced.totalClosingCosts)}</span>
-                  </div>
-                </div>
-              </div>
-            </section>
+              </dl>
+            </InputCard>
           </div>
-
-          {/* Tax Rates */}
-          <section className="calculator-card p-4 sm:p-6" aria-labelledby="tax-heading">
-            <h2 id="tax-heading" className="text-base sm:text-xl font-display font-semibold mb-4 flex items-center gap-2">
-              <Percent className="h-4 w-4 sm:h-5 sm:w-5 text-accent" aria-hidden="true" />
-              Federal & State Income Taxes
-            </h2>
-
-            <Alert className="mb-4 border-amber-500/50 bg-amber-500/10">
-              <AlertTriangle className="h-4 w-4 text-amber-500" />
-              <AlertTitle className="text-amber-600">Are You Itemizing Deductions?</AlertTitle>
-              <AlertDescription className="text-xs text-muted-foreground">
-                With the higher standard deductions from the 2017 TCJA, few filers itemize. If you don't plan on 
-                itemizing, set both tax rates to 0% to remove their impact on your calculation.
-              </AlertDescription>
-            </Alert>
-
-            <div className="grid gap-4 sm:grid-cols-2">
-              <div className="flex flex-col gap-1.5">
-                <Label htmlFor="refinance-federal-tax-rate" className="text-sm font-medium text-foreground">
-                  Federal tax rate (if you itemize)
-                </Label>
-                <div className="flex gap-2 flex-1 items-center">
-                  <PercentInput id="refinance-federal-tax-rate"
-                    value={inputs.federalTaxRate}
-                    onChange={(v) => updateInput("federalTaxRate", v)}
-                    min={0}
-                    max={50}
-                    decimalPlaces={2}
-                    className="h-8 sm:h-10 text-sm"
-                  />
-                </div>
-              </div>
-
-              <div className="flex flex-col gap-1.5">
-                <Label htmlFor="refinance-state-tax-rate" className="text-sm font-medium text-foreground">
-                  State tax rate (if you itemize)
-                </Label>
-                <div className="flex gap-2 flex-1 items-center">
-                  <PercentInput id="refinance-state-tax-rate"
-                    value={inputs.stateTaxRate}
-                    onChange={(v) => updateInput("stateTaxRate", v)}
-                    min={0}
-                    max={20}
-                    decimalPlaces={2}
-                    className="h-8 sm:h-10 text-sm"
-                  />
-                </div>
-              </div>
-            </div>
-          </section>
 
           {/* Results Summary Card */}
           <StickyResult targetId="calc-result" label={calculations.comparison.shouldRefinance ? "Refinancing saves" : "Refinancing costs"} value={`${formatCurrency(Math.abs(calculations.comparison.totalBenefit))}${calculations.comparison.shouldRefinance && Number.isFinite(calculations.comparison.breakEvenMonths) ? ` · break-even ${calculations.comparison.breakEvenMonths} mo` : ""}`} />

@@ -1,20 +1,11 @@
 import { useState, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { HelpCircle, TrendingUp, DollarSign, Percent, Home } from "lucide-react";
+import { HelpCircle, TrendingUp, DollarSign, Percent } from "lucide-react";
 import VizCard, { StatRow } from "./viz/VizCard";
 import StackedBar from "./viz/StackedBar";
 import { SERIES } from "./viz/theme";
@@ -22,6 +13,7 @@ import CurrencyInput from "./CurrencyInput";
 import PercentInput from "./PercentInput";
 import { formatCurrency, formatPercent } from "@/lib/formatters";
 import StickyResult from "./StickyResult";
+import { InputCard, FieldGrid, Field, TermChoice, MoreOptions, Choice, summarize } from "./calc/Form";
 
 const CashOutRefiCalculator = () => {
   const [homeValue, setHomeValue] = useState(400000);
@@ -94,145 +86,46 @@ const CashOutRefiCalculator = () => {
         </p>
       </div>
 
-      <div className="grid lg:grid-cols-5 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
         {/* Input Section */}
-        <Card className="calculator-card lg:col-span-3">
-          <CardHeader className="pb-4">
-            <CardTitle className="text-lg font-semibold flex items-center gap-2">
-              <Home className="h-5 w-5 text-accent" />
-              Loan Details
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2">
-              {/* Home Value */}
-              <div className="flex flex-col gap-1.5">
-                <Label htmlFor="cash-out-refi-home-value" className="text-sm font-medium text-foreground">
-                  Home Value
-                </Label>
-                <CurrencyInput id="cash-out-refi-home-value" value={homeValue} onChange={setHomeValue} />
-              </div>
-
-              {/* Current Mortgage Balance */}
-              <div className="flex flex-col gap-1.5">
-                <Label htmlFor="cash-out-refi-current-balance" className="text-sm font-medium text-foreground flex items-center gap-1">
-                  Current Balance
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <HelpCircle className="h-3 w-3 sm:h-4 sm:w-4 cursor-help" />
-                    </TooltipTrigger>
-                    <TooltipContent className="max-w-xs">
-                      <p>The remaining balance on your current mortgage.</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </Label>
-                <CurrencyInput id="cash-out-refi-current-balance" value={currentMortgageBalance} onChange={setCurrentMortgageBalance} />
-              </div>
-
-              {/* Loan Term */}
-              <div className="flex flex-col gap-1.5">
-                <Label htmlFor="cash-out-refi-loan-term" className="text-sm font-medium text-foreground flex items-center gap-1">
-                  Loan Term
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <HelpCircle className="h-3 w-3 sm:h-4 sm:w-4 cursor-help" />
-                    </TooltipTrigger>
-                    <TooltipContent className="max-w-xs">
-                      <p>The length of your new refinanced mortgage.</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </Label>
-                <Select value={loanTerm} onValueChange={setLoanTerm}>
-                  <SelectTrigger id="cash-out-refi-loan-term" className="h-8 sm:h-10 text-sm flex-1">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="30">30-year fixed</SelectItem>
-                    <SelectItem value="20">20-year fixed</SelectItem>
-                    <SelectItem value="15">15-year fixed</SelectItem>
-                    <SelectItem value="10">10-year fixed</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {/* Interest Rate */}
-              <div className="flex flex-col gap-1.5">
-                <Label htmlFor="cash-out-refi-interest-rate" className="text-sm font-medium text-foreground flex items-center gap-1">
-                  Interest Rate
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <HelpCircle className="h-3 w-3 sm:h-4 sm:w-4 cursor-help" />
-                    </TooltipTrigger>
-                    <TooltipContent className="max-w-xs">
-                      <p>The interest rate for your new refinanced loan.</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </Label>
-                <div className="flex gap-1 sm:gap-2 flex-1">
-                  <PercentInput id="cash-out-refi-interest-rate"
-                    value={interestRate}
-                    onChange={setInterestRate}
-                    min={0}
-                    max={20}
-                    decimalPlaces={3}
-                  />
-                </div>
-              </div>
-
-              {/* Desired Cash Out */}
-              <div className="flex flex-col gap-1.5">
-                <Label htmlFor="cash-out-refi-cash-out" className="text-sm font-medium text-foreground flex items-center gap-1">
-                  Cash-Out
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <HelpCircle className="h-3 w-3 sm:h-4 sm:w-4 cursor-help" />
-                    </TooltipTrigger>
-                    <TooltipContent className="max-w-xs">
-                      <p>The amount of cash you'd like to receive. Capped at 80% LTV.</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </Label>
-                <CurrencyInput id="cash-out-refi-cash-out" value={desiredCashOut} onChange={setDesiredCashOut} />
-              </div>
-
-              {/* Refinance Fees */}
-              <div className="flex flex-col gap-1.5">
-                <Label htmlFor="cash-out-refi-refi-fees" className="text-sm font-medium text-foreground flex items-center gap-1">
-                  Refi Fees
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <HelpCircle className="h-3 w-3 sm:h-4 sm:w-4 cursor-help" />
-                    </TooltipTrigger>
-                    <TooltipContent className="max-w-xs">
-                      <p>Closing costs and fees. Typically 2-5% of the loan amount.</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </Label>
+        <InputCard id="cash-out-inputs" className="lg:col-span-3" title="Your home and new loan">
+          <FieldGrid>
+            <Field id="cash-out-refi-home-value" label="Home value">
+              <CurrencyInput id="cash-out-refi-home-value" value={homeValue} onChange={setHomeValue} />
+            </Field>
+            <Field id="cash-out-refi-current-balance" label="Mortgage balance" info="What you still owe on your current mortgage.">
+              <CurrencyInput id="cash-out-refi-current-balance" value={currentMortgageBalance} onChange={setCurrentMortgageBalance} />
+            </Field>
+            <Field id="cash-out-refi-cash-out" label="Cash you want" info="Capped so the new loan stays within 80% of the home's value.">
+              <CurrencyInput id="cash-out-refi-cash-out" value={desiredCashOut} onChange={setDesiredCashOut} />
+            </Field>
+            <Field id="cash-out-refi-interest-rate" label="New interest rate">
+              <PercentInput id="cash-out-refi-interest-rate" value={interestRate} onChange={setInterestRate} min={0} max={20} decimalPlaces={3} />
+            </Field>
+          </FieldGrid>
+          <MoreOptions
+            title="Loan term & fees"
+            summary={summarize(`${loanTerm}-year fixed`, `${formatCurrency(refinanceFees)} in fees`, rollFeesIntoLoan ? "added to the loan" : "paid at closing")}
+          >
+            <FieldGrid>
+              <Field id="cash-out-refi-loan-term" label="New loan term" className="sm:col-span-2">
+                <TermChoice id="cash-out-refi-loan-term" value={Number(loanTerm)} onChange={(y) => setLoanTerm(String(y))} />
+              </Field>
+              <Field id="cash-out-refi-refi-fees" label="Closing costs" info="Usually 2% to 5% of the new loan.">
                 <CurrencyInput id="cash-out-refi-refi-fees" value={refinanceFees} onChange={setRefinanceFees} />
-              </div>
-            </div>
-
-            {/* Roll Fees Checkbox */}
-            <div className="flex items-center space-x-3 pt-4 mt-4 border-t border-border">
-              <Checkbox
-                id="rollFees"
-                checked={rollFeesIntoLoan}
-                onCheckedChange={(checked) => setRollFeesIntoLoan(checked === true)}
-              />
-              <Label htmlFor="rollFees" className="text-sm font-normal cursor-pointer flex items-center gap-2">
-                Roll fees into new loan
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <HelpCircle className="h-4 w-4 text-muted-foreground cursor-help" />
-                  </TooltipTrigger>
-                  <TooltipContent className="max-w-xs">
-                    <p>If checked, fees will be added to your loan balance.</p>
-                  </TooltipContent>
-                </Tooltip>
-              </Label>
-            </div>
-          </CardContent>
-        </Card>
+              </Field>
+              <Field id="rollFees" label="Pay closing costs">
+                <Choice
+                  id="rollFees"
+                  label="Pay closing costs"
+                  value={rollFeesIntoLoan ? "loan" : "cash"}
+                  onChange={(v) => setRollFeesIntoLoan(v === "loan")}
+                  options={[{ value: "cash", label: "At closing" }, { value: "loan", label: "In the loan" }]}
+                />
+              </Field>
+            </FieldGrid>
+          </MoreOptions>
+        </InputCard>
 
         {/* Home value split: what you owe, what you take out, what you keep */}
         <VizCard

@@ -126,9 +126,9 @@ const SecondMortgage = () => {
       <div className="min-h-screen flex flex-col">
         <Header />
 
-        <main id="main-content" className="flex-1 container py-8">
+        <main id="main-content" className="flex-1 container py-8 sm:py-12">
           <article>
-            <header className="text-center mb-8">
+            <header className="page-header">
               <Breadcrumbs />
               <h1 className="text-3xl sm:text-4xl lg:text-5xl font-display font-bold text-foreground mb-4">
                 Piggyback Loan Calculator (80/10/10)
@@ -147,7 +147,7 @@ const SecondMortgage = () => {
 
             <GuideContents />
             {/* Comprehensive Guide Section */}
-            <section className="mt-16 prose prose-slate max-w-none">
+            <section className="page-section guide">
               <h2 className="text-2xl font-display font-semibold mb-4">Piggyback Loan Guide: 80/10/10, 80/15/5 and 80/20</h2>
               <p className="text-muted-foreground leading-relaxed">
                 When you can't make a 20% down payment, you face a choice: pay Private Mortgage Insurance (PMI) 

@@ -113,7 +113,7 @@ const ARM = () => {
 
         <main id="main-content" className="flex-1">
           <article className="container py-8">
-            <header className="mb-8 text-center">
+            <header className="page-header">
               <Breadcrumbs />
               <h1 className="text-3xl md:text-4xl lg:text-5xl font-display font-bold text-foreground">
                 Adjustable-Rate Mortgage (ARM) Calculator
@@ -132,8 +132,8 @@ const ARM = () => {
 
             <GuideContents />
             {/* Educational Content */}
-            <section className="mt-12 space-y-8">
-              <div className="prose prose-slate max-w-none">
+            <section className="page-section guide space-y-12">
+              <div>
                 <h2 className="text-2xl font-display font-semibold mb-4">The Complete Guide to Adjustable Rate Mortgages</h2>
                 <p className="text-muted-foreground leading-relaxed">
                   An Adjustable Rate Mortgage (ARM) is a home loan with an interest rate that can change periodically 
@@ -194,7 +194,7 @@ const ARM = () => {
                 </div>
               </div>
 
-              <div className="prose prose-slate max-w-none">
+              <div>
                 <h2 className="text-2xl font-display font-semibold mt-10 mb-4">ARM Loan Pros and Cons</h2>
               </div>
               <div className="grid gap-6 md:grid-cols-2 not-prose">
@@ -259,7 +259,7 @@ const ARM = () => {
                 </div>
               </div>
 
-              <div className="prose prose-slate max-w-none">
+              <div>
                 <h2 className="text-2xl font-display font-semibold mt-10 mb-4">Who Is an ARM Best For?</h2>
                 <p className="text-muted-foreground leading-relaxed mb-4">
                   ARMs can be excellent choices for certain borrowers and situations:
@@ -338,7 +338,7 @@ const ARM = () => {
                 </div>
               </div>
 
-              <div className="prose prose-slate max-w-none">
+              <div>
                 <h2 className="text-2xl font-display font-semibold mt-10 mb-4">Frequently Asked Questions About ARMs</h2>
               </div>
               <div className="space-y-3 not-prose">

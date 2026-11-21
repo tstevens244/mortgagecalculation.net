@@ -53,7 +53,7 @@ const GuideContents = () => {
   }, []);
 
   return (
-    <nav ref={ref} aria-label="In this guide" className="mt-12 not-prose" hidden={entries.length === 0}>
+    <nav ref={ref} aria-label="In this guide" className="page-section" hidden={entries.length === 0}>
       <div className="calculator-card p-5 sm:p-6">
         <p className="mb-3 flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
           <BookOpen className="h-4 w-4" aria-hidden="true" />

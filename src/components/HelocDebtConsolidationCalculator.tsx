@@ -1,14 +1,13 @@
 import { useState, useMemo } from "react";
-import { Home, Percent, DollarSign, Calculator, CreditCard, Car, Wallet, Plus, Trash2, AlertTriangle } from "lucide-react";
+import { Calculator, CreditCard, Plus, Trash2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import CurrencyInput from "./CurrencyInput";
 import PercentInput from "./PercentInput";
 import { formatCurrency } from "@/lib/formatters";
 import CompareTable from "./viz/CompareTable";
+import { InputCard, FieldGrid, Field, TermChoice } from "./calc/Form";
 import StackedBar from "./viz/StackedBar";
 import { Legend } from "./viz/VizCard";
 import { SERIES } from "./viz/theme";
@@ -168,66 +167,24 @@ const HelocDebtConsolidationCalculator = () => {
         </TabsList>
 
         <TabsContent value="calculator" className="space-y-6">
-          <div className="grid gap-6 lg:grid-cols-2">
-            {/* HELOC Loan Details */}
-            <section className="calculator-card p-4 sm:p-6" aria-labelledby="heloc-details-heading">
-              <h2 id="heloc-details-heading" className="text-base sm:text-xl font-display font-semibold mb-4 flex items-center gap-2">
-                <Home className="h-4 w-4 sm:h-5 sm:w-5 text-accent" aria-hidden="true" />
-                Home Equity Loan Details
-              </h2>
-
-              <div className="space-y-3">
-                <div className="flex flex-col gap-1.5">
-                  <Label htmlFor="heloc-dc-loan-term" className="text-sm font-medium text-foreground">
-                    Loan Term
-                  </Label>
-                  <div className="flex gap-2 flex-1 items-center">
-                    <Input id="heloc-dc-loan-term"
-                      type="text"
-                      inputMode="numeric"
-                      value={inputs.helocTerm}
-                      onChange={(e) => updateInput("helocTerm", parseInt(e.target.value) || 0)}
-                      className="h-8 sm:h-10 text-sm"
-                    />
-                    <span className="text-muted-foreground text-sm">Years</span>
-                  </div>
-                </div>
-
-                <div className="flex flex-col gap-1.5">
-                  <Label htmlFor="heloc-dc-closing-costs" className="text-sm font-medium text-foreground">
-                    Closing Costs
-                  </Label>
-                  <CurrencyInput id="heloc-dc-closing-costs"
-                    value={inputs.helocClosingCosts}
-                    onChange={(value) => updateInput("helocClosingCosts", value)}
-                  />
-                </div>
-
-                <div className="flex flex-col gap-1.5">
-                  <Label htmlFor="heloc-dc-interest-rate" className="text-sm font-medium text-foreground">
-                    Interest Rate
-                  </Label>
-                  <div className="flex gap-2 flex-1 items-center">
-                    <PercentInput id="heloc-dc-interest-rate"
-                      value={inputs.helocInterestRate}
-                      onChange={(value) => updateInput("helocInterestRate", value)}
-                      min={0}
-                      max={30}
-                      decimalPlaces={3}
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <Alert className="mt-4 border-amber-500/50 bg-amber-500/10">
-                <AlertTriangle className="h-4 w-4 text-amber-500" />
-                <AlertTitle className="text-amber-800 dark:text-amber-400">No tax deduction for debt payoff</AlertTitle>
-                <AlertDescription className="text-xs text-muted-foreground">
-                  HELOC interest is tax deductible only when the money is used to buy, build or improve your home,
-                  so this comparison doesn't include any tax savings.
-                </AlertDescription>
-              </Alert>
-            </section>
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+            <InputCard id="heloc-details" title="The home equity loan">
+              <FieldGrid className="sm:grid-cols-1">
+                <Field id="heloc-dc-interest-rate" label="Interest rate">
+                  <PercentInput id="heloc-dc-interest-rate" value={inputs.helocInterestRate} onChange={(value) => updateInput("helocInterestRate", value)} min={0} max={30} decimalPlaces={3} />
+                </Field>
+                <Field id="heloc-dc-loan-term" label="Pay it off over">
+                  <TermChoice id="heloc-dc-loan-term" value={inputs.helocTerm} onChange={(y) => updateInput("helocTerm", y)} terms={[5, 10, 15, 20]} />
+                </Field>
+                <Field id="heloc-dc-closing-costs" label="Closing costs">
+                  <CurrencyInput id="heloc-dc-closing-costs" value={inputs.helocClosingCosts} onChange={(value) => updateInput("helocClosingCosts", value)} />
+                </Field>
+              </FieldGrid>
+              <p className="mt-5 rounded-lg border border-accent/30 bg-accent/10 p-3 text-xs leading-relaxed text-muted-foreground">
+                <strong className="text-foreground">No tax deduction for paying off debts.</strong> Home equity interest is deductible only
+                when the money buys, builds or improves your home, so this comparison includes no tax savings.
+              </p>
+            </InputCard>
 
             {/* Existing Debts */}
             <section className="calculator-card p-4 sm:p-6" aria-labelledby="debts-heading">

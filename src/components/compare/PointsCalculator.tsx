@@ -40,7 +40,7 @@ const PointsCalculator = () => {
   const breakEven = Number.isFinite(p.breakEvenMonths) ? yearsMonths(p.breakEvenMonths) : "Never";
 
   return (
-    <div className="fade-in grid gap-6 lg:grid-cols-[1fr_400px]">
+    <div className="fade-in grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_400px]">
       <section className="calculator-card p-4 sm:p-6" aria-labelledby="pts-inputs">
         <h2 id="pts-inputs" className="mb-4 flex items-center gap-2 text-base font-display font-semibold sm:text-xl">
           <Coins className="h-4 w-4 text-accent sm:h-5 sm:w-5" aria-hidden="true" />

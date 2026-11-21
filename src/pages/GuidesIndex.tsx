@@ -57,8 +57,8 @@ const GuidesIndex = () => {
 
       <div className="min-h-screen flex flex-col">
         <Header />
-        <main id="main-content" className="flex-1 container py-8">
-          <header className="mx-auto mb-10 max-w-3xl text-center">
+        <main id="main-content" className="flex-1 container py-8 sm:py-12">
+          <header className="page-header">
             <Breadcrumbs trail={[{ label: "Guides" }]} />
             <h1 className="mb-4 text-3xl font-display font-bold text-foreground sm:text-4xl lg:text-5xl">Mortgage Guides</h1>
             <p className="text-lg text-muted-foreground">

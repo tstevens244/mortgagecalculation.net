@@ -1,6 +1,4 @@
 import { useState, useMemo } from "react";
-import { Calculator, Home, Percent, Calendar, DollarSign, Shield, Building, Users, MapPin } from "lucide-react";
-import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import PaymentBreakdown from "./PaymentBreakdown";
@@ -11,6 +9,9 @@ import PercentInput from "./PercentInput";
 import { formatCurrency } from "@/lib/formatters";
 import { monthsUntilBalance } from "@/lib/mortgageMath";
 import StickyResult from "./StickyResult";
+import { InputCard, FieldGrid, Field, TermChoice, MoreOptions, summarize } from "./calc/Form";
+
+const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
 interface MortgageInputs {
   homePrice: number;
@@ -158,256 +159,150 @@ const MortgageCalculator = ({ initial, taxAreas, taxAreaLabel = "Area" }: Mortga
 
   return (
     <div className="fade-in">
-      <div className="grid gap-8 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
         {/* Input Section */}
         <div className="lg:col-span-2">
-          <section className="calculator-card p-3 sm:p-6" aria-labelledby="loan-details-heading">
-            <h2 id="loan-details-heading" className="text-base sm:text-xl font-display font-semibold mb-3 sm:mb-6 flex items-center gap-2">
-              <Home className="h-4 w-4 sm:h-5 sm:w-5 text-accent" aria-hidden="true" />
-              Loan Details
-            </h2>
+          <InputCard id="loan-details" title="Your loan" description="Start with these four. Taxes, insurance and fees are filled in for you below.">
+            <FieldGrid>
+              <Field id="home-price" label="Home price">
+                <CurrencyInput id="home-price" value={inputs.homePrice} onChange={(value) => updateInput("homePrice", value)} />
+              </Field>
 
-            <div className="grid gap-2 sm:gap-4 grid-cols-1 sm:grid-cols-2">
-              {/* Home Price */}
-              <div className="flex flex-col gap-1.5">
-                <Label htmlFor="home-price" className="text-sm font-medium text-foreground flex items-center gap-1">
-                  <DollarSign className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" />
-                  <span>Home Price</span>
-                </Label>
-                <CurrencyInput
-                  id="home-price"
-                  value={inputs.homePrice}
-                  onChange={(value) => updateInput("homePrice", value)}
-                  aria-describedby="home-price-desc"
-                />
-                <span id="home-price-desc" className="sr-only">Enter the total price of the home</span>
-              </div>
-
-              {/* Down Payment */}
-              <div className="flex flex-col gap-1.5">
-              <Label htmlFor="down-payment" className="text-sm font-medium text-foreground flex items-center gap-1">
-                  <Percent className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" />
-                  <span className="hidden lg:inline">Down Payment</span>
-                  <span className="lg:hidden">Down</span>
-                </Label>
-                <div className="flex gap-1 sm:gap-2 flex-1">
-                  <CurrencyInput
-                    id="down-payment"
-                    value={inputs.downPayment}
-                    onChange={(value) => updateInput("downPayment", value)}
-                  />
+              <Field id="down-payment" label="Down payment" info="Putting down 20% or more avoids PMI. The percent and dollar amount stay in sync.">
+                <div className="flex gap-2">
+                  <CurrencyInput id="down-payment" value={inputs.downPayment} onChange={(value) => updateInput("downPayment", value)} />
                   <PercentInput
                     value={inputs.downPaymentPercent}
                     onChange={(value) => updateInput("downPaymentPercent", value)}
-                    className="w-[3.5rem] sm:w-16 px-2 flex-shrink-0"
+                    className="w-[4.75rem] shrink-0 px-2"
                     decimalPlaces={1}
                     min={0}
                     max={100}
                     aria-label="Down payment percentage"
                   />
                 </div>
-              </div>
+              </Field>
 
-              {/* Loan Term */}
-              <div className="flex flex-col gap-1.5">
-                <Label htmlFor="loan-term" className="text-sm font-medium text-foreground flex items-center gap-1">
-                  <Calendar className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" />
-                  <span>Loan Term</span>
-                </Label>
-                <Select
-                  value={inputs.loanTerm.toString()}
-                  onValueChange={(v) => updateInput("loanTerm", parseInt(v))}
-                >
-                  <SelectTrigger id="loan-term" className="h-8 sm:h-10 text-sm font-medium flex-1">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="10">10 years</SelectItem>
-                    <SelectItem value="15">15 years</SelectItem>
-                    <SelectItem value="20">20 years</SelectItem>
-                    <SelectItem value="30">30 years</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+              <Field id="interest-rate" label="Interest rate" info="Your quoted rate, not the APR. Rates change daily; check a few lenders.">
+                <PercentInput id="interest-rate" value={inputs.interestRate} onChange={(value) => updateInput("interestRate", value)} decimalPlaces={3} min={0} max={30} />
+              </Field>
 
-              {/* Interest Rate */}
-              <div className="flex flex-col gap-1.5">
-                <Label htmlFor="interest-rate" className="text-sm font-medium text-foreground flex items-center gap-1">
-                  <Percent className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" />
-                  <span>Interest Rate</span>
-                </Label>
-                <div className="flex gap-1 sm:gap-2 flex-1">
-                  <PercentInput
-                    id="interest-rate"
-                    value={inputs.interestRate}
-                    onChange={(value) => updateInput("interestRate", value)}
-                    className="flex-1"
-                    decimalPlaces={3}
-                    min={0}
-                    max={30}
-                  />
-                </div>
-              </div>
+              <Field id="loan-term" label="Loan term">
+                <TermChoice id="loan-term" value={inputs.loanTerm} onChange={(years) => updateInput("loanTerm", years)} />
+              </Field>
+            </FieldGrid>
 
-              {/* Start Date */}
-              <div className="flex flex-col gap-1.5">
-                <Label className="text-sm font-medium text-foreground flex items-center gap-1">
-                  <Calendar className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" />
-                  <span>Start Date</span>
-                </Label>
-                <div className="flex gap-1 sm:gap-2 flex-1">
-                  <Select
-                    value={inputs.startDate.split("-")[1]}
-                    onValueChange={(month) => {
-                      const year = inputs.startDate.split("-")[0];
-                      updateInput("startDate", `${year}-${month}`);
-                    }}
-                  >
-                    <SelectTrigger aria-label="Loan start month" className="h-8 sm:h-10 text-xs sm:text-sm flex-1">
-                      <SelectValue placeholder="Month" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="01">January</SelectItem>
-                      <SelectItem value="02">February</SelectItem>
-                      <SelectItem value="03">March</SelectItem>
-                      <SelectItem value="04">April</SelectItem>
-                      <SelectItem value="05">May</SelectItem>
-                      <SelectItem value="06">June</SelectItem>
-                      <SelectItem value="07">July</SelectItem>
-                      <SelectItem value="08">August</SelectItem>
-                      <SelectItem value="09">September</SelectItem>
-                      <SelectItem value="10">October</SelectItem>
-                      <SelectItem value="11">November</SelectItem>
-                      <SelectItem value="12">December</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <Select
-                    value={inputs.startDate.split("-")[0]}
-                    onValueChange={(year) => {
-                      const month = inputs.startDate.split("-")[1];
-                      updateInput("startDate", `${year}-${month}`);
-                    }}
-                  >
-                    <SelectTrigger aria-label="Loan start year" className="h-8 sm:h-10 text-xs sm:text-sm w-20 sm:w-24">
-                      <SelectValue placeholder="Year" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {Array.from({ length: 30 }, (_, i) => {
-                        const year = new Date().getFullYear() + i;
-                        return (
-                          <SelectItem key={year} value={year.toString()}>
-                            {year}
-                          </SelectItem>
-                        );
-                      })}
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-            </div>
-
-            {/* Additional Costs Section */}
-            <h2 id="additional-costs-heading" className="text-base sm:text-xl font-display font-semibold mt-4 sm:mt-6 mb-3 sm:mb-6 flex items-center gap-2">
-              <Shield className="h-4 w-4 sm:h-5 sm:w-5 text-accent" aria-hidden="true" />
-              Additional Costs
-            </h2>
-
-            <div className="grid gap-2 sm:gap-4 grid-cols-1 sm:grid-cols-2">
-              {taxAreas && taxAreas.length > 1 && (
-                <div className="flex flex-col gap-1.5 sm:col-span-2">
-                  <Label htmlFor="tax-area" className="text-sm font-medium text-foreground flex items-center gap-1">
-                    <MapPin className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" />
-                    {taxAreaLabel} <span className="font-normal text-muted-foreground">(sets the property tax rate)</span>
-                  </Label>
-                  <Select
-                    value={String(areaIndex)}
-                    onValueChange={(v) => {
-                      const i = Number(v);
-                      setAreaIndex(i);
-                      const rate = taxAreas[i].rate;
-                      setInputs((prev) => ({ ...prev, taxRate: rate, propertyTax: Math.round((prev.homePrice * rate) / 100) }));
-                    }}
-                  >
-                    <SelectTrigger id="tax-area" className="h-8 sm:h-10 text-sm font-medium">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent className="max-h-80">
-                      {taxAreas.map((a, i) => (
-                        <SelectItem key={a.label} value={String(i)}>
-                          {a.label} ({a.rate.toFixed(2)}%)
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
+            <MoreOptions
+              title="Taxes, insurance & fees"
+              summary={summarize(
+                `${formatCurrency(inputs.propertyTax)}/yr tax`,
+                `${formatCurrency(inputs.homeInsurance)}/yr insurance`,
+                inputs.pmi > 0 ? `${formatCurrency(inputs.pmi)}/yr PMI` : "no PMI",
+                inputs.hoaFees > 0 ? `${formatCurrency(inputs.hoaFees)}/mo HOA` : "no HOA",
               )}
-
-              {/* Property Tax */}
-              <div className="flex flex-col gap-1.5">
-                <Label htmlFor="property-tax" className="text-sm font-medium text-foreground flex items-center gap-1">
-                  <Building className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" />
-                  <span>Property tax</span> <span className="font-normal text-muted-foreground">(per year)</span>
-                </Label>
-                <CurrencyInput
-                  id="property-tax"
-                  value={inputs.propertyTax}
-                  onChange={(value) => updateInput("propertyTax", value)}
-                  aria-describedby={inputs.taxRate !== null ? "property-tax-rate" : undefined}
-                />
-                {inputs.taxRate !== null && (
-                  <span id="property-tax-rate" className="text-xs text-muted-foreground">
-                    {inputs.taxRate.toFixed(2)}% of the home price
-                  </span>
+            >
+              <FieldGrid>
+                {taxAreas && taxAreas.length > 1 && (
+                  <Field id="tax-area" label={taxAreaLabel} hint="Sets the property tax rate." className="sm:col-span-2">
+                    <Select
+                      value={String(areaIndex)}
+                      onValueChange={(v) => {
+                        const i = Number(v);
+                        setAreaIndex(i);
+                        const rate = taxAreas[i].rate;
+                        setInputs((prev) => ({ ...prev, taxRate: rate, propertyTax: Math.round((prev.homePrice * rate) / 100) }));
+                      }}
+                    >
+                      <SelectTrigger id="tax-area" aria-describedby="tax-area-hint">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent className="max-h-80">
+                        {taxAreas.map((a, i) => (
+                          <SelectItem key={a.label} value={String(i)}>
+                            {a.label} ({a.rate.toFixed(2)}%)
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </Field>
                 )}
-              </div>
 
-              {/* Home Insurance */}
-              <div className="flex flex-col gap-1.5">
-                <Label htmlFor="home-insurance" className="text-sm font-medium text-foreground flex items-center gap-1">
-                  <Shield className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" />
-                  <span>Home insurance</span> <span className="font-normal text-muted-foreground">(per year)</span>
-                </Label>
-                <CurrencyInput
-                  id="home-insurance"
-                  value={inputs.homeInsurance}
-                  onChange={(value) => updateInput("homeInsurance", value)}
-                />
-              </div>
+                <Field
+                  id="property-tax"
+                  label="Property tax"
+                  unit="per year"
+                  hint={inputs.taxRate !== null ? `${inputs.taxRate.toFixed(2)}% of the home price` : undefined}
+                >
+                  <CurrencyInput
+                    id="property-tax"
+                    value={inputs.propertyTax}
+                    onChange={(value) => updateInput("propertyTax", value)}
+                    aria-describedby={inputs.taxRate !== null ? "property-tax-hint" : undefined}
+                  />
+                </Field>
 
-              {/* PMI */}
-              <div className="flex flex-col gap-1.5">
-                <Label htmlFor="pmi" className="text-sm font-medium text-foreground flex items-center gap-1">
-                  <Percent className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" />
-                  PMI <span className="font-normal text-muted-foreground">(per year)</span>
-                  {inputs.downPaymentPercent < 20 && (
-                    <span className="text-[10px] sm:text-xs text-accent-strong ml-1">Auto</span>
-                  )}
-                </Label>
-                <CurrencyInput
+                <Field id="home-insurance" label="Home insurance" unit="per year">
+                  <CurrencyInput id="home-insurance" value={inputs.homeInsurance} onChange={(value) => updateInput("homeInsurance", value)} />
+                </Field>
+
+                <Field
                   id="pmi"
-                  value={Math.round(inputs.pmi)}
-                  onChange={(value) => updateInput("pmi", value)}
-                />
-              </div>
+                  label="PMI"
+                  unit="per year"
+                  tag={inputs.downPaymentPercent < 20 ? "Auto" : undefined}
+                  info="Estimated at 0.5% of the loan a year when you put down less than 20%. It ends once the balance reaches 78% of the price."
+                >
+                  <CurrencyInput id="pmi" value={Math.round(inputs.pmi)} onChange={(value) => updateInput("pmi", value)} />
+                </Field>
 
-              {/* HOA Fees */}
-              <div className="flex flex-col gap-1.5">
-                <Label htmlFor="hoa-fees" className="text-sm font-medium text-foreground flex items-center gap-1">
-                  <Users className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" />
-                  HOA dues <span className="font-normal text-muted-foreground">(per month)</span>
-                </Label>
-                <CurrencyInput
-                  id="hoa-fees"
-                  value={inputs.hoaFees}
-                  onChange={(value) => updateInput("hoaFees", value)}
-                />
-              </div>
-            </div>
-          </section>
+                <Field id="hoa-fees" label="HOA dues" unit="per month">
+                  <CurrencyInput id="hoa-fees" value={inputs.hoaFees} onChange={(value) => updateInput("hoaFees", value)} />
+                </Field>
+
+                <Field id="start-month" label="First payment" hint="Sets the dates in the schedule.">
+                  <div className="flex gap-2">
+                    <Select
+                      value={inputs.startDate.split("-")[1]}
+                      onValueChange={(month) => updateInput("startDate", `${inputs.startDate.split("-")[0]}-${month}`)}
+                    >
+                      <SelectTrigger id="start-month" aria-label="Loan start month" className="flex-1">
+                        <SelectValue placeholder="Month" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {MONTHS.map((m, i) => (
+                          <SelectItem key={m} value={String(i + 1).padStart(2, "0")}>
+                            {m}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <Select
+                      value={inputs.startDate.split("-")[0]}
+                      onValueChange={(year) => updateInput("startDate", `${year}-${inputs.startDate.split("-")[1]}`)}
+                    >
+                      <SelectTrigger aria-label="Loan start year" className="w-24">
+                        <SelectValue placeholder="Year" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {Array.from({ length: 30 }, (_, i) => {
+                          const year = new Date().getFullYear() + i;
+                          return (
+                            <SelectItem key={year} value={year.toString()}>
+                              {year}
+                            </SelectItem>
+                          );
+                        })}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </Field>
+              </FieldGrid>
+            </MoreOptions>
+          </InputCard>
         </div>
 
         {/* Results Section */}
-        <aside className="space-y-6" aria-label="Calculation Results">
+        <aside className="space-y-6 lg:sticky lg:top-24 lg:self-start" aria-label="Calculation Results">
           <StickyResult targetId="calc-result" label={"Monthly payment"} value={formatCurrency(calculations.totalMonthly)} />
           <div id="calc-result" className="result-highlight">
             <p className="text-primary-foreground/80 text-sm font-medium uppercase tracking-wide">

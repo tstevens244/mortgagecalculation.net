@@ -1,5 +1,6 @@
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
+import { explain } from "./theme";
 
 interface VizCardProps {
   id?: string;
@@ -101,16 +102,54 @@ export interface LegendItem {
   color: string;
   /** How the series is drawn, so the swatch matches. */
   shape?: "dot" | "line" | "dashed" | "area";
+  /** What the color means, shown on hover or tap. Defaults to a standard explanation for common labels. */
+  description?: string;
 }
+
+/** One legend entry. Hover, tap or tab to it to see what the color means. */
+const LegendEntry = ({ item }: { item: LegendItem }) => {
+  const [open, setOpen] = useState(false);
+  const meaning = item.description ?? explain(item.label);
+  const content = (
+    <>
+      <Swatch color={item.color} shape={item.shape} />
+      {item.label}
+    </>
+  );
+  if (!meaning) return <li className="inline-flex items-center gap-2">{content}</li>;
+  return (
+    <li className="relative" onMouseEnter={() => setOpen(true)} onMouseLeave={() => setOpen(false)}>
+      <button
+        type="button"
+        className="inline-flex items-center gap-2 rounded-md underline decoration-dotted decoration-muted-foreground/60 underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        aria-expanded={open}
+        onFocus={() => setOpen(true)}
+        onBlur={() => setOpen(false)}
+        onClick={() => setOpen((o) => !o)}
+      >
+        {content}
+      </button>
+      {open && (
+        <span
+          role="tooltip"
+          className="absolute left-0 top-full z-30 mt-2 block w-60 rounded-xl border border-border bg-card/95 px-3 py-2.5 text-xs leading-snug text-muted-foreground shadow-lg backdrop-blur animate-in fade-in-0 zoom-in-95"
+        >
+          <span className="mb-1 flex items-center gap-2 text-sm font-semibold text-foreground">
+            <Swatch color={item.color} shape={item.shape} />
+            {item.label}
+          </span>
+          {meaning}
+        </span>
+      )}
+    </li>
+  );
+};
 
 /** HTML legend (readable text, wraps on phones), used above recharts charts. */
 export const Legend = ({ items, className }: { items: LegendItem[]; className?: string }) => (
   <ul className={cn("flex flex-wrap gap-x-4 gap-y-1.5 text-xs text-foreground sm:text-sm", className)}>
     {items.map((i) => (
-      <li key={i.label} className="inline-flex items-center gap-2">
-        <Swatch color={i.color} shape={i.shape} />
-        {i.label}
-      </li>
+      <LegendEntry key={i.label} item={i} />
     ))}
   </ul>
 );

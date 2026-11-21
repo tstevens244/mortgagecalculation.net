@@ -1,19 +1,6 @@
 import { useState, useMemo } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { HelpCircle, Home, TrendingDown, PiggyBank } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { TrendingDown } from "lucide-react";
 import VizCard from "./viz/VizCard";
 import CompareTable from "./viz/CompareTable";
 import PayoffComparison from "./viz/PayoffComparison";
@@ -22,6 +9,7 @@ import CurrencyInput from "./CurrencyInput";
 import PercentInput from "./PercentInput";
 import { formatCurrency } from "@/lib/formatters";
 import StickyResult from "./StickyResult";
+import { InputCard, FieldGrid, Field, TermChoice } from "./calc/Form";
 
 const ExtraPaymentsCalculator = () => {
   // Loan Information
@@ -186,118 +174,36 @@ const ExtraPaymentsCalculator = () => {
 
   return (
     <div className="space-y-6">
-      <div className="grid lg:grid-cols-5 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
         {/* Left Column - Inputs */}
         <div className="space-y-6 lg:col-span-3">
-          {/* Loan Information */}
-          <Card className="calculator-card">
-            <CardHeader className="pb-4">
-              <CardTitle className="text-lg font-semibold flex items-center gap-2">
-                <Home className="h-5 w-5 text-accent" />
-                Loan Information
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2">
-                <div className="flex flex-col gap-1.5">
-                  <Label htmlFor="extra-payments-home-price" className="text-sm font-medium text-foreground">
-                    Home Price
-                  </Label>
-                  <CurrencyInput id="extra-payments-home-price" value={homePrice} onChange={setHomePrice} />
-                </div>
-
-                <div className="flex flex-col gap-1.5">
-                  <Label htmlFor="extra-payments-down-payment" className="text-sm font-medium text-foreground">
-                    Down Payment
-                  </Label>
-                  <CurrencyInput id="extra-payments-down-payment" value={downPayment} onChange={setDownPayment} />
-                </div>
-
-                <div className="flex flex-col gap-1.5">
-                  <Label htmlFor="extra-payments-interest-rate" className="text-sm font-medium text-foreground">
-                    Interest Rate
-                  </Label>
-                  <div className="flex gap-1 sm:gap-2 flex-1">
-                    <PercentInput id="extra-payments-interest-rate"
-                      value={interestRate}
-                      onChange={setInterestRate}
-                      min={0}
-                      max={20}
-                      decimalPlaces={3}
-                    />
-                  </div>
-                </div>
-
-                <div className="flex flex-col gap-1.5">
-                  <Label htmlFor="extra-payments-loan-term" className="text-sm font-medium text-foreground">
-                    Loan Term
-                  </Label>
-                  <Select value={loanTerm} onValueChange={setLoanTerm}>
-                    <SelectTrigger id="extra-payments-loan-term" className="h-8 sm:h-10 text-sm flex-1">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="30">30 years</SelectItem>
-                      <SelectItem value="25">25 years</SelectItem>
-                      <SelectItem value="20">20 years</SelectItem>
-                      <SelectItem value="15">15 years</SelectItem>
-                      <SelectItem value="10">10 years</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-
-              <div className="mt-4 pt-4 border-t border-border">
-                <div className="flex justify-between items-center text-sm">
-                  <span className="text-muted-foreground">Loan Amount</span>
-                  <span className="font-semibold">{formatCurrency(loanAmount)}</span>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Extra Payments */}
-          <Card className="calculator-card">
-            <CardHeader className="pb-4">
-              <CardTitle className="text-lg font-semibold flex items-center gap-2">
-                <PiggyBank className="h-5 w-5 text-accent" />
-                Extra Payments
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2">
-                <div className="flex flex-col gap-1.5">
-                  <Label htmlFor="extra-payments-lump-sum" className="text-sm font-medium text-foreground flex items-center gap-1">
-                    Lump Sum
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <HelpCircle className="h-3 w-3 sm:h-4 sm:w-4 cursor-help" />
-                      </TooltipTrigger>
-                      <TooltipContent className="max-w-xs">
-                        <p>A one-time lump sum payment made at the start of the loan.</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </Label>
-                  <CurrencyInput id="extra-payments-lump-sum" value={initialExtraPayment} onChange={setInitialExtraPayment} />
-                </div>
-
-                <div className="flex flex-col gap-1.5">
-                  <Label htmlFor="extra-payments-extra-month" className="text-sm font-medium text-foreground flex items-center gap-1">
-                    Extra/Month
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <HelpCircle className="h-3 w-3 sm:h-4 sm:w-4 cursor-help" />
-                      </TooltipTrigger>
-                      <TooltipContent className="max-w-xs">
-                        <p>Extra amount added to your regular monthly payment, applied directly to principal.</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </Label>
+          <InputCard id="loan-details" title="Your loan and extra payments" description="Enter your loan, then how much extra you'd pay.">
+            <FieldGrid>
+              <Field id="extra-payments-home-price" label="Home price">
+                <CurrencyInput id="extra-payments-home-price" value={homePrice} onChange={setHomePrice} />
+              </Field>
+              <Field id="extra-payments-down-payment" label="Down payment" hint={`Loan amount: ${formatCurrency(loanAmount)}`}>
+                <CurrencyInput id="extra-payments-down-payment" value={downPayment} onChange={setDownPayment} aria-describedby="extra-payments-down-payment-hint" />
+              </Field>
+              <Field id="extra-payments-interest-rate" label="Interest rate">
+                <PercentInput id="extra-payments-interest-rate" value={interestRate} onChange={setInterestRate} min={0} max={20} decimalPlaces={3} />
+              </Field>
+              <Field id="extra-payments-loan-term" label="Loan term">
+                <TermChoice id="extra-payments-loan-term" value={Number(loanTerm)} onChange={(y) => setLoanTerm(String(y))} terms={[30, 20, 15, 10]} />
+              </Field>
+            </FieldGrid>
+            <div className="mt-5 rounded-xl border border-primary/15 bg-primary/[0.03] p-4">
+              <p className="mb-3 text-sm font-semibold text-foreground">Extra payments</p>
+              <FieldGrid>
+                <Field id="extra-payments-extra-month" label="Extra each month" info="Added to your regular payment and applied straight to principal.">
                   <CurrencyInput id="extra-payments-extra-month" value={monthlyExtraPayment} onChange={setMonthlyExtraPayment} />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+                </Field>
+                <Field id="extra-payments-lump-sum" label="One-time lump sum" info="A single extra payment made at the start of the loan.">
+                  <CurrencyInput id="extra-payments-lump-sum" value={initialExtraPayment} onChange={setInitialExtraPayment} />
+                </Field>
+              </FieldGrid>
+            </div>
+          </InputCard>
 
           <PayoffComparison
             loanAmount={loanAmount}
