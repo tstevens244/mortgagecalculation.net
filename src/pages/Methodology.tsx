@@ -117,7 +117,9 @@ const Methodology = () => (
       <li>
         <strong><Link to="/refinance-calculator/">Refinance</Link>:</strong> compares interest on the current and new
         loans over the years you expect to keep the home, subtracts closing costs and any lost mortgage-interest
-        deduction, and reports the break-even month (closing costs divided by monthly savings).
+        deduction, and reports the break-even month: the first month when the interest saved (after any lost
+        deduction) has covered the closing costs. That counts the effect of restarting the term, which a simple
+        "closing costs divided by monthly savings" estimate misses.
       </li>
       <li>
         <strong><Link to="/cash-out-refinance-calculator/">Cash-out refinance</Link>:</strong> caps the new loan at 80%
@@ -140,8 +142,8 @@ const Methodology = () => (
       <li>
         <strong><Link to="/rent-or-buy/">Rent or buy</Link>:</strong> compares the net cost of owning (down
         payment, closing costs, mortgage payments, PMI, taxes, insurance and maintenance, plus the investment return
-        the down payment and closing costs could have earned, less tax savings and the equity you'd keep after
-        selling costs) against rent that rises each year.
+        the down payment and closing costs could have earned, less tax savings and the cash you'd get back from the sale after selling costs and the loan payoff) against
+        rent that rises each year. The break-even chart reruns that comparison for every year you might sell.
       </li>
     </ul>
 

@@ -492,17 +492,12 @@ const MortgageCalculator = ({ initial, taxAreas, taxAreaLabel = "Area" }: Mortga
               insurance={calculations.monthlyInsurance}
               pmi={calculations.monthlyPMI}
               hoa={calculations.monthlyHOA}
+              pmiNote={calculations.pmiMonths > 0 ? `Ends after about ${Math.ceil(calculations.pmiMonths / 12)} years` : undefined}
             />
           </TabsContent>
 
           <TabsContent value="chart">
-            <AmortizationChart
-              data={amortizationData}
-              monthlyTax={calculations.monthlyTax}
-              monthlyInsurance={calculations.monthlyInsurance}
-              monthlyPMI={calculations.monthlyPMI}
-              monthlyHOA={calculations.monthlyHOA}
-            />
+            <AmortizationChart data={amortizationData} />
           </TabsContent>
 
           <TabsContent value="schedule">

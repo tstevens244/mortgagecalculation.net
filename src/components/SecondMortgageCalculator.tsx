@@ -5,7 +5,10 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip as RechartsTooltip, Cell } from "recharts";
+import CompareTable from "./viz/CompareTable";
+import StackedBar from "./viz/StackedBar";
+import { Legend } from "./viz/VizCard";
+import { SERIES } from "./viz/theme";
 import CurrencyInput from "./CurrencyInput";
 import PercentInput from "./PercentInput";
 import { formatCurrency } from "@/lib/formatters";
@@ -521,171 +524,88 @@ const SecondMortgageCalculator = () => {
               Financial Analysis
             </h2>
 
-            <div className="overflow-x-auto">
-              <table className="w-full text-xs sm:text-sm">
-                <thead>
-                  <tr className="border-b border-border bg-primary text-primary-foreground">
-                    <th className="text-left py-3 px-4 font-medium">Comparison</th>
-                    <th className="text-right py-3 px-4 font-medium">With PMI</th>
-                    <th className="text-right py-3 px-4 font-medium">80% + 2nd Mort</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-border">
-                  <tr>
-                    <td className="py-3 px-4 text-muted-foreground">Amount Financed</td>
-                    <td className="py-3 px-4 text-right font-medium">{formatCurrency(calculations.pmi.loanAmount)}</td>
-                    <td className="py-3 px-4 text-right font-medium">
-                      {formatCurrency(calculations.firstMort.loanAmount + calculations.secondMort.loanAmount)}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="py-3 px-4 text-muted-foreground">Down Payment</td>
-                    <td className="py-3 px-4 text-right font-medium">{formatCurrency(calculations.downPayment)}</td>
-                    <td className="py-3 px-4 text-right font-medium">{formatCurrency(calculations.downPayment)}</td>
-                  </tr>
-                  <tr className="bg-muted/30">
-                    <td className="py-3 px-4 text-muted-foreground">Cost of Discount Points</td>
-                    <td className="py-3 px-4 text-right font-medium">{formatCurrency(calculations.pmi.pointsCost)}</td>
-                    <td className="py-3 px-4 text-right font-medium">
-                      {formatCurrency(calculations.firstMort.pointsCost + calculations.secondMort.pointsCost)}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="py-3 px-4 text-muted-foreground">Other Closing Costs</td>
-                    <td className="py-3 px-4 text-right font-medium">{formatCurrency(calculations.pmi.closingCosts)}</td>
-                    <td className="py-3 px-4 text-right font-medium">
-                      {formatCurrency(inputs.firstMortClosingCosts + inputs.secondMortClosingCosts)}
-                    </td>
-                  </tr>
-                  <tr className="bg-muted/30">
-                    <td className="py-3 px-4 text-muted-foreground">Total Closing Costs</td>
-                    <td className="py-3 px-4 text-right font-medium">{formatCurrency(calculations.pmi.totalClosing)}</td>
-                    <td className="py-3 px-4 text-right font-medium">{formatCurrency(calculations.piggyback.totalClosing)}</td>
-                  </tr>
-                  <tr>
-                    <td className="py-3 px-4 text-muted-foreground">Total Upfront w/ Down Payment</td>
-                    <td className="py-3 px-4 text-right font-medium">{formatCurrency(calculations.pmi.upfrontCost)}</td>
-                    <td className="py-3 px-4 text-right font-medium">{formatCurrency(calculations.piggyback.upfrontCost)}</td>
-                  </tr>
-                  <tr className="bg-muted/30">
-                    <td className="py-3 px-4 text-muted-foreground">Monthly Principal & Interest</td>
-                    <td className="py-3 px-4 text-right font-medium">{formatCurrency(calculations.pmi.monthlyPI)}</td>
-                    <td className="py-3 px-4 text-right font-medium">
-                      {formatCurrency(calculations.firstMort.monthlyPI)} + {formatCurrency(calculations.secondMort.monthlyPI)}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="py-3 px-4 text-muted-foreground">Monthly PMI</td>
-                    <td className="py-3 px-4 text-right font-medium">{formatCurrency(calculations.pmi.monthlyPMI)}</td>
-                    <td className="py-3 px-4 text-right font-medium text-accent-strong">$0</td>
-                  </tr>
-                  <tr className="bg-muted/30">
-                    <td className="py-3 px-4 text-muted-foreground">Monthly Loan Payment</td>
-                    <td className="py-3 px-4 text-right font-medium">{formatCurrency(calculations.pmi.monthlyPayment)}</td>
-                    <td className="py-3 px-4 text-right font-medium">{formatCurrency(calculations.piggyback.monthlyPayment)}</td>
-                  </tr>
-                  <tr>
-                    <td className="py-3 px-4 text-muted-foreground">Monthly Property Taxes</td>
-                    <td className="py-3 px-4 text-right font-medium">{formatCurrency(calculations.monthlyTax)}</td>
-                    <td className="py-3 px-4 text-right font-medium">{formatCurrency(calculations.monthlyTax)}</td>
-                  </tr>
-                  <tr className="bg-muted/30">
-                    <td className="py-3 px-4 text-muted-foreground">Monthly Insurance</td>
-                    <td className="py-3 px-4 text-right font-medium">{formatCurrency(calculations.monthlyInsurance)}</td>
-                    <td className="py-3 px-4 text-right font-medium">{formatCurrency(calculations.monthlyInsurance)}</td>
-                  </tr>
-                  <tr>
-                    <td className="py-3 px-4 text-muted-foreground">Monthly HOA</td>
-                    <td className="py-3 px-4 text-right font-medium">{formatCurrency(calculations.monthlyHOA)}</td>
-                    <td className="py-3 px-4 text-right font-medium">{formatCurrency(calculations.monthlyHOA)}</td>
-                  </tr>
-                  <tr className="bg-primary/10 font-semibold">
-                    <td className="py-3 px-4">Total Monthly Cost</td>
-                    <td className="py-3 px-4 text-right">{formatCurrency(calculations.pmi.totalMonthly)}</td>
-                    <td className="py-3 px-4 text-right">{formatCurrency(calculations.piggyback.totalMonthly)}</td>
-                  </tr>
-                  <tr>
-                    <td className="py-3 px-4 text-muted-foreground">Total Interest Paid</td>
-                    <td className="py-3 px-4 text-right font-medium">{formatCurrency(calculations.pmi.totalInterest)}</td>
-                    <td className="py-3 px-4 text-right font-medium">
-                      {formatCurrency(calculations.firstMort.totalInterest + calculations.secondMort.totalInterest)}
-                    </td>
-                  </tr>
-                  <tr className="bg-primary/10 font-semibold">
-                    <td className="py-3 px-4">Total Financed Cost</td>
-                    <td className="py-3 px-4 text-right">{formatCurrency(calculations.pmi.totalCost)}</td>
-                    <td className="py-3 px-4 text-right">{formatCurrency(calculations.piggyback.totalCost)}</td>
-                  </tr>
-                </tbody>
-              </table>
+            <p className="mb-5 text-sm text-muted-foreground sm:text-base">
+              <strong className="text-foreground">
+                {calculations.betterOption === "piggyback" ? "The piggyback loan" : "One loan with PMI"} costs{" "}
+                {formatCurrency(calculations.savings)} less
+              </strong>{" "}
+              over the full terms, counting the down payment, closing costs, payments and PMI.{" "}
+              {calculations.betterOption === "piggyback"
+                ? "You avoid PMI entirely, at the cost of a second, higher-rate loan."
+                : `PMI ends after about ${Math.ceil(calculations.pmi.pmiMonths / 12)} years, which keeps its total cost down.`}
+            </p>
+
+            <h3 className="mb-3 font-display text-base font-semibold">Monthly cost, side by side</h3>
+            <div className="space-y-4">
+              <StackedBar
+                title="One loan + PMI"
+                total={`${formatCurrency(calculations.pmi.totalMonthly)}/mo`}
+                max={Math.max(calculations.pmi.totalMonthly, calculations.piggyback.totalMonthly)}
+                segments={[
+                  { label: "First mortgage", value: calculations.pmi.monthlyPI, color: SERIES.principal },
+                  { label: "PMI", value: calculations.pmi.monthlyPMI, color: SERIES.pmi },
+                  { label: "Tax, insurance, HOA", value: calculations.monthlyTax + calculations.monthlyInsurance + calculations.monthlyHOA, color: SERIES.other },
+                ]}
+              />
+              <StackedBar
+                title="Piggyback (two loans)"
+                total={`${formatCurrency(calculations.piggyback.totalMonthly)}/mo`}
+                max={Math.max(calculations.pmi.totalMonthly, calculations.piggyback.totalMonthly)}
+                segments={[
+                  { label: "First mortgage", value: calculations.firstMort.monthlyPI, color: SERIES.principal },
+                  { label: "Second mortgage", value: calculations.secondMort.monthlyPI, color: SERIES.interest },
+                  { label: "Tax, insurance, HOA", value: calculations.monthlyTax + calculations.monthlyInsurance + calculations.monthlyHOA, color: SERIES.other },
+                ]}
+              />
+              <Legend
+                items={[
+                  { label: "First mortgage", color: SERIES.principal },
+                  { label: "Second mortgage", color: SERIES.interest },
+                  { label: "PMI", color: SERIES.pmi },
+                  { label: "Tax, insurance, HOA", color: SERIES.other },
+                ]}
+              />
             </div>
 
-            {/* Comparison Chart */}
-            <Card className="mt-6">
-              <CardHeader className="pb-4">
-                <CardTitle className="text-lg font-semibold">Monthly Payment Comparison</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="h-[160px]">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart
-                      data={[
-                        { name: 'With PMI', value: calculations.pmi.totalMonthly, fill: 'hsl(var(--primary))' },
-                        { name: 'Piggyback', value: calculations.piggyback.totalMonthly, fill: 'hsl(var(--accent))' },
-                      ]}
-                      layout="vertical"
-                      margin={{ top: 10, right: 30, left: 70, bottom: 10 }}
-                    >
-                      <XAxis 
-                        type="number" 
-                        tickFormatter={(value) => `$${value.toFixed(0)}`}
-                        tick={{ fontSize: 11, fill: 'hsl(var(--muted-foreground))' }}
-                      />
-                      <YAxis 
-                        type="category" 
-                        dataKey="name" 
-                        tick={{ fontSize: 12, fill: 'hsl(var(--foreground))' }}
-                        width={65}
-                      />
-                      <RechartsTooltip
-                        formatter={(value: number) => formatCurrency(value)}
-                        contentStyle={{
-                          backgroundColor: 'hsl(var(--card))',
-                          border: '1px solid hsl(var(--border))',
-                          borderRadius: '8px',
-                          fontSize: '12px',
-                        }}
-                      />
-                      <Bar isAnimationActive={false} dataKey="value" radius={[0, 4, 4, 0]}>
-                        {[
-                          { name: 'With PMI', value: calculations.pmi.totalMonthly, fill: 'hsl(var(--primary))' },
-                          { name: 'Piggyback', value: calculations.piggyback.totalMonthly, fill: 'hsl(var(--accent))' },
-                        ].map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={entry.fill} />
-                        ))}
-                      </Bar>
-                    </BarChart>
-                  </ResponsiveContainer>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Summary */}
-            <div className={`mt-6 p-4 rounded-lg ${calculations.betterOption === 'piggyback' ? 'bg-accent/10 border border-accent' : 'bg-primary/10 border border-primary'}`}>
-              <p className="text-sm sm:text-base">
-                {calculations.betterOption === 'piggyback' ? (
-                  <>
-                    <strong className="text-accent-strong">The second mortgage option saves you {formatCurrency(calculations.savings)}!</strong>
-                    <span className="text-muted-foreground"> Your upfront costs are higher, but your monthly payments are lower and you avoid PMI entirely.</span>
-                  </>
-                ) : (
-                  <>
-                    <strong className="text-primary">The PMI option saves you {formatCurrency(calculations.savings)}!</strong>
-                    <span className="text-muted-foreground"> In this scenario, paying PMI is more cost-effective than taking out a second mortgage.</span>
-                  </>
-                )}
-              </p>
-            </div>
+            <h3 className="mb-1 mt-8 font-display text-base font-semibold">Line by line</h3>
+            <CompareTable
+              columns={[{ label: "One loan + PMI" }, { label: "Piggyback" }]}
+              recommended={calculations.betterOption === "piggyback" ? 1 : 0}
+              recommendedLabel="Costs less"
+              groups={[
+                {
+                  title: "Up front",
+                  rows: [
+                    { label: "Amount borrowed", values: [calculations.pmi.loanAmount, calculations.firstMort.loanAmount + calculations.secondMort.loanAmount] },
+                    { label: "Down payment", values: [calculations.downPayment, calculations.downPayment] },
+                    { label: "Discount points", values: [calculations.pmi.pointsCost, calculations.firstMort.pointsCost + calculations.secondMort.pointsCost], better: "lower" },
+                    { label: "Other closing costs", values: [calculations.pmi.closingCosts, inputs.firstMortClosingCosts + inputs.secondMortClosingCosts], better: "lower" },
+                    { label: "Cash needed at closing", values: [calculations.pmi.upfrontCost, calculations.piggyback.upfrontCost], better: "lower", emphasis: true },
+                  ],
+                },
+                {
+                  title: "Every month",
+                  rows: [
+                    {
+                      label: "Loan payments",
+                      values: [calculations.pmi.monthlyPI, calculations.piggyback.monthlyPayment],
+                      display: [undefined, `${formatCurrency(calculations.firstMort.monthlyPI)} + ${formatCurrency(calculations.secondMort.monthlyPI)}`],
+                    },
+                    { label: "PMI", values: [calculations.pmi.monthlyPMI, 0], note: `Ends after about ${Math.ceil(calculations.pmi.pmiMonths / 12)} years` },
+                    { label: "Tax, insurance, HOA", values: [calculations.monthlyTax + calculations.monthlyInsurance + calculations.monthlyHOA, calculations.monthlyTax + calculations.monthlyInsurance + calculations.monthlyHOA] },
+                    { label: "Total monthly cost", values: [calculations.pmi.totalMonthly, calculations.piggyback.totalMonthly], better: "lower", emphasis: true },
+                  ],
+                },
+                {
+                  title: "Over the full terms",
+                  rows: [
+                    { label: "Interest", values: [calculations.pmi.totalInterest, calculations.firstMort.totalInterest + calculations.secondMort.totalInterest], better: "lower" },
+                    { label: "PMI", values: [calculations.pmi.totalPMIPaid, 0], better: "lower" },
+                    { label: "Total cost", values: [calculations.pmi.totalCost, calculations.piggyback.totalCost], better: "lower", emphasis: true, note: "Down payment, closing costs, loan payments and PMI" },
+                  ],
+                },
+              ]}
+            />
           </section>
         </TabsContent>
 

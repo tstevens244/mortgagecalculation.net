@@ -1,65 +1,62 @@
-import { lazy, Suspense } from "react";
 import { formatCurrency } from "@/lib/formatters";
-
-// recharts is large, so the pie loads after the page; the text breakdown renders immediately.
-const PaymentPie = lazy(() => import("./charts/PaymentPie"));
+import VizCard from "@/components/viz/VizCard";
+import StackedBar from "@/components/viz/StackedBar";
+import { SERIES, pct } from "@/components/viz/theme";
 
 interface PaymentBreakdownProps {
+  /** Principal in the first payment. */
   principal: number;
+  /** Interest in the first payment. */
   interest: number;
   tax: number;
   insurance: number;
   pmi: number;
   hoa: number;
-  /** Name for the mortgage insurance slice, e.g. "MIP" for FHA. */
+  /** Name for the mortgage insurance line, e.g. "MIP" for FHA. */
   pmiLabel?: string;
+  /** When mortgage insurance ends, e.g. "Ends in about 9 years". */
+  pmiNote?: string;
 }
 
-const PaymentBreakdown = ({ principal, interest, tax, insurance, pmi, hoa, pmiLabel = "PMI" }: PaymentBreakdownProps) => {
-  const data = [
-    { name: "Principal", value: principal, color: "hsl(var(--chart-primary))" },
-    { name: "Interest", value: interest, color: "hsl(var(--chart-secondary))" },
-    { name: "Property Tax", value: tax, color: "hsl(var(--chart-tertiary))" },
-    { name: "Insurance", value: insurance, color: "hsl(var(--chart-quaternary))" },
-    ...(pmi > 0 ? [{ name: pmiLabel, value: pmi, color: "hsl(0 72% 55%)" }] : []),
-    ...(hoa > 0 ? [{ name: "HOA", value: hoa, color: "hsl(280 67% 50%)" }] : []),
-  ].filter((item) => item.value > 0);
-
-  const total = data.reduce((sum, item) => sum + item.value, 0);
+/**
+ * Where each monthly payment goes. One bar split into the loan (principal and
+ * interest) and the housing costs that ride along with it (tax, insurance,
+ * mortgage insurance, HOA), with every amount listed underneath.
+ */
+const PaymentBreakdown = ({ principal, interest, tax, insurance, pmi, hoa, pmiLabel = "PMI", pmiNote }: PaymentBreakdownProps) => {
+  const total = principal + interest + tax + insurance + pmi + hoa;
+  const loan = principal + interest;
+  const costs = total - loan;
 
   return (
-    <section className="chart-container" aria-labelledby="breakdown-heading">
-      <h3 id="breakdown-heading" className="text-lg font-semibold mb-4">Monthly Payment Breakdown</h3>
-      
-      <div className="grid gap-8 lg:grid-cols-2 items-center">
-        <div className="h-[300px] sm:h-[350px]" role="img" aria-label="Pie chart showing monthly payment breakdown">
-          <Suspense fallback={null}>
-            <PaymentPie data={data} />
-          </Suspense>
-        </div>
-
-        <div className="space-y-4">
-          {data.map((item) => (
-            <div key={item.name} className="flex items-center justify-between p-3 rounded-lg bg-secondary/50">
-              <div className="flex items-center gap-3">
-                <div
-                  className="w-4 h-4 rounded-full"
-                  style={{ backgroundColor: item.color }}
-                  aria-hidden="true"
-                />
-                <span className="font-medium">{item.name}</span>
-              </div>
-              <div className="text-right">
-                <p className="font-semibold">{formatCurrency(item.value)}</p>
-                <p className="text-xs text-muted-foreground">
-                  {((item.value / total) * 100).toFixed(1)}%
-                </p>
-              </div>
-            </div>
-          ))}
-        </div>
+    <VizCard
+      id="payment-breakdown"
+      title="Where your monthly payment goes"
+      description={
+        <>
+          {formatCurrency(total)} a month: {pct(loan, total)} repays the loan, {pct(costs, total)} covers taxes,
+          insurance and fees.
+        </>
+      }
+      footnote="Principal and interest are for your first payment. Each month a little more goes to principal and a little less to interest; the total stays the same."
+    >
+      <StackedBar
+        size="lg"
+        legend
+        segments={[
+          { label: "Principal", value: principal, color: SERIES.principal, note: "Pays down what you owe and builds equity" },
+          { label: "Interest", value: interest, color: SERIES.interest, note: "The lender's charge for the loan" },
+          { label: "Property tax", value: tax, color: SERIES.tax },
+          { label: "Home insurance", value: insurance, color: SERIES.insurance },
+          { label: pmiLabel, value: pmi, color: SERIES.pmi, note: pmiNote },
+          { label: "HOA dues", value: hoa, color: SERIES.hoa },
+        ]}
+      />
+      <div className="mt-2 flex items-center justify-between border-t border-border pt-3 text-sm">
+        <span className="font-semibold text-foreground">Total monthly payment</span>
+        <span className="text-lg font-semibold tabular-nums text-foreground">{formatCurrency(total)}</span>
       </div>
-    </section>
+    </VizCard>
   );
 };
 

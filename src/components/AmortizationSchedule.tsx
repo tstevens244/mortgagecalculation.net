@@ -1,68 +1,44 @@
 import { useMemo, useState } from "react";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Download } from "lucide-react";
 import { formatCurrency } from "@/lib/formatters";
+import { byLoanYear, milestones, yearOfMonth, type AmortizationRow } from "@/lib/amortization";
 import { cn } from "@/lib/utils";
-
-interface AmortizationEntry {
-  month: number;
-  date: Date;
-  payment: number;
-  principal: number;
-  interest: number;
-  balance: number;
-}
-
-interface AmortizationScheduleProps {
-  data: AmortizationEntry[];
-}
-
-interface YearRow {
-  year: number;
-  label: string;
-  payments: number;
-  principal: number;
-  interest: number;
-  balance: number;
-}
+import VizCard, { Swatch, ViewToggle } from "@/components/viz/VizCard";
+import { SERIES } from "@/components/viz/theme";
 
 const formatMonth = (date: Date) => date.toLocaleDateString("en-US", { month: "short", year: "numeric" });
 
+/** Thin bar under the balance: how much of the loan is repaid. */
+const PaidOffBar = ({ share }: { share: number }) => (
+  <span className="mt-1 block h-1 w-full overflow-hidden rounded-full bg-secondary" aria-hidden="true">
+    <span className="block h-full rounded-full" style={{ width: `${Math.min(100, share * 100)}%`, background: SERIES.principal }} />
+  </span>
+);
+
+const Badge = ({ children }: { children: string }) => (
+  <span className="mt-1 block w-fit whitespace-nowrap rounded-full sm:ml-1.5 sm:mt-0 sm:inline-block bg-accent/15 px-1.5 py-0.5 align-middle text-[10px] font-semibold text-accent-strong">
+    {children}
+  </span>
+);
+
 /** Year-by-year summary (default) or month-by-month detail, with a CSV download. */
-const AmortizationSchedule = ({ data }: AmortizationScheduleProps) => {
+const AmortizationSchedule = ({ data }: { data: AmortizationRow[] }) => {
   const [view, setView] = useState<"year" | "month">("year");
   const [year, setYear] = useState(1);
 
-  const years = useMemo<YearRow[]>(() => {
-    const rows: YearRow[] = [];
-    data.forEach((entry, i) => {
-      const y = Math.floor(i / 12) + 1;
-      if (!rows[y - 1]) {
-        rows[y - 1] = { year: y, label: String(entry.date.getFullYear()), payments: 0, principal: 0, interest: 0, balance: 0 };
-      }
-      const row = rows[y - 1];
-      row.payments += entry.payment;
-      row.principal += entry.principal;
-      row.interest += entry.interest;
-      row.balance = entry.balance;
-    });
-    return rows;
-  }, [data]);
-
-  const totals = useMemo(
-    () => data.reduce((t, e) => ({ principal: t.principal + e.principal, interest: t.interest + e.interest }), { principal: 0, interest: 0 }),
-    [data],
-  );
-
-  const monthRows = data.slice((year - 1) * 12, year * 12);
+  const { years, m } = useMemo(() => ({ years: byLoanYear(data), m: milestones(data) }), [data]);
+  const crossoverYear = m.crossoverMonth ? yearOfMonth(m.crossoverMonth) : null;
+  const halfwayYear = m.halfwayMonth ? yearOfMonth(m.halfwayMonth) : null;
+  const shownYear = Math.min(year, years.length || 1);
+  const monthRows = data.slice((shownYear - 1) * 12, shownYear * 12);
 
   const downloadCsv = () => {
     const lines = [
       "Payment,Date,Payment amount,Principal,Interest,Balance",
       ...data.map((e) =>
-        [e.month, formatMonth(e.date), e.payment.toFixed(2), e.principal.toFixed(2), e.interest.toFixed(2), e.balance.toFixed(2)].join(","),
+        [e.month, `"${formatMonth(e.date)}"`, e.payment.toFixed(2), e.principal.toFixed(2), e.interest.toFixed(2), e.balance.toFixed(2)].join(","),
       ),
     ];
     const url = URL.createObjectURL(new Blob([lines.join("\n")], { type: "text/csv" }));
@@ -73,41 +49,45 @@ const AmortizationSchedule = ({ data }: AmortizationScheduleProps) => {
     URL.revokeObjectURL(url);
   };
 
-  const toggleClass = (active: boolean) =>
-    cn(
-      "rounded-md px-3 py-1.5 text-sm font-medium transition-colors",
-      active ? "bg-card text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground",
-    );
+  const badgesFor = (y: number) => (
+    <>
+      {y === crossoverYear && <Badge>Principal &gt; interest</Badge>}
+      {y === halfwayYear && <Badge>Half paid</Badge>}
+    </>
+  );
+
+  const th = "px-1 py-2.5 sm:px-3 text-right text-xs font-semibold tracking-normal text-muted-foreground sm:uppercase sm:tracking-wide";
 
   return (
-    <section className="table-container" aria-labelledby="schedule-heading">
-      <div className="flex flex-col gap-3 border-b border-border p-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h3 id="schedule-heading" className="text-lg font-semibold">
-            Amortization schedule
-          </h3>
-          <p className="text-sm text-muted-foreground">
-            {formatCurrency(totals.principal)} principal + {formatCurrency(totals.interest)} interest over {years.length} years
-          </p>
-        </div>
-        <div className="flex flex-wrap items-center gap-2">
-          <div className="inline-flex rounded-lg bg-secondary p-1" role="group" aria-label="Schedule view">
-            <button type="button" className={toggleClass(view === "year")} aria-pressed={view === "year"} onClick={() => setView("year")}>
-              By year
-            </button>
-            <button type="button" className={toggleClass(view === "month")} aria-pressed={view === "month"} onClick={() => setView("month")}>
-              By month
-            </button>
-          </div>
+    <VizCard
+      id="schedule"
+      title="Amortization schedule"
+      description={
+        <>
+          {formatCurrency(m.totalPrincipal)} principal + {formatCurrency(m.totalInterest)} interest over {data.length} payments.
+          The bar under each balance shows how much of the loan is repaid.
+        </>
+      }
+      actions={
+        <>
+          <ViewToggle
+            label="Schedule view"
+            value={view}
+            onChange={setView}
+            options={[
+              { value: "year", label: "By year" },
+              { value: "month", label: "By month" },
+            ]}
+          />
           {view === "month" && (
-            <Select value={String(year)} onValueChange={(v) => setYear(Number(v))}>
+            <Select value={String(shownYear)} onValueChange={(v) => setYear(Number(v))}>
               <SelectTrigger className="h-9 w-[150px]" aria-label="Year to show">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
                 {years.map((y) => (
                   <SelectItem key={y.year} value={String(y.year)}>
-                    Year {y.year} ({y.label})
+                    Year {y.year} ({y.calendarYear})
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -117,56 +97,81 @@ const AmortizationSchedule = ({ data }: AmortizationScheduleProps) => {
             <Download className="h-4 w-4" aria-hidden="true" />
             CSV
           </Button>
-        </div>
-      </div>
-
-      <div className="max-h-[520px] overflow-auto">
-        <Table className="tabular-nums">
-          <TableHeader className="sticky top-0 z-10 bg-card shadow-[0_1px_0_hsl(var(--border))]">
-            <TableRow>
-              <TableHead className="w-24">{view === "year" ? "Year" : "Month"}</TableHead>
-              <TableHead className="text-right">{view === "year" ? "Paid" : "Payment"}</TableHead>
-              <TableHead className="text-right">
+        </>
+      }
+    >
+      <div className="-mx-4 max-h-[560px] overflow-auto border-t border-border sm:-mx-6">
+        <table className="w-full border-collapse text-[12.5px] tabular-nums sm:text-sm">
+          <caption className="sr-only">
+            {view === "year" ? "Principal, interest and balance for each year of the loan" : `Payments in year ${shownYear}`}
+          </caption>
+          <thead className="sticky top-0 z-10 bg-card shadow-[0_1px_0_hsl(var(--border))]">
+            <tr>
+              <th scope="col" className={cn(th, "pl-2.5 text-left sm:pl-6")}>{view === "year" ? "Year" : "Month"}</th>
+              <th scope="col" className={cn(th, "hidden sm:table-cell")}>{view === "year" ? "Paid" : "Payment"}</th>
+              <th scope="col" className={th}>
                 <span className="inline-flex items-center gap-1.5">
-                  <span className="h-2 w-2 rounded-full bg-[hsl(var(--chart-primary))]" aria-hidden="true" />
+                  <span className="hidden sm:inline-flex"><Swatch color={SERIES.principal} /></span>
                   Principal
                 </span>
-              </TableHead>
-              <TableHead className="text-right">
+              </th>
+              <th scope="col" className={th}>
                 <span className="inline-flex items-center gap-1.5">
-                  <span className="h-2 w-2 rounded-full bg-[hsl(var(--chart-secondary))]" aria-hidden="true" />
+                  <span className="hidden sm:inline-flex"><Swatch color={SERIES.interest} /></span>
                   Interest
                 </span>
-              </TableHead>
-              <TableHead className="text-right">Balance</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
+              </th>
+              <th scope="col" className={cn(th, "pr-2.5 sm:pr-6")}>Balance</th>
+            </tr>
+          </thead>
+          <tbody>
             {view === "year"
               ? years.map((y) => (
-                  <TableRow key={y.year}>
-                    <TableCell className="font-medium">
-                      {y.year} <span className="text-xs text-muted-foreground">({y.label})</span>
-                    </TableCell>
-                    <TableCell className="text-right">{formatCurrency(y.payments)}</TableCell>
-                    <TableCell className="text-right">{formatCurrency(y.principal)}</TableCell>
-                    <TableCell className="text-right">{formatCurrency(y.interest)}</TableCell>
-                    <TableCell className="text-right font-medium">{formatCurrency(y.balance)}</TableCell>
-                  </TableRow>
+                  <tr key={y.year} className={cn("border-b border-border/60 hover:bg-secondary/40", y.year === crossoverYear && "bg-accent/[0.06]")}>
+                    <th scope="row" className="py-2.5 pl-2.5 pr-1 text-left sm:pr-3 font-medium sm:pl-6">
+                      {y.year} <span className="hidden text-xs font-normal text-muted-foreground sm:inline">{y.calendarYear}</span>
+                      {badgesFor(y.year)}
+                    </th>
+                    <td className="hidden px-1 py-2.5 sm:px-3 text-right sm:table-cell">{formatCurrency(y.payments)}</td>
+                    <td className="px-1 py-2.5 sm:px-3 text-right">{formatCurrency(y.principal)}</td>
+                    <td className="px-1 py-2.5 sm:px-3 text-right">{formatCurrency(y.interest)}</td>
+                    <td className="py-2.5 pl-1 pr-2.5 text-right sm:pl-3 font-semibold sm:pr-6">
+                      {formatCurrency(y.balance)}
+                      <PaidOffBar share={y.paidOff} />
+                    </td>
+                  </tr>
                 ))
               : monthRows.map((e) => (
-                  <TableRow key={e.month}>
-                    <TableCell className="font-medium">{formatMonth(e.date)}</TableCell>
-                    <TableCell className="text-right">{formatCurrency(e.payment)}</TableCell>
-                    <TableCell className="text-right">{formatCurrency(e.principal)}</TableCell>
-                    <TableCell className="text-right">{formatCurrency(e.interest)}</TableCell>
-                    <TableCell className="text-right font-medium">{formatCurrency(e.balance)}</TableCell>
-                  </TableRow>
+                  <tr key={e.month} className={cn("border-b border-border/60 hover:bg-secondary/40", e.month === m.crossoverMonth && "bg-accent/[0.06]")}>
+                    <th scope="row" className="py-2.5 pl-2.5 pr-1 text-left sm:pr-3 font-medium sm:pl-6">
+                      {formatMonth(e.date)}
+                      {e.month === m.crossoverMonth && <Badge>Principal &gt; interest</Badge>}
+                      {e.month === m.halfwayMonth && <Badge>Half paid</Badge>}
+                    </th>
+                    <td className="hidden px-1 py-2.5 sm:px-3 text-right sm:table-cell">{formatCurrency(e.payment)}</td>
+                    <td className="px-1 py-2.5 sm:px-3 text-right">{formatCurrency(e.principal)}</td>
+                    <td className="px-1 py-2.5 sm:px-3 text-right">{formatCurrency(e.interest)}</td>
+                    <td className="py-2.5 pl-1 pr-2.5 text-right sm:pl-3 font-semibold sm:pr-6">
+                      {formatCurrency(e.balance)}
+                      <PaidOffBar share={m.loanAmount > 0 ? 1 - e.balance / m.loanAmount : 0} />
+                    </td>
+                  </tr>
                 ))}
-          </TableBody>
-        </Table>
+          </tbody>
+          {view === "year" && (
+            <tfoot className="sticky bottom-0 bg-card shadow-[0_-1px_0_hsl(var(--border))]">
+              <tr className="font-semibold">
+                <th scope="row" className="py-3 pl-2.5 pr-1 text-left sm:pr-3 sm:pl-6">Total</th>
+                <td className="hidden px-1 py-3 sm:px-3 text-right sm:table-cell">{formatCurrency(m.totalPrincipal + m.totalInterest)}</td>
+                <td className="px-1 py-3 sm:px-3 text-right">{formatCurrency(m.totalPrincipal)}</td>
+                <td className="px-1 py-3 sm:px-3 text-right">{formatCurrency(m.totalInterest)}</td>
+                <td className="py-3 pl-1 pr-2.5 text-right sm:pl-3 sm:pr-6">{formatCurrency(years[years.length - 1]?.balance ?? 0)}</td>
+              </tr>
+            </tfoot>
+          )}
+        </table>
       </div>
-    </section>
+    </VizCard>
   );
 };
 

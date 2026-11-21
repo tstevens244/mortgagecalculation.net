@@ -13,8 +13,10 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { HelpCircle, Home, DollarSign, TrendingUp, CheckCircle, AlertCircle } from "lucide-react";
-import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip as RechartsTooltip } from "recharts";
+import { HelpCircle, Home, DollarSign, TrendingUp, AlertCircle } from "lucide-react";
+import VizCard from "./viz/VizCard";
+import StackedBar from "./viz/StackedBar";
+import { SERIES } from "./viz/theme";
 import CurrencyInput from "./CurrencyInput";
 import PercentInput from "./PercentInput";
 import { formatCurrency, formatPercent } from "@/lib/formatters";
@@ -336,95 +338,55 @@ const QualificationCalculator = () => {
             </CardContent>
           </Card>
 
-          {/* Payment Breakdown Chart */}
-          <Card className="calculator-card">
-            <CardHeader className="pb-4">
-              <CardTitle className="text-lg font-semibold flex items-center gap-2">
-                <DollarSign className="h-5 w-5 text-accent" />
-                Monthly Housing Payment
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="h-[180px]">
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                    <Pie isAnimationActive={false}
-                      data={[
-                        { name: 'Principal & Interest', value: results.monthlyPI, color: 'hsl(var(--primary))' },
-                        { name: 'Property Tax', value: results.monthlyTaxes, color: 'hsl(var(--accent))' },
-                        { name: 'Insurance', value: results.monthlyInsurance, color: 'hsl(var(--muted-foreground))' },
-                        ...(results.monthlyPMI > 0 ? [{ name: 'PMI', value: results.monthlyPMI, color: 'hsl(var(--destructive))' }] : []),
-                      ].filter(item => item.value > 0)}
-                      cx="50%"
-                      cy="50%"
-                      innerRadius={45}
-                      outerRadius={65}
-                      paddingAngle={2}
-                      dataKey="value"
-                    >
-                      {[
-                        { name: 'Principal & Interest', value: results.monthlyPI, color: 'hsl(var(--primary))' },
-                        { name: 'Property Tax', value: results.monthlyTaxes, color: 'hsl(var(--accent))' },
-                        { name: 'Insurance', value: results.monthlyInsurance, color: 'hsl(var(--muted-foreground))' },
-                        ...(results.monthlyPMI > 0 ? [{ name: 'PMI', value: results.monthlyPMI, color: 'hsl(var(--destructive))' }] : []),
-                      ].filter(item => item.value > 0).map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.color} />
-                      ))}
-                    </Pie>
-                    <RechartsTooltip
-                      formatter={(value: number) => formatCurrency(value)}
-                      contentStyle={{
-                        backgroundColor: 'hsl(var(--card))',
-                        border: '1px solid hsl(var(--border))',
-                        borderRadius: '8px',
-                        fontSize: '12px',
-                      }}
-                    />
-                    <Legend 
-                      wrapperStyle={{ fontSize: '10px' }}
-                      formatter={(value) => <span className="text-foreground">{value}</span>}
-                    />
-                  </PieChart>
-                </ResponsiveContainer>
-              </div>
-              <div className="flex justify-between items-center py-3 bg-secondary/50 rounded-lg px-3 mt-4">
-                <span className="font-medium">Total Housing Payment</span>
-                <span className="font-bold text-lg text-accent-strong">{formatCurrency(results.totalHousingPayment)}</span>
-              </div>
-            </CardContent>
-          </Card>
+          {/* Payment breakdown */}
+          <VizCard title="Monthly housing payment" description={`${formatCurrency(results.totalHousingPayment)} a month, the number lenders test against your income.`}>
+            <StackedBar
+              legend
+              segments={[
+                { label: "Principal & interest", value: results.monthlyPI, color: SERIES.principal },
+                { label: "Property tax", value: results.monthlyTaxes, color: SERIES.tax },
+                { label: "Home insurance", value: results.monthlyInsurance, color: SERIES.insurance },
+                { label: "PMI", value: results.monthlyPMI, color: SERIES.pmi },
+              ]}
+            />
+          </VizCard>
 
-          {/* DTI Analysis */}
-          <Card className="calculator-card">
-            <CardHeader className="pb-4">
-              <CardTitle className="text-lg font-semibold flex items-center gap-2">
-                <TrendingUp className="h-5 w-5 text-accent" />
-                DTI Ratio Analysis
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div className="flex justify-between items-center py-3 border-b border-border">
-                  <div className="flex items-center gap-2">
-                    <CheckCircle className="h-4 w-4 text-green-600" />
-                    <span className="text-muted-foreground">Front-End Ratio</span>
-                  </div>
-                  <span className="font-semibold">{formatPercent(results.actualFrontEnd)}</span>
-                </div>
-                <div className="flex justify-between items-center py-3 border-b border-border">
-                  <div className="flex items-center gap-2">
-                    <CheckCircle className="h-4 w-4 text-green-600" />
-                    <span className="text-muted-foreground">Back-End Ratio</span>
-                  </div>
-                  <span className="font-semibold">{formatPercent(results.actualBackEnd)}</span>
-                </div>
-                <div className="flex justify-between items-center py-3">
-                  <span className="text-muted-foreground">Max Debt Allowance</span>
-                  <span className="font-semibold">{formatCurrency(Math.max(0, results.maxMonthlyDebtAllowance))}/mo</span>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          {/* Income split at the required income */}
+          <VizCard
+            title="How the income requirement works"
+            description={`At ${formatCurrency(results.requiredMonthlyIncome)} a month, your payments just fit the ${frontEndRatio}/${backEndRatio} limits. The ${
+              results.actualFrontEnd >= frontEndRatio - 0.05 ? `${frontEndRatio}% housing` : `${backEndRatio}% total debt`
+            } limit is the one that sets it.`}
+          >
+            <StackedBar
+              legend
+              max={results.requiredMonthlyIncome}
+              markers={
+                frontEndRatio === backEndRatio
+                  ? [{ value: (results.requiredMonthlyIncome * backEndRatio) / 100, label: `${backEndRatio}% limit` }]
+                  : [
+                      { value: (results.requiredMonthlyIncome * frontEndRatio) / 100, label: `${frontEndRatio}% housing` },
+                      { value: (results.requiredMonthlyIncome * backEndRatio) / 100, label: `${backEndRatio}% all debts` },
+                    ]
+              }
+              segments={[
+                { label: "Housing payment", value: results.totalHousingPayment, color: SERIES.principal, note: `${formatPercent(results.actualFrontEnd)} of income (front-end ratio)` },
+                { label: "Other debt payments", value: monthlyDebts, color: SERIES.interest, note: `Housing + debts: ${formatPercent(results.actualBackEnd)} (back-end ratio)` },
+                {
+                  label: "Left for everything else",
+                  value: Math.max(0, results.requiredMonthlyIncome - results.totalHousingPayment - monthlyDebts),
+                  color: SERIES.other,
+                  muted: true,
+                  note: "Before taxes",
+                },
+              ]}
+            />
+            {results.maxMonthlyDebtAllowance > monthlyDebts + 1 && (
+              <p className="mt-3 text-sm text-muted-foreground">
+                At this income you could carry up to {formatCurrency(results.maxMonthlyDebtAllowance)} a month in other debts.
+              </p>
+            )}
+          </VizCard>
 
           {/* Qualification Tip */}
           <Card className="calculator-card bg-secondary/30 border-accent/30">

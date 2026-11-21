@@ -9,6 +9,9 @@ import CurrencyInput from "./CurrencyInput";
 import PercentInput from "./PercentInput";
 import { formatCurrency } from "@/lib/formatters";
 import StickyResult from "./StickyResult";
+import VizCard from "./viz/VizCard";
+import CompareTable from "./viz/CompareTable";
+import { BreakEvenChart } from "./viz/LazyCharts";
 
 interface RefinanceInputs {
   // Original loan
@@ -171,18 +174,31 @@ const RefinanceCalculator = () => {
     // Monthly savings (positive when new payment is lower)
     const monthlySavings = originalMonthlyPayment - newMonthlyPayment;
 
-    // Break-even calculation
-    let breakEvenMonths: number;
-    if (monthlySavings > 0) {
-      // Payment decreased - simple break-even
-      breakEvenMonths = Math.ceil(totalClosingCosts / monthlySavings);
-    } else if (totalBenefit > 0 && monthsUntilSell > 0) {
-      // Payment increased but overall benefit exists (shorter term saves interest)
-      // Break-even based on when interest savings exceed closing costs
-      const monthlyInterestSavings = interestSavings / monthsUntilSell;
-      breakEvenMonths = monthlyInterestSavings > 0 ? Math.ceil(totalClosingCosts / monthlyInterestSavings) : Infinity;
-    } else {
-      breakEvenMonths = Infinity;
+    // Break-even: the first month when interest saved (after any lost tax
+    // deduction) has covered the closing costs. Tracked month by month for up to
+    // 30 years so the chart can show the whole path.
+    const netByYear: { year: number; value: number }[] = [{ year: 0, value: -totalClosingCosts }];
+    let breakEvenMonths = Infinity;
+    {
+      let ob = remainingBalance;
+      let nb = newLoanAmount;
+      let oi = 0;
+      let ni = 0;
+      for (let m = 1; m <= 360; m++) {
+        if (m <= remainingMonthsOriginal && ob > 0) {
+          const interest = ob * originalMonthlyRate;
+          ob = Math.max(0, ob - Math.min(originalMonthlyPayment - interest, ob));
+          oi += interest;
+        }
+        if (m <= newTotalPayments && nb > 0) {
+          const interest = nb * newMonthlyRate;
+          nb = Math.max(0, nb - Math.min(newMonthlyPayment - interest, nb));
+          ni += interest;
+        }
+        const net = (oi - ni) * (1 - combinedTaxRate) - totalClosingCosts;
+        if (breakEvenMonths === Infinity && net > 0) breakEvenMonths = m;
+        if (m % 12 === 0) netByYear.push({ year: m / 12, value: net });
+      }
     }
 
     return {
@@ -215,6 +231,7 @@ const RefinanceCalculator = () => {
         totalBenefit,
         breakEvenMonths,
         monthlySavings,
+        netByYear,
         shouldRefinance: totalBenefit > 0,
       },
     };
@@ -561,163 +578,97 @@ const RefinanceCalculator = () => {
                 </tbody>
               </table>
             </div>
+
+            {(() => {
+              const be = Number.isFinite(calculations.comparison.breakEvenMonths) ? calculations.comparison.breakEvenMonths : null;
+              const horizon = Math.min(30, Math.max(10, inputs.yearsBeforeSell + 3, be ? Math.ceil(be / 12) + 3 : 0));
+              const points = calculations.comparison.netByYear.slice(0, horizon + 1);
+              return (
+                <div className="mt-8">
+                  <h3 className="font-display text-base font-semibold">When refinancing pays off</h3>
+                  <p className="mb-4 mt-1 text-sm text-muted-foreground">
+                    Interest saved{inputs.federalTaxRate + inputs.stateTaxRate > 0 ? " (after lost tax savings)" : ""}, minus
+                    closing costs, by how long you keep the new loan. It starts below zero by the closing costs.
+                  </p>
+                  <BreakEvenChart
+                    points={points}
+                    aheadLabel="Refinancing is ahead"
+                    behindLabel="Not paid back yet"
+                    breakEvenYear={be ? be / 12 : null}
+                    markerYear={inputs.yearsBeforeSell}
+                    markerLabel="You sell"
+                    yearTitle={(y) => (y === 0 ? "At closing" : `After ${y} year${y === 1 ? "" : "s"}`)}
+                  />
+                </div>
+              );
+            })()}
           </section>
         </TabsContent>
 
         <TabsContent value="breakdown" className="space-y-6">
-          {/* Detailed Breakdown Tables */}
-          <section className="calculator-card p-4 sm:p-6">
-            <h2 className="text-xl font-display font-semibold mb-4">Detailed Calculation Breakdowns</h2>
-
-            <div className="space-y-6">
-              {/* Balance & Closing */}
-              <div className="overflow-x-auto">
-                <table className="w-full text-xs sm:text-sm">
-                  <thead>
-                    <tr className="border-b border-border bg-primary text-primary-foreground">
-                      <th className="text-left py-3 px-4 font-medium">Balance & Closing</th>
-                      <th className="text-right py-3 px-4 font-medium">Before Refinancing</th>
-                      <th className="text-right py-3 px-4 font-medium">After Refinancing</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-border">
-                    <tr>
-                      <td className="py-3 px-4 text-muted-foreground">Balance at Refinance</td>
-                      <td className="py-3 px-4 text-right font-medium">{formatCurrency(calculations.original.remainingBalance)}</td>
-                      <td className="py-3 px-4 text-right font-medium">{formatCurrency(calculations.refinanced.loanAmount)}</td>
-                    </tr>
-                    <tr className="bg-muted/30">
-                      <td className="py-3 px-4 text-muted-foreground">Cost of Discount Points</td>
-                      <td className="py-3 px-4 text-right font-medium">—</td>
-                      <td className="py-3 px-4 text-right font-medium">{formatCurrency(calculations.refinanced.discountPointsCost)}</td>
-                    </tr>
-                    <tr>
-                      <td className="py-3 px-4 text-muted-foreground">Origination Fees</td>
-                      <td className="py-3 px-4 text-right font-medium">—</td>
-                      <td className="py-3 px-4 text-right font-medium">{formatCurrency(calculations.refinanced.originationFeesCost)}</td>
-                    </tr>
-                    <tr className="bg-muted/30">
-                      <td className="py-3 px-4 text-muted-foreground">Other Closing Costs</td>
-                      <td className="py-3 px-4 text-right font-medium">—</td>
-                      <td className="py-3 px-4 text-right font-medium">{formatCurrency(inputs.otherClosingCosts)}</td>
-                    </tr>
-                    <tr className="font-semibold">
-                      <td className="py-3 px-4">Total Closing Costs</td>
-                      <td className="py-3 px-4 text-right">—</td>
-                      <td className="py-3 px-4 text-right">{formatCurrency(calculations.refinanced.totalClosingCosts)}</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-
-              {/* Monthly Payments */}
-              <div className="overflow-x-auto">
-                <table className="w-full text-xs sm:text-sm">
-                  <thead>
-                    <tr className="border-b border-border bg-primary text-primary-foreground">
-                      <th className="text-left py-3 px-4 font-medium">Monthly Payments</th>
-                      <th className="text-right py-3 px-4 font-medium">Before Refinancing</th>
-                      <th className="text-right py-3 px-4 font-medium">After Refinancing</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-border">
-                    <tr>
-                      <td className="py-3 px-4 text-muted-foreground">Monthly Payment</td>
-                      <td className="py-3 px-4 text-right font-medium">{formatCurrency(calculations.original.monthlyPayment)}</td>
-                      <td className="py-3 px-4 text-right font-medium">{formatCurrency(calculations.refinanced.monthlyPayment)}</td>
-                    </tr>
-                    <tr className="bg-muted/30">
-                      <td className="py-3 px-4 text-muted-foreground">Payment Difference Per Month</td>
-                      <td className="py-3 px-4 text-right font-medium">—</td>
-                      <td className={`py-3 px-4 text-right font-medium ${calculations.comparison.monthlyPaymentDiff < 0 ? 'text-accent-strong' : 'text-destructive'}`}>
-                        {calculations.comparison.monthlyPaymentDiff >= 0 ? '+' : ''}{formatCurrency(calculations.comparison.monthlyPaymentDiff)}
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-
-              {/* Period Totals */}
-              <div className="overflow-x-auto">
-                <table className="w-full text-xs sm:text-sm">
-                  <thead>
-                    <tr className="border-b border-border bg-primary text-primary-foreground">
-                      <th className="text-left py-3 px-4 font-medium">{inputs.yearsBeforeSell} Year Totals</th>
-                      <th className="text-right py-3 px-4 font-medium">Before Refinancing</th>
-                      <th className="text-right py-3 px-4 font-medium">After Refinancing</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-border">
-                    <tr>
-                      <td className="py-3 px-4 text-muted-foreground">Total Monthly Payments</td>
-                      <td className="py-3 px-4 text-right font-medium">{formatCurrency(calculations.original.paymentsOverPeriod)}</td>
-                      <td className="py-3 px-4 text-right font-medium">{formatCurrency(calculations.refinanced.paymentsOverPeriod)}</td>
-                    </tr>
-                    <tr className="bg-muted/30">
-                      <td className="py-3 px-4 text-muted-foreground">Total Interest Paid</td>
-                      <td className="py-3 px-4 text-right font-medium">{formatCurrency(calculations.original.interestOverPeriod)}</td>
-                      <td className="py-3 px-4 text-right font-medium">{formatCurrency(calculations.refinanced.interestOverPeriod)}</td>
-                    </tr>
-                    <tr>
-                      <td className="py-3 px-4 text-muted-foreground">Interest Savings</td>
-                      <td className="py-3 px-4 text-right font-medium">—</td>
-                      <td className="py-3 px-4 text-right font-medium text-accent-strong">{formatCurrency(calculations.comparison.interestSavings)}</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-
-              {/* Tax Info */}
-              <div className="overflow-x-auto">
-                <table className="w-full text-xs sm:text-sm">
-                  <thead>
-                    <tr className="border-b border-border bg-primary text-primary-foreground">
-                      <th className="text-left py-3 px-4 font-medium">Income Tax Info</th>
-                      <th className="text-right py-3 px-4 font-medium">Before Refinancing</th>
-                      <th className="text-right py-3 px-4 font-medium">After Refinancing</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-border">
-                    <tr>
-                      <td className="py-3 px-4 text-muted-foreground">Tax Savings (Interest Deduction)</td>
-                      <td className="py-3 px-4 text-right font-medium">{formatCurrency(calculations.original.taxSavings)}</td>
-                      <td className="py-3 px-4 text-right font-medium">{formatCurrency(calculations.refinanced.taxSavings)}</td>
-                    </tr>
-                    <tr className="bg-muted/30">
-                      <td className="py-3 px-4 text-muted-foreground">Tax Savings Lost</td>
-                      <td className="py-3 px-4 text-right font-medium">—</td>
-                      <td className="py-3 px-4 text-right font-medium text-destructive">{formatCurrency(calculations.comparison.taxSavingsLoss)}</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-
-              {/* Final Balance */}
-              <div className="overflow-x-auto">
-                <table className="w-full text-xs sm:text-sm">
-                  <thead>
-                    <tr className="border-b border-border bg-primary text-primary-foreground">
-                      <th className="text-left py-3 px-4 font-medium">Final Loan Balance</th>
-                      <th className="text-right py-3 px-4 font-medium">Before Refinancing</th>
-                      <th className="text-right py-3 px-4 font-medium">After Refinancing</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-border">
-                    <tr>
-                      <td className="py-3 px-4 text-muted-foreground">Loan Balance at Sale in {inputs.yearsBeforeSell} Years</td>
-                      <td className="py-3 px-4 text-right font-medium">{formatCurrency(calculations.original.balanceAtSell)}</td>
-                      <td className="py-3 px-4 text-right font-medium">{formatCurrency(calculations.refinanced.balanceAtSell)}</td>
-                    </tr>
-                    <tr className="bg-accent/10">
-                      <td className="py-3 px-4 font-semibold">Remaining Balance Difference (Equity Gained)</td>
-                      <td className="py-3 px-4 text-right font-medium">—</td>
-                      <td className="py-3 px-4 text-right font-bold text-accent-strong">{formatCurrency(calculations.comparison.balanceDifference)}</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </section>
+          <VizCard
+            title="Keep your loan or refinance, line by line"
+            description={`Everything over the ${inputs.yearsBeforeSell} years you expect to keep the loan. The check marks the better number in each row.`}
+          >
+            <CompareTable
+              columns={[{ label: "Keep current loan" }, { label: "Refinance" }]}
+              recommended={calculations.comparison.shouldRefinance ? 1 : 0}
+              recommendedLabel={calculations.comparison.shouldRefinance ? "Saves money" : "Costs less"}
+              groups={[
+                {
+                  title: "Closing costs",
+                  rows: [
+                    { label: "Discount points", values: [null, calculations.refinanced.discountPointsCost] },
+                    { label: "Origination fees", values: [null, calculations.refinanced.originationFeesCost] },
+                    { label: "Other closing costs", values: [null, inputs.otherClosingCosts] },
+                    { label: "Total closing costs", values: [0, calculations.refinanced.totalClosingCosts], emphasis: true },
+                  ],
+                },
+                {
+                  title: "Every month",
+                  rows: [
+                    {
+                      label: "Principal and interest",
+                      values: [calculations.original.monthlyPayment, calculations.refinanced.monthlyPayment],
+                      better: "lower",
+                      note: `New loan: ${formatCurrency(calculations.refinanced.loanAmount)} over ${inputs.newLoanTerm} years`,
+                    },
+                  ],
+                },
+                {
+                  title: `Over ${inputs.yearsBeforeSell} years`,
+                  rows: [
+                    { label: "Payments made", values: [calculations.original.paymentsOverPeriod, calculations.refinanced.paymentsOverPeriod] },
+                    { label: "Interest paid", values: [calculations.original.interestOverPeriod, calculations.refinanced.interestOverPeriod], better: "lower" },
+                    ...(inputs.federalTaxRate + inputs.stateTaxRate > 0
+                      ? [
+                          {
+                            label: "Tax saved on interest",
+                            values: [calculations.original.taxSavings, calculations.refinanced.taxSavings] as (number | null)[],
+                            note: "If you itemize",
+                          },
+                        ]
+                      : []),
+                    { label: "Balance left when you sell", values: [calculations.original.balanceAtSell, calculations.refinanced.balanceAtSell], better: "lower" },
+                  ],
+                },
+                {
+                  rows: [
+                    {
+                      label: "Net result of refinancing",
+                      values: [null, calculations.comparison.totalBenefit],
+                      display: [
+                        undefined,
+                        `${calculations.comparison.totalBenefit >= 0 ? "Saves " : "Costs "}${formatCurrency(Math.abs(calculations.comparison.totalBenefit))}`,
+                      ],
+                      emphasis: true,
+                      note: "Interest saved, minus lost tax savings and closing costs",
+                    },
+                  ],
+                },
+              ]}
+            />
+          </VizCard>
         </TabsContent>
       </Tabs>
     </div>

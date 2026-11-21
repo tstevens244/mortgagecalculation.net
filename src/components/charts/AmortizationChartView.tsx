@@ -1,229 +1,193 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import {
-  ComposedChart,
   Area,
+  ComposedChart,
+  Bar,
+  BarChart,
+  CartesianGrid,
   Line,
+  ReferenceLine,
+  ResponsiveContainer,
+  Tooltip,
   XAxis,
   YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
 } from "recharts";
 import { formatCurrency } from "@/lib/formatters";
+import { byLoanYear, milestones, yearOfMonth, type AmortizationRow } from "@/lib/amortization";
+import VizCard, { Legend, StatRow, TooltipCard, ViewToggle } from "@/components/viz/VizCard";
+import { SERIES, cursorLine, gridProps, pct, xAxisProps, yAxisProps } from "@/components/viz/theme";
 
-interface AmortizationEntry {
-  month: number;
-  date: Date;
-  payment: number;
-  principal: number;
-  interest: number;
-  balance: number;
-}
+type View = "balance" | "split";
 
-interface AmortizationChartProps {
-  data: AmortizationEntry[];
-  monthlyTax: number;
-  monthlyInsurance: number;
-  monthlyPMI: number;
-  monthlyHOA: number;
-}
+const monthYear = (d: Date) => d.toLocaleDateString("en-US", { month: "short", year: "numeric" });
 
-const AmortizationChart = ({
-  data,
-  monthlyTax,
-  monthlyInsurance,
-  monthlyPMI,
-  monthlyHOA,
-}: AmortizationChartProps) => {
-  // Aggregate data by year for cleaner visualization
-  const yearlyData = useMemo(() => {
-    const years: Record<
-      number,
-      {
-        year: number;
-        principal: number;
-        interest: number;
-        taxesAndFees: number;
-        balance: number;
-        totalPayment: number;
-      }
-    > = {};
+/**
+ * How the loan pays down. "Balance" shows what you owe next to what you've paid
+ * in principal and in interest so far; "Yearly split" shows each year's payments
+ * divided between principal and interest, so you can see the shift toward principal.
+ */
+const AmortizationChartView = ({ data }: { data: AmortizationRow[] }) => {
+  const [view, setView] = useState<View>("balance");
 
-    const monthlyTaxesAndFees = monthlyTax + monthlyInsurance + monthlyPMI + monthlyHOA;
+  const { years, m, points } = useMemo(() => {
+    const years = byLoanYear(data);
+    const m = milestones(data);
+    // Start at year 0 so the balance line begins at the full loan amount.
+    const points = [
+      { year: 0, balance: m.loanAmount, cumPrincipal: 0, cumInterest: 0, calendarYear: data[0]?.date.getFullYear() },
+      ...years.map((y) => ({ year: y.year, balance: y.balance, cumPrincipal: y.cumPrincipal, cumInterest: y.cumInterest, calendarYear: y.calendarYear })),
+    ];
+    return { years, m, points };
+  }, [data]);
 
-    data.forEach((entry) => {
-      const year = entry.date.getFullYear();
-      if (!years[year]) {
-        years[year] = {
-          year,
-          principal: 0,
-          interest: 0,
-          taxesAndFees: 0,
-          balance: entry.balance,
-          totalPayment: 0,
-        };
-      }
-      years[year].principal += entry.principal;
-      years[year].interest += entry.interest;
-      years[year].taxesAndFees += monthlyTaxesAndFees;
-      years[year].balance = entry.balance; // Keep the last balance of the year
-      years[year].totalPayment =
-        years[year].principal + years[year].interest + years[year].taxesAndFees;
-    });
+  if (!data.length) return null;
 
-    return Object.values(years).sort((a, b) => a.year - b.year);
-  }, [data, monthlyTax, monthlyInsurance, monthlyPMI, monthlyHOA]);
+  const crossoverYear = m.crossoverMonth ? yearOfMonth(m.crossoverMonth) : null;
+  const halfwayYear = m.halfwayMonth ? yearOfMonth(m.halfwayMonth) : null;
+  const rowFor = (month: number | null) => (month ? data[month - 1] : undefined);
+  const payoffDate = rowFor(m.payoffMonth)?.date;
 
-  const formatYAxisCurrency = (value: number) => {
-    if (value >= 1000000) return `$${(value / 1000000).toFixed(1)}M`;
-    if (value >= 1000) return `$${(value / 1000).toFixed(0)}k`;
-    return `$${value}`;
-  };
+  const stats = [
+    { label: "Total interest", value: formatCurrency(m.totalInterest), hint: `${pct(m.totalInterest, m.loanAmount)} of the amount borrowed` },
+    {
+      label: "Principal passes interest",
+      value: crossoverYear ? `Year ${crossoverYear}` : "From the start",
+      hint: crossoverYear ? monthYear(rowFor(m.crossoverMonth)!.date) : undefined,
+    },
+    { label: "Half paid off", value: halfwayYear ? `Year ${halfwayYear}` : "—", hint: halfwayYear ? monthYear(rowFor(m.halfwayMonth)!.date) : undefined },
+    { label: "Paid off", value: payoffDate ? monthYear(payoffDate) : "—", hint: `${data.length} payments` },
+  ];
 
-  const CustomTooltip = ({ active, payload, label }: any) => {
-    if (active && payload && payload.length) {
-      return (
-        <div className="bg-card border border-border rounded-lg p-3 shadow-lg">
-          <p className="font-semibold text-foreground mb-2">Year {label}</p>
-          {payload.map((entry: any, index: number) => (
-            <div key={index} className="flex justify-between gap-4 text-sm">
-              <span style={{ color: entry.color }}>{entry.name}:</span>
-              <span className="font-medium">{formatCurrency(entry.value)}</span>
-            </div>
-          ))}
-        </div>
-      );
-    }
-    return null;
-  };
+  const summary =
+    `Loan of ${formatCurrency(m.loanAmount)} paid off by ${payoffDate ? monthYear(payoffDate) : "the end of the term"}, ` +
+    `with ${formatCurrency(m.totalInterest)} in interest.` +
+    (crossoverYear ? ` More of each payment goes to principal than interest starting in year ${crossoverYear}.` : "");
 
   return (
-    <section className="chart-container" aria-labelledby="amortization-chart-heading">
-      <h3 id="amortization-chart-heading" className="text-lg font-semibold mb-2">
-        Amortization Chart
-      </h3>
-      <p className="text-xs sm:text-sm text-muted-foreground mb-4">
-        Visualize how your payments and balance change over time
-      </p>
+    <VizCard
+      id="amortization-chart"
+      title="How your loan pays down"
+      description={
+        view === "balance"
+          ? "What you still owe, and what you've paid in principal and interest so far, year by year."
+          : "Each year's payments split into principal and interest. Early payments are mostly interest."
+      }
+      actions={
+        <ViewToggle
+          label="Chart view"
+          value={view}
+          onChange={setView}
+          options={[
+            { value: "balance", label: "Balance" },
+            { value: "split", label: "Yearly split" },
+          ]}
+        />
+      }
+      footnote="Principal and interest only. Property tax, insurance, PMI and HOA dues don't change what you owe, so they're left out here."
+    >
+      <StatRow stats={stats} className="mb-5" />
 
-      <div
-        className="h-[280px] sm:h-[400px]"
-        role="img"
-        aria-label="Stacked area chart showing yearly principal, interest, taxes and fees with balance line"
-      >
+      {view === "balance" ? (
+        <Legend
+          className="mb-3"
+          items={[
+            { label: "Balance owed", color: SERIES.balance, shape: "area" },
+            { label: "Principal paid so far", color: SERIES.principal, shape: "line" },
+            { label: "Interest paid so far", color: SERIES.interest, shape: "line" },
+          ]}
+        />
+      ) : (
+        <Legend
+          className="mb-3"
+          items={[
+            { label: "Principal", color: SERIES.principal },
+            { label: "Interest", color: SERIES.interest },
+          ]}
+        />
+      )}
+
+      <div className="h-[260px] sm:h-[340px]" role="img" aria-label={summary}>
         <ResponsiveContainer width="100%" height="100%">
-          <ComposedChart
-            data={yearlyData}
-            margin={{ top: 10, right: 10, left: -10, bottom: 10 }}
-          >
-            <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-            <XAxis
-              dataKey="year"
-              tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10 }}
-              tickLine={{ stroke: "hsl(var(--border))" }}
-              axisLine={{ stroke: "hsl(var(--border))" }}
-              interval="preserveStartEnd"
-            />
-            <YAxis
-              yAxisId="left"
-              tickFormatter={formatYAxisCurrency}
-              tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10 }}
-              tickLine={{ stroke: "hsl(var(--border))" }}
-              axisLine={{ stroke: "hsl(var(--border))" }}
-              width={45}
-            />
-            <YAxis
-              yAxisId="right"
-              orientation="right"
-              tickFormatter={formatYAxisCurrency}
-              tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10 }}
-              tickLine={{ stroke: "hsl(var(--border))" }}
-              axisLine={{ stroke: "hsl(var(--border))" }}
-              width={45}
-            />
-            <Tooltip content={<CustomTooltip />} />
-            <Legend
-              verticalAlign="top"
-              height={40}
-              wrapperStyle={{ fontSize: "11px", paddingBottom: "8px" }}
-              formatter={(value: string) => (
-                <span className="text-xs sm:text-sm text-foreground">{value}</span>
+          {view === "balance" ? (
+            <ComposedChart data={points} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
+              <defs>
+                <linearGradient id="amort-balance" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor={SERIES.balance} stopOpacity={0.32} />
+                  <stop offset="100%" stopColor={SERIES.balance} stopOpacity={0.02} />
+                </linearGradient>
+              </defs>
+              <CartesianGrid {...gridProps} />
+              <XAxis dataKey="year" type="number" domain={[0, "dataMax"]} {...xAxisProps} tickFormatter={(y) => (y === 0 ? "Start" : `Yr ${y}`)} />
+              <YAxis {...yAxisProps} />
+              <Tooltip
+                cursor={cursorLine}
+                content={({ active, payload }) => {
+                  if (!active || !payload?.length) return null;
+                  const p = payload[0].payload as (typeof points)[number];
+                  return (
+                    <TooltipCard
+                      title={p.year === 0 ? "At closing" : `End of year ${p.year} · ${p.calendarYear}`}
+                      rows={[
+                        { label: "Balance owed", value: formatCurrency(p.balance), color: SERIES.balance, shape: "area", strong: true },
+                        { label: "Principal paid", value: formatCurrency(p.cumPrincipal), color: SERIES.principal, shape: "line" },
+                        { label: "Interest paid", value: formatCurrency(p.cumInterest), color: SERIES.interest, shape: "line" },
+                      ]}
+                      footer={p.year > 0 ? `${pct(p.cumPrincipal, m.loanAmount)} of the loan repaid` : undefined}
+                    />
+                  );
+                }}
+              />
+              {halfwayYear && (
+                <ReferenceLine
+                  x={halfwayYear}
+                  stroke="hsl(var(--muted-foreground))"
+                  strokeDasharray="3 3"
+                  label={{ value: "Half paid", position: "insideTopRight", fill: "hsl(var(--muted-foreground))", fontSize: 11 }}
+                />
               )}
-            />
-            <Area isAnimationActive={false}
-              yAxisId="left"
-              type="monotone"
-              dataKey="taxesAndFees"
-              stackId="1"
-              name="Taxes & Fees"
-              fill="hsl(var(--chart-tertiary))"
-              stroke="hsl(var(--chart-tertiary))"
-              fillOpacity={0.8}
-            />
-            <Area isAnimationActive={false}
-              yAxisId="left"
-              type="monotone"
-              dataKey="interest"
-              stackId="1"
-              name="Interest"
-              fill="hsl(var(--chart-secondary))"
-              stroke="hsl(var(--chart-secondary))"
-              fillOpacity={0.8}
-            />
-            <Area isAnimationActive={false}
-              yAxisId="left"
-              type="monotone"
-              dataKey="principal"
-              stackId="1"
-              name="Principal"
-              fill="hsl(var(--chart-primary))"
-              stroke="hsl(var(--chart-primary))"
-              fillOpacity={0.8}
-            />
-            <Line isAnimationActive={false}
-              yAxisId="right"
-              type="monotone"
-              dataKey="balance"
-              name="Balance"
-              stroke="hsl(var(--foreground))"
-              strokeWidth={2}
-              dot={false}
-              activeDot={{ r: 4, fill: "hsl(var(--primary))" }}
-            />
-          </ComposedChart>
+              <Area isAnimationActive={false} type="monotone" dataKey="balance" stroke={SERIES.balance} strokeWidth={2.5} fill="url(#amort-balance)" />
+              <Line isAnimationActive={false} type="monotone" dataKey="cumPrincipal" stroke={SERIES.principal} strokeWidth={2.5} dot={false} />
+              <Line isAnimationActive={false} type="monotone" dataKey="cumInterest" stroke={SERIES.interest} strokeWidth={2.5} dot={false} />
+            </ComposedChart>
+          ) : (
+            <BarChart data={years} margin={{ top: 8, right: 8, left: 0, bottom: 0 }} barCategoryGap="18%">
+              <CartesianGrid {...gridProps} />
+              <XAxis dataKey="year" {...xAxisProps} tickFormatter={(y) => `Yr ${y}`} interval="preserveStartEnd" minTickGap={16} />
+              <YAxis {...yAxisProps} />
+              <Tooltip
+                cursor={{ fill: "hsl(var(--secondary))" }}
+                content={({ active, payload }) => {
+                  if (!active || !payload?.length) return null;
+                  const y = payload[0].payload as (typeof years)[number];
+                  return (
+                    <TooltipCard
+                      title={`Year ${y.year} · ${y.calendarYear}`}
+                      rows={[
+                        { label: "Principal", value: formatCurrency(y.principal), color: SERIES.principal },
+                        { label: "Interest", value: formatCurrency(y.interest), color: SERIES.interest },
+                        { label: "Paid this year", value: formatCurrency(y.principal + y.interest), strong: true },
+                      ]}
+                      footer={`${pct(y.principal, y.principal + y.interest)} went to principal`}
+                    />
+                  );
+                }}
+              />
+              {crossoverYear && (
+                <ReferenceLine
+                  x={crossoverYear}
+                  stroke="hsl(var(--foreground))"
+                  strokeDasharray="3 3"
+                  label={{ value: "Principal > interest", position: "insideTopLeft", fill: "hsl(var(--foreground))", fontSize: 11 }}
+                />
+              )}
+              <Bar isAnimationActive={false} dataKey="principal" stackId="p" fill={SERIES.principal} />
+              <Bar isAnimationActive={false} dataKey="interest" stackId="p" fill={SERIES.interest} radius={[3, 3, 0, 0]} />
+            </BarChart>
+          )}
         </ResponsiveContainer>
       </div>
-
-      {/* Summary stats */}
-      <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-4 mt-4">
-        <div className="p-2 sm:p-3 rounded-lg bg-secondary/50 text-center">
-          <p className="text-[10px] sm:text-xs text-muted-foreground">Total Principal</p>
-          <p className="font-semibold text-xs sm:text-sm">
-            {formatCurrency(yearlyData.reduce((sum, y) => sum + y.principal, 0))}
-          </p>
-        </div>
-        <div className="p-2 sm:p-3 rounded-lg bg-secondary/50 text-center">
-          <p className="text-[10px] sm:text-xs text-muted-foreground">Total Interest</p>
-          <p className="font-semibold text-xs sm:text-sm">
-            {formatCurrency(yearlyData.reduce((sum, y) => sum + y.interest, 0))}
-          </p>
-        </div>
-        <div className="p-2 sm:p-3 rounded-lg bg-secondary/50 text-center">
-          <p className="text-[10px] sm:text-xs text-muted-foreground">Taxes & Fees</p>
-          <p className="font-semibold text-xs sm:text-sm">
-            {formatCurrency(yearlyData.reduce((sum, y) => sum + y.taxesAndFees, 0))}
-          </p>
-        </div>
-        <div className="p-2 sm:p-3 rounded-lg bg-secondary/50 text-center">
-          <p className="text-[10px] sm:text-xs text-muted-foreground">Total Paid</p>
-          <p className="font-semibold text-xs sm:text-sm">
-            {formatCurrency(yearlyData.reduce((sum, y) => sum + y.totalPayment, 0))}
-          </p>
-        </div>
-      </div>
-    </section>
+    </VizCard>
   );
 };
 
-export default AmortizationChart;
+export default AmortizationChartView;

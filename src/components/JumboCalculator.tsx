@@ -471,13 +471,7 @@ const JumboCalculator = () => {
           </TabsContent>
 
           <TabsContent value="chart">
-            <AmortizationChart 
-              data={amortizationData}
-              monthlyTax={calculations.monthlyTax}
-              monthlyInsurance={calculations.monthlyInsurance}
-              monthlyPMI={calculations.monthlyPMI}
-              monthlyHOA={calculations.monthlyHOA}
-            />
+            <AmortizationChart data={amortizationData} />
           </TabsContent>
 
           <TabsContent value="schedule">
