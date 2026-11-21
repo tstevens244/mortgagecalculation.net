@@ -290,6 +290,21 @@
     font-variant-numeric: tabular-nums;
   }
 
+  /* Page rhythm: header, then the tool, then 64px between major blocks.
+     Guides and FAQs sit in a ~720px column so lines stay readable. */
+  .page-header {
+    @apply mx-auto mb-10 max-w-3xl text-center;
+  }
+  .page-section {
+    @apply mx-auto mt-16 max-w-3xl;
+  }
+  .page-section-wide {
+    @apply mx-auto mt-16 max-w-5xl;
+  }
+  .guide h2 {
+    @apply scroll-mt-24;
+  }
+
   /* Card for every chart, bar and comparison table (components/viz). */
   .viz-card {
     @apply bg-card rounded-2xl border border-border p-4 sm:p-6;

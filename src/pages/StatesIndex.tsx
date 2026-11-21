@@ -136,9 +136,9 @@ const StatesIndex = () => {
 
       <div className="min-h-screen flex flex-col">
         <Header />
-        <main id="main-content" className="flex-1 container py-8">
+        <main id="main-content" className="flex-1 container py-8 sm:py-12">
           <article>
-            <header className="mx-auto mb-10 max-w-3xl text-center">
+            <header className="page-header">
               <Breadcrumbs trail={[{ label: STATES_INDEX_NAME }]} />
               <h1 className="mb-4 text-3xl font-display font-bold text-foreground sm:text-4xl lg:text-5xl">
                 {STATES_INDEX_NAME}
@@ -166,7 +166,7 @@ const StatesIndex = () => {
               </ul>
             </nav>
 
-            <section aria-labelledby="compare-states" className="mx-auto mt-16 max-w-5xl">
+            <section aria-labelledby="compare-states" className="page-section-wide">
               <h2 id="compare-states" className="mb-2 text-2xl font-display font-semibold text-foreground">
                 Compare housing costs by state
               </h2>
@@ -229,7 +229,7 @@ const StatesIndex = () => {
               </p>
             </section>
 
-            <section aria-labelledby="states-faq" className="mx-auto mt-14 max-w-3xl">
+            <section aria-labelledby="states-faq" className="page-section">
               <h2 id="states-faq" className="mb-4 text-2xl font-display font-semibold text-foreground">
                 Frequently asked questions
               </h2>

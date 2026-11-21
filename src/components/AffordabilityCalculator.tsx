@@ -1,6 +1,5 @@
 import { useState, useMemo } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
+import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Select,
@@ -9,12 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { HelpCircle, Home, DollarSign, PiggyBank, TrendingUp } from "lucide-react";
+import { DollarSign, PiggyBank } from "lucide-react";
 import VizCard from "./viz/VizCard";
 import StackedBar from "./viz/StackedBar";
 import { SERIES } from "./viz/theme";
@@ -23,6 +17,7 @@ import PercentInput from "./PercentInput";
 import { maxAffordablePrice } from "@/lib/mortgageMath";
 import { formatCurrency } from "@/lib/formatters";
 import StickyResult from "./StickyResult";
+import { InputCard, FieldGrid, Field, TermChoice, MoreOptions, summarize } from "./calc/Form";
 
 // Estimated PMI, % of the loan per year, applied when the down payment is under 20%.
 const PMI_RATE = 0.5;
@@ -277,156 +272,63 @@ const AffordabilityCalculator = () => {
 
         {/* Income-Based Calculator */}
         <TabsContent value="income">
-          <div className="grid lg:grid-cols-5 gap-6">
-            <Card className="calculator-card lg:col-span-3">
-              <CardHeader className="pb-4">
-                <CardTitle className="text-lg font-semibold flex items-center gap-2">
-                  <Home className="h-5 w-5 text-accent" />
-                  Income & Expenses
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2">
-                  {/* Annual Income */}
-                  <div className="input-group">
-                    <Label htmlFor="affordability-annual-household-income" className="input-label">
-                      Annual Household Income
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <HelpCircle className="h-4 w-4 text-muted-foreground cursor-help" />
-                        </TooltipTrigger>
-                        <TooltipContent className="max-w-xs">
-                          <p>Your total household income before taxes, including salary and other income sources.</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </Label>
-                    <CurrencyInput id="affordability-annual-household-income" value={annualIncome} onChange={setAnnualIncome} />
-                  </div>
-
-                  {/* Monthly Debts */}
-                  <div className="input-group">
-                    <Label htmlFor="affordability-monthly-debt-payments" className="input-label">
-                      Monthly Debt Payments
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <HelpCircle className="h-4 w-4 text-muted-foreground cursor-help" />
-                        </TooltipTrigger>
-                        <TooltipContent className="max-w-xs">
-                          <p>Total monthly payments for existing debts: car loans, student loans, credit cards, etc.</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </Label>
-                    <CurrencyInput id="affordability-monthly-debt-payments" value={monthlyDebts} onChange={setMonthlyDebts} />
-                  </div>
-
-                  {/* Loan Term */}
-                  <div className="input-group">
-                    <Label htmlFor="affordability-loan-term" className="input-label">Loan Term</Label>
-                    <Select value={loanTerm} onValueChange={setLoanTerm}>
-                      <SelectTrigger id="affordability-loan-term">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="30">30 years</SelectItem>
-                        <SelectItem value="20">20 years</SelectItem>
-                        <SelectItem value="15">15 years</SelectItem>
-                        <SelectItem value="10">10 years</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  {/* Interest Rate */}
-                  <div className="input-group">
-                    <Label htmlFor="affordability-interest-rate" className="input-label">Interest Rate</Label>
-                    <div className="relative">
-                      <PercentInput id="affordability-interest-rate"
-                        value={interestRate}
-                        onChange={setInterestRate}
-                        min={0}
-                        max={20}
-                        decimalPlaces={3}
-                      />
-                    </div>
-                  </div>
-
-                  {/* Down Payment */}
-                  <div className="input-group">
-                    <Label htmlFor="affordability-down-payment" className="input-label">Down Payment</Label>
-                    <div className="relative">
-                      <PercentInput id="affordability-down-payment"
-                        value={downPaymentPercent}
-                        onChange={setDownPaymentPercent}
-                        min={0}
-                        max={100}
-                        decimalPlaces={1}
-                      />
-                    </div>
-                  </div>
-
-                  {/* Property Tax Rate */}
-                  <div className="input-group">
-                    <Label htmlFor="affordability-property-tax-rate-per-year" className="input-label">Property Tax Rate (per year)</Label>
-                    <div className="relative">
-                      <PercentInput id="affordability-property-tax-rate-per-year"
-                        value={propertyTaxRate}
-                        onChange={setPropertyTaxRate}
-                        min={0}
-                        max={10}
-                        decimalPlaces={2}
-                      />
-                    </div>
-                  </div>
-
-                  {/* HOA Fee */}
-                  <div className="input-group">
-                    <Label htmlFor="affordability-hoa-fee-per-year" className="input-label">HOA dues (per month)</Label>
-                    <CurrencyInput id="affordability-hoa-fee-per-year" value={hoaFee} onChange={setHoaFee} />
-                  </div>
-
-                  {/* Insurance Rate */}
-                  <div className="input-group">
-                    <Label htmlFor="affordability-home-insurance-rate-per-year" className="input-label">Home Insurance Rate (per year)</Label>
-                    <div className="relative">
-                      <PercentInput id="affordability-home-insurance-rate-per-year"
-                        value={insuranceRate}
-                        onChange={setInsuranceRate}
-                        min={0}
-                        max={5}
-                        decimalPlaces={2}
-                      />
-                    </div>
-                  </div>
-
-                  {/* DTI Rule */}
-                  <div className="input-group">
-                    <Label htmlFor="affordability-debt-to-income-dti-ratio" className="input-label">
-                      Debt-to-Income (DTI) Ratio
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <HelpCircle className="h-4 w-4 text-muted-foreground cursor-help" />
-                        </TooltipTrigger>
-                        <TooltipContent className="max-w-xs">
-                          <p>The maximum percentage of your income that can go toward housing (front-end) and total debts (back-end).</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </Label>
+          <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+            <InputCard className="lg:col-span-3" id="affordability-income" title="Your income and debts" description="Lenders size your budget from your gross income and monthly debts.">
+              <FieldGrid>
+                <Field id="affordability-annual-household-income" label="Annual household income" info="Total income before taxes for everyone on the loan.">
+                  <CurrencyInput id="affordability-annual-household-income" value={annualIncome} onChange={setAnnualIncome} />
+                </Field>
+                <Field id="affordability-monthly-debt-payments" label="Monthly debt payments" info="Car, student loan and credit card minimums, child support. Not rent or utilities.">
+                  <CurrencyInput id="affordability-monthly-debt-payments" value={monthlyDebts} onChange={setMonthlyDebts} />
+                </Field>
+                <Field id="affordability-down-payment" label="Down payment" unit="% of price">
+                  <PercentInput id="affordability-down-payment" value={downPaymentPercent} onChange={setDownPaymentPercent} min={0} max={100} decimalPlaces={1} />
+                </Field>
+                <Field id="affordability-interest-rate" label="Interest rate">
+                  <PercentInput id="affordability-interest-rate" value={interestRate} onChange={setInterestRate} min={0} max={20} decimalPlaces={3} />
+                </Field>
+              </FieldGrid>
+              <MoreOptions
+                title="Loan term, taxes & fees"
+                summary={summarize(
+                  `${loanTerm}-year loan`,
+                  `${dtiRule} rule`,
+                  `${propertyTaxRate}% tax`,
+                  `${insuranceRate}% insurance`,
+                  hoaFee > 0 ? `${formatCurrency(hoaFee)}/mo HOA` : "no HOA",
+                )}
+              >
+                <FieldGrid>
+                  <Field id="affordability-loan-term" label="Loan term">
+                    <TermChoice id="affordability-loan-term" value={Number(loanTerm)} onChange={(y) => setLoanTerm(String(y))} />
+                  </Field>
+                  <Field id="affordability-debt-to-income-dti-ratio" label="Lender rule" info="The most of your income lenders let go to housing (first number) and to all debts (second).">
                     <Select value={dtiRule} onValueChange={setDtiRule}>
                       <SelectTrigger id="affordability-debt-to-income-dti-ratio">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="28/36">Conventional (28/36 rule)</SelectItem>
-                        <SelectItem value="31/43">FHA (31/43 rule)</SelectItem>
+                        <SelectItem value="28/36">Conventional (28/36)</SelectItem>
+                        <SelectItem value="31/43">FHA (31/43)</SelectItem>
                         <SelectItem value="41">VA (41%)</SelectItem>
                         <SelectItem value="25">Conservative (25%)</SelectItem>
                         <SelectItem value="30">Moderate (30%)</SelectItem>
                         <SelectItem value="35">Aggressive (35%)</SelectItem>
                       </SelectContent>
                     </Select>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+                  </Field>
+                  <Field id="affordability-property-tax-rate-per-year" label="Property tax rate" unit="per year" info="As a % of the home price. The U.S. average is about 0.9%; it varies a lot by county.">
+                    <PercentInput id="affordability-property-tax-rate-per-year" value={propertyTaxRate} onChange={setPropertyTaxRate} min={0} max={5} decimalPlaces={2} />
+                  </Field>
+                  <Field id="affordability-home-insurance-rate-per-year" label="Home insurance rate" unit="per year" info="As a % of the home price. About 0.4% to 0.6% is typical.">
+                    <PercentInput id="affordability-home-insurance-rate-per-year" value={insuranceRate} onChange={setInsuranceRate} min={0} max={3} decimalPlaces={2} />
+                  </Field>
+                  <Field id="affordability-hoa-fee-per-year" label="HOA dues" unit="per month">
+                    <CurrencyInput id="affordability-hoa-fee-per-year" value={hoaFee} onChange={setHoaFee} />
+                  </Field>
+                </FieldGrid>
+              </MoreOptions>
+            </InputCard>
 
             <ResultsCard
               results={incomeResults}
@@ -438,112 +340,44 @@ const AffordabilityCalculator = () => {
 
         {/* Budget-Based Calculator */}
         <TabsContent value="budget">
-          <div className="grid lg:grid-cols-5 gap-6">
-            <Card className="calculator-card lg:col-span-3">
-              <CardHeader className="pb-4">
-                <CardTitle className="text-lg font-semibold flex items-center gap-2">
-                  <PiggyBank className="h-5 w-5 text-accent" />
-                  Monthly Budget
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2">
-                  {/* Monthly Budget */}
-                  <div className="input-group">
-                    <Label htmlFor="affordability-monthly-housing-budget" className="input-label">
-                      Monthly Housing Budget
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <HelpCircle className="h-4 w-4 text-muted-foreground cursor-help" />
-                        </TooltipTrigger>
-                        <TooltipContent className="max-w-xs">
-                          <p>The maximum amount you want to spend on housing each month, including mortgage, taxes, insurance, and HOA.</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </Label>
-                    <CurrencyInput id="affordability-monthly-housing-budget" value={monthlyBudget} onChange={setMonthlyBudget} />
-                  </div>
-
-                  {/* Loan Term */}
-                  <div className="input-group">
-                    <Label htmlFor="affordability-loan-term-2" className="input-label">Loan Term</Label>
-                    <Select value={budgetLoanTerm} onValueChange={setBudgetLoanTerm}>
-                      <SelectTrigger id="affordability-loan-term-2">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="30">30 years</SelectItem>
-                        <SelectItem value="20">20 years</SelectItem>
-                        <SelectItem value="15">15 years</SelectItem>
-                        <SelectItem value="10">10 years</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  {/* Interest Rate */}
-                  <div className="input-group">
-                    <Label htmlFor="affordability-interest-rate-2" className="input-label">Interest Rate</Label>
-                    <div className="relative">
-                      <PercentInput id="affordability-interest-rate-2"
-                        value={budgetInterestRate}
-                        onChange={setBudgetInterestRate}
-                        min={0}
-                        max={20}
-                        decimalPlaces={3}
-                      />
-                    </div>
-                  </div>
-
-                  {/* Down Payment */}
-                  <div className="input-group">
-                    <Label htmlFor="affordability-down-payment-2" className="input-label">Down Payment</Label>
-                    <div className="relative">
-                      <PercentInput id="affordability-down-payment-2"
-                        value={budgetDownPaymentPercent}
-                        onChange={setBudgetDownPaymentPercent}
-                        min={0}
-                        max={100}
-                        decimalPlaces={1}
-                      />
-                    </div>
-                  </div>
-
-                  {/* Property Tax Rate */}
-                  <div className="input-group">
-                    <Label htmlFor="affordability-property-tax-rate-per-year-2" className="input-label">Property Tax Rate (per year)</Label>
-                    <div className="relative">
-                      <PercentInput id="affordability-property-tax-rate-per-year-2"
-                        value={budgetPropertyTaxRate}
-                        onChange={setBudgetPropertyTaxRate}
-                        min={0}
-                        max={10}
-                        decimalPlaces={2}
-                      />
-                    </div>
-                  </div>
-
-                  {/* HOA Fee */}
-                  <div className="input-group">
-                    <Label htmlFor="affordability-hoa-fee-per-year-2" className="input-label">HOA dues (per month)</Label>
+          <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+            <InputCard className="lg:col-span-3" id="affordability-budget" title="Your monthly budget" description="Start from what you want to spend each month, all-in.">
+              <FieldGrid>
+                <Field id="affordability-monthly-housing-budget" label="Monthly housing budget" info="Everything: loan payment, property tax, insurance, PMI and HOA dues." className="sm:col-span-2">
+                  <CurrencyInput id="affordability-monthly-housing-budget" value={monthlyBudget} onChange={setMonthlyBudget} />
+                </Field>
+                <Field id="affordability-down-payment-2" label="Down payment" unit="% of price">
+                  <PercentInput id="affordability-down-payment-2" value={budgetDownPaymentPercent} onChange={setBudgetDownPaymentPercent} min={0} max={100} decimalPlaces={1} />
+                </Field>
+                <Field id="affordability-interest-rate-2" label="Interest rate">
+                  <PercentInput id="affordability-interest-rate-2" value={budgetInterestRate} onChange={setBudgetInterestRate} min={0} max={20} decimalPlaces={3} />
+                </Field>
+              </FieldGrid>
+              <MoreOptions
+                title="Loan term, taxes & fees"
+                summary={summarize(
+                  `${budgetLoanTerm}-year loan`,
+                  `${budgetPropertyTaxRate}% tax`,
+                  `${budgetInsuranceRate}% insurance`,
+                  budgetHoaFee > 0 ? `${formatCurrency(budgetHoaFee)}/mo HOA` : "no HOA",
+                )}
+              >
+                <FieldGrid>
+                  <Field id="affordability-loan-term-2" label="Loan term">
+                    <TermChoice id="affordability-loan-term-2" value={Number(budgetLoanTerm)} onChange={(y) => setBudgetLoanTerm(String(y))} />
+                  </Field>
+                  <Field id="affordability-property-tax-rate-per-year-2" label="Property tax rate" unit="per year" info="As a % of the home price. The U.S. average is about 0.9%; it varies a lot by county.">
+                    <PercentInput id="affordability-property-tax-rate-per-year-2" value={budgetPropertyTaxRate} onChange={setBudgetPropertyTaxRate} min={0} max={5} decimalPlaces={2} />
+                  </Field>
+                  <Field id="affordability-home-insurance-rate-per-year-2" label="Home insurance rate" unit="per year" info="As a % of the home price. About 0.4% to 0.6% is typical.">
+                    <PercentInput id="affordability-home-insurance-rate-per-year-2" value={budgetInsuranceRate} onChange={setBudgetInsuranceRate} min={0} max={3} decimalPlaces={2} />
+                  </Field>
+                  <Field id="affordability-hoa-fee-per-year-2" label="HOA dues" unit="per month">
                     <CurrencyInput id="affordability-hoa-fee-per-year-2" value={budgetHoaFee} onChange={setBudgetHoaFee} />
-                  </div>
-
-                  {/* Insurance Rate */}
-                  <div className="input-group">
-                    <Label htmlFor="affordability-home-insurance-rate-per-year-2" className="input-label">Home Insurance Rate (per year)</Label>
-                    <div className="relative">
-                      <PercentInput id="affordability-home-insurance-rate-per-year-2"
-                        value={budgetInsuranceRate}
-                        onChange={setBudgetInsuranceRate}
-                        min={0}
-                        max={5}
-                        decimalPlaces={2}
-                      />
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+                  </Field>
+                </FieldGrid>
+              </MoreOptions>
+            </InputCard>
 
             <ResultsCard results={budgetResults} title="You Can Afford a Home Up To" />
           </div>

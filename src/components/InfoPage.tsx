@@ -46,7 +46,7 @@ const InfoPage = ({ path, title, description, heading, updated, breadcrumbName, 
 
       <div className="min-h-screen flex flex-col">
         <Header />
-        <main id="main-content" className="flex-1 container py-8">
+        <main id="main-content" className="flex-1 container py-8 sm:py-12">
           <article className="mx-auto max-w-3xl">
             <header className="mb-8">
               <h1 className="text-3xl sm:text-4xl font-display font-bold text-foreground mb-2">{heading}</h1>

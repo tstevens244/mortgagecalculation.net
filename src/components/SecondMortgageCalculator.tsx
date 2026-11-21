@@ -1,10 +1,7 @@
 import { useState, useMemo } from "react";
-import { Home, Percent, Calendar, DollarSign, Shield, Building, Users, Calculator } from "lucide-react";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { DollarSign } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import CompareTable from "./viz/CompareTable";
 import StackedBar from "./viz/StackedBar";
 import { Legend } from "./viz/VizCard";
@@ -14,6 +11,7 @@ import PercentInput from "./PercentInput";
 import { formatCurrency } from "@/lib/formatters";
 import { monthsUntilBalance } from "@/lib/mortgageMath";
 import StickyResult from "./StickyResult";
+import { InputCard, FieldGrid, Field, MoreOptions, Choice, DownPaymentField, summarize } from "./calc/Form";
 
 interface SecondMortgageInputs {
   homeValue: number;
@@ -202,194 +200,69 @@ const SecondMortgageCalculator = () => {
       <Tabs defaultValue="calculator" className="w-full">
         <TabsList className="grid w-full max-w-md mx-auto grid-cols-3 mb-6">
           <TabsTrigger value="calculator">Calculator</TabsTrigger>
-          <TabsTrigger value="first-mort">First Mort</TabsTrigger>
-          <TabsTrigger value="second-mort">Second Mort</TabsTrigger>
+          <TabsTrigger value="first-mort">First loan</TabsTrigger>
+          <TabsTrigger value="second-mort">Second loan</TabsTrigger>
         </TabsList>
 
         <TabsContent value="calculator" className="space-y-6">
-          <div className="grid gap-6 lg:grid-cols-2">
-            {/* Input Section */}
-            <section className="calculator-card p-4 sm:p-6" aria-labelledby="home-details-heading">
-              <h2 id="home-details-heading" className="text-base sm:text-xl font-display font-semibold mb-4 flex items-center gap-2">
-                <Home className="h-4 w-4 sm:h-5 sm:w-5 text-accent" aria-hidden="true" />
-                Home Price & Down Payment
-              </h2>
+          <InputCard id="piggyback-inputs" title="The home and both options" description="Compare one loan with PMI against an 80% first mortgage plus a second loan.">
+            <FieldGrid>
+              <Field id="second-mortgage-home-value" label="Home price">
+                <CurrencyInput id="second-mortgage-home-value" value={inputs.homeValue} onChange={(value) => updateInput("homeValue", value)} />
+              </Field>
+              <Field
+                id="second-mortgage-structure"
+                label="Loan structure"
+                hint={`80% first loan / ${Math.max(0, 20 - inputs.downPaymentPercent).toFixed(1).replace(/\.0$/, "")}% second loan / ${inputs.downPaymentPercent.toFixed(1).replace(/\.0$/, "")}% down`}
+              >
+                <Choice
+                  id="second-mortgage-structure"
+                  label="Piggyback loan structure"
+                  value={String(Math.round(inputs.downPaymentPercent * 10) / 10)}
+                  onChange={(v) => updateInput("downPaymentPercent", Number(v))}
+                  options={[
+                    { value: "10", label: "80/10/10" },
+                    { value: "5", label: "80/15/5" },
+                    { value: "0", label: "80/20" },
+                  ]}
+                />
+              </Field>
+              <DownPaymentField
+                id="second-mortgage-down-payment"
+                amount={inputs.downPayment}
+                percent={inputs.downPaymentPercent}
+                onAmount={(value) => updateInput("downPayment", value)}
+                onPercent={(value) => updateInput("downPaymentPercent", value)}
+              />
+              <Field id="second-mortgage-pmi-rate-loan" label="Rate: one loan with PMI">
+                <PercentInput id="second-mortgage-pmi-rate-loan" value={inputs.pmiInterestRate} onChange={(value) => updateInput("pmiInterestRate", value)} min={0} max={30} decimalPlaces={3} />
+              </Field>
+              <Field id="second-mortgage-first-rate" label="Rate: 80% first loan">
+                <PercentInput id="second-mortgage-first-rate" value={inputs.firstMortInterestRate} onChange={(value) => updateInput("firstMortInterestRate", value)} min={0} max={30} decimalPlaces={3} />
+              </Field>
+              <Field id="second-mortgage-second-rate" label="Rate: second loan" info="Second loans usually cost 1 to 3 points more than the first mortgage.">
+                <PercentInput id="second-mortgage-second-rate" value={inputs.secondMortInterestRate} onChange={(value) => updateInput("secondMortInterestRate", value)} min={0} max={30} decimalPlaces={3} />
+              </Field>
+            </FieldGrid>
 
-              <div className="space-y-3">
-                <div className="flex flex-col gap-1.5">
-                  <Label htmlFor="second-mortgage-home-value" className="text-sm font-medium text-foreground">
-                    Home Value
-                  </Label>
-                  <CurrencyInput id="second-mortgage-home-value"
-                    value={inputs.homeValue}
-                    onChange={(value) => updateInput("homeValue", value)}
-                  />
-                </div>
-
-                <div className="flex flex-col gap-1.5">
-                  <span className="text-sm font-medium text-foreground">Loan structure</span>
-                  <div className="flex flex-wrap gap-2" role="group" aria-label="Piggyback loan structure">
-                    {[
-                      { label: "80/10/10", down: 10 },
-                      { label: "80/15/5", down: 5 },
-                      { label: "80/20", down: 0 },
-                    ].map((preset) => {
-                      const active = Math.abs(inputs.downPaymentPercent - preset.down) < 0.05;
-                      return (
-                        <button
-                          key={preset.label}
-                          type="button"
-                          aria-pressed={active}
-                          onClick={() => updateInput("downPaymentPercent", preset.down)}
-                          className={`rounded-full border px-3 py-1 text-sm font-medium transition-colors ${
-                            active
-                              ? "border-primary bg-primary text-primary-foreground"
-                              : "border-border bg-background text-foreground hover:border-primary/40 hover:bg-secondary"
-                          }`}
-                        >
-                          {preset.label}
-                        </button>
-                      );
-                    })}
-                  </div>
-                  <span className="text-xs text-muted-foreground">
-                    80% first mortgage / {Math.max(0, 20 - inputs.downPaymentPercent).toFixed(1).replace(/\.0$/, "")}% second mortgage /{" "}
-                    {inputs.downPaymentPercent.toFixed(1).replace(/\.0$/, "")}% down
-                  </span>
-                </div>
-
-                <div className="flex flex-col gap-1.5">
-                  <Label htmlFor="second-mortgage-down-payment" className="text-sm font-medium text-foreground">
-                    Down Payment
-                  </Label>
-                  <div className="flex gap-2 flex-1">
-                    <CurrencyInput id="second-mortgage-down-payment"
-                      value={inputs.downPayment}
-                      onChange={(value) => updateInput("downPayment", value)}
-                    />
-                    <PercentInput
-                      aria-label="Down payment percentage"
-                      value={inputs.downPaymentPercent}
-                      onChange={(value) => updateInput("downPaymentPercent", value)}
-                      min={0}
-                      max={100}
-                      decimalPlaces={1}
-                      className="w-16"
-                    />
-                  </div>
-                </div>
-
-                <div className="flex flex-col gap-1.5">
-                  <Label htmlFor="second-mortgage-annual-pmi-rate" className="text-sm font-medium text-foreground">
-                    Annual PMI Rate
-                  </Label>
-                  <div className="flex gap-2 flex-1">
-                    <PercentInput id="second-mortgage-annual-pmi-rate"
-                      value={inputs.annualPMI}
-                      onChange={(value) => updateInput("annualPMI", value)}
-                      min={0}
-                      max={5}
-                      decimalPlaces={2}
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <h2 className="text-base sm:text-xl font-display font-semibold mt-6 mb-4 flex items-center gap-2">
-                <Shield className="h-4 w-4 sm:h-5 sm:w-5 text-accent" aria-hidden="true" />
-                Other Ownership Costs
-              </h2>
-
-              <div className="space-y-3">
-                <div className="flex flex-col gap-1.5">
-                  <Label htmlFor="second-mortgage-annual-property-tax" className="text-sm font-medium text-foreground">
-                    Annual Property Tax
-                  </Label>
-                  <CurrencyInput id="second-mortgage-annual-property-tax"
-                    value={inputs.propertyTax}
-                    onChange={(value) => updateInput("propertyTax", value)}
-                  />
-                </div>
-
-                <div className="flex flex-col gap-1.5">
-                  <Label htmlFor="second-mortgage-annual-insurance" className="text-sm font-medium text-foreground">
-                    Annual Insurance
-                  </Label>
-                  <CurrencyInput id="second-mortgage-annual-insurance"
-                    value={inputs.homeInsurance}
-                    onChange={(value) => updateInput("homeInsurance", value)}
-                  />
-                </div>
-
-                <div className="flex flex-col gap-1.5">
-                  <Label htmlFor="second-mortgage-monthly-hoa" className="text-sm font-medium text-foreground">
-                    Monthly HOA
-                  </Label>
-                  <CurrencyInput id="second-mortgage-monthly-hoa"
-                    value={inputs.hoaFees}
-                    onChange={(value) => updateInput("hoaFees", value)}
-                  />
-                </div>
-              </div>
-            </section>
-
-            {/* Loan Scenarios */}
-            <section className="calculator-card p-4 sm:p-6" aria-labelledby="scenarios-heading">
-              <h2 id="scenarios-heading" className="text-base sm:text-xl font-display font-semibold mb-4 flex items-center gap-2">
-                <Calculator className="h-4 w-4 sm:h-5 sm:w-5 text-accent" aria-hidden="true" />
-                Loan Scenarios
-              </h2>
-
-              <div className="overflow-x-auto">
+            <MoreOptions
+              title="Terms, points & closing costs"
+              summary={summarize(
+                `${inputs.pmiLoanTerm} / ${inputs.firstMortLoanTerm} / ${inputs.secondMortLoanTerm}-year terms`,
+                `${formatCurrency(inputs.pmiClosingCosts + inputs.firstMortClosingCosts + inputs.secondMortClosingCosts)} other closing costs`,
+              )}
+            >
+              <div className="-mx-1 overflow-x-auto">
                 <table className="w-full text-xs sm:text-sm">
                   <thead>
                     <tr className="border-b border-border">
-                      <th className="text-left py-2 text-muted-foreground font-medium">Scenario</th>
-                      <th className="text-center py-2 text-muted-foreground font-medium">With PMI</th>
-                      <th className="text-center py-2 text-muted-foreground font-medium">80% Loan</th>
-                      <th className="text-center py-2 text-muted-foreground font-medium">2nd Loan</th>
+                      <th className="text-left py-2 text-muted-foreground font-medium"><span className="sr-only">Detail</span></th>
+                      <th className="text-center py-2 text-muted-foreground font-medium">One loan + PMI</th>
+                      <th className="text-center py-2 text-muted-foreground font-medium">80% first loan</th>
+                      <th className="text-center py-2 text-muted-foreground font-medium">Second loan</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-border">
-                    <tr>
-                      <td className="py-2">Interest Rate</td>
-                      <td className="py-2 text-center">
-                        <div className="flex items-center justify-center gap-1">
-                          <PercentInput aria-label="With pmi loan interest rate"
-                            value={inputs.pmiInterestRate}
-                            onChange={(value) => updateInput("pmiInterestRate", value)}
-                            min={0}
-                            max={30}
-                            decimalPlaces={3}
-                            className="h-7 w-14 text-center text-xs"
-                          />
-                        </div>
-                      </td>
-                      <td className="py-2 text-center">
-                        <div className="flex items-center justify-center gap-1">
-                          <PercentInput aria-label="80% first mortgage interest rate"
-                            value={inputs.firstMortInterestRate}
-                            onChange={(value) => updateInput("firstMortInterestRate", value)}
-                            min={0}
-                            max={30}
-                            decimalPlaces={3}
-                            className="h-7 w-14 text-center text-xs"
-                          />
-                        </div>
-                      </td>
-                      <td className="py-2 text-center">
-                        <div className="flex items-center justify-center gap-1">
-                          <PercentInput aria-label="Second mortgage interest rate"
-                            value={inputs.secondMortInterestRate}
-                            onChange={(value) => updateInput("secondMortInterestRate", value)}
-                            min={0}
-                            max={30}
-                            decimalPlaces={3}
-                            className="h-7 w-14 text-center text-xs"
-                          />
-                        </div>
-                      </td>
-                    </tr>
                     <tr>
                       <td className="py-2">Loan Term</td>
                       <td className="py-2 text-center">
@@ -513,8 +386,28 @@ const SecondMortgageCalculator = () => {
                   </tbody>
                 </table>
               </div>
-            </section>
-          </div>
+            </MoreOptions>
+
+            <MoreOptions
+              title="PMI, taxes & HOA"
+              summary={summarize(`PMI ${inputs.annualPMI}%/yr`, `${formatCurrency(inputs.propertyTax)}/yr tax`, `${formatCurrency(inputs.homeInsurance)}/yr insurance`, inputs.hoaFees > 0 ? `${formatCurrency(inputs.hoaFees)}/mo HOA` : "no HOA")}
+            >
+              <FieldGrid>
+                <Field id="second-mortgage-annual-pmi-rate" label="PMI rate" unit="% of loan per year" info="For the single loan. PMI ends once the balance reaches 78% of the price.">
+                  <PercentInput id="second-mortgage-annual-pmi-rate" value={inputs.annualPMI} onChange={(value) => updateInput("annualPMI", value)} min={0} max={5} decimalPlaces={2} />
+                </Field>
+                <Field id="second-mortgage-annual-property-tax" label="Property tax" unit="per year">
+                  <CurrencyInput id="second-mortgage-annual-property-tax" value={inputs.propertyTax} onChange={(value) => updateInput("propertyTax", value)} />
+                </Field>
+                <Field id="second-mortgage-annual-insurance" label="Home insurance" unit="per year">
+                  <CurrencyInput id="second-mortgage-annual-insurance" value={inputs.homeInsurance} onChange={(value) => updateInput("homeInsurance", value)} />
+                </Field>
+                <Field id="second-mortgage-monthly-hoa" label="HOA dues" unit="per month">
+                  <CurrencyInput id="second-mortgage-monthly-hoa" value={inputs.hoaFees} onChange={(value) => updateInput("hoaFees", value)} />
+                </Field>
+              </FieldGrid>
+            </MoreOptions>
+          </InputCard>
 
           {/* Results Comparison */}
           <StickyResult targetId="calc-result" label="Cheaper option" value={`${calculations.betterOption === "piggyback" ? "Piggyback loan" : "Single loan + PMI"} · saves ${formatCurrency(calculations.savings)}`} />

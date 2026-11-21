@@ -1,19 +1,6 @@
 import { useState, useMemo } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { HelpCircle, Home, DollarSign, TrendingUp, AlertCircle } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { AlertCircle } from "lucide-react";
 import VizCard from "./viz/VizCard";
 import StackedBar from "./viz/StackedBar";
 import { SERIES } from "./viz/theme";
@@ -21,6 +8,7 @@ import CurrencyInput from "./CurrencyInput";
 import PercentInput from "./PercentInput";
 import { formatCurrency, formatPercent } from "@/lib/formatters";
 import StickyResult from "./StickyResult";
+import { InputCard, FieldGrid, Field, TermChoice, MoreOptions, Choice, summarize } from "./calc/Form";
 
 const QualificationCalculator = () => {
   const [homeValue, setHomeValue] = useState(400000);
@@ -100,222 +88,75 @@ const QualificationCalculator = () => {
 
   return (
     <div className="space-y-6">
-      <div className="grid lg:grid-cols-5 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
         {/* Input Section */}
-        <div className="space-y-6 lg:col-span-3">
-          <Card className="calculator-card">
-            <CardHeader className="pb-4">
-              <CardTitle className="text-lg font-semibold flex items-center gap-2">
-                <Home className="h-5 w-5 text-accent" />
-                Price & Down Payment
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2">
-                <div className="flex flex-col gap-1.5">
-                  <Label htmlFor="qualification-home-value" className="text-sm font-medium text-foreground">
-                    Home Value
-                  </Label>
-                  <CurrencyInput id="qualification-home-value" value={homeValue} onChange={setHomeValue} />
-                </div>
+        <div className="lg:col-span-3">
+          <InputCard id="qualification-inputs" title="The home and your debts" description="See the income a lender would want for this home.">
+            <FieldGrid>
+              <Field id="qualification-home-value" label="Home price">
+                <CurrencyInput id="qualification-home-value" value={homeValue} onChange={setHomeValue} />
+              </Field>
+              <Field id="qualification-down-payment" label="Down payment" hint={`${results.downPaymentPercent.toFixed(1)}% of the price`}>
+                <CurrencyInput id="qualification-down-payment" value={downPayment} onChange={setDownPayment} aria-describedby="qualification-down-payment-hint" />
+              </Field>
+              <Field id="qualification-interest-rate" label="Interest rate">
+                <PercentInput id="qualification-interest-rate" value={interestRate} onChange={setInterestRate} min={0} max={20} decimalPlaces={3} />
+              </Field>
+              <Field id="qualification-other-debts" label="Monthly debt payments" info="Car, student loan and credit card minimums, and other recurring debts. Not rent or utilities.">
+                <CurrencyInput id="qualification-other-debts" value={monthlyDebts} onChange={setMonthlyDebts} />
+              </Field>
+              <Field id="qualification-loan-type" label="Loan type" info="Sets the lender's limits: the most of your income for housing (first number) and for all debts (second)." className="sm:col-span-2">
+                <Choice
+                  id="qualification-loan-type"
+                  label="Loan type"
+                  value={`${frontEndRatio}/${backEndRatio}`}
+                  onChange={(v) => {
+                    const [f, b] = v.split("/").map(Number);
+                    setFrontEndRatio(f);
+                    setBackEndRatio(b);
+                  }}
+                  options={[
+                    { value: "28/36", label: "Conventional" },
+                    { value: "31/43", label: "FHA" },
+                    { value: "41/41", label: "VA" },
+                    { value: "29/41", label: "USDA" },
+                  ]}
+                />
+              </Field>
+            </FieldGrid>
 
-                <div className="flex flex-col gap-1.5">
-                  <Label htmlFor="qualification-down-payment" className="text-sm font-medium text-foreground">
-                    Down Payment
-                  </Label>
-                  <CurrencyInput id="qualification-down-payment" value={downPayment} onChange={setDownPayment} />
-                </div>
-              </div>
-
-              <div className="mt-4 pt-4 border-t border-border">
-                <div className="flex justify-between items-center text-sm">
-                  <span className="text-muted-foreground">Loan Amount ({formatPercent(100 - results.downPaymentPercent)})</span>
-                  <span className="font-semibold">{formatCurrency(results.loanAmount)}</span>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="calculator-card">
-            <CardHeader className="pb-4">
-              <CardTitle className="text-lg font-semibold flex items-center gap-2">
-                <DollarSign className="h-5 w-5 text-accent" />
-                Mortgage Terms
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2">
-                <div className="flex flex-col gap-1.5">
-                  <Label htmlFor="qualification-loan-term" className="text-sm font-medium text-foreground">
-                    Loan Term
-                  </Label>
-                  <Select value={loanTerm} onValueChange={setLoanTerm}>
-                    <SelectTrigger id="qualification-loan-term" className="h-8 sm:h-10 text-sm flex-1">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="30">30 years</SelectItem>
-                      <SelectItem value="20">20 years</SelectItem>
-                      <SelectItem value="15">15 years</SelectItem>
-                      <SelectItem value="10">10 years</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="flex flex-col gap-1.5">
-                  <Label htmlFor="qualification-interest-rate" className="text-sm font-medium text-foreground">
-                    Interest Rate
-                  </Label>
-                  <div className="flex gap-1 sm:gap-2 flex-1">
-                    <PercentInput id="qualification-interest-rate"
-                      value={interestRate}
-                      onChange={setInterestRate}
-                      min={0}
-                      max={20}
-                      decimalPlaces={3}
-                    />
-                  </div>
-                </div>
-
-                <div className="flex flex-col gap-1.5">
-                  <Label htmlFor="qualification-property-tax" className="text-sm font-medium text-foreground">
-                    Property Tax
-                  </Label>
+            <MoreOptions
+              title="Term, taxes, insurance & limits"
+              summary={summarize(
+                `${loanTerm}-year loan`,
+                `${formatCurrency(annualTaxes)}/yr tax`,
+                `${formatCurrency(annualInsurance)}/yr insurance`,
+                annualPMI > 0 ? `${formatCurrency(annualPMI)}/yr PMI` : "no PMI",
+                `${frontEndRatio}/${backEndRatio} limits`,
+              )}
+            >
+              <FieldGrid>
+                <Field id="qualification-loan-term" label="Loan term">
+                  <TermChoice id="qualification-loan-term" value={Number(loanTerm)} onChange={(y) => setLoanTerm(String(y))} />
+                </Field>
+                <Field id="qualification-property-tax" label="Property tax" unit="per year">
                   <CurrencyInput id="qualification-property-tax" value={annualTaxes} onChange={setAnnualTaxes} />
-                </div>
-
-                <div className="flex flex-col gap-1.5">
-                  <Label htmlFor="qualification-insurance" className="text-sm font-medium text-foreground">
-                    Insurance
-                  </Label>
+                </Field>
+                <Field id="qualification-insurance" label="Home insurance" unit="per year">
                   <CurrencyInput id="qualification-insurance" value={annualInsurance} onChange={setAnnualInsurance} />
-                </div>
-
-                <div className="flex items-center gap-2 sm:col-span-2 sm:w-1/2">
-                  <Label htmlFor="qualification-annual-pmi" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
-                    Annual PMI
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <HelpCircle className="h-3 w-3 sm:h-4 sm:w-4 cursor-help" />
-                      </TooltipTrigger>
-                      <TooltipContent className="max-w-xs">
-                        <p>Private Mortgage Insurance, typically required when down payment is less than 20%.</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </Label>
+                </Field>
+                <Field id="qualification-annual-pmi" label="PMI" unit="per year" info="Usually required when you put down less than 20%. About 0.5% of the loan a year is typical.">
                   <CurrencyInput id="qualification-annual-pmi" value={annualPMI} onChange={setAnnualPMI} />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="calculator-card">
-            <CardHeader className="pb-4">
-              <CardTitle className="text-lg font-semibold flex items-center gap-2">
-                <TrendingUp className="h-5 w-5 text-accent" />
-                DTI Limits & Debts
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2">
-                <div className="flex flex-col gap-1.5">
-                  <Label htmlFor="qualification-front-end" className="text-sm font-medium text-foreground flex items-center gap-1">
-                    Front-End
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <HelpCircle className="h-3 w-3 sm:h-4 sm:w-4 cursor-help" />
-                      </TooltipTrigger>
-                      <TooltipContent className="max-w-xs">
-                        <p>Maximum percentage of gross income for housing expenses (PITI). Conventional loans typically use 28%.</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </Label>
-                  <div className="flex gap-1 sm:gap-2 flex-1">
-                    <PercentInput id="qualification-front-end"
-                      value={frontEndRatio}
-                      onChange={setFrontEndRatio}
-                      min={0}
-                      max={100}
-                      decimalPlaces={0}
-                    />
-                  </div>
-                </div>
-
-                <div className="flex flex-col gap-1.5">
-                  <Label htmlFor="qualification-back-end" className="text-sm font-medium text-foreground flex items-center gap-1">
-                    Back-End
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <HelpCircle className="h-3 w-3 sm:h-4 sm:w-4 cursor-help" />
-                      </TooltipTrigger>
-                      <TooltipContent className="max-w-xs">
-                        <p>Maximum percentage of gross income for all debts including housing. Conventional loans typically use 36%.</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </Label>
-                  <div className="flex gap-1 sm:gap-2 flex-1">
-                    <PercentInput id="qualification-back-end"
-                      value={backEndRatio}
-                      onChange={setBackEndRatio}
-                      min={0}
-                      max={100}
-                      decimalPlaces={0}
-                    />
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-2 sm:col-span-2 sm:w-1/2">
-                  <Label htmlFor="qualification-other-debts" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
-                    Other Debts
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <HelpCircle className="h-3 w-3 sm:h-4 sm:w-4 cursor-help" />
-                      </TooltipTrigger>
-                      <TooltipContent className="max-w-xs">
-                        <p>Monthly payments for car loans, student loans, credit cards, and other recurring debts.</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </Label>
-                  <CurrencyInput id="qualification-other-debts" value={monthlyDebts} onChange={setMonthlyDebts} />
-                </div>
-              </div>
-
-              {/* DTI Presets */}
-              <div className="pt-4 mt-4 border-t border-border">
-                <Label className="text-xs sm:text-sm text-muted-foreground mb-2 block">Quick DTI Presets</Label>
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                  <button
-                    type="button"
-                    onClick={() => { setFrontEndRatio(28); setBackEndRatio(36); }}
-                    className="text-xs px-3 py-2 rounded-md border border-border hover:bg-secondary transition-colors"
-                  >
-                    Conventional (28/36)
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => { setFrontEndRatio(31); setBackEndRatio(43); }}
-                    className="text-xs px-3 py-2 rounded-md border border-border hover:bg-secondary transition-colors"
-                  >
-                    FHA (31/43)
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => { setFrontEndRatio(41); setBackEndRatio(41); }}
-                    className="text-xs px-3 py-2 rounded-md border border-border hover:bg-secondary transition-colors"
-                  >
-                    VA (41%)
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => { setFrontEndRatio(29); setBackEndRatio(41); }}
-                    className="text-xs px-3 py-2 rounded-md border border-border hover:bg-secondary transition-colors"
-                  >
-                    USDA (29/41)
-                  </button>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+                </Field>
+                <Field id="qualification-front-end" label="Housing limit" unit="% of income" info="The most of your gross income that can go to the housing payment. Conventional loans usually use 28%.">
+                  <PercentInput id="qualification-front-end" value={frontEndRatio} onChange={setFrontEndRatio} min={1} max={60} decimalPlaces={0} />
+                </Field>
+                <Field id="qualification-back-end" label="Total debt limit" unit="% of income" info="The most of your gross income for housing plus all other debts. Conventional loans usually use 36%.">
+                  <PercentInput id="qualification-back-end" value={backEndRatio} onChange={setBackEndRatio} min={1} max={65} decimalPlaces={0} />
+                </Field>
+              </FieldGrid>
+            </MoreOptions>
+          </InputCard>
         </div>
 
         {/* Results Section */}

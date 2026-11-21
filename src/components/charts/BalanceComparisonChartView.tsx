@@ -54,8 +54,8 @@ const BalanceComparisonChartView = ({ loanAmount, standard, plan, standardLabel,
       <Legend
         className="mb-3"
         items={[
-          { label: standardLabel, color: SERIES.baseline, shape: "dashed" },
-          { label: planLabel, color: SERIES.positive, shape: "area" },
+          { label: standardLabel, color: SERIES.baseline, shape: "dashed", description: "What you'd still owe at the end of each year on the regular schedule." },
+          { label: planLabel, color: SERIES.positive, shape: "area", description: "What you'd owe with your plan. The gap between the lines is how far ahead you are." },
         ]}
       />
       <div

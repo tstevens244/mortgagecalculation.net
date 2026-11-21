@@ -96,9 +96,9 @@ const Affordability = () => {
       </Helmet>
       <div className="min-h-screen flex flex-col">
         <Header />
-        <main id="main-content" className="flex-1 container py-8">
+        <main id="main-content" className="flex-1 container py-8 sm:py-12">
           <article>
-            <header className="text-center mb-8">
+            <header className="page-header">
               <Breadcrumbs />
               <h1 className="text-3xl sm:text-4xl lg:text-5xl font-display font-bold text-foreground mb-4">
                 How Much House Can I Afford?
@@ -116,7 +116,7 @@ const Affordability = () => {
 
             <GuideContents />
             {/* Comprehensive Guide Section */}
-            <section className="mt-16 prose prose-slate max-w-none">
+            <section className="page-section guide">
               <h2 className="text-2xl font-display font-semibold mb-4">Complete Guide to Home Affordability</h2>
               <p className="text-muted-foreground leading-relaxed">
                 Determining how much house you can afford is one of the most important financial decisions you'll 

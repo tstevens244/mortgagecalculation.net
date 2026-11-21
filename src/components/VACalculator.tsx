@@ -1,11 +1,7 @@
 import { useState, useMemo } from "react";
-import { Home, Percent, Calendar, DollarSign, Shield, Building, Users, Info } from "lucide-react";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Info } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { Switch } from "@/components/ui/switch";
 import PaymentBreakdown from "./PaymentBreakdown";
 import AmortizationSchedule from "./AmortizationSchedule";
 import AmortizationChart from "./AmortizationChart";
@@ -13,6 +9,7 @@ import CurrencyInput from "./CurrencyInput";
 import PercentInput from "./PercentInput";
 import { formatCurrency } from "@/lib/formatters";
 import StickyResult from "./StickyResult";
+import { InputCard, FieldGrid, Field, TermChoice, MoreOptions, DownPaymentField, StartDateField, summarize, Choice } from "./calc/Form";
 import { vaFundingFeeRate } from "@/lib/loanLimits";
 
 interface VAInputs {
@@ -140,285 +137,95 @@ const VACalculator = () => {
 
   return (
     <div className="fade-in">
-      <div className="grid gap-8 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
         {/* Input Section */}
         <div className="lg:col-span-2">
-          <section className="calculator-card p-3 sm:p-6" aria-labelledby="va-loan-details-heading">
-            <h2 id="va-loan-details-heading" className="text-base sm:text-xl font-display font-semibold mb-3 sm:mb-6 flex items-center gap-2">
-              <Home className="h-4 w-4 sm:h-5 sm:w-5 text-accent" aria-hidden="true" />
-              VA Loan Details
-            </h2>
+          <InputCard id="loan-details" title="Your VA loan" description="Start with these four. Taxes, insurance and the rest are filled in for you below.">
+            <FieldGrid>
+              <Field id="home-price" label="Home price">
+                <CurrencyInput id="home-price" value={inputs.homePrice} onChange={(value) => updateInput("homePrice", value)} />
+              </Field>
+              <DownPaymentField
+                amount={inputs.downPayment}
+                percent={inputs.downPaymentPercent}
+                onAmount={(value) => updateInput("downPayment", value)}
+                onPercent={(value) => updateInput("downPaymentPercent", value)}
+                info="VA loans allow 0% down. Putting down 5% or more lowers the funding fee."
+              />
+              <Field id="interest-rate" label="Interest rate" info="Your quoted rate, not the APR. Rates change daily; check a few lenders.">
+                <PercentInput id="interest-rate" value={inputs.interestRate} onChange={(value) => updateInput("interestRate", value)} min={0} max={30} decimalPlaces={3} />
+              </Field>
+              <Field id="loan-term" label="Loan term">
+                <TermChoice id="loan-term" value={inputs.loanTerm} onChange={(years) => updateInput("loanTerm", years)} terms={[30, 25, 20, 15]} />
+              </Field>
+            </FieldGrid>
 
-            <div className="grid gap-2 sm:gap-4 grid-cols-1 sm:grid-cols-2">
-              {/* Home Price */}
-              <div className="flex flex-col gap-1.5">
-                <Label htmlFor="home-price" className="text-sm font-medium text-foreground flex items-center gap-1">
-                  <DollarSign className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" />
-                  <span>Home Price</span>
-                </Label>
-                <CurrencyInput
-                  id="home-price"
-                  value={inputs.homePrice}
-                  onChange={(value) => updateInput("homePrice", value)}
-                />
-              </div>
-
-              {/* Down Payment */}
-              <div className="flex flex-col gap-1.5">
-                <Label htmlFor="down-payment" className="text-sm font-medium text-foreground flex items-center gap-1">
-                  <Percent className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" />
-                  <span className="hidden lg:inline">Down Payment</span>
-                  <span className="lg:hidden">Down</span>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Info className="h-3 w-3 text-muted-foreground cursor-help" />
-                    </TooltipTrigger>
-                    <TooltipContent className="max-w-xs">
-                      <p>VA loans allow 0% down payment. A down payment of 5% or more reduces the funding fee.</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </Label>
-                <div className="flex gap-1 sm:gap-2 flex-1">
-                  <CurrencyInput
-                    id="down-payment"
-                    value={inputs.downPayment}
-                    onChange={(value) => updateInput("downPayment", value)}
+            <MoreOptions
+              title="VA funding fee"
+              summary={summarize(
+                inputs.hasDisability ? "Exempt (disability rating)" : inputs.firstTimeUse ? "First VA loan" : "Used VA benefit before",
+                !inputs.hasDisability && (inputs.financeFundingFee ? "added to the loan" : "paid at closing"),
+              )}
+            >
+              <FieldGrid>
+                <Field id="va-first-va-loan" label="First VA loan?" info="First-time users pay a lower funding fee than borrowers who have used their VA benefit before.">
+                  <Choice
+                    id="va-first-va-loan"
+                    label="First VA loan?"
+                    value={inputs.firstTimeUse ? "yes" : "no"}
+                    onChange={(v) => updateInput("firstTimeUse", v === "yes")}
+                    options={[{ value: "yes", label: "Yes" }, { value: "no", label: "No" }]}
                   />
-                  <PercentInput
-                    value={inputs.downPaymentPercent}
-                    onChange={(value) => updateInput("downPaymentPercent", value)}
-                    min={0}
-                    max={100}
-                    decimalPlaces={1}
-                    className="w-16 sm:w-20"
-                    aria-label="Down payment percentage"
+                </Field>
+                <Field id="va-disability-10" label="Disability rating 10% or more?" info="Veterans with a service-connected disability rating of 10% or higher don't pay the funding fee.">
+                  <Choice
+                    id="va-disability-10"
+                    label="Disability rating 10% or more?"
+                    value={inputs.hasDisability ? "yes" : "no"}
+                    onChange={(v) => updateInput("hasDisability", v === "yes")}
+                    options={[{ value: "yes", label: "Yes" }, { value: "no", label: "No" }]}
                   />
-                </div>
-              </div>
+                </Field>
+                {!inputs.hasDisability && (
+                  <Field id="va-finance-fee" label="Pay the funding fee" info="You can add the funding fee to the loan or pay it in cash at closing.">
+                    <Choice
+                      id="va-finance-fee"
+                      label="Pay the funding fee"
+                      value={inputs.financeFundingFee ? "financed" : "upfront"}
+                      onChange={(v) => updateInput("financeFundingFee", v === "financed")}
+                      options={[{ value: "financed", label: "In the loan" }, { value: "upfront", label: "At closing" }]}
+                    />
+                  </Field>
+                )}
+              </FieldGrid>
+            </MoreOptions>
 
-              {/* Loan Term */}
-              <div className="flex flex-col gap-1.5">
-                <Label htmlFor="loan-term" className="text-sm font-medium text-foreground flex items-center gap-1">
-                  <Calendar className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" />
-                  <span>Loan Term</span>
-                </Label>
-                <Select
-                  value={inputs.loanTerm.toString()}
-                  onValueChange={(v) => updateInput("loanTerm", parseInt(v))}
-                >
-                  <SelectTrigger id="loan-term" className="h-8 sm:h-10 text-sm font-medium flex-1">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="15">15 years</SelectItem>
-                    <SelectItem value="20">20 years</SelectItem>
-                    <SelectItem value="25">25 years</SelectItem>
-                    <SelectItem value="30">30 years</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {/* Interest Rate */}
-              <div className="flex flex-col gap-1.5">
-                <Label htmlFor="interest-rate" className="text-sm font-medium text-foreground flex items-center gap-1">
-                  <Percent className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" />
-                  <span>Interest Rate</span>
-                </Label>
-                <div className="flex gap-1 sm:gap-2 flex-1">
-                  <PercentInput
-                    id="interest-rate"
-                    value={inputs.interestRate}
-                    onChange={(value) => updateInput("interestRate", value)}
-                    min={0}
-                    max={30}
-                    decimalPlaces={3}
-                  />
-                </div>
-              </div>
-
-              {/* Start Date */}
-              <div className="flex flex-col gap-1.5">
-                <Label htmlFor="va-start-month" className="text-sm font-medium text-foreground flex items-center gap-1">
-                  <Calendar className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" />
-                  <span>Start Date</span>
-                </Label>
-                <div className="flex gap-1 sm:gap-2 flex-1">
-                  <Select
-                    value={inputs.startDate.split("-")[1]}
-                    onValueChange={(month) => {
-                      const year = inputs.startDate.split("-")[0];
-                      updateInput("startDate", `${year}-${month}`);
-                    }}
-                  >
-                    <SelectTrigger aria-label="Loan start month" id="va-start-month" className="h-8 sm:h-10 text-xs sm:text-sm flex-1">
-                      <SelectValue placeholder="Month" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="01">January</SelectItem>
-                      <SelectItem value="02">February</SelectItem>
-                      <SelectItem value="03">March</SelectItem>
-                      <SelectItem value="04">April</SelectItem>
-                      <SelectItem value="05">May</SelectItem>
-                      <SelectItem value="06">June</SelectItem>
-                      <SelectItem value="07">July</SelectItem>
-                      <SelectItem value="08">August</SelectItem>
-                      <SelectItem value="09">September</SelectItem>
-                      <SelectItem value="10">October</SelectItem>
-                      <SelectItem value="11">November</SelectItem>
-                      <SelectItem value="12">December</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <Select
-                    value={inputs.startDate.split("-")[0]}
-                    onValueChange={(year) => {
-                      const month = inputs.startDate.split("-")[1];
-                      updateInput("startDate", `${year}-${month}`);
-                    }}
-                  >
-                    <SelectTrigger aria-label="Loan start year" className="h-8 sm:h-10 text-xs sm:text-sm w-20 sm:w-24">
-                      <SelectValue placeholder="Year" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {Array.from({ length: 30 }, (_, i) => {
-                        const year = new Date().getFullYear() + i;
-                        return (
-                          <SelectItem key={year} value={year.toString()}>
-                            {year}
-                          </SelectItem>
-                        );
-                      })}
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-            </div>
-
-            {/* VA Eligibility Section */}
-            <h2 className="text-base sm:text-xl font-display font-semibold mt-4 sm:mt-6 mb-3 sm:mb-6 flex items-center gap-2">
-              <Shield className="h-4 w-4 sm:h-5 sm:w-5 text-accent" aria-hidden="true" />
-              VA Eligibility
-            </h2>
-
-            <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2">
-              {/* First Time Use */}
-              <div className="flex flex-col gap-1.5">
-                <Label htmlFor="va-first-va-loan" className="text-sm font-medium text-foreground flex items-center gap-1">
-                  First VA Loan?
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Info className="h-3 w-3 text-muted-foreground cursor-help" />
-                    </TooltipTrigger>
-                    <TooltipContent className="max-w-xs">
-                      <p>First-time VA loan users pay a lower funding fee than those who have used their VA benefit before.</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </Label>
-                <div className="flex items-center gap-2 flex-1">
-                  <Switch id="va-first-va-loan"
-                    checked={inputs.firstTimeUse}
-                    onCheckedChange={(checked) => updateInput("firstTimeUse", checked)}
-                  />
-                  <span className="text-xs sm:text-sm">{inputs.firstTimeUse ? "Yes" : "No"}</span>
-                </div>
-              </div>
-
-              {/* Disability Exemption */}
-              <div className="flex flex-col gap-1.5">
-                <Label htmlFor="va-disability-10" className="text-sm font-medium text-foreground flex items-center gap-1">
-                  Disability 10%+?
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Info className="h-3 w-3 text-muted-foreground cursor-help" />
-                    </TooltipTrigger>
-                    <TooltipContent className="max-w-xs">
-                      <p>Veterans with a service-connected disability rating of 10% or higher are exempt from the VA funding fee.</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </Label>
-                <div className="flex items-center gap-2 flex-1">
-                  <Switch id="va-disability-10"
-                    checked={inputs.hasDisability}
-                    onCheckedChange={(checked) => updateInput("hasDisability", checked)}
-                  />
-                  <span className="text-xs sm:text-sm">{inputs.hasDisability ? "Yes (Exempt)" : "No"}</span>
-                </div>
-              </div>
-
-              {/* Finance Funding Fee */}
-              <div className="flex flex-col gap-1.5">
-                <Label htmlFor="va-finance-fee" className="text-sm font-medium text-foreground flex items-center gap-1">
-                  Finance Fee?
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Info className="h-3 w-3 text-muted-foreground cursor-help" />
-                    </TooltipTrigger>
-                    <TooltipContent className="max-w-xs">
-                      <p>The VA funding fee can be financed into the loan or paid upfront at closing.</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </Label>
-                <div className="flex items-center gap-2 flex-1">
-                  <Switch id="va-finance-fee"
-                    checked={inputs.financeFundingFee}
-                    onCheckedChange={(checked) => updateInput("financeFundingFee", checked)}
-                    disabled={inputs.hasDisability}
-                  />
-                  <span className="text-xs sm:text-sm">{inputs.financeFundingFee ? "Financed" : "Paid Upfront"}</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Additional Costs Section */}
-            <h2 id="additional-costs-heading" className="text-base sm:text-xl font-display font-semibold mt-4 sm:mt-6 mb-3 sm:mb-6 flex items-center gap-2">
-              <Building className="h-4 w-4 sm:h-5 sm:w-5 text-accent" aria-hidden="true" />
-              Additional Costs
-            </h2>
-
-            <div className="grid gap-2 sm:gap-4 grid-cols-1 sm:grid-cols-2">
-              {/* Property Tax */}
-              <div className="flex flex-col gap-1.5">
-                <Label htmlFor="property-tax" className="text-sm font-medium text-foreground flex items-center gap-1">
-                  <Building className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" />
-                  <span>Property tax</span> <span className="font-normal text-muted-foreground">(per year)</span>
-                </Label>
-                <CurrencyInput
-                  id="property-tax"
-                  value={inputs.propertyTax}
-                  onChange={(value) => updateInput("propertyTax", value)}
-                />
-              </div>
-
-              {/* Home Insurance */}
-              <div className="flex flex-col gap-1.5">
-                <Label htmlFor="home-insurance" className="text-sm font-medium text-foreground flex items-center gap-1">
-                  <Shield className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" />
-                  <span>Home insurance</span> <span className="font-normal text-muted-foreground">(per year)</span>
-                </Label>
-                <CurrencyInput
-                  id="home-insurance"
-                  value={inputs.homeInsurance}
-                  onChange={(value) => updateInput("homeInsurance", value)}
-                />
-              </div>
-
-              {/* HOA Fees */}
-              <div className="flex flex-col gap-1.5">
-                <Label htmlFor="hoa-fees" className="text-sm font-medium text-foreground flex items-center gap-1">
-                  <Users className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" />
-                  HOA dues <span className="font-normal text-muted-foreground">(per month)</span>
-                </Label>
-                <CurrencyInput
-                  id="hoa-fees"
-                  value={inputs.hoaFees}
-                  onChange={(value) => updateInput("hoaFees", value)}
-                />
-              </div>
-            </div>
-          </section>
+            <MoreOptions
+              title="Taxes, insurance & HOA"
+              summary={summarize(
+                `${formatCurrency(inputs.propertyTax)}/yr tax`,
+                `${formatCurrency(inputs.homeInsurance)}/yr insurance`,
+                inputs.hoaFees > 0 ? `${formatCurrency(inputs.hoaFees)}/mo HOA` : "no HOA",
+              )}
+            >
+              <FieldGrid>
+                <Field id="property-tax" label="Property tax" unit="per year">
+                  <CurrencyInput id="property-tax" value={inputs.propertyTax} onChange={(value) => updateInput("propertyTax", value)} />
+                </Field>
+                <Field id="home-insurance" label="Home insurance" unit="per year">
+                  <CurrencyInput id="home-insurance" value={inputs.homeInsurance} onChange={(value) => updateInput("homeInsurance", value)} />
+                </Field>
+                <Field id="hoa-fees" label="HOA dues" unit="per month">
+                  <CurrencyInput id="hoa-fees" value={inputs.hoaFees} onChange={(value) => updateInput("hoaFees", value)} />
+                </Field>
+                <StartDateField value={inputs.startDate} onChange={(v) => updateInput("startDate", v)} />
+              </FieldGrid>
+            </MoreOptions>
+          </InputCard>
         </div>
 
         {/* Results Section */}
-        <aside className="space-y-6" aria-label="Calculation Results">
+        <aside className="space-y-6 lg:sticky lg:top-24 lg:self-start" aria-label="Calculation Results">
           <StickyResult targetId="calc-result" label={"Monthly payment"} value={formatCurrency(calculations.totalMonthly)} />
           <div id="calc-result" className="result-highlight">
             <p className="text-primary-foreground/80 text-sm font-medium uppercase tracking-wide">

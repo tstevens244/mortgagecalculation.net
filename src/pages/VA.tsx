@@ -110,9 +110,9 @@ const VA = () => {
       <div className="min-h-screen flex flex-col">
         <Header />
 
-        <main id="main-content" className="flex-1 container py-8">
+        <main id="main-content" className="flex-1 container py-8 sm:py-12">
           <article>
-            <header className="text-center mb-8">
+            <header className="page-header">
               <Breadcrumbs />
               <h1 className="text-3xl sm:text-4xl lg:text-5xl font-display font-bold text-foreground mb-4">
                 VA Loan Calculator
@@ -130,7 +130,7 @@ const VA = () => {
             <RelatedCalculators />
 
             <GuideContents />
-            <section className="mt-12 prose prose-slate max-w-none">
+            <section className="page-section guide">
               <h2 className="text-2xl font-display font-semibold mb-4">The Complete Guide to VA Home Loans</h2>
               <p className="text-muted-foreground leading-relaxed">
                 A VA loan is a mortgage guaranteed by the <a href="https://www.va.gov/housing-assistance/home-loans/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">U.S. Department of Veterans Affairs</a>. 

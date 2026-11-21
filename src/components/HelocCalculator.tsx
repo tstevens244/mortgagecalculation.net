@@ -1,10 +1,9 @@
 import { useMemo, useState } from "react";
-import { Home, Percent, Calendar, Wallet, TrendingUp, AlertTriangle } from "lucide-react";
-import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { TrendingUp, AlertTriangle } from "lucide-react";
 import CurrencyInput from "./CurrencyInput";
 import PercentInput from "./PercentInput";
 import StickyResult from "./StickyResult";
+import { InputCard, FieldGrid, Field, MoreOptions, Choice, summarize } from "./calc/Form";
 import { formatCurrency } from "@/lib/formatters";
 
 const monthlyPayment = (principal: number, annualRatePercent: number, months: number) => {
@@ -59,103 +58,47 @@ const HelocCalculator = () => {
     };
   }, [homeValue, mortgageBalance, maxCltv, amountToBorrow, rate, drawYears, repayYears]);
 
-  // Label above the field on phones, beside it from the small breakpoint up.
-  const rowClass = "flex flex-col gap-1.5 sm:flex-row sm:items-center sm:gap-3";
-  const labelClass = "text-sm text-muted-foreground flex items-center gap-1 sm:w-[190px] sm:shrink-0";
 
   return (
-    <div className="fade-in grid gap-6 lg:grid-cols-[1fr_380px]">
-      <section className="calculator-card p-4 sm:p-6" aria-labelledby="heloc-inputs-heading">
-        <h2 id="heloc-inputs-heading" className="text-base sm:text-xl font-display font-semibold mb-4 flex items-center gap-2">
-          <Home className="h-4 w-4 sm:h-5 sm:w-5 text-accent" aria-hidden="true" />
-          Your home and HELOC
-        </h2>
-
-        <div className="space-y-3">
-          <div className={rowClass}>
-            <Label htmlFor="heloc-home-value" className={labelClass}>Home value</Label>
+    <div className="fade-in grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_380px]">
+      <InputCard
+        id="heloc-inputs"
+        title="Your home and HELOC"
+        description="HELOC rates are variable, usually prime plus a margin. The default rate is an example; enter the rate a lender quotes you."
+      >
+        <FieldGrid>
+          <Field id="heloc-home-value" label="Home value">
             <CurrencyInput id="heloc-home-value" value={homeValue} onChange={setHomeValue} allowDecimals={false} />
-          </div>
-
-          <div className={rowClass}>
-            <Label htmlFor="heloc-mortgage-balance" className={labelClass}>Mortgage balance</Label>
+          </Field>
+          <Field id="heloc-mortgage-balance" label="Mortgage balance">
             <CurrencyInput id="heloc-mortgage-balance" value={mortgageBalance} onChange={setMortgageBalance} allowDecimals={false} />
-          </div>
-
-          <div className={rowClass}>
-            <Label htmlFor="heloc-max-cltv" className={labelClass}>Lender's borrowing limit</Label>
-            <Select value={maxCltv} onValueChange={setMaxCltv}>
-              <SelectTrigger id="heloc-max-cltv" className="w-full sm:flex-1">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="80">80% of value</SelectItem>
-                <SelectItem value="85">85% of value</SelectItem>
-                <SelectItem value="90">90% of value</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className={rowClass}>
-            <Label htmlFor="heloc-amount" className={labelClass}>
-              <Wallet className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" />
-              Amount you'll borrow
-            </Label>
+          </Field>
+          <Field id="heloc-amount" label="Amount you'll borrow">
             <CurrencyInput id="heloc-amount" value={amountToBorrow} onChange={setAmountToBorrow} allowDecimals={false} />
-          </div>
+          </Field>
+          <Field id="heloc-rate" label="HELOC interest rate">
+            <PercentInput id="heloc-rate" value={rate} onChange={setRate} min={0} max={25} decimalPlaces={3} />
+          </Field>
+        </FieldGrid>
+        <MoreOptions
+          title="Borrowing limit & time periods"
+          summary={summarize(`${maxCltv}% limit`, `${drawYears}-year draw`, `${repayYears}-year repayment`)}
+        >
+          <FieldGrid>
+            <Field id="heloc-max-cltv" label="Lender's borrowing limit" info="The most your mortgage plus HELOC can add up to, as a % of the home's value. 85% is common." className="sm:col-span-2">
+              <Choice id="heloc-max-cltv" label="Lender's borrowing limit" value={maxCltv} onChange={setMaxCltv} options={["80", "85", "90"].map((v) => ({ value: v, label: `${v}%` }))} />
+            </Field>
+            <Field id="heloc-draw-years" label="Draw period" info="Years you can borrow and pay interest only.">
+              <Choice id="heloc-draw-years" label="Draw period" value={drawYears} onChange={setDrawYears} options={["5", "10", "15"].map((v) => ({ value: v, label: `${v} yr` }))} />
+            </Field>
+            <Field id="heloc-repay-years" label="Repayment period" info="Years to pay back principal and interest after the draw period.">
+              <Choice id="heloc-repay-years" label="Repayment period" value={repayYears} onChange={setRepayYears} options={["10", "15", "20"].map((v) => ({ value: v, label: `${v} yr` }))} />
+            </Field>
+          </FieldGrid>
+        </MoreOptions>
+      </InputCard>
 
-          <div className={rowClass}>
-            <Label htmlFor="heloc-rate" className={labelClass}>
-              <Percent className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" />
-              HELOC interest rate
-            </Label>
-            <div className="flex flex-1 items-center gap-2">
-              <PercentInput id="heloc-rate" value={rate} onChange={setRate} min={0} max={25} decimalPlaces={3} />
-            </div>
-          </div>
-
-          <div className={rowClass}>
-            <Label htmlFor="heloc-draw-years" className={labelClass}>
-              <Calendar className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" />
-              Draw period
-            </Label>
-            <Select value={drawYears} onValueChange={setDrawYears}>
-              <SelectTrigger id="heloc-draw-years" className="w-full sm:flex-1">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="5">5 years</SelectItem>
-                <SelectItem value="10">10 years</SelectItem>
-                <SelectItem value="15">15 years</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className={rowClass}>
-            <Label htmlFor="heloc-repay-years" className={labelClass}>
-              <Calendar className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" />
-              Repayment period
-            </Label>
-            <Select value={repayYears} onValueChange={setRepayYears}>
-              <SelectTrigger id="heloc-repay-years" className="w-full sm:flex-1">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="10">10 years</SelectItem>
-                <SelectItem value="15">15 years</SelectItem>
-                <SelectItem value="20">20 years</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-        </div>
-
-        <p className="mt-4 text-xs text-muted-foreground">
-          HELOC rates are variable, usually the prime rate plus a margin. The default rate is an example; enter the
-          rate a lender quotes you.
-        </p>
-      </section>
-
-      <aside className="space-y-4" aria-label="HELOC results">
+      <aside className="space-y-4 lg:sticky lg:top-24 lg:self-start" aria-label="HELOC results">
         <StickyResult targetId="calc-result" label="Maximum credit line" value={formatCurrency(c.maxLine)} />
         <div id="calc-result" className="result-highlight">
           <p className="text-primary-foreground/80 text-sm font-medium uppercase tracking-wide">Maximum credit line</p>

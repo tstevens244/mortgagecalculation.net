@@ -163,9 +163,9 @@ const StateMortgage = ({ state, counties }: StateMortgageProps) => {
       <div className="min-h-screen flex flex-col">
         <Header />
 
-        <main id="main-content" className="flex-1 container py-8">
+        <main id="main-content" className="flex-1 container py-8 sm:py-12">
           <article>
-            <header className="mx-auto mb-8 max-w-3xl text-center">
+            <header className="page-header">
               <Breadcrumbs trail={[{ label: STATES_INDEX_NAME, to: STATES_INDEX_PATH }, { label: state.name }]} />
               <h1 className="mb-4 text-3xl font-display font-bold text-foreground sm:text-4xl lg:text-5xl">
                 {state.name} Mortgage Calculator
@@ -193,7 +193,7 @@ const StateMortgage = ({ state, counties }: StateMortgageProps) => {
               taxAreaLabel={Area}
             />
 
-            <div className="hub-content mx-auto mt-16 max-w-3xl">
+            <div className="hub-content page-section">
               <h2>What a typical {state.name} home costs a month</h2>
               <p>
                 For a {formatCurrency(ex20.price)} home, the median value of owner-occupied homes in {state.name}, at a{" "}
@@ -354,7 +354,7 @@ const StateMortgage = ({ state, counties }: StateMortgageProps) => {
               </p>
             </div>
 
-            <section aria-labelledby="state-faq" className="mx-auto mt-14 max-w-3xl">
+            <section aria-labelledby="state-faq" className="page-section">
               <h2 id="state-faq" className="mb-4 text-2xl font-display font-semibold text-foreground">
                 Frequently asked questions
               </h2>
@@ -401,7 +401,7 @@ const StateMortgage = ({ state, counties }: StateMortgageProps) => {
               </ul>
             </section>
 
-            <nav aria-labelledby="other-states" className="mx-auto mt-14 max-w-5xl">
+            <nav aria-labelledby="other-states" className="page-section-wide">
               <h2 id="other-states" className="mb-4 text-xl font-display font-semibold text-foreground">
                 Mortgage calculators for other states
               </h2>

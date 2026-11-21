@@ -139,9 +139,9 @@ const Index = () => {
       <div className="min-h-screen flex flex-col">
         <Header />
 
-        <main id="main-content" className="flex-1 container py-8">
+        <main id="main-content" className="flex-1 container py-8 sm:py-12">
           <article>
-            <header className="text-center mb-8">
+            <header className="page-header">
               <h1 className="text-3xl sm:text-4xl lg:text-5xl font-display font-bold text-foreground mb-4">
                 Mortgage Calculator
               </h1>
@@ -174,7 +174,7 @@ const Index = () => {
 
             <GuideContents />
             {/* Comprehensive Guide Section */}
-            <section className="mt-16 prose prose-slate max-w-none">
+            <section className="page-section guide">
               <h2 className="text-2xl font-display font-semibold mb-4">Complete Guide to Mortgage Payments</h2>
               <p className="text-muted-foreground leading-relaxed">
                 Understanding your mortgage payment is essential for making informed home buying decisions. According to 

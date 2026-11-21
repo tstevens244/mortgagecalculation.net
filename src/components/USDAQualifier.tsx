@@ -55,7 +55,7 @@ const USDAQualifier = () => {
         household's numbers to see the home price that fits, with no down payment.
       </p>
 
-      <div className="grid gap-6 lg:grid-cols-[1fr_400px]">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_400px]">
         <div className="calculator-card space-y-3 p-4 sm:p-6">
           <FormRow id="usdaq-income" label="Annual household income" hint="Before taxes. USDA counts income from everyone in the household.">
             <CurrencyInput id="usdaq-income" value={income} onChange={setIncome} allowDecimals={false} aria-describedby="usdaq-income-hint" />

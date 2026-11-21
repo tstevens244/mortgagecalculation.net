@@ -86,7 +86,7 @@ const GuidePage = ({ slug, metaTitle, description, lead, children, faqs = [] }: 
 
       <div className="min-h-screen flex flex-col">
         <Header />
-        <main id="main-content" className="flex-1 container py-8">
+        <main id="main-content" className="flex-1 container py-8 sm:py-12">
           <article className="mx-auto max-w-3xl">
             <header className="mb-6">
               <Breadcrumbs trail={[{ label: "Guides", to: GUIDES_PATH }, { label: guide.title }]} />
@@ -126,7 +126,7 @@ const GuidePage = ({ slug, metaTitle, description, lead, children, faqs = [] }: 
             <div className="hub-content mt-10">{children}</div>
 
             {faqs.length > 0 && (
-              <section aria-labelledby="guide-faq" className="mt-14">
+              <section aria-labelledby="guide-faq" className="mt-16">
                 <h2 id="guide-faq" className="mb-4 text-2xl font-display font-semibold text-foreground">
                   Frequently asked questions
                 </h2>
@@ -144,7 +144,7 @@ const GuidePage = ({ slug, metaTitle, description, lead, children, faqs = [] }: 
               </section>
             )}
 
-            <nav aria-labelledby="more-guides" className="mt-14" data-no-toc>
+            <nav aria-labelledby="more-guides" className="mt-16" data-no-toc>
               <h2 id="more-guides" className="mb-4 text-xl font-display font-semibold text-foreground">
                 More guides
               </h2>

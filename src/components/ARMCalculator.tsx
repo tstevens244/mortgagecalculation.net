@@ -1,10 +1,7 @@
 import { useState, useMemo } from "react";
-import { Home, Percent, Calendar, DollarSign, Shield, Building, Users, Info, TrendingUp } from "lucide-react";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { TrendingUp } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import PaymentBreakdown from "./PaymentBreakdown";
 import AmortizationSchedule from "./AmortizationSchedule";
 import AmortizationChart from "./AmortizationChart";
@@ -13,6 +10,7 @@ import PercentInput from "./PercentInput";
 import { formatCurrency } from "@/lib/formatters";
 import { armSchedule } from "@/lib/mortgageMath";
 import StickyResult from "./StickyResult";
+import { InputCard, FieldGrid, Field, TermChoice, MoreOptions, DownPaymentField, StartDateField, summarize, Choice } from "./calc/Form";
 
 interface ARMInputs {
   homePrice: number;
@@ -191,440 +189,128 @@ const ARMCalculator = () => {
     });
   }, [calculations, inputs.startDate]);
 
-  const armTypeLabel = `${inputs.yearsBeforeFirstAdjustment}/1 ARM`;
+  const armTypeLabel = `${inputs.yearsBeforeFirstAdjustment}/${inputs.monthsBetweenAdjustments === 12 ? 1 : inputs.monthsBetweenAdjustments} ARM`;
 
   return (
     <div className="fade-in">
-      <div className="grid gap-8 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
         {/* Input Section */}
-        <div className="lg:col-span-2 space-y-6">
-          {/* Loan Details */}
-          <section className="calculator-card p-3 sm:p-6" aria-labelledby="arm-loan-details-heading">
-            <h2 id="arm-loan-details-heading" className="text-base sm:text-xl font-display font-semibold mb-3 sm:mb-6 flex items-center gap-2">
-              <Home className="h-4 w-4 sm:h-5 sm:w-5 text-accent" aria-hidden="true" />
-              Home Loan Information
-            </h2>
-
-            <div className="grid gap-2 sm:gap-4 grid-cols-1 sm:grid-cols-2">
-              {/* Home Price */}
-              <div className="flex flex-col gap-1.5">
-                <Label htmlFor="home-price" className="text-sm font-medium text-foreground flex items-center gap-1">
-                  <DollarSign className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" />
-                  <span>Home Price</span>
-                </Label>
-                <CurrencyInput
-                  id="home-price"
-                  value={inputs.homePrice}
-                  onChange={(value) => updateInput("homePrice", value)}
+        <div className="lg:col-span-2">
+          <InputCard id="loan-details" title="Your ARM" description="Pick the ARM type and enter the basics. Rate changes, taxes and fees are filled in for you below.">
+            <FieldGrid>
+              <Field id="home-price" label="Home price">
+                <CurrencyInput id="home-price" value={inputs.homePrice} onChange={(value) => updateInput("homePrice", value)} />
+              </Field>
+              <DownPaymentField
+                amount={inputs.downPayment}
+                percent={inputs.downPaymentPercent}
+                onAmount={(value) => updateInput("downPayment", value)}
+                onPercent={(value) => updateInput("downPaymentPercent", value)}
+                info="Putting down 20% or more avoids PMI."
+              />
+              <Field id="initial-rate" label="Starting rate" info="The rate during the fixed period. ARMs usually start below 30-year fixed rates.">
+                <PercentInput id="initial-rate" value={inputs.initialRate} onChange={(value) => updateInput("initialRate", value)} min={0} max={30} decimalPlaces={3} />
+              </Field>
+              <Field
+                id="arm-type"
+                label="ARM type"
+                info="The first number is the fixed period in years. /6 ARMs then adjust every 6 months; /1 ARMs once a year."
+              >
+                <Choice
+                  id="arm-type"
+                  label="ARM type"
+                  value={`${inputs.yearsBeforeFirstAdjustment}/${inputs.monthsBetweenAdjustments}`}
+                  onChange={(v) => {
+                    const [years, months] = v.split("/").map(Number);
+                    updateInput("yearsBeforeFirstAdjustment", years);
+                    updateInput("monthsBetweenAdjustments", months);
+                  }}
+                  options={ARM_TYPES.map((t) => ({ value: `${t.years}/${t.months}`, label: t.label }))}
+                  className="flex-wrap sm:flex-nowrap"
                 />
-              </div>
+              </Field>
+            </FieldGrid>
 
-              {/* Down Payment */}
-              <div className="flex flex-col gap-1.5">
-                <Label htmlFor="down-payment" className="text-sm font-medium text-foreground flex items-center gap-1">
-                  <Percent className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" />
-                  <span className="hidden lg:inline">Down Payment</span>
-                  <span className="lg:hidden">Down</span>
-                </Label>
-                <div className="flex gap-1 sm:gap-2 flex-1">
-                  <CurrencyInput
-                    id="down-payment"
-                    value={inputs.downPayment}
-                    onChange={(value) => updateInput("downPayment", value)}
-                  />
-                  <PercentInput
-                    value={inputs.downPaymentPercent}
-                    onChange={(value) => updateInput("downPaymentPercent", value)}
-                    min={0}
-                    max={100}
-                    decimalPlaces={1}
-                    className="w-16 sm:w-20"
-                    aria-label="Down payment percentage"
-                  />
-                </div>
-              </div>
-
-              {/* Initial APR */}
-              <div className="flex flex-col gap-1.5">
-                <Label htmlFor="initial-rate" className="text-sm font-medium text-foreground flex items-center gap-1">
-                  <Percent className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" />
-                  <span>Initial APR</span>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Info className="h-3 w-3 text-muted-foreground cursor-help" />
-                    </TooltipTrigger>
-                    <TooltipContent className="max-w-xs">
-                      <p>The introductory rate charged during the initial fixed-rate period of the ARM.</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </Label>
-                <div className="flex gap-1 sm:gap-2 flex-1">
-                  <PercentInput
-                    id="initial-rate"
-                    value={inputs.initialRate}
-                    onChange={(value) => updateInput("initialRate", value)}
-                    min={0}
-                    max={30}
-                    decimalPlaces={3}
-                  />
-                </div>
-              </div>
-
-              {/* Loan Term */}
-              <div className="flex flex-col gap-1.5">
-                <Label htmlFor="loan-term" className="text-sm font-medium text-foreground flex items-center gap-1">
-                  <Calendar className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" />
-                  <span>Loan Term</span>
-                </Label>
-                <Select
-                  value={inputs.loanTerm.toString()}
-                  onValueChange={(v) => updateInput("loanTerm", parseInt(v))}
-                >
-                  <SelectTrigger id="loan-term" className="h-8 sm:h-10 text-sm font-medium flex-1">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="15">15 years</SelectItem>
-                    <SelectItem value="30">30 years</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {/* Closing Costs */}
-              <div className="flex flex-col gap-1.5">
-                <Label htmlFor="closing-costs" className="text-sm font-medium text-foreground flex items-center gap-1">
-                  <DollarSign className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" />
-                  <span>Closing Costs</span>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Info className="h-3 w-3 text-muted-foreground cursor-help" />
-                    </TooltipTrigger>
-                    <TooltipContent className="max-w-xs">
-                      <p>Enter closing costs if they are rolled into the loan amount.</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </Label>
-                <CurrencyInput
-                  id="closing-costs"
-                  value={inputs.closingCosts}
-                  onChange={(value) => updateInput("closingCosts", value)}
-                />
-              </div>
-
-              {/* PMI Rate */}
-              <div className="flex flex-col gap-1.5">
-                <Label htmlFor="pmi-rate" className="text-sm font-medium text-foreground flex items-center gap-1">
-                  <Shield className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" />
-                  PMI
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Info className="h-3 w-3 text-muted-foreground cursor-help" />
-                    </TooltipTrigger>
-                    <TooltipContent className="max-w-xs">
-                      <p>Private Mortgage Insurance is required when down payment is less than 20%.</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </Label>
-                <div className="flex gap-1 sm:gap-2 flex-1">
-                  <PercentInput
-                    id="pmi-rate"
-                    value={inputs.pmiRate}
-                    onChange={(value) => updateInput("pmiRate", value)}
-                    min={0}
-                    max={5}
-                    decimalPlaces={2}
-                  />
-                </div>
-              </div>
-            </div>
-          </section>
-
-          {/* Rate Adjustments */}
-          <section className="calculator-card p-3 sm:p-6" aria-labelledby="rate-adjustments-heading">
-            <h2 id="rate-adjustments-heading" className="text-base sm:text-xl font-display font-semibold mb-3 sm:mb-6 flex items-center gap-2">
-              <TrendingUp className="h-4 w-4 sm:h-5 sm:w-5 text-accent" aria-hidden="true" />
-              Rate Adjustments
-            </h2>
-
-            <div className="mb-4 flex flex-col gap-1.5">
-              <span className="text-sm font-medium text-foreground">ARM type</span>
-              <div className="flex flex-wrap gap-2" role="group" aria-label="ARM type">
-                {ARM_TYPES.map((t) => {
-                  const active =
-                    inputs.yearsBeforeFirstAdjustment === t.years && inputs.monthsBetweenAdjustments === t.months;
-                  return (
-                    <button
-                      key={t.label}
-                      type="button"
-                      aria-pressed={active}
-                      onClick={() => {
-                        updateInput("yearsBeforeFirstAdjustment", t.years);
-                        updateInput("monthsBetweenAdjustments", t.months);
-                      }}
-                      className={`rounded-full border px-3 py-1 text-sm font-medium transition-colors ${
-                        active
-                          ? "border-primary bg-primary text-primary-foreground"
-                          : "border-border bg-background text-foreground hover:border-primary/40 hover:bg-secondary"
-                      }`}
-                    >
-                      {t.label}
-                    </button>
-                  );
-                })}
-              </div>
-              <span className="text-xs text-muted-foreground">
-                5/6, 7/6 and 10/6 ARMs adjust every 6 months after the fixed period; 5/1, 7/1 and 10/1 adjust once a year.
-              </span>
-            </div>
-
-            <div className="grid gap-2 sm:gap-4 grid-cols-1 sm:grid-cols-2">
-              {/* Years Before First Adjustment */}
-              <div className="flex flex-col gap-1.5">
-                <Label htmlFor="years-first-adj" className="text-sm font-medium text-foreground flex items-center gap-1">
-                  <Calendar className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" />
-                  <span>Fixed Period</span>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Info className="h-3 w-3 text-muted-foreground cursor-help" />
-                    </TooltipTrigger>
-                    <TooltipContent className="max-w-xs">
-                      <p>Years before the first rate adjustment. For a 5/6 or 5/1 ARM, this is 5 years.</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </Label>
-                <Select
-                  value={inputs.yearsBeforeFirstAdjustment.toString()}
-                  onValueChange={(v) => updateInput("yearsBeforeFirstAdjustment", parseInt(v))}
-                >
-                  <SelectTrigger id="years-first-adj" className="h-8 sm:h-10 text-sm font-medium flex-1">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="1">1 year</SelectItem>
-                    <SelectItem value="3">3 years</SelectItem>
-                    <SelectItem value="5">5 years</SelectItem>
-                    <SelectItem value="7">7 years</SelectItem>
-                    <SelectItem value="10">10 years</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {/* Expected First Adjustment */}
-              <div className="flex flex-col gap-1.5">
-                <Label htmlFor="first-adj" className="text-sm font-medium text-foreground flex items-center gap-1">
-                  <TrendingUp className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" />
-                  <span>1st Adjustment</span>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Info className="h-3 w-3 text-muted-foreground cursor-help" />
-                    </TooltipTrigger>
-                    <TooltipContent className="max-w-xs">
-                      <p>Expected rate change at the first adjustment. Often larger than subsequent adjustments.</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </Label>
-                <div className="flex gap-1 sm:gap-2 flex-1">
-                  <PercentInput id="first-adj"
-                    value={inputs.expectedFirstAdjustment}
-                    onChange={(v) => updateInput("expectedFirstAdjustment", v)}
-                    min={-5}
-                    max={10}
-                    decimalPlaces={2}
-                    allowNegative
-                    className="h-8 sm:h-10 text-sm font-medium flex-1"
-                  />
-                </div>
-              </div>
-
-              {/* Months Between Adjustments */}
-              <div className="flex flex-col gap-1.5">
-                <Label htmlFor="months-between" className="text-sm font-medium text-foreground flex items-center gap-1">
-                  <Calendar className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" />
-                  <span>Adj. Frequency</span>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Info className="h-3 w-3 text-muted-foreground cursor-help" />
-                    </TooltipTrigger>
-                    <TooltipContent className="max-w-xs">
-                      <p>Months between later rate adjustments: 6 for 5/6, 7/6 and 10/6 ARMs, 12 for 5/1-style ARMs.</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </Label>
-                <Select
-                  value={inputs.monthsBetweenAdjustments.toString()}
-                  onValueChange={(v) => updateInput("monthsBetweenAdjustments", parseInt(v))}
-                >
-                  <SelectTrigger id="months-between" className="h-8 sm:h-10 text-sm font-medium flex-1">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="6">6 months</SelectItem>
-                    <SelectItem value="12">12 months</SelectItem>
-                    <SelectItem value="24">24 months</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {/* Expected Subsequent Adjustment */}
-              <div className="flex flex-col gap-1.5">
-                <Label htmlFor="subsequent-adj" className="text-sm font-medium text-foreground flex items-center gap-1">
-                  <TrendingUp className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" />
-                  <span>Later Adj.</span>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Info className="h-3 w-3 text-muted-foreground cursor-help" />
-                    </TooltipTrigger>
-                    <TooltipContent className="max-w-xs">
-                      <p>Expected rate change for each subsequent adjustment after the first.</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </Label>
-                <div className="flex gap-1 sm:gap-2 flex-1">
-                  <PercentInput id="subsequent-adj"
-                    value={inputs.expectedSubsequentAdjustment}
-                    onChange={(v) => updateInput("expectedSubsequentAdjustment", v)}
-                    min={-5}
-                    max={10}
-                    decimalPlaces={2}
-                    allowNegative
-                    className="h-8 sm:h-10 text-sm font-medium flex-1"
-                  />
-                </div>
-              </div>
-
-              {/* Lifetime Cap */}
-              <div className="flex items-center gap-2 sm:col-span-2">
-                <Label htmlFor="lifetime-cap" className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap flex items-center gap-1 min-w-[80px] sm:min-w-[100px]">
-                  <Shield className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" />
-                  <span className="hidden sm:inline">Lifetime Cap</span>
-                  <span className="sm:hidden">Cap</span>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Info className="h-3 w-3 text-muted-foreground cursor-help" />
-                    </TooltipTrigger>
-                    <TooltipContent className="max-w-xs">
-                      <p>Maximum rate increase over the life of the loan. If initial rate is 6% and cap is 5%, max rate is 11%.</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </Label>
-                <div className="flex gap-1 sm:gap-2 flex-1">
-                  <PercentInput id="lifetime-cap"
-                    value={inputs.lifetimeCap}
-                    onChange={(v) => updateInput("lifetimeCap", v)}
-                    min={0}
-                    max={15}
-                    decimalPlaces={2}
-                    className="h-8 sm:h-10 text-sm font-medium flex-1"
-                  />
-                </div>
-              </div>
-            </div>
-          </section>
-
-          {/* Additional Costs */}
-          <section className="calculator-card p-3 sm:p-6" aria-labelledby="additional-costs-heading">
-            <h2 id="additional-costs-heading" className="text-base sm:text-xl font-display font-semibold mb-3 sm:mb-6 flex items-center gap-2">
-              <Building className="h-4 w-4 sm:h-5 sm:w-5 text-accent" aria-hidden="true" />
-              Other Costs of Ownership
-            </h2>
-
-            <div className="grid gap-2 sm:gap-4 grid-cols-1 sm:grid-cols-2">
-              {/* Property Tax */}
-              <div className="flex flex-col gap-1.5">
-                <Label htmlFor="property-tax" className="text-sm font-medium text-foreground flex items-center gap-1">
-                  <Building className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" />
-                  <span>Property tax</span> <span className="font-normal text-muted-foreground">(per year)</span>
-                </Label>
-                <CurrencyInput
-                  id="property-tax"
-                  value={inputs.propertyTax}
-                  onChange={(value) => updateInput("propertyTax", value)}
-                />
-              </div>
-
-              {/* Home Insurance */}
-              <div className="flex flex-col gap-1.5">
-                <Label htmlFor="home-insurance" className="text-sm font-medium text-foreground flex items-center gap-1">
-                  <Shield className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" />
-                  <span>Home insurance</span> <span className="font-normal text-muted-foreground">(per year)</span>
-                </Label>
-                <CurrencyInput
-                  id="home-insurance"
-                  value={inputs.homeInsurance}
-                  onChange={(value) => updateInput("homeInsurance", value)}
-                />
-              </div>
-
-              {/* HOA Fees */}
-              <div className="flex flex-col gap-1.5">
-                <Label htmlFor="hoa-fees" className="text-sm font-medium text-foreground flex items-center gap-1">
-                  <Users className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" />
-                  HOA dues <span className="font-normal text-muted-foreground">(per month)</span>
-                </Label>
-                <CurrencyInput
-                  id="hoa-fees"
-                  value={inputs.hoaFees}
-                  onChange={(value) => updateInput("hoaFees", value)}
-                />
-              </div>
-
-              {/* Start Date */}
-              <div className="flex flex-col gap-1.5">
-                <Label className="text-sm font-medium text-foreground flex items-center gap-1">
-                  <Calendar className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" />
-                  <span>Start Date</span>
-                </Label>
-                <div className="flex gap-1 sm:gap-2 flex-1">
-                  <Select
-                    value={inputs.startDate.split("-")[1]}
-                    onValueChange={(month) => {
-                      const year = inputs.startDate.split("-")[0];
-                      updateInput("startDate", `${year}-${month}`);
-                    }}
-                  >
-                    <SelectTrigger aria-label="Loan start month" className="h-8 sm:h-10 text-xs sm:text-sm flex-1">
-                      <SelectValue placeholder="Month" />
+            <MoreOptions
+              title="Rate changes after the fixed period"
+              summary={summarize(
+                `${inputs.expectedFirstAdjustment >= 0 ? "+" : ""}${inputs.expectedFirstAdjustment.toFixed(2)}% at the first change`,
+                `${inputs.expectedSubsequentAdjustment >= 0 ? "+" : ""}${inputs.expectedSubsequentAdjustment.toFixed(2)}% at each later change`,
+                `capped at +${inputs.lifetimeCap.toFixed(2)}%`,
+                `${inputs.loanTerm}-year term`,
+              )}
+            >
+              <FieldGrid>
+                <Field id="first-adj" label="First change" info="Expected rate change at the first adjustment. It's often bigger than later ones.">
+                  <PercentInput id="first-adj" value={inputs.expectedFirstAdjustment} onChange={(v) => updateInput("expectedFirstAdjustment", v)} min={-5} max={10} decimalPlaces={2} allowNegative />
+                </Field>
+                <Field id="subsequent-adj" label="Each later change" info="Expected rate change at each adjustment after the first.">
+                  <PercentInput id="subsequent-adj" value={inputs.expectedSubsequentAdjustment} onChange={(v) => updateInput("expectedSubsequentAdjustment", v)} min={-5} max={10} decimalPlaces={2} allowNegative />
+                </Field>
+                <Field id="lifetime-cap" label="Lifetime cap" info="The most the rate can rise over the life of the loan. A 6% start with a 5% cap can't go above 11%.">
+                  <PercentInput id="lifetime-cap" value={inputs.lifetimeCap} onChange={(v) => updateInput("lifetimeCap", v)} min={0} max={15} decimalPlaces={2} />
+                </Field>
+                <Field id="years-first-adj" label="Fixed period">
+                  <Select value={inputs.yearsBeforeFirstAdjustment.toString()} onValueChange={(v) => updateInput("yearsBeforeFirstAdjustment", parseInt(v))}>
+                    <SelectTrigger id="years-first-adj">
+                      <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="01">January</SelectItem>
-                      <SelectItem value="02">February</SelectItem>
-                      <SelectItem value="03">March</SelectItem>
-                      <SelectItem value="04">April</SelectItem>
-                      <SelectItem value="05">May</SelectItem>
-                      <SelectItem value="06">June</SelectItem>
-                      <SelectItem value="07">July</SelectItem>
-                      <SelectItem value="08">August</SelectItem>
-                      <SelectItem value="09">September</SelectItem>
-                      <SelectItem value="10">October</SelectItem>
-                      <SelectItem value="11">November</SelectItem>
-                      <SelectItem value="12">December</SelectItem>
+                      {[1, 3, 5, 7, 10].map((y) => (
+                        <SelectItem key={y} value={String(y)}>
+                          {y} year{y === 1 ? "" : "s"}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
-                  <Select
-                    value={inputs.startDate.split("-")[0]}
-                    onValueChange={(year) => {
-                      const month = inputs.startDate.split("-")[1];
-                      updateInput("startDate", `${year}-${month}`);
-                    }}
-                  >
-                    <SelectTrigger aria-label="Loan start year" className="h-8 sm:h-10 text-xs sm:text-sm w-20 sm:w-24">
-                      <SelectValue placeholder="Year" />
+                </Field>
+                <Field id="months-between" label="Adjusts every">
+                  <Select value={inputs.monthsBetweenAdjustments.toString()} onValueChange={(v) => updateInput("monthsBetweenAdjustments", parseInt(v))}>
+                    <SelectTrigger id="months-between">
+                      <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      {Array.from({ length: 30 }, (_, i) => {
-                        const year = new Date().getFullYear() + i;
-                        return (
-                          <SelectItem key={year} value={year.toString()}>
-                            {year}
-                          </SelectItem>
-                        );
-                      })}
+                      <SelectItem value="6">6 months</SelectItem>
+                      <SelectItem value="12">12 months</SelectItem>
+                      <SelectItem value="24">24 months</SelectItem>
                     </SelectContent>
                   </Select>
-                </div>
-              </div>
-            </div>
-          </section>
+                </Field>
+                <Field id="loan-term" label="Loan term">
+                  <TermChoice id="loan-term" value={inputs.loanTerm} onChange={(years) => updateInput("loanTerm", years)} terms={[30, 15]} />
+                </Field>
+              </FieldGrid>
+            </MoreOptions>
+
+            <MoreOptions
+              title="Taxes, insurance & fees"
+              summary={summarize(
+                `${formatCurrency(inputs.propertyTax)}/yr tax`,
+                `${formatCurrency(inputs.homeInsurance)}/yr insurance`,
+                inputs.downPaymentPercent < 20 ? `PMI ${inputs.pmiRate}%/yr` : "no PMI",
+                inputs.hoaFees > 0 ? `${formatCurrency(inputs.hoaFees)}/mo HOA` : "no HOA",
+              )}
+            >
+              <FieldGrid>
+                <Field id="property-tax" label="Property tax" unit="per year">
+                  <CurrencyInput id="property-tax" value={inputs.propertyTax} onChange={(value) => updateInput("propertyTax", value)} />
+                </Field>
+                <Field id="home-insurance" label="Home insurance" unit="per year">
+                  <CurrencyInput id="home-insurance" value={inputs.homeInsurance} onChange={(value) => updateInput("homeInsurance", value)} />
+                </Field>
+                <Field id="pmi-rate" label="PMI rate" unit="% of loan per year" info="Charged only when you put down less than 20%.">
+                  <PercentInput id="pmi-rate" value={inputs.pmiRate} onChange={(value) => updateInput("pmiRate", value)} min={0} max={5} decimalPlaces={2} />
+                </Field>
+                <Field id="hoa-fees" label="HOA dues" unit="per month">
+                  <CurrencyInput id="hoa-fees" value={inputs.hoaFees} onChange={(value) => updateInput("hoaFees", value)} />
+                </Field>
+                <Field id="closing-costs" label="Closing costs added to the loan" info="Only if you're rolling closing costs into the loan amount.">
+                  <CurrencyInput id="closing-costs" value={inputs.closingCosts} onChange={(value) => updateInput("closingCosts", value)} />
+                </Field>
+                <StartDateField value={inputs.startDate} onChange={(v) => updateInput("startDate", v)} />
+              </FieldGrid>
+            </MoreOptions>
+          </InputCard>
         </div>
 
         {/* Results Section */}

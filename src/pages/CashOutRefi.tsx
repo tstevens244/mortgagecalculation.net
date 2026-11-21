@@ -96,9 +96,9 @@ const CashOutRefi = () => {
       </Helmet>
       <div className="min-h-screen flex flex-col">
         <Header />
-        <main id="main-content" className="flex-1 container py-8">
+        <main id="main-content" className="flex-1 container py-8 sm:py-12">
           <article>
-            <header className="text-center mb-8">
+            <header className="page-header">
               <Breadcrumbs />
               <h1 className="text-3xl sm:text-4xl lg:text-5xl font-display font-bold text-foreground mb-4">
                 Cash-Out Refinance Calculator
@@ -116,7 +116,7 @@ const CashOutRefi = () => {
 
             <GuideContents />
             {/* Comprehensive Guide Section */}
-            <section className="mt-16 prose prose-slate max-w-none">
+            <section className="page-section guide">
               <h2 className="text-2xl font-display font-semibold mb-4">Complete Guide to Cash-Out Refinancing</h2>
               <p className="text-muted-foreground leading-relaxed">
                 A cash-out refinance allows you to convert home equity into cash by replacing your current mortgage 

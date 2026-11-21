@@ -1,19 +1,5 @@
 import { useState, useMemo } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { HelpCircle, Home, Building2, TrendingUp, DollarSign, PiggyBank, Scale } from "lucide-react";
+import { Scale } from "lucide-react";
 import { rentVsBuy, rentVsBuyByYear } from "@/lib/rentVsBuy";
 import { crossingYear } from "@/lib/amortization";
 import VizCard, { StatRow } from "./viz/VizCard";
@@ -25,6 +11,7 @@ import CurrencyInput from "./CurrencyInput";
 import PercentInput from "./PercentInput";
 import { formatCurrency } from "@/lib/formatters";
 import StickyResult from "./StickyResult";
+import { InputCard, FieldGrid, Field, TermChoice, MoreOptions, Choice, summarize } from "./calc/Form";
 
 const RentOrBuyCalculator = () => {
   // Rent Info
@@ -87,345 +74,96 @@ const RentOrBuyCalculator = () => {
 
   return (
     <div className="space-y-6">
-      <div className="grid lg:grid-cols-5 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
         {/* Left Column - Inputs */}
         <div className="space-y-6 lg:col-span-3">
-          {/* Rent Information */}
-          <Card className="calculator-card">
-            <CardHeader className="pb-4">
-              <CardTitle className="text-lg font-semibold flex items-center gap-2">
-                <Building2 className="h-5 w-5 text-accent" />
-                Rent Information
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2">
-                <div className="flex flex-col gap-1.5">
-                  <Label htmlFor="rent-or-buy-monthly-rent" className="text-sm font-medium text-foreground">
-                    Monthly Rent
-                  </Label>
-                  <CurrencyInput id="rent-or-buy-monthly-rent" value={monthlyRent} onChange={setMonthlyRent} />
-                </div>
+          <InputCard id="rent-or-buy-inputs" title="Renting vs. buying" description="The five numbers that matter most. Growth rates and costs are filled in with typical values below.">
+            <FieldGrid>
+              <Field id="rent-or-buy-monthly-rent" label="Monthly rent">
+                <CurrencyInput id="rent-or-buy-monthly-rent" value={monthlyRent} onChange={setMonthlyRent} />
+              </Field>
+              <Field id="rent-or-buy-home-price" label="Home price">
+                <CurrencyInput id="rent-or-buy-home-price" value={homePrice} onChange={setHomePrice} />
+              </Field>
+                <Field id="rent-or-buy-down-payment" label="Down payment" unit="% of price">
+                  <PercentInput id="rent-or-buy-down-payment" value={downPaymentPercent} onChange={setDownPaymentPercent} min={0} max={100} decimalPlaces={1} />
+                </Field>
+                <Field id="rent-or-buy-interest-rate" label="Interest rate">
+                  <PercentInput id="rent-or-buy-interest-rate" value={interestRate} onChange={setInterestRate} min={0} max={20} decimalPlaces={3} />
+                </Field>
+              <Field id="rent-or-buy-years-to-sell" label="Years you'd stay" info="How long until you'd sell. This matters most: buying's up-front costs take years to earn back." className="sm:col-span-2">
+                <Choice
+                  id="rent-or-buy-years-to-sell"
+                  label="Years you'd stay"
+                  value={yearsBeforeSell}
+                  onChange={setYearsBeforeSell}
+                  options={["3", "5", "7", "10", "15", "20", "30"].map((y) => ({ value: y, label: `${y} yr` }))}
+                />
+              </Field>
+            </FieldGrid>
 
-                <div className="flex flex-col gap-1.5">
-                  <Label htmlFor="rent-or-buy-rent-increase" className="text-sm font-medium text-foreground flex items-center gap-1">
-                    Rent Increase
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <HelpCircle className="h-3 w-3 sm:h-4 sm:w-4 cursor-help" />
-                      </TooltipTrigger>
-                      <TooltipContent className="max-w-xs">
-                        <p>Expected average annual rent increase percentage.</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </Label>
-                  <div className="flex gap-1 sm:gap-2 flex-1">
-                    <PercentInput id="rent-or-buy-rent-increase"
-                      value={annualRentIncrease}
-                      onChange={setAnnualRentIncrease}
-                      min={0}
-                      max={20}
-                      decimalPlaces={1}
-                    />
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+            <MoreOptions
+              title="Rent, prices & investing"
+              summary={summarize(`rent +${annualRentIncrease}%/yr`, `home value ${annualAppreciation >= 0 ? "+" : ""}${annualAppreciation}%/yr`, `investments ${investmentReturn}%/yr`)}
+            >
+              <FieldGrid>
+                <Field id="rent-or-buy-rent-increase" label="Rent increase" unit="per year" info="Average yearly rent increase. About 3% to 4% is typical.">
+                  <PercentInput id="rent-or-buy-rent-increase" value={annualRentIncrease} onChange={setAnnualRentIncrease} min={0} max={20} decimalPlaces={1} />
+                </Field>
+                <Field id="rent-or-buy-appreciation" label="Home value growth" unit="per year" info="Expected yearly change in the home's value. Long-run U.S. average is about 3% to 4%.">
+                  <PercentInput id="rent-or-buy-appreciation" value={annualAppreciation} onChange={setAnnualAppreciation} min={-10} max={20} decimalPlaces={1} allowNegative />
+                </Field>
+                <Field id="rent-or-buy-investment-return" label="Investment return" unit="per year" info="What your down payment and closing costs could earn if you rented and invested them instead.">
+                  <PercentInput id="rent-or-buy-investment-return" value={investmentReturn} onChange={setInvestmentReturn} min={0} max={15} decimalPlaces={1} />
+                </Field>
+              </FieldGrid>
+            </MoreOptions>
 
-          {/* Property & Loan Information */}
-          <Card className="calculator-card">
-            <CardHeader className="pb-4">
-              <CardTitle className="text-lg font-semibold flex items-center gap-2">
-                <Home className="h-5 w-5 text-accent" />
-                Property & Loan Information
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              {/* Property Section */}
-              <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2">
-                <div className="flex flex-col gap-1.5">
-                  <Label htmlFor="rent-or-buy-home-price" className="text-sm font-medium text-foreground">
-                    Home Price
-                  </Label>
-                  <CurrencyInput id="rent-or-buy-home-price" value={homePrice} onChange={setHomePrice} />
-                </div>
+            <MoreOptions
+              title="Loan, buying & selling costs"
+              summary={summarize(`${loanTerm}-year loan`, `${buyingCost}% to buy`, `${sellingCost}% to sell`, downPaymentPercent < 20 ? `PMI ${annualPMIPercent}%` : "no PMI")}
+            >
+              <FieldGrid>
+                <Field id="rent-or-buy-loan-term" label="Loan term">
+                  <TermChoice id="rent-or-buy-loan-term" value={Number(loanTerm)} onChange={(y) => setLoanTerm(String(y))} />
+                </Field>
+                <Field id="rent-or-buy-buying-cost" label="Closing costs to buy" unit="% of price" info="Usually 2% to 5% of the price.">
+                  <PercentInput id="rent-or-buy-buying-cost" value={buyingCost} onChange={setBuyingCost} min={0} max={10} decimalPlaces={1} />
+                </Field>
+                <Field id="rent-or-buy-selling-cost" label="Costs to sell" unit="% of sale price" info="Agent commission and closing costs, often 6% to 8% of the sale price.">
+                  <PercentInput id="rent-or-buy-selling-cost" value={sellingCost} onChange={setSellingCost} min={0} max={15} decimalPlaces={1} />
+                </Field>
+                <Field id="rent-or-buy-pmi-rate" label="PMI" unit="% of loan per year" info="Charged only when you put down less than 20%, until you reach 20% equity.">
+                  <PercentInput id="rent-or-buy-pmi-rate" value={annualPMIPercent} onChange={setAnnualPMIPercent} min={0} max={3} decimalPlaces={2} />
+                </Field>
+              </FieldGrid>
+            </MoreOptions>
 
-                <div className="flex flex-col gap-1.5">
-                  <Label htmlFor="rent-or-buy-appreciation" className="text-sm font-medium text-foreground flex items-center gap-1">
-                    Appreciation
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <HelpCircle className="h-3 w-3 sm:h-4 sm:w-4 cursor-help" />
-                      </TooltipTrigger>
-                      <TooltipContent className="max-w-xs">
-                        <p>Expected annual home value appreciation rate.</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </Label>
-                  <div className="flex gap-1 sm:gap-2 flex-1">
-                    <PercentInput id="rent-or-buy-appreciation"
-                      value={annualAppreciation}
-                      onChange={setAnnualAppreciation}
-                      min={-10}
-                      max={20}
-                      decimalPlaces={1}
-                    />
-                  </div>
-                </div>
-
-                <div className="flex flex-col gap-1.5">
-                  <Label htmlFor="rent-or-buy-years-to-sell" className="text-sm font-medium text-foreground">
-                    Years to Sell
-                  </Label>
-                  <Select value={yearsBeforeSell} onValueChange={setYearsBeforeSell}>
-                    <SelectTrigger id="rent-or-buy-years-to-sell" className="h-8 sm:h-10 text-sm flex-1">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25, 30].map((year) => (
-                        <SelectItem key={year} value={year.toString()}>
-                          {year} {year === 1 ? "year" : "years"}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="flex flex-col gap-1.5">
-                  <Label htmlFor="rent-or-buy-selling-cost" className="text-sm font-medium text-foreground flex items-center gap-1">
-                    Selling Cost
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <HelpCircle className="h-3 w-3 sm:h-4 sm:w-4 cursor-help" />
-                      </TooltipTrigger>
-                      <TooltipContent className="max-w-xs">
-                        <p>Typical selling costs include agent commission (5-6%) and closing costs.</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </Label>
-                  <div className="flex gap-1 sm:gap-2 flex-1">
-                    <PercentInput id="rent-or-buy-selling-cost"
-                      value={sellingCost}
-                      onChange={setSellingCost}
-                      min={0}
-                      max={15}
-                      decimalPlaces={1}
-                    />
-                  </div>
-                </div>
-                <div className="flex flex-col gap-1.5">
-                  <Label htmlFor="rent-or-buy-buying-cost" className="text-sm font-medium text-foreground flex items-center gap-1">
-                    Buying Cost
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <HelpCircle className="h-3 w-3 sm:h-4 sm:w-4 cursor-help" />
-                      </TooltipTrigger>
-                      <TooltipContent className="max-w-xs">
-                        <p>Closing costs when you buy, usually 2% to 5% of the price.</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </Label>
-                  <div className="flex gap-1 sm:gap-2 flex-1">
-                    <PercentInput id="rent-or-buy-buying-cost"
-                      value={buyingCost}
-                      onChange={setBuyingCost}
-                      min={0}
-                      max={10}
-                      decimalPlaces={1}
-                    />
-                  </div>
-                </div>
-                <div className="flex flex-col gap-1.5">
-                  <Label htmlFor="rent-or-buy-investment-return" className="text-sm font-medium text-foreground flex items-center gap-1">
-                    Investment Return
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <HelpCircle className="h-3 w-3 sm:h-4 sm:w-4 cursor-help" />
-                      </TooltipTrigger>
-                      <TooltipContent className="max-w-xs">
-                        <p>What your down payment and closing costs could earn if you rented and invested them instead.</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </Label>
-                  <div className="flex gap-1 sm:gap-2 flex-1">
-                    <PercentInput id="rent-or-buy-investment-return"
-                      value={investmentReturn}
-                      onChange={setInvestmentReturn}
-                      min={0}
-                      max={15}
-                      decimalPlaces={1}
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* Separator */}
-              <div className="border-t border-border" />
-
-              {/* Loan Section */}
-              <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2">
-                <div className="flex flex-col gap-1.5">
-                  <Label htmlFor="rent-or-buy-down-payment" className="text-sm font-medium text-foreground">
-                    Down Payment
-                  </Label>
-                  <div className="flex gap-1 sm:gap-2 flex-1">
-                    <PercentInput id="rent-or-buy-down-payment"
-                      value={downPaymentPercent}
-                      onChange={setDownPaymentPercent}
-                      min={0}
-                      max={100}
-                      decimalPlaces={1}
-                    />
-                  </div>
-                </div>
-
-                <div className="flex flex-col gap-1.5">
-                  <Label htmlFor="rent-or-buy-interest-rate" className="text-sm font-medium text-foreground">
-                    Interest Rate
-                  </Label>
-                  <div className="flex gap-1 sm:gap-2 flex-1">
-                    <PercentInput id="rent-or-buy-interest-rate"
-                      value={interestRate}
-                      onChange={setInterestRate}
-                      min={0}
-                      max={20}
-                      decimalPlaces={3}
-                    />
-                  </div>
-                </div>
-
-                <div className="flex flex-col gap-1.5">
-                  <Label htmlFor="rent-or-buy-loan-term" className="text-sm font-medium text-foreground">
-                    Loan Term
-                  </Label>
-                  <Select value={loanTerm} onValueChange={setLoanTerm}>
-                    <SelectTrigger id="rent-or-buy-loan-term" className="h-8 sm:h-10 text-sm flex-1">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="30">30 years</SelectItem>
-                      <SelectItem value="20">20 years</SelectItem>
-                      <SelectItem value="15">15 years</SelectItem>
-                      <SelectItem value="10">10 years</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                {downPaymentPercent < 20 && (
-                  <div className="flex flex-col gap-1.5">
-                    <Label htmlFor="rent-or-buy-pmi-rate" className="text-sm font-medium text-foreground flex items-center gap-1">
-                      PMI Rate
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <HelpCircle className="h-3 w-3 sm:h-4 sm:w-4 cursor-help" />
-                        </TooltipTrigger>
-                        <TooltipContent className="max-w-xs">
-                          <p>Private Mortgage Insurance is required when down payment is less than 20%.</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </Label>
-                    <div className="flex gap-1 sm:gap-2 flex-1">
-                      <PercentInput id="rent-or-buy-pmi-rate"
-                        value={annualPMIPercent}
-                        onChange={setAnnualPMIPercent}
-                        min={0}
-                        max={3}
-                        decimalPlaces={2}
-                      />
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              <div className="pt-4 border-t border-border">
-                <div className="flex justify-between items-center text-sm">
-                  <span className="text-muted-foreground">Down Payment Amount</span>
-                  <span className="font-semibold">{formatCurrency(homePrice * downPaymentPercent / 100)}</span>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Ownership Costs & Tax Information */}
-          <Card className="calculator-card">
-            <CardHeader className="pb-4">
-              <CardTitle className="text-lg font-semibold flex items-center gap-2">
-                <PiggyBank className="h-5 w-5 text-accent" />
-                Ownership Costs & Taxes
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              {/* Ownership Costs Section */}
-              <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2">
-                <div className="flex flex-col gap-1.5">
-                  <Label htmlFor="rent-or-buy-property-tax" className="text-sm font-medium text-foreground">
-                    Property Tax
-                  </Label>
-                  <div className="flex gap-1 sm:gap-2 flex-1">
-                    <PercentInput id="rent-or-buy-property-tax"
-                      value={annualPropertyTaxRate}
-                      onChange={setAnnualPropertyTaxRate}
-                      min={0}
-                      max={5}
-                      decimalPlaces={2}
-                    />
-                  </div>
-                </div>
-
-                <div className="flex flex-col gap-1.5">
-                  <Label htmlFor="rent-or-buy-insurance" className="text-sm font-medium text-foreground">
-                    Insurance
-                  </Label>
-                  <div className="flex gap-1 sm:gap-2 flex-1">
-                    <PercentInput id="rent-or-buy-insurance"
-                      value={annualInsuranceRate}
-                      onChange={setAnnualInsuranceRate}
-                      min={0}
-                      max={3}
-                      decimalPlaces={2}
-                    />
-                  </div>
-                </div>
-
-                <div className="flex flex-col gap-1.5">
-                  <Label htmlFor="rent-or-buy-maintenance" className="text-sm font-medium text-foreground">
-                    Maintenance
-                  </Label>
+            <MoreOptions
+              title="Ownership costs & taxes"
+              summary={summarize(
+                `${annualPropertyTaxRate}% tax`,
+                `${annualInsuranceRate}% insurance`,
+                `${formatCurrency(annualMaintenance)}/yr upkeep`,
+                incomeTaxRate > 0 ? `itemizing at ${incomeTaxRate}%` : "not itemizing",
+              )}
+            >
+              <FieldGrid>
+                <Field id="rent-or-buy-property-tax" label="Property tax" unit="% of price per year">
+                  <PercentInput id="rent-or-buy-property-tax" value={annualPropertyTaxRate} onChange={setAnnualPropertyTaxRate} min={0} max={5} decimalPlaces={2} />
+                </Field>
+                <Field id="rent-or-buy-insurance" label="Home insurance" unit="% of price per year">
+                  <PercentInput id="rent-or-buy-insurance" value={annualInsuranceRate} onChange={setAnnualInsuranceRate} min={0} max={3} decimalPlaces={2} />
+                </Field>
+                <Field id="rent-or-buy-maintenance" label="Maintenance" unit="per year" info="Repairs and upkeep. About 1% of the home's value a year is a common rule.">
                   <CurrencyInput id="rent-or-buy-maintenance" value={annualMaintenance} onChange={setAnnualMaintenance} />
-                </div>
-
-                <div className="flex flex-col gap-1.5">
-                  <Label htmlFor="rent-or-buy-tax-rate" className="text-sm font-medium text-foreground flex items-center gap-1">
-                    Tax rate (if itemizing)
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <HelpCircle className="h-3 w-3 sm:h-4 sm:w-4 cursor-help" />
-                      </TooltipTrigger>
-                      <TooltipContent className="max-w-xs">
-                        <p>Enter your marginal tax rate if you itemize deductions. Enter 0 if you take the standard deduction.</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </Label>
-                  <div className="flex gap-1 sm:gap-2 flex-1">
-                    <PercentInput id="rent-or-buy-tax-rate"
-                      value={incomeTaxRate}
-                      onChange={setIncomeTaxRate}
-                      min={0}
-                      max={50}
-                      decimalPlaces={0}
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <div className="p-3 bg-secondary/50 rounded-lg">
-                <p className="text-xs text-muted-foreground">
-                  <strong>Note:</strong> Most taxpayers use standard deductions. If you're not itemizing, enter 0% for tax rate.
-                </p>
-              </div>
-            </CardContent>
-          </Card>
+                </Field>
+                <Field id="rent-or-buy-tax-rate" label="Tax rate if itemizing" info="Only if you itemize deductions. Most people take the standard deduction: leave it at 0.">
+                  <PercentInput id="rent-or-buy-tax-rate" value={incomeTaxRate} onChange={setIncomeTaxRate} min={0} max={50} decimalPlaces={0} />
+                </Field>
+              </FieldGrid>
+            </MoreOptions>
+          </InputCard>
 
           {/* Break-even over time */}
           <VizCard
