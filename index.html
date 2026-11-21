@@ -2,7 +2,10 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- viewport-fit=cover lets the page use the iPhone's safe-area insets (see index.css and StickyResult). -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <!-- The site has one light design; this stops browsers from force-darkening it or its form controls. -->
+    <meta name="color-scheme" content="light" />
     <!--
       Page-specific tags (description, canonical, robots, Open Graph, Twitter,
       structured data) are set per page with react-helmet-async and baked into
