@@ -305,17 +305,13 @@
     @apply scroll-mt-24;
   }
 
-  /* Calculator layout: inputs, then the answer underneath at every screen size.
-     Result cards sit side by side when there's room; the headline result
-     spans the full row. */
+  /* Calculator layout: inputs, then the answer underneath at every screen size,
+     the same width as the inputs, with its breakdown stacked below it. */
   .calc-layout {
     @apply flex flex-col gap-6;
   }
   .calc-results {
-    display: grid;
-    gap: 1.5rem;
-    align-items: start;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+    @apply flex flex-col gap-6;
   }
 
   /* Card for every chart, bar and comparison table (components/viz). */
