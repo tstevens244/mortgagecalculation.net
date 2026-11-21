@@ -71,13 +71,13 @@ const FhaVsConventionalCalculator = () => {
   ];
 
   return (
-    <div className="fade-in grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_400px]">
+    <div className="fade-in calc-layout">
       <section className="calculator-card p-4 sm:p-6" aria-labelledby="fvc-inputs">
         <h2 id="fvc-inputs" className="mb-4 flex items-center gap-2 text-base font-display font-semibold sm:text-xl">
           <ArrowLeftRight className="h-4 w-4 text-accent sm:h-5 sm:w-5" aria-hidden="true" />
           Your home and loans
         </h2>
-        <div className="space-y-3">
+        <div className="grid items-start gap-4 sm:grid-cols-[repeat(auto-fill,minmax(14rem,1fr))]">
           <FormRow id="fvc-price" label="Home price">
             <CurrencyInput id="fvc-price" value={price} onChange={setPrice} allowDecimals={false} />
           </FormRow>
@@ -162,7 +162,7 @@ const FhaVsConventionalCalculator = () => {
         </div>
       </section>
 
-      <aside className="space-y-4" aria-label="Comparison results">
+      <aside className="calc-results" aria-label="Comparison results">
         <StickyResult targetId="calc-result" label={`${cheaper} saves`} value={formatCurrency(savings)} />
         <div id="calc-result" className="result-highlight">
           <p className="text-sm font-medium uppercase tracking-wide text-primary-foreground/80">

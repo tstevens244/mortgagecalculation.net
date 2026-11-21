@@ -55,8 +55,8 @@ const USDAQualifier = () => {
         household's numbers to see the home price that fits, with no down payment.
       </p>
 
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_400px]">
-        <div className="calculator-card space-y-3 p-4 sm:p-6">
+      <div className="calc-layout">
+        <div className="calculator-card grid items-start gap-4 sm:grid-cols-[repeat(auto-fill,minmax(14rem,1fr))] p-4 sm:p-6">
           <FormRow id="usdaq-income" label="Annual household income" hint="Before taxes. USDA counts income from everyone in the household.">
             <CurrencyInput id="usdaq-income" value={income} onChange={setIncome} allowDecimals={false} aria-describedby="usdaq-income-hint" />
           </FormRow>
@@ -88,7 +88,7 @@ const USDAQualifier = () => {
           </FormRow>
         </div>
 
-        <div className="space-y-4">
+        <div className="calc-results">
           <div className="result-highlight">
             <p className="text-sm font-medium uppercase tracking-wide text-primary-foreground/80">You may qualify for a home up to</p>
             <p className="mt-2 text-4xl font-display font-bold lg:text-5xl">{formatCurrency(Math.floor(r.price / 1000) * 1000)}</p>

@@ -181,7 +181,7 @@ const AffordabilityCalculator = () => {
     title: string;
     income?: { monthly: number; debts: number; front: number; back: number };
   }) => (
-    <div className="space-y-6 lg:col-span-2">
+    <div className="calc-results">
       {/* Main Result */}
       <Card className="result-highlight border-0">
         <CardContent className="p-0">
@@ -272,8 +272,8 @@ const AffordabilityCalculator = () => {
 
         {/* Income-Based Calculator */}
         <TabsContent value="income">
-          <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
-            <InputCard className="lg:col-span-3" id="affordability-income" title="Your income and debts" description="Lenders size your budget from your gross income and monthly debts.">
+          <div className="calc-layout">
+            <InputCard id="affordability-income" title="Your income and debts" description="Lenders size your budget from your gross income and monthly debts.">
               <FieldGrid>
                 <Field id="affordability-annual-household-income" label="Annual household income" info="Total income before taxes for everyone on the loan.">
                   <CurrencyInput id="affordability-annual-household-income" value={annualIncome} onChange={setAnnualIncome} />
@@ -340,8 +340,8 @@ const AffordabilityCalculator = () => {
 
         {/* Budget-Based Calculator */}
         <TabsContent value="budget">
-          <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
-            <InputCard className="lg:col-span-3" id="affordability-budget" title="Your monthly budget" description="Start from what you want to spend each month, all-in.">
+          <div className="calc-layout">
+            <InputCard id="affordability-budget" title="Your monthly budget" description="Start from what you want to spend each month, all-in.">
               <FieldGrid>
                 <Field id="affordability-monthly-housing-budget" label="Monthly housing budget" info="Everything: loan payment, property tax, insurance, PMI and HOA dues." className="sm:col-span-2">
                   <CurrencyInput id="affordability-monthly-housing-budget" value={monthlyBudget} onChange={setMonthlyBudget} />

@@ -180,9 +180,9 @@ const BiWeeklyCalculator = () => {
 
   return (
     <div className="space-y-6">
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+      <div className="calc-layout">
         {/* Left Column - Inputs */}
-        <div className="space-y-6 lg:col-span-3">
+        <div className="contents">
           <InputCard id="loan-details" title="Your loan" description="Bi-weekly payments are half your monthly payment every two weeks.">
             <FieldGrid>
               <Field id="bi-weekly-home-price" label="Home price">
@@ -210,6 +210,7 @@ const BiWeeklyCalculator = () => {
               </FieldGrid>
             </MoreOptions>
           </InputCard>
+          <div className="order-2 space-y-6">
 
           <PayoffComparison
             loanAmount={loanAmount}
@@ -222,10 +223,11 @@ const BiWeeklyCalculator = () => {
             extraPaid={results.standardMonthlyPayment}
             extraPaidLabel="Extra you pay a year"
           />
+          </div>
         </div>
 
         {/* Right Column - Results */}
-        <div className="space-y-6 lg:col-span-2">
+        <div className="calc-results order-1">
           {/* Net Benefit Highlight */}
           <Card className="result-highlight border-0">
             <CardContent className="p-0">

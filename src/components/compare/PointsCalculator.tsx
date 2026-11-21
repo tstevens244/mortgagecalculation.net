@@ -40,13 +40,13 @@ const PointsCalculator = () => {
   const breakEven = Number.isFinite(p.breakEvenMonths) ? yearsMonths(p.breakEvenMonths) : "Never";
 
   return (
-    <div className="fade-in grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_400px]">
+    <div className="fade-in calc-layout">
       <section className="calculator-card p-4 sm:p-6" aria-labelledby="pts-inputs">
         <h2 id="pts-inputs" className="mb-4 flex items-center gap-2 text-base font-display font-semibold sm:text-xl">
           <Coins className="h-4 w-4 text-accent sm:h-5 sm:w-5" aria-hidden="true" />
           Your loan and points
         </h2>
-        <div className="space-y-3">
+        <div className="grid items-start gap-4 sm:grid-cols-[repeat(auto-fill,minmax(14rem,1fr))]">
           <FormRow id="pts-loan" label="Loan amount">
             <CurrencyInput id="pts-loan" value={loan} onChange={setLoan} allowDecimals={false} />
           </FormRow>
@@ -113,7 +113,7 @@ const PointsCalculator = () => {
         </dl>
       </section>
 
-      <aside className="space-y-4" aria-label="Points results">
+      <aside className="calc-results" aria-label="Points results">
         <StickyResult
           targetId="calc-result"
           label={worth ? "Points save you" : "Points cost you"}

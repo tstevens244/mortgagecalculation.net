@@ -138,9 +138,9 @@ const FHACalculator = () => {
 
   return (
     <div className="fade-in">
-      <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
+      <div className="calc-layout">
         {/* Input Section */}
-        <div className="lg:col-span-2">
+        <div>
           <InputCard id="loan-details" title="Your FHA loan" description="Start with these four. Taxes, insurance and the rest are filled in for you below.">
             <FieldGrid>
               <Field id="home-price" label="Home price">
@@ -186,7 +186,7 @@ const FHACalculator = () => {
         </div>
 
         {/* Results Section */}
-        <aside className="space-y-6 lg:sticky lg:top-24 lg:self-start" aria-label="Calculation Results">
+        <aside className="calc-results" aria-label="Calculation Results">
           <StickyResult targetId="calc-result" label={"Monthly payment"} value={formatCurrency(calculations.totalMonthly)} />
           <div id="calc-result" className="result-highlight">
             <p className="text-primary-foreground/80 text-sm font-medium uppercase tracking-wide">
