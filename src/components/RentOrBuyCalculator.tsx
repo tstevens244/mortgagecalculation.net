@@ -74,9 +74,9 @@ const RentOrBuyCalculator = () => {
 
   return (
     <div className="space-y-6">
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+      <div className="calc-layout">
         {/* Left Column - Inputs */}
-        <div className="space-y-6 lg:col-span-3">
+        <div className="contents">
           <InputCard id="rent-or-buy-inputs" title="Renting vs. buying" description="The five numbers that matter most. Growth rates and costs are filled in with typical values below.">
             <FieldGrid>
               <Field id="rent-or-buy-monthly-rent" label="Monthly rent">
@@ -164,6 +164,7 @@ const RentOrBuyCalculator = () => {
               </FieldGrid>
             </MoreOptions>
           </InputCard>
+          <div className="order-2 space-y-6">
 
           {/* Break-even over time */}
           <VizCard
@@ -241,10 +242,11 @@ const RentOrBuyCalculator = () => {
               ]}
             />
           </VizCard>
+          </div>
         </div>
 
         {/* Right Column - Results */}
-        <div className="space-y-6 lg:col-span-2">
+        <div className="calc-results order-1">
           <div className="result-highlight">
             <StickyResult targetId="calc-result" label={"Better choice"} value={`${results.shouldBuy ? "Buy" : "Rent"} · saves ${formatCurrency(results.costDifference)}`} />
             <div id="calc-result" className="text-center space-y-3">

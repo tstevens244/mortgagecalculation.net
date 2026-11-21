@@ -35,13 +35,13 @@ const LoanOffersCalculator = () => {
   const runnerUp = order[1];
 
   return (
-    <div className="fade-in grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_400px]">
+    <div className="fade-in calc-layout">
       <section className="calculator-card p-4 sm:p-6" aria-labelledby="offers-inputs">
         <h2 id="offers-inputs" className="mb-4 flex items-center gap-2 text-base font-display font-semibold sm:text-xl">
           <ListChecks className="h-4 w-4 text-accent sm:h-5 sm:w-5" aria-hidden="true" />
           Your loan
         </h2>
-        <div className="space-y-3">
+        <div className="grid items-start gap-4 sm:grid-cols-[repeat(auto-fill,minmax(14rem,1fr))]">
           <FormRow id="offers-loan" label="Loan amount">
             <CurrencyInput id="offers-loan" value={loan} onChange={setLoan} allowDecimals={false} />
           </FormRow>
@@ -141,7 +141,7 @@ const LoanOffersCalculator = () => {
         </div>
       </section>
 
-      <aside className="space-y-4" aria-label="Best offer">
+      <aside className="calc-results" aria-label="Best offer">
         <StickyResult targetId="calc-result" label={`${NAMES[best.i]} costs least`} value={formatCurrency(best.cost)} />
         <div id="calc-result" className="result-highlight">
           <p className="flex items-center gap-1.5 text-sm font-medium uppercase tracking-wide text-primary-foreground/80">

@@ -60,7 +60,7 @@ const HelocCalculator = () => {
 
 
   return (
-    <div className="fade-in grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_380px]">
+    <div className="fade-in calc-layout">
       <InputCard
         id="heloc-inputs"
         title="Your home and HELOC"
@@ -98,7 +98,7 @@ const HelocCalculator = () => {
         </MoreOptions>
       </InputCard>
 
-      <aside className="space-y-4 lg:sticky lg:top-24 lg:self-start" aria-label="HELOC results">
+      <aside className="calc-results" aria-label="HELOC results">
         <StickyResult targetId="calc-result" label="Maximum credit line" value={formatCurrency(c.maxLine)} />
         <div id="calc-result" className="result-highlight">
           <p className="text-primary-foreground/80 text-sm font-medium uppercase tracking-wide">Maximum credit line</p>

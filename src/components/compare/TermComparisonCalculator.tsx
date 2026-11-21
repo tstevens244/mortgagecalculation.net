@@ -34,13 +34,13 @@ const TermComparisonCalculator = () => {
   ];
 
   return (
-    <div className="fade-in grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_400px]">
+    <div className="fade-in calc-layout">
       <section className="calculator-card p-4 sm:p-6" aria-labelledby="term-inputs">
         <h2 id="term-inputs" className="mb-4 flex items-center gap-2 text-base font-display font-semibold sm:text-xl">
           <CalendarRange className="h-4 w-4 text-accent sm:h-5 sm:w-5" aria-hidden="true" />
           Your loan
         </h2>
-        <div className="space-y-3">
+        <div className="grid items-start gap-4 sm:grid-cols-[repeat(auto-fill,minmax(14rem,1fr))]">
           <FormRow id="term-loan" label="Loan amount">
             <CurrencyInput id="term-loan" value={loan} onChange={setLoan} allowDecimals={false} />
           </FormRow>
@@ -97,7 +97,7 @@ const TermComparisonCalculator = () => {
         </div>
       </section>
 
-      <aside className="space-y-4" aria-label="Comparison results">
+      <aside className="calc-results" aria-label="Comparison results">
         <StickyResult targetId="calc-result" label="15-year saves in interest" value={formatCurrency(c.interestSaved)} />
         <div id="calc-result" className="result-highlight">
           <p className="text-sm font-medium uppercase tracking-wide text-primary-foreground/80">15-year saves in interest</p>

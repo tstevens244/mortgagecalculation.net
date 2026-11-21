@@ -193,9 +193,9 @@ const ARMCalculator = () => {
 
   return (
     <div className="fade-in">
-      <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
+      <div className="calc-layout">
         {/* Input Section */}
-        <div className="lg:col-span-2">
+        <div>
           <InputCard id="loan-details" title="Your ARM" description="Pick the ARM type and enter the basics. Rate changes, taxes and fees are filled in for you below.">
             <FieldGrid>
               <Field id="home-price" label="Home price">
@@ -314,7 +314,7 @@ const ARMCalculator = () => {
         </div>
 
         {/* Results Section */}
-        <aside className="space-y-6" aria-label="Calculation Results">
+        <aside className="calc-results" aria-label="Calculation Results">
           {/* Initial Payment */}
           <StickyResult targetId="calc-result" label={"Initial monthly payment"} value={formatCurrency(calculations.initialTotalMonthly)} />
           <div id="calc-result" className="result-highlight">

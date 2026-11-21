@@ -174,9 +174,9 @@ const ExtraPaymentsCalculator = () => {
 
   return (
     <div className="space-y-6">
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+      <div className="calc-layout">
         {/* Left Column - Inputs */}
-        <div className="space-y-6 lg:col-span-3">
+        <div className="contents">
           <InputCard id="loan-details" title="Your loan and extra payments" description="Enter your loan, then how much extra you'd pay.">
             <FieldGrid>
               <Field id="extra-payments-home-price" label="Home price">
@@ -204,6 +204,7 @@ const ExtraPaymentsCalculator = () => {
               </FieldGrid>
             </div>
           </InputCard>
+          <div className="order-2 space-y-6">
 
           <PayoffComparison
             loanAmount={loanAmount}
@@ -215,10 +216,11 @@ const ExtraPaymentsCalculator = () => {
             planMonths={results.extraMonths}
             extraPaid={results.extraPrincipal}
           />
+          </div>
         </div>
 
         {/* Right Column - Results */}
-        <div className="space-y-6 lg:col-span-2">
+        <div className="calc-results order-1">
           {/* Interest Savings Highlight */}
           <Card className="result-highlight border-0">
             <CardContent className="p-0">

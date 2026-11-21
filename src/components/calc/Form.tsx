@@ -41,7 +41,7 @@ export const InputCard = ({
 
 /** Two columns of fields from the small breakpoint up. */
 export const FieldGrid = ({ children, className }: { children: ReactNode; className?: string }) => (
-  <div className={cn("grid items-start gap-x-4 gap-y-4 sm:grid-cols-2", className)}>{children}</div>
+  <div className={cn("grid items-start gap-x-4 gap-y-4 sm:grid-cols-[repeat(auto-fill,minmax(14rem,1fr))]", className)}>{children}</div>
 );
 
 /** Small "i" button that explains a field. Opens on hover, focus or tap. */

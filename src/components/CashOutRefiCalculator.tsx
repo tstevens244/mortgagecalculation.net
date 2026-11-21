@@ -86,9 +86,9 @@ const CashOutRefiCalculator = () => {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+      <div className="calc-layout">
         {/* Input Section */}
-        <InputCard id="cash-out-inputs" className="lg:col-span-3" title="Your home and new loan">
+        <InputCard id="cash-out-inputs" title="Your home and new loan">
           <FieldGrid>
             <Field id="cash-out-refi-home-value" label="Home value">
               <CurrencyInput id="cash-out-refi-home-value" value={homeValue} onChange={setHomeValue} />
@@ -129,7 +129,7 @@ const CashOutRefiCalculator = () => {
 
         {/* Home value split: what you owe, what you take out, what you keep */}
         <VizCard
-          className="lg:col-span-3"
+          className="order-2"
           title="Your home's value, split up"
           description="Lenders usually cap a cash-out refinance at 80% of the home's value. Everything past the line stays as equity."
         >
@@ -161,7 +161,7 @@ const CashOutRefiCalculator = () => {
         </VizCard>
 
         {/* Results Section */}
-        <div className="space-y-6 lg:col-span-2 lg:row-span-2 lg:row-start-1 lg:col-start-4">
+        <div className="calc-results order-1">
           {/* Main Result */}
           <Card className="result-highlight border-0">
             <CardContent className="p-0">

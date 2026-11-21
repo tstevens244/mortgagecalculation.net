@@ -88,9 +88,9 @@ const QualificationCalculator = () => {
 
   return (
     <div className="space-y-6">
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+      <div className="calc-layout">
         {/* Input Section */}
-        <div className="lg:col-span-3">
+        <div>
           <InputCard id="qualification-inputs" title="The home and your debts" description="See the income a lender would want for this home.">
             <FieldGrid>
               <Field id="qualification-home-value" label="Home price">
@@ -160,7 +160,7 @@ const QualificationCalculator = () => {
         </div>
 
         {/* Results Section */}
-        <div className="space-y-6 lg:col-span-2">
+        <div className="calc-results">
           {/* Main Result */}
           <Card className="result-highlight border-0">
             <CardContent className="p-0">
