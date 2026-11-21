@@ -37,7 +37,7 @@ const StickyResult = ({ targetId, label, value }: StickyResultProps) => {
     <button
       type="button"
       onClick={() => document.getElementById(targetId)?.scrollIntoView({ behavior: "smooth", block: "start" })}
-      className="lg:hidden fixed inset-x-0 bottom-0 z-40 flex items-center justify-between gap-3 border-t border-primary/20 bg-primary px-4 py-3 text-left text-primary-foreground shadow-[0_-4px_12px_rgba(0,0,0,0.12)]"
+      className="lg:hidden fixed inset-x-0 bottom-0 z-40 flex items-center justify-between gap-3 border-t border-primary/20 bg-primary px-[max(1rem,env(safe-area-inset-left),env(safe-area-inset-right))] pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] text-left text-primary-foreground shadow-[0_-4px_12px_rgba(0,0,0,0.12)]"
     >
       <span className="min-w-0">
         <span className="block text-xs font-medium uppercase tracking-wide text-primary-foreground/80">{label}</span>
