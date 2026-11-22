@@ -1,6 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import { allCalculators, findCalculator } from "@/lib/calculators";
+import RelatedGuides from "./RelatedGuides";
 
 // Often-useful next steps, shown after the page's own group runs out.
 const FALLBACK = ["/house-affordability/", "/", "/refinance-calculator/", "/extra-mortgage-payments-calculator/"];
@@ -41,6 +42,7 @@ const RelatedCalculators = () => {
           </li>
         ))}
       </ul>
+      <RelatedGuides />
     </nav>
   );
 };

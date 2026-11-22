@@ -6,6 +6,7 @@ import Footer from "@/components/Footer";
 import TrustLine from "@/components/TrustLine";
 import GuideContents from "@/components/GuideContents";
 import CalculatorDirectory from "@/components/CalculatorDirectory";
+import RelatedGuides from "@/components/RelatedGuides";
 import MortgageCalculator from "@/components/MortgageCalculator";
 import FaqSection, { faqsFromSchema } from "@/components/FaqList";
 
@@ -171,6 +172,8 @@ const Index = () => {
             </Link>
 
             <CalculatorDirectory />
+
+            <RelatedGuides className="mt-16" />
 
             <GuideContents />
             {/* Comprehensive Guide Section */}
