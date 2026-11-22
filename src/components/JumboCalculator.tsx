@@ -11,6 +11,7 @@ import PercentInput from "./PercentInput";
 import { formatCurrency } from "@/lib/formatters";
 import { monthsUntilBalance } from "@/lib/mortgageMath";
 import StickyResult from "./StickyResult";
+import { AnimatedCurrency } from "@/components/AnimatedNumber";
 import { InputCard, FieldGrid, Field, TermChoice, MoreOptions, DownPaymentField, StartDateField, summarize } from "./calc/Form";
 import { CONFORMING_LIMIT, CONFORMING_LIMIT_HIGH_COST as HIGH_COST_LIMIT } from "@/lib/loanLimits";
 
@@ -205,8 +206,8 @@ const JumboCalculator = () => {
             <p className="text-primary-foreground/80 text-sm font-medium uppercase tracking-wide">
               Monthly Payment
             </p>
-            <p className="text-4xl lg:text-5xl font-display font-bold mt-2 number-pop">
-              {formatCurrency(calculations.totalMonthly)}
+            <p className="text-4xl lg:text-5xl font-display font-bold mt-2">
+              <AnimatedCurrency value={calculations.totalMonthly} />
             </p>
             {calculations.isJumboLoan && (
               <p className="text-primary-foreground/70 text-xs mt-1">Jumbo Loan</p>

@@ -9,6 +9,7 @@ import CurrencyInput from "./CurrencyInput";
 import PercentInput from "./PercentInput";
 import { formatCurrency } from "@/lib/formatters";
 import StickyResult from "./StickyResult";
+import { AnimatedCurrency } from "@/components/AnimatedNumber";
 import { InputCard, FieldGrid, Field, TermChoice } from "./calc/Form";
 
 const ExtraPaymentsCalculator = () => {
@@ -230,8 +231,8 @@ const ExtraPaymentsCalculator = () => {
                 <p className="text-white/80 text-sm font-medium">
                   Total Interest Savings
                 </p>
-                <p className="text-4xl md:text-5xl font-bold text-white number-pop">
-                  {formatCurrency(results.interestSavings)}
+                <p className="text-4xl md:text-5xl font-bold text-white">
+                  <AnimatedCurrency value={results.interestSavings} />
                 </p>
                 <p className="text-white/80 text-sm">
                   Pay off {results.yearsSaved} years {results.remainingMonthsSaved > 0 ? `${results.remainingMonthsSaved} months` : ''} early

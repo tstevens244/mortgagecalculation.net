@@ -8,6 +8,7 @@ import CurrencyInput from "./CurrencyInput";
 import PercentInput from "./PercentInput";
 import { formatCurrency, formatPercent } from "@/lib/formatters";
 import StickyResult from "./StickyResult";
+import { AnimatedCurrency } from "@/components/AnimatedNumber";
 import { InputCard, FieldGrid, Field, TermChoice, MoreOptions, Choice, summarize } from "./calc/Form";
 
 const QualificationCalculator = () => {
@@ -169,8 +170,8 @@ const QualificationCalculator = () => {
                 <p className="text-white/80 text-sm font-medium">
                   Minimum Annual Income Required
                 </p>
-                <p className="text-4xl md:text-5xl font-bold text-white number-pop">
-                  {formatCurrency(results.requiredAnnualIncome)}
+                <p className="text-4xl md:text-5xl font-bold text-white">
+                  <AnimatedCurrency value={results.requiredAnnualIncome} />
                 </p>
                 <p className="text-white/70 text-sm">
                   ({formatCurrency(results.requiredMonthlyIncome)}/month)

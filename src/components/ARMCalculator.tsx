@@ -10,6 +10,7 @@ import PercentInput from "./PercentInput";
 import { formatCurrency } from "@/lib/formatters";
 import { armSchedule } from "@/lib/mortgageMath";
 import StickyResult from "./StickyResult";
+import { AnimatedCurrency } from "@/components/AnimatedNumber";
 import { InputCard, FieldGrid, Field, TermChoice, MoreOptions, DownPaymentField, StartDateField, summarize, Choice } from "./calc/Form";
 
 interface ARMInputs {
@@ -321,8 +322,8 @@ const ARMCalculator = () => {
             <p className="text-primary-foreground/80 text-sm font-medium uppercase tracking-wide">
               Initial Monthly Payment
             </p>
-            <p className="text-4xl lg:text-5xl font-display font-bold mt-2 number-pop">
-              {formatCurrency(calculations.initialTotalMonthly)}
+            <p className="text-4xl lg:text-5xl font-display font-bold mt-2">
+              <AnimatedCurrency value={calculations.initialTotalMonthly} />
             </p>
             <p className="text-primary-foreground/70 text-sm mt-2">
               {armTypeLabel} • Initial Rate: {inputs.initialRate}%

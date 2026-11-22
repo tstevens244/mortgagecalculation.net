@@ -16,10 +16,12 @@ interface PercentInputProps {
   allowNegative?: boolean;
   /** Unit shown inside the field. Defaults to "%". */
   suffix?: string;
+  /** Amount the up/down arrow keys change the value by. Defaults by precision: 0.125 for rates, 0.5 for one decimal, 1 for whole numbers. */
+  step?: number;
 }
 
 const PercentInput = forwardRef<HTMLInputElement, PercentInputProps>(
-  ({ value, onChange, className, decimalPlaces = 2, min = 0, max = 100, allowNegative = false, suffix = "%", ...props }, ref) => {
+  ({ value, onChange, className, decimalPlaces = 2, min = 0, max = 100, allowNegative = false, suffix = "%", step, ...props }, ref) => {
     const [displayValue, setDisplayValue] = useState(value.toFixed(decimalPlaces));
     const [isFocused, setIsFocused] = useState(false);
 
@@ -73,6 +75,22 @@ const PercentInput = forwardRef<HTMLInputElement, PercentInputProps>(
       setDisplayValue(finalValue.toFixed(decimalPlaces));
     }, [displayValue, min, max, decimalPlaces, onChange]);
 
+    // Up/down arrows nudge the value (Shift for 10x), like a native number field.
+    const handleKeyDown = useCallback(
+      (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key !== "ArrowUp" && e.key !== "ArrowDown") return;
+        e.preventDefault();
+        const base = step ?? (decimalPlaces >= 3 ? 0.125 : decimalPlaces === 2 ? 0.05 : decimalPlaces === 1 ? 0.5 : 1);
+        const size = base * (e.shiftKey ? 10 : 1);
+        const raw = value + (e.key === "ArrowUp" ? size : -size);
+        const next = Math.max(min, Math.min(max, Math.round(raw / base) * base));
+        const fixed = Number(next.toFixed(Math.max(decimalPlaces, 3)));
+        onChange(fixed);
+        setDisplayValue(String(fixed));
+      },
+      [value, step, decimalPlaces, min, max, onChange],
+    );
+
     // The wrapper takes the layout classes (width, flex); the field keeps the rest.
     const { layout, field } = splitLayoutClasses(className);
     return (
@@ -85,6 +103,7 @@ const PercentInput = forwardRef<HTMLInputElement, PercentInputProps>(
           onChange={handleChange}
           onFocus={handleFocus}
           onBlur={handleBlur}
+          onKeyDown={handleKeyDown}
           className={cn("h-10 w-full text-left text-sm tabular-nums", field, suffix && "pr-7")}
           {...props}
         />

@@ -3,6 +3,7 @@ import { TrendingUp, AlertTriangle } from "lucide-react";
 import CurrencyInput from "./CurrencyInput";
 import PercentInput from "./PercentInput";
 import StickyResult from "./StickyResult";
+import { AnimatedCurrency } from "@/components/AnimatedNumber";
 import { InputCard, FieldGrid, Field, MoreOptions, Choice, summarize } from "./calc/Form";
 import { formatCurrency } from "@/lib/formatters";
 
@@ -102,7 +103,7 @@ const HelocCalculator = () => {
         <StickyResult targetId="calc-result" label="Maximum credit line" value={formatCurrency(c.maxLine)} />
         <div id="calc-result" className="result-highlight">
           <p className="text-primary-foreground/80 text-sm font-medium uppercase tracking-wide">Maximum credit line</p>
-          <p className="text-4xl lg:text-5xl font-display font-bold mt-2 number-pop">{formatCurrency(c.maxLine)}</p>
+          <p className="text-4xl lg:text-5xl font-display font-bold mt-2"><AnimatedCurrency value={c.maxLine} /></p>
           <p className="text-primary-foreground/80 text-sm mt-2">
             {maxCltv}% of {formatCurrency(homeValue)} minus your {formatCurrency(mortgageBalance)} mortgage
           </p>
