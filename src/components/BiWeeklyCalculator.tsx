@@ -9,6 +9,7 @@ import CurrencyInput from "./CurrencyInput";
 import PercentInput from "./PercentInput";
 import { formatCurrency } from "@/lib/formatters";
 import StickyResult from "./StickyResult";
+import { AnimatedCurrency } from "@/components/AnimatedNumber";
 import { InputCard, FieldGrid, Field, TermChoice, MoreOptions } from "./calc/Form";
 
 const BiWeeklyCalculator = () => {
@@ -237,8 +238,8 @@ const BiWeeklyCalculator = () => {
                 <p className="text-white/80 text-sm font-medium">
                   {taxRate > 0 ? "Net Benefit (After Tax Consideration)" : "Total Interest Savings"}
                 </p>
-                <p className="text-4xl md:text-5xl font-bold text-white number-pop">
-                  {formatCurrency(taxRate > 0 ? results.netBenefit : results.interestSavings)}
+                <p className="text-4xl md:text-5xl font-bold text-white">
+                  <AnimatedCurrency value={taxRate > 0 ? results.netBenefit : results.interestSavings} />
                 </p>
                 <p className="text-white/80 text-sm">
                   Pay off {results.yearsSaved} years {results.remainingMonthsSaved > 0 ? `${results.remainingMonthsSaved} months` : ''} early

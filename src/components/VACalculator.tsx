@@ -9,6 +9,7 @@ import CurrencyInput from "./CurrencyInput";
 import PercentInput from "./PercentInput";
 import { formatCurrency } from "@/lib/formatters";
 import StickyResult from "./StickyResult";
+import { AnimatedCurrency } from "@/components/AnimatedNumber";
 import { InputCard, FieldGrid, Field, TermChoice, MoreOptions, DownPaymentField, StartDateField, summarize, Choice } from "./calc/Form";
 import { vaFundingFeeRate } from "@/lib/loanLimits";
 
@@ -231,8 +232,8 @@ const VACalculator = () => {
             <p className="text-primary-foreground/80 text-sm font-medium uppercase tracking-wide">
               Monthly Payment
             </p>
-            <p className="text-4xl lg:text-5xl font-display font-bold mt-2 number-pop">
-              {formatCurrency(calculations.totalMonthly)}
+            <p className="text-4xl lg:text-5xl font-display font-bold mt-2">
+              <AnimatedCurrency value={calculations.totalMonthly} />
             </p>
             <p className="text-primary-foreground/70 text-xs mt-1">No PMI Required!</p>
           </div>

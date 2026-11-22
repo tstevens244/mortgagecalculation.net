@@ -17,6 +17,7 @@ import PercentInput from "./PercentInput";
 import { maxAffordablePrice } from "@/lib/mortgageMath";
 import { formatCurrency } from "@/lib/formatters";
 import StickyResult from "./StickyResult";
+import { AnimatedCurrency } from "@/components/AnimatedNumber";
 import { InputCard, FieldGrid, Field, TermChoice, MoreOptions, summarize } from "./calc/Form";
 
 // Estimated PMI, % of the loan per year, applied when the down payment is under 20%.
@@ -190,8 +191,8 @@ const AffordabilityCalculator = () => {
             <p className="text-white/80 text-sm font-medium">
               {title}
             </p>
-            <p className="text-4xl md:text-5xl font-bold text-white number-pop">
-              {formatCurrency(results.homePrice)}
+            <p className="text-4xl md:text-5xl font-bold text-white">
+              <AnimatedCurrency value={results.homePrice} />
             </p>
           </div>
         </CardContent>

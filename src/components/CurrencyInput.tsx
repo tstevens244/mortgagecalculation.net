@@ -10,7 +10,18 @@ interface CurrencyInputProps {
   allowDecimals?: boolean;
   "aria-describedby"?: string;
   "aria-label"?: string;
+  /** Amount the up/down arrow keys change the value by. Defaults to a step that fits the value's size. */
+  step?: number;
 }
+
+/** A step that suits the number: $5,000 for a home price, $100 for a tax bill, $10 for HOA dues. */
+const autoStep = (value: number) => {
+  const v = Math.abs(value);
+  if (v >= 100_000) return 5_000;
+  if (v >= 10_000) return 1_000;
+  if (v >= 1_000) return 100;
+  return 10;
+};
 
 const formatNumber = (value: number, allowDecimals: boolean): string => {
   if (allowDecimals) {
@@ -23,7 +34,7 @@ const formatNumber = (value: number, allowDecimals: boolean): string => {
 };
 
 const CurrencyInput = forwardRef<HTMLInputElement, CurrencyInputProps>(
-  ({ value, onChange, className, allowDecimals = true, ...props }, ref) => {
+  ({ value, onChange, className, allowDecimals = true, step, ...props }, ref) => {
     const [displayValue, setDisplayValue] = useState(formatNumber(value, allowDecimals));
     const [isFocused, setIsFocused] = useState(false);
 
@@ -70,6 +81,20 @@ const CurrencyInput = forwardRef<HTMLInputElement, CurrencyInputProps>(
       setDisplayValue(formatNumber(value, allowDecimals));
     }, [value, allowDecimals]);
 
+    // Up/down arrows nudge the value (Shift for 10x), like a native number field.
+    const handleKeyDown = useCallback(
+      (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key !== "ArrowUp" && e.key !== "ArrowDown") return;
+        e.preventDefault();
+        const base = step ?? autoStep(value);
+        const size = base * (e.shiftKey ? 10 : 1);
+        const next = Math.max(0, Math.round((value + (e.key === "ArrowUp" ? size : -size)) / base) * base);
+        onChange(next);
+        setDisplayValue(Math.round(next).toString());
+      },
+      [value, step, onChange],
+    );
+
     // The wrapper takes the layout classes (width, flex); the field keeps the rest.
     const { layout, field } = splitLayoutClasses(className);
     return (
@@ -88,6 +113,7 @@ const CurrencyInput = forwardRef<HTMLInputElement, CurrencyInputProps>(
           onChange={handleChange}
           onFocus={handleFocus}
           onBlur={handleBlur}
+          onKeyDown={handleKeyDown}
           className={cn("h-10 w-full text-sm font-medium tabular-nums", field, "pl-6")}
           {...props}
         />

@@ -9,6 +9,7 @@ import CurrencyInput from "./CurrencyInput";
 import PercentInput from "./PercentInput";
 import { formatCurrency } from "@/lib/formatters";
 import StickyResult from "./StickyResult";
+import { AnimatedCurrency } from "@/components/AnimatedNumber";
 import { InputCard, FieldGrid, Field, TermChoice, MoreOptions, DownPaymentField, StartDateField, summarize } from "./calc/Form";
 import { USDA_UPFRONT_FEE_RATE, USDA_ANNUAL_FEE_RATE } from "@/lib/loanLimits";
 import { totalBalanceBasedFee } from "@/lib/mortgageMath";
@@ -192,8 +193,8 @@ const USDACalculator = () => {
             <p className="text-primary-foreground/80 text-sm font-medium uppercase tracking-wide">
               Monthly Payment
             </p>
-            <p className="text-4xl lg:text-5xl font-display font-bold mt-2 number-pop">
-              {formatCurrency(calculations.totalMonthly)}
+            <p className="text-4xl lg:text-5xl font-display font-bold mt-2">
+              <AnimatedCurrency value={calculations.totalMonthly} />
             </p>
           </div>
 

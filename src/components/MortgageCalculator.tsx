@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import PaymentBreakdown from "./PaymentBreakdown";
@@ -9,6 +9,10 @@ import PercentInput from "./PercentInput";
 import { formatCurrency } from "@/lib/formatters";
 import { monthsUntilBalance } from "@/lib/mortgageMath";
 import StickyResult from "./StickyResult";
+import PaymentAnswer from "./PaymentAnswer";
+import { readNumberParams, replaceUrl, urlWith } from "@/lib/shareUrl";
+
+const URL_KEYS = ["price", "down", "rate", "term", "tax", "ins", "pmi", "hoa"] as const;
 import { InputCard, FieldGrid, Field, TermChoice, MoreOptions, summarize } from "./calc/Form";
 
 const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -47,19 +51,50 @@ interface MortgageCalculatorProps {
 const MortgageCalculator = ({ initial, taxAreas, taxAreaLabel = "Area" }: MortgageCalculatorProps = {}) => {
   const startPrice = initial?.homePrice ?? 300000;
   const [areaIndex, setAreaIndex] = useState(0);
-  const [inputs, setInputs] = useState<MortgageInputs>({
-    homePrice: startPrice,
-    downPayment: startPrice * 0.2,
-    downPaymentPercent: 20,
-    loanTerm: 30,
-    interestRate: 6.5,
-    propertyTax: initial ? Math.round((startPrice * initial.propertyTaxRate) / 100) : 3600,
-    taxRate: initial ? initial.propertyTaxRate : null,
-    homeInsurance: initial?.homeInsurance ?? 1200,
-    pmi: 0,
-    hoaFees: 0,
-    startDate: new Date().toISOString().slice(0, 7),
+  const [inputs, setInputs] = useState<MortgageInputs>(() => {
+    // A shared link (?price=…&down=…&rate=…) opens with that scenario.
+    const u = readNumberParams(URL_KEYS);
+    const homePrice = u.price && u.price > 0 ? u.price : startPrice;
+    const downPayment = Math.min(u.down ?? homePrice * 0.2, homePrice);
+    const downPaymentPercent = homePrice > 0 ? (downPayment / homePrice) * 100 : 20;
+    const taxRate = u.tax !== undefined ? null : initial ? initial.propertyTaxRate : null;
+    return {
+      homePrice,
+      downPayment,
+      downPaymentPercent,
+      loanTerm: u.term && [10, 15, 20, 30].includes(u.term) ? u.term : 30,
+      interestRate: u.rate !== undefined && u.rate <= 30 ? u.rate : 6.5,
+      propertyTax: u.tax ?? (taxRate !== null ? Math.round((homePrice * taxRate) / 100) : 3600),
+      taxRate,
+      homeInsurance: u.ins ?? initial?.homeInsurance ?? 1200,
+      pmi: u.pmi ?? (downPaymentPercent < 20 ? (homePrice - downPayment) * 0.005 : 0),
+      hoaFees: u.hoa ?? 0,
+      startDate: new Date().toISOString().slice(0, 7),
+    };
   });
+
+  // Keep the address bar in step with the inputs once someone changes them, so
+  // the page can be bookmarked or shared. An untouched page keeps its clean URL.
+  const touched = useRef(false);
+  const scenario = {
+    price: inputs.homePrice,
+    down: Math.round(inputs.downPayment),
+    rate: inputs.interestRate,
+    term: inputs.loanTerm,
+    tax: inputs.propertyTax,
+    ins: inputs.homeInsurance,
+    pmi: Math.round(inputs.pmi),
+    hoa: inputs.hoaFees,
+  };
+  const scenarioKey = JSON.stringify(scenario);
+  useEffect(() => {
+    if (!touched.current) {
+      touched.current = true;
+      return;
+    }
+    const t = window.setTimeout(() => replaceUrl(JSON.parse(scenarioKey)), 400);
+    return () => window.clearTimeout(t);
+  }, [scenarioKey]);
 
   const updateInput = (field: keyof MortgageInputs, value: number | string) => {
     setInputs((prev) => {
@@ -304,60 +339,28 @@ const MortgageCalculator = ({ initial, taxAreas, taxAreaLabel = "Area" }: Mortga
         {/* Results Section */}
         <aside className="calc-results" aria-label="Calculation Results">
           <StickyResult targetId="calc-result" label={"Monthly payment"} value={formatCurrency(calculations.totalMonthly)} />
-          <div id="calc-result" className="result-highlight">
-            <p className="text-primary-foreground/80 text-sm font-medium uppercase tracking-wide">
-              Monthly Payment
-            </p>
-            <p className="text-4xl lg:text-5xl font-display font-bold mt-2 number-pop">
-              {formatCurrency(calculations.totalMonthly)}
-            </p>
-          </div>
-
-          <div className="calculator-card p-6 space-y-4">
-            <h3 className="font-semibold text-lg">Payment Summary</h3>
-            
-            <div className="space-y-3">
-              <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Loan Amount</span>
-                <span className="font-medium">{formatCurrency(calculations.loanAmount)}</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Principal & Interest</span>
-                <span className="font-medium">{formatCurrency(calculations.monthlyPI)}</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Property Tax</span>
-                <span className="font-medium">{formatCurrency(calculations.monthlyTax)}</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Home Insurance</span>
-                <span className="font-medium">{formatCurrency(calculations.monthlyInsurance)}</span>
-              </div>
-              {calculations.monthlyPMI > 0 && (
-                <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">
-                    PMI{calculations.pmiMonths > 0 && ` (ends in ~${Math.ceil(calculations.pmiMonths / 12)} yrs)`}
-                  </span>
-                  <span className="font-medium">{formatCurrency(calculations.monthlyPMI)}</span>
-                </div>
-              )}
-              {calculations.monthlyHOA > 0 && (
-                <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">HOA Fees</span>
-                  <span className="font-medium">{formatCurrency(calculations.monthlyHOA)}</span>
-                </div>
-              )}
-              <hr className="border-border" />
-              <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Total Interest ({inputs.loanTerm} years)</span>
-                <span className="font-medium">{formatCurrency(calculations.totalInterest)}</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Total of All Payments</span>
-                <span className="font-medium">{formatCurrency(calculations.totalPayment)}</span>
-              </div>
-            </div>
-          </div>
+          <PaymentAnswer
+            total={calculations.totalMonthly}
+            context={`on a ${formatCurrency(calculations.loanAmount)} loan at ${inputs.interestRate}% for ${inputs.loanTerm} years`}
+            parts={[
+              { label: "Principal & interest", value: calculations.monthlyPI },
+              { label: "Tax", value: calculations.monthlyTax },
+              { label: "Insurance", value: calculations.monthlyInsurance },
+              { label: "PMI", value: calculations.monthlyPMI },
+              { label: "HOA", value: calculations.monthlyHOA },
+            ]}
+            stats={[
+              { label: "Loan amount", value: formatCurrency(calculations.loanAmount), hint: `${(100 - inputs.downPaymentPercent).toFixed(0)}% of the price` },
+              { label: "Total interest", value: formatCurrency(calculations.totalInterest), hint: `over ${inputs.loanTerm} years` },
+              {
+                label: "Paid off",
+                value: amortizationData.length ? amortizationData[amortizationData.length - 1].date.toLocaleDateString("en-US", { month: "short", year: "numeric" }) : "—",
+                hint: calculations.pmiMonths > 0 ? `PMI ends after ~${Math.ceil(calculations.pmiMonths / 12)} yrs` : "No PMI",
+              },
+              { label: "Total of all payments", value: formatCurrency(calculations.totalPayment), hint: "incl. tax, insurance & fees" },
+            ]}
+            shareUrl={() => urlWith(scenario)}
+          />
         </aside>
       </div>
 

@@ -13,6 +13,7 @@ import CurrencyInput from "./CurrencyInput";
 import PercentInput from "./PercentInput";
 import { formatCurrency, formatPercent } from "@/lib/formatters";
 import StickyResult from "./StickyResult";
+import { AnimatedCurrency } from "@/components/AnimatedNumber";
 import { InputCard, FieldGrid, Field, TermChoice, MoreOptions, Choice, summarize } from "./calc/Form";
 
 const CashOutRefiCalculator = () => {
@@ -170,8 +171,8 @@ const CashOutRefiCalculator = () => {
                 <p className="text-white/80 text-sm font-medium">
                   Estimated Max Cash-Out Amount
                 </p>
-                <p className="text-4xl md:text-5xl font-bold text-white number-pop">
-                  {formatCurrency(results.maxCashOut)}
+                <p className="text-4xl md:text-5xl font-bold text-white">
+                  <AnimatedCurrency value={results.maxCashOut} />
                 </p>
               </div>
             </CardContent>
