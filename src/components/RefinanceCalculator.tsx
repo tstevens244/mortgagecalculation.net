@@ -1,5 +1,4 @@
-import { useState, useMemo } from "react";
-import { TrendingDown } from "lucide-react";
+import { useMemo } from "react";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import CurrencyInput from "./CurrencyInput";
@@ -10,6 +9,9 @@ import { InputCard, FieldGrid, Field, TermChoice, MoreOptions, summarize } from 
 import VizCard from "./viz/VizCard";
 import CompareTable from "./viz/CompareTable";
 import { BreakEvenChart } from "./viz/LazyCharts";
+import { useUrlState } from "@/lib/urlState";
+import { AnswerCard } from "./PaymentAnswer";
+import { yearsMonths } from "@/lib/amortization";
 
 interface RefinanceInputs {
   // Original loan
@@ -32,7 +34,7 @@ interface RefinanceInputs {
 }
 
 const RefinanceCalculator = () => {
-  const [inputs, setInputs] = useState<RefinanceInputs>({
+  const [inputs, setInputs] = useUrlState<RefinanceInputs>({
     originalHomePrice: 400000,
     originalDownPayment: 80000,
     originalLoanTerm: 30,
@@ -352,74 +354,35 @@ const RefinanceCalculator = () => {
 
           {/* Results Summary Card */}
           <StickyResult targetId="calc-result" label={calculations.comparison.shouldRefinance ? "Refinancing saves" : "Refinancing costs"} value={`${formatCurrency(Math.abs(calculations.comparison.totalBenefit))}${calculations.comparison.shouldRefinance && Number.isFinite(calculations.comparison.breakEvenMonths) ? ` · break-even ${calculations.comparison.breakEvenMonths} mo` : ""}`} />
-          <section id="calc-result" className="calculator-card p-4 sm:p-6 bg-gradient-to-br from-primary/5 to-accent/5" aria-labelledby="summary-heading">
-            <h2 id="summary-heading" className="text-base sm:text-xl font-display font-semibold mb-4 flex items-center gap-2">
-              <TrendingDown className="h-4 w-4 sm:h-5 sm:w-5 text-accent" aria-hidden="true" />
-              Should You Refinance? Here Are Your Results
-            </h2>
+          <AnswerCard
+            label={calculations.comparison.shouldRefinance ? "Refinancing saves you" : "Refinancing would cost you"}
+            total={Math.abs(calculations.comparison.totalBenefit)}
+            context={`over the ${inputs.yearsBeforeSell} years you'd keep the loan, after closing costs${inputs.federalTaxRate + inputs.stateTaxRate > 0 ? " and lost tax savings" : ""}`}
+            stats={[
+              {
+                label: "Break-even",
+                value: Number.isFinite(calculations.comparison.breakEvenMonths) ? yearsMonths(calculations.comparison.breakEvenMonths) : "Never",
+                hint: Number.isFinite(calculations.comparison.breakEvenMonths) ? "when interest saved covers the costs" : "within 30 years",
+              },
+              {
+                label: "Monthly payment",
+                value: `${calculations.comparison.monthlySavings >= 0 ? "−" : "+"}${formatCurrency(Math.abs(calculations.comparison.monthlySavings))}/mo`,
+                hint: `${formatCurrency(calculations.refinanced.monthlyPayment)} new vs. ${formatCurrency(calculations.original.monthlyPayment)} now`,
+              },
+              { label: "Interest saved", value: formatCurrency(calculations.comparison.interestSavings), hint: `over ${inputs.yearsBeforeSell} years` },
+              { label: "Closing costs", value: formatCurrency(calculations.refinanced.totalClosingCosts), hint: "points, fees and other costs" },
+            ]}
+          />
 
-            <div className="overflow-x-auto">
-              <table className="w-full text-xs sm:text-sm">
-                <thead>
-                  <tr className="border-b border-border">
-                    <th className="text-left py-2 text-muted-foreground font-medium">Your Savings</th>
-                    <th className="text-right py-2 text-muted-foreground font-medium">Amount</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-border">
-                  <tr>
-                    <td className="py-3">Interest Savings Over {inputs.yearsBeforeSell} Years</td>
-                    <td className="py-3 text-right font-bold">
-                      {formatCurrency(calculations.comparison.interestSavings)}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="py-3">Less Tax Deduction Lost</td>
-                    <td className="py-3 text-right font-bold">
-                      -{formatCurrency(calculations.comparison.taxSavingsLoss)}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="py-3">Less Total Closing Costs</td>
-                    <td className="py-3 text-right font-bold">
-                      -{formatCurrency(calculations.refinanced.totalClosingCosts)}
-                    </td>
-                  </tr>
-                  <tr className={`${calculations.comparison.shouldRefinance ? 'bg-accent/10' : 'bg-destructive/10'}`}>
-                    <td className="py-4 font-semibold">
-                      Net Refinancing {calculations.comparison.shouldRefinance ? 'Benefit' : 'Cost'} Over {inputs.yearsBeforeSell} Years
-                    </td>
-                    <td className={`py-4 text-right text-xl font-bold ${calculations.comparison.shouldRefinance ? 'text-accent-strong' : 'text-destructive'}`}>
-                      {calculations.comparison.totalBenefit >= 0 ? '' : '-'}{formatCurrency(Math.abs(calculations.comparison.totalBenefit))}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="py-3 text-muted-foreground">Monthly Payment Change</td>
-                    <td className={`py-3 text-right font-medium ${calculations.comparison.monthlySavings > 0 ? 'text-accent-strong' : 'text-destructive'}`}>
-                      {calculations.comparison.monthlySavings >= 0 ? 
-                        `Save ${formatCurrency(calculations.comparison.monthlySavings)}/mo` : 
-                        `Pay ${formatCurrency(Math.abs(calculations.comparison.monthlySavings))}/mo more`}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="py-3 text-muted-foreground">Break-Even Point</td>
-                    <td className="py-3 text-right font-medium">
-                      {calculations.comparison.breakEvenMonths === Infinity 
-                        ? 'N/A' 
-                        : `${Math.floor(calculations.comparison.breakEvenMonths / 12)} years ${calculations.comparison.breakEvenMonths % 12} months`}
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+          <section className="viz-card" aria-label="When refinancing pays off">
 
             {(() => {
               const be = Number.isFinite(calculations.comparison.breakEvenMonths) ? calculations.comparison.breakEvenMonths : null;
               const horizon = Math.min(30, Math.max(10, inputs.yearsBeforeSell + 3, be ? Math.ceil(be / 12) + 3 : 0));
               const points = calculations.comparison.netByYear.slice(0, horizon + 1);
               return (
-                <div className="mt-8">
-                  <h3 className="font-display text-base font-semibold">When refinancing pays off</h3>
+                <div>
+                  <h3 className="font-display text-lg font-semibold">When refinancing pays off</h3>
                   <p className="mb-4 mt-1 text-sm text-muted-foreground">
                     Interest saved{inputs.federalTaxRate + inputs.stateTaxRate > 0 ? " (after lost tax savings)" : ""}, minus
                     closing costs, by how long you keep the new loan. It starts below zero by the closing costs.

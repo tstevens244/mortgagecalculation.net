@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { CalendarRange } from "lucide-react";
 import CurrencyInput from "@/components/CurrencyInput";
 import PercentInput from "@/components/PercentInput";
@@ -7,6 +7,8 @@ import StickyResult from "@/components/StickyResult";
 import { formatCurrency } from "@/lib/formatters";
 import { termComparison } from "@/lib/compareMath";
 import { monthsToPayoff, totalPaidOnBalance } from "@/lib/mortgageMath";
+import { useUrlParam } from "@/lib/urlState";
+import { AnswerCard } from "@/components/PaymentAnswer";
 
 const yearsMonths = (months: number) => {
   const y = Math.floor(months / 12);
@@ -16,9 +18,9 @@ const yearsMonths = (months: number) => {
 
 /** 15-year vs. 30-year fixed: payment, interest, equity, and paying a 30-year loan like a 15. */
 const TermComparisonCalculator = () => {
-  const [loan, setLoan] = useState(320000);
-  const [rate30, setRate30] = useState(6.5);
-  const [rate15, setRate15] = useState(5.75);
+  const [loan, setLoan] = useUrlParam("loan", 320000);
+  const [rate30, setRate30] = useUrlParam("rate30", 6.5);
+  const [rate15, setRate15] = useUrlParam("rate15", 5.75);
 
   const c = useMemo(() => {
     const t = termComparison(loan, rate30, rate15);
@@ -99,13 +101,17 @@ const TermComparisonCalculator = () => {
 
       <aside className="calc-results" aria-label="Comparison results">
         <StickyResult targetId="calc-result" label="15-year saves in interest" value={formatCurrency(c.interestSaved)} />
-        <div id="calc-result" className="result-highlight">
-          <p className="text-sm font-medium uppercase tracking-wide text-primary-foreground/80">15-year saves in interest</p>
-          <p className="mt-2 text-4xl font-display font-bold lg:text-5xl">{formatCurrency(c.interestSaved)}</p>
-          <p className="mt-2 text-sm text-primary-foreground/80">
-            for {formatCurrency(c.paymentDifference)} more a month, and you own the home 15 years sooner
-          </p>
-        </div>
+        <AnswerCard
+          label="A 15-year loan saves you"
+          total={c.interestSaved}
+          context={`in interest, for ${formatCurrency(c.paymentDifference)} more a month, and you own the home 15 years sooner`}
+          stats={[
+            { label: "30-year payment", value: formatCurrency(c.thirty.payment), hint: `at ${rate30.toFixed(3)}%` },
+            { label: "15-year payment", value: formatCurrency(c.fifteen.payment), hint: `at ${rate15.toFixed(3)}%` },
+            { label: "30-year interest", value: formatCurrency(c.thirty.interest) },
+            { label: "15-year interest", value: formatCurrency(c.fifteen.interest) },
+          ]}
+        />
 
         <div className="calculator-card space-y-2 p-4 text-sm sm:p-6">
           <h2 className="text-lg font-display font-semibold">Or: a 30-year paid like a 15</h2>

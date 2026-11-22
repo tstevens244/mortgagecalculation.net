@@ -1,5 +1,4 @@
-import { useState, useMemo } from "react";
-import { Card, CardContent } from "@/components/ui/card";
+import { useMemo } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Select,
@@ -17,32 +16,33 @@ import PercentInput from "./PercentInput";
 import { maxAffordablePrice } from "@/lib/mortgageMath";
 import { formatCurrency } from "@/lib/formatters";
 import StickyResult from "./StickyResult";
-import { AnimatedCurrency } from "@/components/AnimatedNumber";
 import { InputCard, FieldGrid, Field, TermChoice, MoreOptions, summarize } from "./calc/Form";
+import { useUrlParam } from "@/lib/urlState";
+import { AnswerCard } from "./PaymentAnswer";
 
 // Estimated PMI, % of the loan per year, applied when the down payment is under 20%.
 const PMI_RATE = 0.5;
 
 const AffordabilityCalculator = () => {
   // Income-based calculator state
-  const [annualIncome, setAnnualIncome] = useState(120000);
-  const [loanTerm, setLoanTerm] = useState("30");
-  const [interestRate, setInterestRate] = useState(6.5);
-  const [monthlyDebts, setMonthlyDebts] = useState(500);
-  const [downPaymentPercent, setDownPaymentPercent] = useState(20);
-  const [propertyTaxRate, setPropertyTaxRate] = useState(1.5);
-  const [hoaFee, setHoaFee] = useState(0);
-  const [insuranceRate, setInsuranceRate] = useState(0.5);
-  const [dtiRule, setDtiRule] = useState("28/36");
+  const [annualIncome, setAnnualIncome] = useUrlParam("annualIncome", 120000);
+  const [loanTerm, setLoanTerm] = useUrlParam("loanTerm", "30");
+  const [interestRate, setInterestRate] = useUrlParam("interestRate", 6.5);
+  const [monthlyDebts, setMonthlyDebts] = useUrlParam("monthlyDebts", 500);
+  const [downPaymentPercent, setDownPaymentPercent] = useUrlParam("downPaymentPercent", 20);
+  const [propertyTaxRate, setPropertyTaxRate] = useUrlParam("propertyTaxRate", 1.5);
+  const [hoaFee, setHoaFee] = useUrlParam("hoaFee", 0);
+  const [insuranceRate, setInsuranceRate] = useUrlParam("insuranceRate", 0.5);
+  const [dtiRule, setDtiRule] = useUrlParam("dtiRule", "28/36");
 
   // Budget-based calculator state
-  const [monthlyBudget, setMonthlyBudget] = useState(3500);
-  const [budgetLoanTerm, setBudgetLoanTerm] = useState("30");
-  const [budgetInterestRate, setBudgetInterestRate] = useState(6.5);
-  const [budgetDownPaymentPercent, setBudgetDownPaymentPercent] = useState(20);
-  const [budgetPropertyTaxRate, setBudgetPropertyTaxRate] = useState(1.5);
-  const [budgetHoaFee, setBudgetHoaFee] = useState(0);
-  const [budgetInsuranceRate, setBudgetInsuranceRate] = useState(0.5);
+  const [monthlyBudget, setMonthlyBudget] = useUrlParam("monthlyBudget", 3500);
+  const [budgetLoanTerm, setBudgetLoanTerm] = useUrlParam("budgetLoanTerm", "30");
+  const [budgetInterestRate, setBudgetInterestRate] = useUrlParam("budgetInterestRate", 6.5);
+  const [budgetDownPaymentPercent, setBudgetDownPaymentPercent] = useUrlParam("budgetDownPaymentPercent", 20);
+  const [budgetPropertyTaxRate, setBudgetPropertyTaxRate] = useUrlParam("budgetPropertyTaxRate", 1.5);
+  const [budgetHoaFee, setBudgetHoaFee] = useUrlParam("budgetHoaFee", 0);
+  const [budgetInsuranceRate, setBudgetInsuranceRate] = useUrlParam("budgetInsuranceRate", 0.5);
 
   // Income-based calculation
   const incomeResults = useMemo(() => {
@@ -184,19 +184,33 @@ const AffordabilityCalculator = () => {
   }) => (
     <div className="calc-results">
       {/* Main Result */}
-      <Card className="result-highlight border-0">
-        <CardContent className="p-0">
-          <StickyResult targetId="calc-result" label={title} value={formatCurrency(results.homePrice)} />
-          <div id="calc-result" className="text-center space-y-2">
-            <p className="text-white/80 text-sm font-medium">
-              {title}
-            </p>
-            <p className="text-4xl md:text-5xl font-bold text-white">
-              <AnimatedCurrency value={results.homePrice} />
-            </p>
-          </div>
-        </CardContent>
-      </Card>
+      <StickyResult targetId="calc-result" label={title} value={formatCurrency(results.homePrice)} />
+      <AnswerCard
+        label={title}
+        total={results.homePrice}
+        context={`${formatCurrency(results.monthlyPayment)} a month, all-in`}
+        parts={[
+          { label: "Principal & interest", value: results.monthlyPI },
+          { label: "Tax", value: results.monthlyTaxes },
+          { label: "Insurance", value: results.monthlyInsurance },
+          { label: "PMI", value: results.monthlyPMI },
+          { label: "HOA", value: results.monthlyHOA },
+        ]}
+        stats={[
+          { label: "Down payment", value: formatCurrency(results.downPayment) },
+          { label: "Loan amount", value: formatCurrency(results.loanAmount) },
+          ...(income
+            ? [
+                {
+                  label: "Housing + debts",
+                  value: `${(((results.monthlyPayment + income.debts) / income.monthly) * 100).toFixed(0)}% of income`,
+                  hint: `limit ${Math.round(income.back * 100)}%`,
+                },
+              ]
+            : []),
+          { label: "Monthly payment", value: formatCurrency(results.monthlyPayment), hint: "incl. tax, insurance & fees" },
+        ]}
+      />
 
       {/* Payment breakdown */}
       <VizCard title="Monthly payment at this price" description={`${formatCurrency(results.monthlyPayment)} a month, split into its parts.`}>
@@ -237,21 +251,6 @@ const AffordabilityCalculator = () => {
         </VizCard>
       )}
 
-      {/* Loan Summary */}
-      <Card className="calculator-card bg-secondary/30">
-        <CardContent className="pt-6">
-          <div className="grid grid-cols-2 gap-4 text-center">
-            <div>
-              <p className="text-sm text-muted-foreground mb-1">Down Payment</p>
-              <p className="text-xl font-bold text-foreground">{formatCurrency(results.downPayment)}</p>
-            </div>
-            <div>
-              <p className="text-sm text-muted-foreground mb-1">Loan Amount</p>
-              <p className="text-xl font-bold text-foreground">{formatCurrency(results.loanAmount)}</p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
     </div>
   );
 

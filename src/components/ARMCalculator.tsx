@@ -1,5 +1,4 @@
-import { useState, useMemo } from "react";
-import { TrendingUp } from "lucide-react";
+import { useMemo } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import PaymentBreakdown from "./PaymentBreakdown";
@@ -10,7 +9,8 @@ import PercentInput from "./PercentInput";
 import { formatCurrency } from "@/lib/formatters";
 import { armSchedule } from "@/lib/mortgageMath";
 import StickyResult from "./StickyResult";
-import { AnimatedCurrency } from "@/components/AnimatedNumber";
+import { AnswerCard } from "./PaymentAnswer";
+import { useUrlState } from "@/lib/urlState";
 import { InputCard, FieldGrid, Field, TermChoice, MoreOptions, DownPaymentField, StartDateField, summarize, Choice } from "./calc/Form";
 
 interface ARMInputs {
@@ -43,7 +43,7 @@ const ARM_TYPES = [
 ];
 
 const ARMCalculator = () => {
-  const [inputs, setInputs] = useState<ARMInputs>({
+  const [inputs, setInputs] = useUrlState<ARMInputs>({
     homePrice: 400000,
     downPayment: 80000,
     downPaymentPercent: 20,
@@ -316,114 +316,41 @@ const ARMCalculator = () => {
 
         {/* Results Section */}
         <aside className="calc-results" aria-label="Calculation Results">
-          {/* Initial Payment */}
           <StickyResult targetId="calc-result" label={"Initial monthly payment"} value={formatCurrency(calculations.initialTotalMonthly)} />
-          <div id="calc-result" className="result-highlight">
-            <p className="text-primary-foreground/80 text-sm font-medium uppercase tracking-wide">
-              Initial Monthly Payment
-            </p>
-            <p className="text-4xl lg:text-5xl font-display font-bold mt-2">
-              <AnimatedCurrency value={calculations.initialTotalMonthly} />
-            </p>
-            <p className="text-primary-foreground/70 text-sm mt-2">
-              {armTypeLabel} • Initial Rate: {inputs.initialRate}%
-            </p>
-          </div>
-
-          {/* After first adjustment (expected) */}
-          <div className="calculator-card p-6">
-            <h3 className="font-semibold text-lg flex items-center gap-2">
-              <TrendingUp className="h-5 w-5 text-accent" aria-hidden="true" />
-              After first adjustment
-            </h3>
-            <p className="text-3xl font-display font-bold mt-2">
-              {formatCurrency(calculations.adjustedTotalMonthly)}
-            </p>
-            <p className="text-muted-foreground text-sm mt-2">
-              Year {inputs.yearsBeforeFirstAdjustment + 1}, at an expected {calculations.adjustedRate.toFixed(2)}%.
-              Highest expected payment: {formatCurrency(calculations.expectedPeakTotalMonthly)}.
-            </p>
-          </div>
-
-          {/* Maximum Payment */}
-          <div className="calculator-card p-6 border-2 border-destructive/20 bg-destructive/5">
-            <h3 className="font-semibold text-lg flex items-center gap-2 text-red-700 dark:text-red-400">
-              <TrendingUp className="h-5 w-5" aria-hidden="true" />
-              Worst-case payment
-            </h3>
-            <p className="text-3xl font-display font-bold mt-2">
-              {formatCurrency(calculations.maxTotalMonthly)}
-            </p>
-            <p className="text-muted-foreground text-sm mt-2">
-              If the rate hits the {calculations.maxRate.toFixed(2)}% lifetime cap at the first adjustment
-            </p>
-          </div>
-
-          {/* Payment Details */}
-          <div className="calculator-card p-6 space-y-4">
-            <h3 className="font-semibold text-lg">Initial Payment Breakdown</h3>
-
-            <div className="space-y-3">
-              <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Principal & Interest</span>
-                <span className="font-medium">{formatCurrency(calculations.initialMonthlyPI)}</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Property Tax</span>
-                <span className="font-medium">{formatCurrency(calculations.monthlyTax)}</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Home Insurance</span>
-                <span className="font-medium">{formatCurrency(calculations.monthlyInsurance)}</span>
-              </div>
-              {calculations.monthlyPMI > 0 && (
-                <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">PMI</span>
-                  <span className="font-medium">{formatCurrency(calculations.monthlyPMI)}</span>
-                </div>
-              )}
-              {calculations.monthlyHOA > 0 && (
-                <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">HOA Fees</span>
-                  <span className="font-medium">{formatCurrency(calculations.monthlyHOA)}</span>
-                </div>
-              )}
-              <hr className="border-border" />
-              <div className="flex justify-between text-sm font-medium">
-                <span>Total Initial</span>
-                <span>{formatCurrency(calculations.initialTotalMonthly)}</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Loan Totals */}
-          <div className="calculator-card p-6 space-y-4">
-            <h3 className="font-semibold text-lg">Loan Totals (Estimated)</h3>
-
-            <div className="space-y-3">
-              <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Amount Financed</span>
-                <span className="font-medium">{formatCurrency(calculations.baseLoanAmount)}</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Est. Total Interest</span>
-                <span className="font-medium">{formatCurrency(calculations.estimatedTotalInterest)}</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Total Taxes & Insurance</span>
-                <span className="font-medium">{formatCurrency(calculations.totalTaxesInsurance)}</span>
-              </div>
-              <hr className="border-border" />
-              <div className="flex justify-between text-sm font-medium">
-                <span>Total All Payments</span>
-                <span>{formatCurrency(calculations.totalAllPayments)}</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Average Monthly</span>
-                <span className="font-medium">{formatCurrency(calculations.avgMonthlyTotal)}</span>
-              </div>
-            </div>
-          </div>
+          <AnswerCard
+            label={`Your ${armTypeLabel} payment, first ${inputs.yearsBeforeFirstAdjustment} years`}
+            total={calculations.initialTotalMonthly}
+            context={`on a ${formatCurrency(calculations.baseLoanAmount)} loan at ${inputs.initialRate}%, before the rate can change`}
+            parts={[
+              { label: "Principal & interest", value: calculations.initialMonthlyPI },
+              { label: "Tax", value: calculations.monthlyTax },
+              { label: "Insurance", value: calculations.monthlyInsurance },
+              { label: "PMI", value: calculations.monthlyPMI },
+              { label: "HOA", value: calculations.monthlyHOA },
+            ]}
+            stats={[
+              {
+                label: `After the first change (yr ${inputs.yearsBeforeFirstAdjustment + 1})`,
+                value: formatCurrency(calculations.adjustedTotalMonthly),
+                hint: `at an expected ${calculations.adjustedRate.toFixed(2)}%`,
+              },
+              {
+                label: "Highest expected",
+                value: formatCurrency(calculations.expectedPeakTotalMonthly),
+                hint: "on the rate path you entered",
+              },
+              {
+                label: "Worst case",
+                value: formatCurrency(calculations.maxTotalMonthly),
+                hint: `if it jumps to the ${calculations.maxRate.toFixed(2)}% cap`,
+              },
+              {
+                label: "Est. total interest",
+                value: formatCurrency(calculations.estimatedTotalInterest),
+                hint: `over ${inputs.loanTerm} years`,
+              },
+            ]}
+          />
         </aside>
       </div>
 

@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useMemo } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { AlertCircle } from "lucide-react";
 import VizCard from "./viz/VizCard";
@@ -8,20 +8,21 @@ import CurrencyInput from "./CurrencyInput";
 import PercentInput from "./PercentInput";
 import { formatCurrency, formatPercent } from "@/lib/formatters";
 import StickyResult from "./StickyResult";
-import { AnimatedCurrency } from "@/components/AnimatedNumber";
 import { InputCard, FieldGrid, Field, TermChoice, MoreOptions, Choice, summarize } from "./calc/Form";
+import { useUrlParam } from "@/lib/urlState";
+import { AnswerCard } from "./PaymentAnswer";
 
 const QualificationCalculator = () => {
-  const [homeValue, setHomeValue] = useState(400000);
-  const [downPayment, setDownPayment] = useState(80000);
-  const [loanTerm, setLoanTerm] = useState("30");
-  const [interestRate, setInterestRate] = useState(6.5);
-  const [annualTaxes, setAnnualTaxes] = useState(4800);
-  const [annualInsurance, setAnnualInsurance] = useState(2400);
-  const [annualPMI, setAnnualPMI] = useState(0);
-  const [frontEndRatio, setFrontEndRatio] = useState(28);
-  const [backEndRatio, setBackEndRatio] = useState(36);
-  const [monthlyDebts, setMonthlyDebts] = useState(500);
+  const [homeValue, setHomeValue] = useUrlParam("homeValue", 400000);
+  const [downPayment, setDownPayment] = useUrlParam("downPayment", 80000);
+  const [loanTerm, setLoanTerm] = useUrlParam("loanTerm", "30");
+  const [interestRate, setInterestRate] = useUrlParam("interestRate", 6.5);
+  const [annualTaxes, setAnnualTaxes] = useUrlParam("annualTaxes", 4800);
+  const [annualInsurance, setAnnualInsurance] = useUrlParam("annualInsurance", 2400);
+  const [annualPMI, setAnnualPMI] = useUrlParam("annualPMI", 0);
+  const [frontEndRatio, setFrontEndRatio] = useUrlParam("frontEndRatio", 28);
+  const [backEndRatio, setBackEndRatio] = useUrlParam("backEndRatio", 36);
+  const [monthlyDebts, setMonthlyDebts] = useUrlParam("monthlyDebts", 500);
 
   const results = useMemo(() => {
     const loanAmount = homeValue - downPayment;
@@ -163,22 +164,24 @@ const QualificationCalculator = () => {
         {/* Results Section */}
         <div className="calc-results">
           {/* Main Result */}
-          <Card className="result-highlight border-0">
-            <CardContent className="p-0">
-              <StickyResult targetId="calc-result" label={"Income needed"} value={formatCurrency(results.requiredAnnualIncome)} />
-              <div id="calc-result" className="text-center space-y-4">
-                <p className="text-white/80 text-sm font-medium">
-                  Minimum Annual Income Required
-                </p>
-                <p className="text-4xl md:text-5xl font-bold text-white">
-                  <AnimatedCurrency value={results.requiredAnnualIncome} />
-                </p>
-                <p className="text-white/70 text-sm">
-                  ({formatCurrency(results.requiredMonthlyIncome)}/month)
-                </p>
-              </div>
-            </CardContent>
-          </Card>
+          <StickyResult targetId="calc-result" label={"Income needed"} value={formatCurrency(results.requiredAnnualIncome)} />
+          <AnswerCard
+            label="Income you'd need"
+            total={results.requiredAnnualIncome}
+            context={`${formatCurrency(results.requiredMonthlyIncome)} a month before taxes, for a ${formatCurrency(homeValue)} home`}
+            parts={[
+              { label: "Principal & interest", value: results.monthlyPI },
+              { label: "Tax", value: results.monthlyTaxes },
+              { label: "Insurance", value: results.monthlyInsurance },
+              { label: "PMI", value: results.monthlyPMI },
+            ]}
+            stats={[
+              { label: "Housing payment", value: formatCurrency(results.totalHousingPayment), hint: "a month" },
+              { label: "Loan amount", value: formatCurrency(results.loanAmount), hint: `${results.downPaymentPercent.toFixed(1)}% down` },
+              { label: "Housing ratio", value: `${results.actualFrontEnd.toFixed(1)}%`, hint: `limit ${frontEndRatio}%` },
+              { label: "Total debt ratio", value: `${results.actualBackEnd.toFixed(1)}%`, hint: `limit ${backEndRatio}%` },
+            ]}
+          />
 
           {/* Payment breakdown */}
           <VizCard title="Monthly housing payment" description={`${formatCurrency(results.totalHousingPayment)} a month, the number lenders test against your income.`}>

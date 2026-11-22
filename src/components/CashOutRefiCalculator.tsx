@@ -1,11 +1,4 @@
-import { useState, useMemo } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { HelpCircle, TrendingUp, DollarSign, Percent } from "lucide-react";
+import { useMemo } from "react";
 import VizCard, { StatRow } from "./viz/VizCard";
 import StackedBar from "./viz/StackedBar";
 import { SERIES } from "./viz/theme";
@@ -13,17 +6,18 @@ import CurrencyInput from "./CurrencyInput";
 import PercentInput from "./PercentInput";
 import { formatCurrency, formatPercent } from "@/lib/formatters";
 import StickyResult from "./StickyResult";
-import { AnimatedCurrency } from "@/components/AnimatedNumber";
 import { InputCard, FieldGrid, Field, TermChoice, MoreOptions, Choice, summarize } from "./calc/Form";
+import { useUrlParam } from "@/lib/urlState";
+import { AnswerCard } from "./PaymentAnswer";
 
 const CashOutRefiCalculator = () => {
-  const [homeValue, setHomeValue] = useState(400000);
-  const [currentMortgageBalance, setCurrentMortgageBalance] = useState(200000);
-  const [loanTerm, setLoanTerm] = useState("30");
-  const [interestRate, setInterestRate] = useState(6.5);
-  const [desiredCashOut, setDesiredCashOut] = useState(50000);
-  const [refinanceFees, setRefinanceFees] = useState(5000);
-  const [rollFeesIntoLoan, setRollFeesIntoLoan] = useState(false);
+  const [homeValue, setHomeValue] = useUrlParam("homeValue", 400000);
+  const [currentMortgageBalance, setCurrentMortgageBalance] = useUrlParam("currentMortgageBalance", 200000);
+  const [loanTerm, setLoanTerm] = useUrlParam("loanTerm", "30");
+  const [interestRate, setInterestRate] = useUrlParam("interestRate", 6.5);
+  const [desiredCashOut, setDesiredCashOut] = useUrlParam("desiredCashOut", 50000);
+  const [refinanceFees, setRefinanceFees] = useUrlParam("refinanceFees", 5000);
+  const [rollFeesIntoLoan, setRollFeesIntoLoan] = useUrlParam("rollFeesIntoLoan", false);
 
   const results = useMemo(() => {
     // Maximum LTV is typically 80% for cash-out refi
@@ -164,80 +158,22 @@ const CashOutRefiCalculator = () => {
         {/* Results Section */}
         <div className="calc-results order-1">
           {/* Main Result */}
-          <Card className="result-highlight border-0">
-            <CardContent className="p-0">
-              <StickyResult targetId="calc-result" label={"Max cash-out"} value={formatCurrency(results.maxCashOut)} />
-              <div id="calc-result" className="text-center space-y-2">
-                <p className="text-white/80 text-sm font-medium">
-                  Estimated Max Cash-Out Amount
-                </p>
-                <p className="text-4xl md:text-5xl font-bold text-white">
-                  <AnimatedCurrency value={results.maxCashOut} />
-                </p>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Detailed Results */}
-          <Card className="calculator-card">
-            <CardHeader className="pb-4">
-              <CardTitle className="text-lg font-semibold flex items-center gap-2">
-                <TrendingUp className="h-5 w-5 text-accent" />
-                Cash-Out Summary
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div className="flex justify-between items-center py-3 border-b border-border">
-                  <span className="text-muted-foreground flex items-center gap-2">
-                    <DollarSign className="h-4 w-4" />
-                    Adjusted Estimate
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <HelpCircle className="h-4 w-4 cursor-help" />
-                      </TooltipTrigger>
-                      <TooltipContent className="max-w-xs">
-                        <p>Your cash-out amount after accounting for refinance fees (if not rolled into loan).</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </span>
-                  <span className="font-semibold text-lg">{formatCurrency(results.adjustedCashOut)}</span>
-                </div>
-
-                <div className="flex justify-between items-center py-3 border-b border-border">
-                  <span className="text-muted-foreground flex items-center gap-2">
-                    <Percent className="h-4 w-4" />
-                    Combined Loan-to-Value
-                  </span>
-                  <span className="font-semibold text-lg">{formatPercent(results.combinedLTV)}</span>
-                </div>
-
-                <div className="flex justify-between items-center py-3 border-b border-border">
-                  <span className="text-muted-foreground flex items-center gap-2">
-                    <DollarSign className="h-4 w-4" />
-                    New Loan Balance
-                  </span>
-                  <span className="font-semibold text-lg">{formatCurrency(results.newLoanBalance)}</span>
-                </div>
-
-                <div className="flex justify-between items-center py-3">
-                  <span className="text-muted-foreground flex items-center gap-2">
-                    <DollarSign className="h-4 w-4" />
-                    New Monthly Payment
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <HelpCircle className="h-4 w-4 cursor-help" />
-                      </TooltipTrigger>
-                      <TooltipContent className="max-w-xs">
-                        <p>Principal and interest only. Does not include taxes, insurance, or other fees.</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </span>
-                  <span className="font-semibold text-lg text-accent-strong">{formatCurrency(results.monthlyPayment)}</span>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          <StickyResult targetId="calc-result" label={"Max cash-out"} value={formatCurrency(results.maxCashOut)} />
+          <AnswerCard
+            label="Most cash you can take out"
+            total={results.maxCashOut}
+            context={`keeping the new loan within 80% of your ${formatCurrency(homeValue)} home`}
+            stats={[
+              {
+                label: "You'd receive",
+                value: formatCurrency(results.adjustedCashOut),
+                hint: rollFeesIntoLoan ? "fees added to the loan" : `after ${formatCurrency(refinanceFees)} in fees`,
+              },
+              { label: "New loan", value: formatCurrency(results.newLoanBalance), hint: `${formatPercent(results.combinedLTV)} of the home's value` },
+              { label: "New monthly payment", value: formatCurrency(results.monthlyPayment), hint: "principal & interest" },
+              { label: "Total interest", value: formatCurrency(results.totalInterest), hint: `over ${loanTerm} years` },
+            ]}
+          />
         </div>
       </div>
 

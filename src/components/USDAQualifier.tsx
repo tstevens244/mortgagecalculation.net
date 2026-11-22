@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { AlertTriangle, BadgeCheck } from "lucide-react";
 import CurrencyInput from "@/components/CurrencyInput";
 import PercentInput from "@/components/PercentInput";
@@ -7,6 +7,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { formatCurrency } from "@/lib/formatters";
 import { monthlyPayment, usdaMaxPrice } from "@/lib/mortgageMath";
 import { USDA_ANNUAL_FEE_RATE, USDA_UPFRONT_FEE_RATE } from "@/lib/loanLimits";
+import { useUrlParam } from "@/lib/urlState";
+import { AnswerCard } from "./PaymentAnswer";
 
 // Approximate 2026 USDA guaranteed-loan income limits in standard-cost counties.
 // Many counties are higher; the USDA lookup has the exact figure.
@@ -14,13 +16,13 @@ const INCOME_LIMIT = { small: 119_850, large: 158_250 };
 
 /** How much house a USDA borrower qualifies for under the 29% / 41% debt-to-income guidelines. */
 const USDAQualifier = () => {
-  const [income, setIncome] = useState(72000);
-  const [debts, setDebts] = useState(400);
-  const [rate, setRate] = useState(6.5);
-  const [taxRate, setTaxRate] = useState(1);
-  const [insurance, setInsurance] = useState(1500);
-  const [hoa, setHoa] = useState(0);
-  const [household, setHousehold] = useState<"small" | "large">("small");
+  const [income, setIncome] = useUrlParam("income", 72000);
+  const [debts, setDebts] = useUrlParam("debts", 400);
+  const [rate, setRate] = useUrlParam("rate", 6.5);
+  const [taxRate, setTaxRate] = useUrlParam("taxRate", 1);
+  const [insurance, setInsurance] = useUrlParam("insurance", 1500);
+  const [hoa, setHoa] = useUrlParam("hoa", 0);
+  const [household, setHousehold] = useUrlParam<"small" | "large">("household", "small");
 
   const r = useMemo(() => {
     const q = usdaMaxPrice({
@@ -89,34 +91,28 @@ const USDAQualifier = () => {
         </div>
 
         <div className="calc-results">
-          <div className="result-highlight">
-            <p className="text-sm font-medium uppercase tracking-wide text-primary-foreground/80">You may qualify for a home up to</p>
-            <p className="mt-2 text-4xl font-display font-bold lg:text-5xl">{formatCurrency(Math.floor(r.price / 1000) * 1000)}</p>
-            <p className="mt-2 text-sm text-primary-foreground/80">
-              Loan of {formatCurrency(r.loan)} including the {USDA_UPFRONT_FEE_RATE}% upfront fee, with a{" "}
-              {formatCurrency(r.maxPayment)} monthly payment
-            </p>
-          </div>
-
-          <div className="calculator-card space-y-2 p-4 text-sm sm:p-6">
-            <h3 className="font-display text-lg font-semibold">Monthly payment</h3>
-            {[
-              ["Principal and interest", r.pi],
-              [`Annual fee (${USDA_ANNUAL_FEE_RATE}%)`, r.fee],
-              ["Property tax", r.tax],
-              ["Home insurance", insurance / 12],
-              ["HOA dues", hoa],
-            ].map(([k, v]) => (
-              <div key={k as string} className="flex justify-between gap-2 tabular-nums">
-                <span className="text-muted-foreground">{k}</span>
-                <span className="font-medium">{formatCurrency(v as number)}</span>
-              </div>
-            ))}
-            <p className="border-t border-border pt-2 text-muted-foreground">
-              Limited by the {r.limitedBy === "housing" ? "29% housing" : "41% total debt"} guideline.
-              {r.limitedBy === "total" && " Paying down other debts would raise this."}
-            </p>
-          </div>
+          <AnswerCard
+            id="usda-qualify-result"
+            label="You may qualify for a home up to"
+            total={Math.floor(r.price / 1000) * 1000}
+            context={`with no down payment, under USDA's 29% / 41% guidelines`}
+            parts={[
+              { label: "Principal & interest", value: r.pi },
+              { label: "Tax", value: r.tax },
+              { label: "Insurance", value: insurance / 12 },
+              { label: "Guarantee fee", value: r.fee },
+              { label: "HOA", value: hoa },
+            ]}
+            stats={[
+              { label: "Loan", value: formatCurrency(r.loan), hint: `incl. ${USDA_UPFRONT_FEE_RATE}% upfront fee` },
+              { label: "Monthly payment", value: formatCurrency(r.maxPayment) },
+              {
+                label: "Limited by",
+                value: r.limitedBy === "housing" ? "29% housing" : "41% total debt",
+                hint: r.limitedBy === "total" ? "paying down debts would raise it" : undefined,
+              },
+            ]}
+          />
 
           {overLimit ? (
             <div className="flex gap-2 rounded-lg border border-destructive/40 bg-destructive/10 p-3 text-sm" role="status">

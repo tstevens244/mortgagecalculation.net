@@ -1,6 +1,4 @@
-import { useState, useMemo } from "react";
-import { Card, CardContent } from "@/components/ui/card";
-import { TrendingDown } from "lucide-react";
+import { useMemo } from "react";
 import VizCard from "./viz/VizCard";
 import CompareTable from "./viz/CompareTable";
 import PayoffComparison from "./viz/PayoffComparison";
@@ -9,19 +7,20 @@ import CurrencyInput from "./CurrencyInput";
 import PercentInput from "./PercentInput";
 import { formatCurrency } from "@/lib/formatters";
 import StickyResult from "./StickyResult";
-import { AnimatedCurrency } from "@/components/AnimatedNumber";
+import { AnswerCard } from "./PaymentAnswer";
 import { InputCard, FieldGrid, Field, TermChoice } from "./calc/Form";
+import { useUrlParam } from "@/lib/urlState";
 
 const ExtraPaymentsCalculator = () => {
   // Loan Information
-  const [homePrice, setHomePrice] = useState(400000);
-  const [downPayment, setDownPayment] = useState(80000);
-  const [interestRate, setInterestRate] = useState(6.5);
-  const [loanTerm, setLoanTerm] = useState("30");
+  const [homePrice, setHomePrice] = useUrlParam("homePrice", 400000);
+  const [downPayment, setDownPayment] = useUrlParam("downPayment", 80000);
+  const [interestRate, setInterestRate] = useUrlParam("interestRate", 6.5);
+  const [loanTerm, setLoanTerm] = useUrlParam("loanTerm", "30");
 
   // Extra Payments
-  const [initialExtraPayment, setInitialExtraPayment] = useState(0);
-  const [monthlyExtraPayment, setMonthlyExtraPayment] = useState(200);
+  const [initialExtraPayment, setInitialExtraPayment] = useUrlParam("initialExtraPayment", 0);
+  const [monthlyExtraPayment, setMonthlyExtraPayment] = useUrlParam("monthlyExtraPayment", 200);
 
   const loanAmount = Math.max(0, homePrice - downPayment);
 
@@ -222,24 +221,22 @@ const ExtraPaymentsCalculator = () => {
 
         {/* Right Column - Results */}
         <div className="calc-results order-1">
-          {/* Interest Savings Highlight */}
-          <Card className="result-highlight border-0">
-            <CardContent className="p-0">
-              <StickyResult targetId="calc-result" label={"Interest saved"} value={formatCurrency(results.interestSavings)} />
-              <div id="calc-result" className="text-center space-y-2">
-                <TrendingDown className="h-8 w-8 mx-auto text-white/80" />
-                <p className="text-white/80 text-sm font-medium">
-                  Total Interest Savings
-                </p>
-                <p className="text-4xl md:text-5xl font-bold text-white">
-                  <AnimatedCurrency value={results.interestSavings} />
-                </p>
-                <p className="text-white/80 text-sm">
-                  Pay off {results.yearsSaved} years {results.remainingMonthsSaved > 0 ? `${results.remainingMonthsSaved} months` : ''} early
-                </p>
-              </div>
-            </CardContent>
-          </Card>
+          <StickyResult targetId="calc-result" label={"Interest saved"} value={formatCurrency(results.interestSavings)} />
+          <AnswerCard
+            label="Interest you'd save"
+            total={results.interestSavings}
+            context={`by paying ${formatCurrency(monthlyExtraPayment)} extra a month${initialExtraPayment > 0 ? ` plus ${formatCurrency(initialExtraPayment)} up front` : ""}`}
+            stats={[
+              { label: "Paid off sooner by", value: yearsMonths(results.originalMonths - results.extraMonths) },
+              { label: "Paid off in", value: yearsMonths(results.extraMonths), hint: `instead of ${yearsMonths(results.originalMonths)}` },
+              { label: "New monthly payment", value: formatCurrency(results.extraMonthlyPayment), hint: `was ${formatCurrency(results.originalMonthlyPayment)}` },
+              {
+                label: "Extra you pay in",
+                value: formatCurrency(results.extraPrincipal),
+                hint: results.extraPrincipal > 0 ? `$${(results.interestSavings / results.extraPrincipal).toFixed(2)} saved per $1` : undefined,
+              },
+            ]}
+          />
 
           <VizCard title="Regular vs. extra payments" description="Lower is better in every row; the check marks the winner.">
             <CompareTable

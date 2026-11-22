@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { ListChecks, Trophy } from "lucide-react";
+import { ListChecks } from "lucide-react";
 import CurrencyInput from "@/components/CurrencyInput";
 import PercentInput from "@/components/PercentInput";
 import FormRow from "@/components/FormRow";
@@ -9,14 +9,16 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { formatCurrency } from "@/lib/formatters";
 import { compareOffers, type Offer } from "@/lib/compareMath";
 import { cn } from "@/lib/utils";
+import { useUrlParam } from "@/lib/urlState";
+import { AnswerCard } from "@/components/PaymentAnswer";
 
 const NAMES = ["Offer A", "Offer B", "Offer C"];
 
 /** Compare up to three loan offers by monthly payment, APR and total cost over the years you'll keep the loan. */
 const LoanOffersCalculator = () => {
-  const [loan, setLoan] = useState(320000);
-  const [term, setTerm] = useState("30");
-  const [years, setYears] = useState("7");
+  const [loan, setLoan] = useUrlParam("loan", 320000);
+  const [term, setTerm] = useUrlParam("term", "30");
+  const [years, setYears] = useUrlParam("years", "7");
   const [offers, setOffers] = useState<Offer[]>([
     { rate: 6.5, upfront: 4000 },
     { rate: 6.75, upfront: 0 },
@@ -143,17 +145,12 @@ const LoanOffersCalculator = () => {
 
       <aside className="calc-results" aria-label="Best offer">
         <StickyResult targetId="calc-result" label={`${NAMES[best.i]} costs least`} value={formatCurrency(best.cost)} />
-        <div id="calc-result" className="result-highlight">
-          <p className="flex items-center gap-1.5 text-sm font-medium uppercase tracking-wide text-primary-foreground/80">
-            <Trophy className="h-4 w-4" aria-hidden="true" />
-            Lowest cost over {years} years
-          </p>
-          <p className="mt-2 text-4xl font-display font-bold lg:text-5xl">{NAMES[best.i]}</p>
-          <p className="mt-2 text-sm text-primary-foreground/80">
-            {formatCurrency(best.cost)} in fees and interest,{" "}
-            {formatCurrency(runnerUp.cost - best.cost)} less than {NAMES[runnerUp.i]}
-          </p>
-        </div>
+        <AnswerCard
+          label={`Lowest cost over ${years} years`}
+          headline={NAMES[best.i]}
+          context={`${formatCurrency(best.cost)} in fees and interest, ${formatCurrency(runnerUp.cost - best.cost)} less than ${NAMES[runnerUp.i]}`}
+          stats={results.map((o, i) => ({ label: NAMES[i], value: formatCurrency(o.cost), hint: `${o.rate.toFixed(3)}% · APR ${o.apr.toFixed(3)}%` }))}
+        />
 
         <div className="calculator-card space-y-2 p-4 text-sm sm:p-6">
           <h2 className="text-lg font-display font-semibold">APR vs. total cost</h2>
