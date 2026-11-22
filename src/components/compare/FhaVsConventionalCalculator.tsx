@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { AlertTriangle, ArrowLeftRight } from "lucide-react";
 import CurrencyInput from "@/components/CurrencyInput";
 import PercentInput from "@/components/PercentInput";
@@ -8,6 +8,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { formatCurrency } from "@/lib/formatters";
 import { fhaVsConventional } from "@/lib/compareMath";
 import { CONFORMING_LIMIT, FHA_LIMIT_CEILING, FHA_LIMIT_FLOOR, FHA_UPFRONT_MIP_RATE } from "@/lib/loanLimits";
+import { useUrlParam } from "@/lib/urlState";
+import { AnswerCard } from "@/components/PaymentAnswer";
 
 const yearsMonths = (months: number) => {
   const y = Math.floor(months / 12);
@@ -17,13 +19,13 @@ const yearsMonths = (months: number) => {
 
 /** Same home, FHA loan vs. conventional loan: monthly payment, mortgage insurance and cost over the years you keep it. */
 const FhaVsConventionalCalculator = () => {
-  const [price, setPrice] = useState(400000);
-  const [down, setDown] = useState(5);
-  const [term, setTerm] = useState("30");
-  const [fhaRate, setFhaRate] = useState(6.5);
-  const [convRate, setConvRate] = useState(6.5);
-  const [pmiRate, setPmiRate] = useState(0.5);
-  const [years, setYears] = useState("7");
+  const [price, setPrice] = useUrlParam("price", 400000);
+  const [down, setDown] = useUrlParam("down", 5);
+  const [term, setTerm] = useUrlParam("term", "30");
+  const [fhaRate, setFhaRate] = useUrlParam("fhaRate", 6.5);
+  const [convRate, setConvRate] = useUrlParam("convRate", 6.5);
+  const [pmiRate, setPmiRate] = useUrlParam("pmiRate", 0.5);
+  const [years, setYears] = useUrlParam("years", "7");
 
   const r = useMemo(
     () =>
@@ -164,16 +166,17 @@ const FhaVsConventionalCalculator = () => {
 
       <aside className="calc-results" aria-label="Comparison results">
         <StickyResult targetId="calc-result" label={`${cheaper} saves`} value={formatCurrency(savings)} />
-        <div id="calc-result" className="result-highlight">
-          <p className="text-sm font-medium uppercase tracking-wide text-primary-foreground/80">
-            {cheaper} costs less over {horizonLabel}
-          </p>
-          <p className="mt-2 text-4xl font-display font-bold lg:text-5xl">{formatCurrency(savings)}</p>
-          <p className="mt-2 text-sm text-primary-foreground/80">
-            Monthly payment: FHA {formatCurrency(r.fha.payment)}, conventional {formatCurrency(r.conv.payment)}, including
-            mortgage insurance
-          </p>
-        </div>
+        <AnswerCard
+          label={`${cheaper} costs less over ${horizonLabel}`}
+          total={savings}
+          context="counting payments, mortgage insurance and the balance still owed"
+          stats={[
+            { label: "FHA monthly", value: formatCurrency(r.fha.payment), hint: "incl. MIP" },
+            { label: "Conventional monthly", value: formatCurrency(r.conv.payment), hint: r.conv.monthlyMi > 0 ? "incl. PMI" : "no PMI" },
+            { label: "FHA mortgage insurance", value: formatCurrency(r.fha.upfrontMip + r.fha.miPaid), hint: "upfront + annual" },
+            { label: "Conventional PMI", value: formatCurrency(r.conv.miPaid), hint: r.conv.pmiMonths > 0 ? `ends after ~${Math.ceil(r.conv.pmiMonths / 12)} yrs` : "none" },
+          ]}
+        />
 
         {warnings.length > 0 && (
           <div className="space-y-2 rounded-lg border border-destructive/40 bg-destructive/10 p-3 text-sm" role="status">

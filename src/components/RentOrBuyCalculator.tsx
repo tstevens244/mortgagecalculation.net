@@ -1,5 +1,4 @@
-import { useState, useMemo } from "react";
-import { Scale } from "lucide-react";
+import { useMemo } from "react";
 import { rentVsBuy, rentVsBuyByYear } from "@/lib/rentVsBuy";
 import { crossingYear } from "@/lib/amortization";
 import VizCard, { StatRow } from "./viz/VizCard";
@@ -12,33 +11,35 @@ import PercentInput from "./PercentInput";
 import { formatCurrency } from "@/lib/formatters";
 import StickyResult from "./StickyResult";
 import { InputCard, FieldGrid, Field, TermChoice, MoreOptions, Choice, summarize } from "./calc/Form";
+import { useUrlParam } from "@/lib/urlState";
+import { AnswerCard } from "./PaymentAnswer";
 
 const RentOrBuyCalculator = () => {
   // Rent Info
-  const [monthlyRent, setMonthlyRent] = useState(2000);
-  const [annualRentIncrease, setAnnualRentIncrease] = useState(3);
+  const [monthlyRent, setMonthlyRent] = useUrlParam("monthlyRent", 2000);
+  const [annualRentIncrease, setAnnualRentIncrease] = useUrlParam("annualRentIncrease", 3);
 
   // Property Info
-  const [homePrice, setHomePrice] = useState(400000);
-  const [annualAppreciation, setAnnualAppreciation] = useState(3);
-  const [yearsBeforeSell, setYearsBeforeSell] = useState("7");
-  const [sellingCost, setSellingCost] = useState(6);
-  const [buyingCost, setBuyingCost] = useState(3);
-  const [investmentReturn, setInvestmentReturn] = useState(4);
+  const [homePrice, setHomePrice] = useUrlParam("homePrice", 400000);
+  const [annualAppreciation, setAnnualAppreciation] = useUrlParam("annualAppreciation", 3);
+  const [yearsBeforeSell, setYearsBeforeSell] = useUrlParam("yearsBeforeSell", "7");
+  const [sellingCost, setSellingCost] = useUrlParam("sellingCost", 6);
+  const [buyingCost, setBuyingCost] = useUrlParam("buyingCost", 3);
+  const [investmentReturn, setInvestmentReturn] = useUrlParam("investmentReturn", 4);
 
   // Loan Information
-  const [downPaymentPercent, setDownPaymentPercent] = useState(20);
-  const [interestRate, setInterestRate] = useState(6.5);
-  const [loanTerm, setLoanTerm] = useState("30");
-  const [annualPMIPercent, setAnnualPMIPercent] = useState(0.5);
+  const [downPaymentPercent, setDownPaymentPercent] = useUrlParam("downPaymentPercent", 20);
+  const [interestRate, setInterestRate] = useUrlParam("interestRate", 6.5);
+  const [loanTerm, setLoanTerm] = useUrlParam("loanTerm", "30");
+  const [annualPMIPercent, setAnnualPMIPercent] = useUrlParam("annualPMIPercent", 0.5);
 
   // Ownership Costs
-  const [annualPropertyTaxRate, setAnnualPropertyTaxRate] = useState(1.25);
-  const [annualInsuranceRate, setAnnualInsuranceRate] = useState(0.5);
-  const [annualMaintenance, setAnnualMaintenance] = useState(2000);
+  const [annualPropertyTaxRate, setAnnualPropertyTaxRate] = useUrlParam("annualPropertyTaxRate", 1.25);
+  const [annualInsuranceRate, setAnnualInsuranceRate] = useUrlParam("annualInsuranceRate", 0.5);
+  const [annualMaintenance, setAnnualMaintenance] = useUrlParam("annualMaintenance", 2000);
 
   // Tax Info
-  const [incomeTaxRate, setIncomeTaxRate] = useState(0);
+  const [incomeTaxRate, setIncomeTaxRate] = useUrlParam("incomeTaxRate", 0);
 
   const { results, byYear } = useMemo(() => {
     const base = {
@@ -247,19 +248,21 @@ const RentOrBuyCalculator = () => {
 
         {/* Right Column - Results */}
         <div className="calc-results order-1">
-          <div className="result-highlight">
-            <StickyResult targetId="calc-result" label={"Better choice"} value={`${results.shouldBuy ? "Buy" : "Rent"} · saves ${formatCurrency(results.costDifference)}`} />
-            <div id="calc-result" className="text-center space-y-3">
-              <Scale className="h-10 w-10 mx-auto text-primary-foreground/80" aria-hidden="true" />
-              <p className="text-primary-foreground/80 text-sm font-medium">
-                If you sell in {yearsBeforeSell} years, it's better to
-              </p>
-              <p className="text-3xl md:text-4xl font-display font-bold">{results.shouldBuy ? "Buy" : "Rent"}</p>
-              <p className="text-primary-foreground/80 text-sm">
-                It costs {formatCurrency(results.costDifference)} less over {yearsBeforeSell} years
-              </p>
-            </div>
-          </div>
+          <StickyResult targetId="calc-result" label={"Better choice"} value={`${results.shouldBuy ? "Buy" : "Rent"} · saves ${formatCurrency(results.costDifference)}`} />
+          <AnswerCard
+            label={`If you sell in ${yearsBeforeSell} years, it's better to`}
+            headline={results.shouldBuy ? "Buy" : "Rent"}
+            context={`${results.shouldBuy ? "Buying" : "Renting"} costs ${formatCurrency(results.costDifference)} less over ${yearsBeforeSell} years`}
+            stats={[
+              {
+                label: "Buying breaks even",
+                value: breakEvenYear !== null ? `After ${breakEvenYear.toFixed(1).replace(/\.0$/, "")} yrs` : byYear[0].advantage > 0 ? "Right away" : "Not in 30 yrs",
+              },
+              { label: "First-year monthly cost", value: `${formatCurrency(results.monthlyOwnershipTotal)} own`, hint: `vs. ${formatCurrency(monthlyRent)} rent` },
+              { label: "Net cost of buying", value: formatCurrency(results.totalBuyCost), hint: `over ${yearsBeforeSell} years` },
+              { label: "Net cost of renting", value: formatCurrency(results.totalRentCost), hint: `over ${yearsBeforeSell} years` },
+            ]}
+          />
 
           <VizCard title="Monthly cost, first year" description="What leaves your account each month at the start.">
             <div className="space-y-5">

@@ -1,6 +1,4 @@
-import { useState, useMemo } from "react";
-import { Card, CardContent } from "@/components/ui/card";
-import { TrendingDown } from "lucide-react";
+import { useMemo } from "react";
 import VizCard from "./viz/VizCard";
 import CompareTable from "./viz/CompareTable";
 import PayoffComparison from "./viz/PayoffComparison";
@@ -9,18 +7,19 @@ import CurrencyInput from "./CurrencyInput";
 import PercentInput from "./PercentInput";
 import { formatCurrency } from "@/lib/formatters";
 import StickyResult from "./StickyResult";
-import { AnimatedCurrency } from "@/components/AnimatedNumber";
+import { AnswerCard } from "./PaymentAnswer";
 import { InputCard, FieldGrid, Field, TermChoice, MoreOptions } from "./calc/Form";
+import { useUrlParam } from "@/lib/urlState";
 
 const BiWeeklyCalculator = () => {
   // Loan Information
-  const [homePrice, setHomePrice] = useState(400000);
-  const [downPayment, setDownPayment] = useState(80000);
-  const [interestRate, setInterestRate] = useState(6.5);
-  const [loanTerm, setLoanTerm] = useState("30");
+  const [homePrice, setHomePrice] = useUrlParam("homePrice", 400000);
+  const [downPayment, setDownPayment] = useUrlParam("downPayment", 80000);
+  const [interestRate, setInterestRate] = useUrlParam("interestRate", 6.5);
+  const [loanTerm, setLoanTerm] = useUrlParam("loanTerm", "30");
 
   // Tax Info
-  const [taxRate, setTaxRate] = useState(0);
+  const [taxRate, setTaxRate] = useUrlParam("taxRate", 0);
 
   const loanAmount = Math.max(0, homePrice - downPayment);
 
@@ -229,24 +228,18 @@ const BiWeeklyCalculator = () => {
 
         {/* Right Column - Results */}
         <div className="calc-results order-1">
-          {/* Net Benefit Highlight */}
-          <Card className="result-highlight border-0">
-            <CardContent className="p-0">
-              <StickyResult targetId="calc-result" label={taxRate > 0 ? "Net benefit" : "Interest saved"} value={formatCurrency(taxRate > 0 ? results.netBenefit : results.interestSavings)} />
-              <div id="calc-result" className="text-center space-y-2">
-                <TrendingDown className="h-8 w-8 mx-auto text-white/80" />
-                <p className="text-white/80 text-sm font-medium">
-                  {taxRate > 0 ? "Net Benefit (After Tax Consideration)" : "Total Interest Savings"}
-                </p>
-                <p className="text-4xl md:text-5xl font-bold text-white">
-                  <AnimatedCurrency value={taxRate > 0 ? results.netBenefit : results.interestSavings} />
-                </p>
-                <p className="text-white/80 text-sm">
-                  Pay off {results.yearsSaved} years {results.remainingMonthsSaved > 0 ? `${results.remainingMonthsSaved} months` : ''} early
-                </p>
-              </div>
-            </CardContent>
-          </Card>
+          <StickyResult targetId="calc-result" label={taxRate > 0 ? "Net benefit" : "Interest saved"} value={formatCurrency(taxRate > 0 ? results.netBenefit : results.interestSavings)} />
+          <AnswerCard
+            label={taxRate > 0 ? "You'd save, after taxes" : "Interest you'd save"}
+            total={taxRate > 0 ? results.netBenefit : results.interestSavings}
+            context={`paying ${formatCurrency(results.biWeeklyPayment)} every two weeks instead of ${formatCurrency(results.standardMonthlyPayment)} a month`}
+            stats={[
+              { label: "Paid off sooner by", value: yearsMonths(results.standardMonths - results.biWeeklyTotalMonths) },
+              { label: "Paid off in", value: yearsMonths(results.biWeeklyTotalMonths), hint: `instead of ${yearsMonths(results.standardMonths)}` },
+              { label: "Extra paid a year", value: formatCurrency(results.standardMonthlyPayment), hint: "one extra monthly payment" },
+              { label: "Total interest", value: formatCurrency(results.biWeeklyTotalInterest), hint: `was ${formatCurrency(results.standardTotalInterest)}` },
+            ]}
+          />
 
           <VizCard
             title="Monthly vs. bi-weekly"

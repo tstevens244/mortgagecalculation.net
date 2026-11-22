@@ -1,5 +1,4 @@
-import { useState, useMemo } from "react";
-import { DollarSign } from "lucide-react";
+import { useMemo } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import CompareTable from "./viz/CompareTable";
@@ -12,6 +11,8 @@ import { formatCurrency } from "@/lib/formatters";
 import { monthsUntilBalance } from "@/lib/mortgageMath";
 import StickyResult from "./StickyResult";
 import { InputCard, FieldGrid, Field, MoreOptions, Choice, DownPaymentField, summarize } from "./calc/Form";
+import { useUrlState } from "@/lib/urlState";
+import { AnswerCard } from "./PaymentAnswer";
 
 interface SecondMortgageInputs {
   homeValue: number;
@@ -39,7 +40,7 @@ interface SecondMortgageInputs {
 }
 
 const SecondMortgageCalculator = () => {
-  const [inputs, setInputs] = useState<SecondMortgageInputs>({
+  const [inputs, setInputs] = useUrlState<SecondMortgageInputs>({
     homeValue: 400000,
     downPayment: 20000,
     downPaymentPercent: 5,
@@ -411,22 +412,24 @@ const SecondMortgageCalculator = () => {
 
           {/* Results Comparison */}
           <StickyResult targetId="calc-result" label="Cheaper option" value={`${calculations.betterOption === "piggyback" ? "Piggyback loan" : "Single loan + PMI"} · saves ${formatCurrency(calculations.savings)}`} />
-          <section id="calc-result" className="calculator-card p-4 sm:p-6" aria-labelledby="results-heading">
-            <h2 id="results-heading" className="text-base sm:text-xl font-display font-semibold mb-4 flex items-center gap-2">
-              <DollarSign className="h-4 w-4 sm:h-5 sm:w-5 text-accent" aria-hidden="true" />
-              Financial Analysis
-            </h2>
+          <AnswerCard
+            label={`${calculations.betterOption === "piggyback" ? "The piggyback loan" : "One loan with PMI"} saves you`}
+            total={calculations.savings}
+            context="over the full terms, counting the down payment, closing costs, payments and PMI"
+            stats={[
+              { label: "Monthly cost, one loan + PMI", value: formatCurrency(calculations.pmi.totalMonthly), hint: `PMI ends after ~${Math.ceil(calculations.pmi.pmiMonths / 12)} yrs` },
+              { label: "Monthly cost, piggyback", value: formatCurrency(calculations.piggyback.totalMonthly), hint: "no PMI" },
+              { label: "Cash at closing, one loan", value: formatCurrency(calculations.pmi.upfrontCost) },
+              { label: "Cash at closing, piggyback", value: formatCurrency(calculations.piggyback.upfrontCost) },
+            ]}
+          >
+            {calculations.betterOption === "piggyback"
+              ? "You avoid PMI entirely, at the cost of a second, higher-rate loan."
+              : `PMI ends after about ${Math.ceil(calculations.pmi.pmiMonths / 12)} years, which keeps its total cost down.`}
+          </AnswerCard>
 
-            <p className="mb-5 text-sm text-muted-foreground sm:text-base">
-              <strong className="text-foreground">
-                {calculations.betterOption === "piggyback" ? "The piggyback loan" : "One loan with PMI"} costs{" "}
-                {formatCurrency(calculations.savings)} less
-              </strong>{" "}
-              over the full terms, counting the down payment, closing costs, payments and PMI.{" "}
-              {calculations.betterOption === "piggyback"
-                ? "You avoid PMI entirely, at the cost of a second, higher-rate loan."
-                : `PMI ends after about ${Math.ceil(calculations.pmi.pmiMonths / 12)} years, which keeps its total cost down.`}
-            </p>
+          <section className="calculator-card p-4 sm:p-6" aria-labelledby="results-heading">
+            <h2 id="results-heading" className="mb-5 font-display text-lg font-semibold sm:text-xl">Compare the two options</h2>
 
             <h3 className="mb-3 font-display text-base font-semibold">Monthly cost, side by side</h3>
             <div className="space-y-4">

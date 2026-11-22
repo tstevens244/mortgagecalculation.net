@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { Calculator, CreditCard, Plus, Trash2 } from "lucide-react";
+import { CreditCard, Plus, Trash2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -13,6 +13,9 @@ import { Legend } from "./viz/VizCard";
 import { SERIES } from "./viz/theme";
 import { yearsMonths } from "@/lib/amortization";
 import { monthsToPayoff, totalPaidOnBalance } from "@/lib/mortgageMath";
+import { useUrlState } from "@/lib/urlState";
+import { AnswerCard } from "./PaymentAnswer";
+import StickyResult from "./StickyResult";
 
 interface Debt {
   id: string;
@@ -38,7 +41,7 @@ const defaultDebts: Debt[] = [
 
 const HelocDebtConsolidationCalculator = () => {
   const [debts, setDebts] = useState<Debt[]>(defaultDebts);
-  const [inputs, setInputs] = useState<HelocInputs>({
+  const [inputs, setInputs] = useUrlState<HelocInputs>({
     helocTerm: 15,
     helocClosingCosts: 1200,
     helocInterestRate: 6.0,
@@ -276,12 +279,37 @@ const HelocDebtConsolidationCalculator = () => {
             </section>
           </div>
 
-          {/* Results Comparison */}
+          {/* The answer */}
+          <StickyResult
+            targetId="calc-result"
+            label={calculations.betterOption === "heloc" ? "Consolidating saves" : "Keeping debts saves"}
+            value={formatCurrency(Math.abs(calculations.totalSavings))}
+          />
+          <AnswerCard
+            label={`${calculations.betterOption === "heloc" ? "Consolidating" : "Keeping your current debts"} saves you`}
+            total={Math.abs(calculations.totalSavings)}
+            context="in total, counting interest and closing costs"
+            stats={[
+              {
+                label: "Monthly payment",
+                value: `${calculations.monthlySavings >= 0 ? "−" : "+"}${formatCurrency(Math.abs(calculations.monthlySavings))}/mo`,
+                hint: `${formatCurrency(calculations.heloc.monthlyPayment)} vs. ${formatCurrency(calculations.existing.monthlyPayment)} now`,
+              },
+              {
+                label: "Paid off in",
+                value: yearsMonths(calculations.heloc.yearsToPayoff * 12),
+                hint: `vs. ${yearsMonths(calculations.existing.yearsToPayoff * 12 + calculations.existing.monthsToPayoff)} now`,
+              },
+              { label: "Total interest", value: formatCurrency(calculations.heloc.totalInterest), hint: `vs. ${formatCurrency(calculations.existing.totalInterest)} now` },
+              { label: "Closing costs", value: formatCurrency(calculations.heloc.closingCosts) },
+            ]}
+          >
+            Your home secures the new loan, so missed payments put it at risk.
+          </AnswerCard>
+
+          {/* Comparison */}
           <section className="calculator-card p-4 sm:p-6" aria-labelledby="results-heading">
-            <h2 id="results-heading" className="text-base sm:text-xl font-display font-semibold mb-4 flex items-center gap-2">
-              <Calculator className="h-4 w-4 sm:h-5 sm:w-5 text-accent" aria-hidden="true" />
-              Financial Analysis
-            </h2>
+            <h2 id="results-heading" className="mb-5 font-display text-lg font-semibold sm:text-xl">Compare the two options</h2>
 
             {calculations.existing.neverPaysOff && (
               <p className="mb-4 rounded-lg border border-destructive/40 bg-destructive/10 p-3 text-sm" role="status">
@@ -299,20 +327,6 @@ const HelocDebtConsolidationCalculator = () => {
               const consolidate = calculations.betterOption === "heloc";
               return (
                 <>
-                  <p className="mb-5 text-sm text-muted-foreground sm:text-base">
-                    <strong className="text-foreground">
-                      {consolidate ? "Consolidating" : "Keeping your current debts"} costs {formatCurrency(Math.abs(calculations.totalSavings))} less
-                    </strong>{" "}
-                    in total.{" "}
-                    {calculations.monthlySavings > 0
-                      ? `The home equity loan lowers your payment by ${formatCurrency(calculations.monthlySavings)} a month`
-                      : `The home equity loan raises your payment by ${formatCurrency(-calculations.monthlySavings)} a month`}
-                    {helocMonths > existingMonths
-                      ? `, but stretches payoff from ${yearsMonths(existingMonths)} to ${yearsMonths(helocMonths)}${consolidate ? "." : ", and the extra time adds interest."}`
-                      : ` and pays everything off in ${yearsMonths(helocMonths)} instead of ${yearsMonths(existingMonths)}.`}{" "}
-                    Your home secures the new loan, so missed payments put it at risk.
-                  </p>
-
                   <h3 className="mb-3 font-display text-base font-semibold">Total you'd pay</h3>
                   <div className="space-y-4">
                     <StackedBar

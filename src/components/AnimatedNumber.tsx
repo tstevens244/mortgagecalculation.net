@@ -40,13 +40,21 @@ export function useAnimatedNumber(target: number): number {
   return shown;
 }
 
-/** Whole-dollar amount that animates between values. Screen readers get the final value only. */
-export const AnimatedCurrency = ({ value, className }: { value: number; className?: string }) => {
+/** An amount (whole dollars by default) that animates between values. Screen readers get the final value only. */
+export const AnimatedCurrency = ({
+  value,
+  className,
+  format = formatCurrency,
+}: {
+  value: number;
+  className?: string;
+  format?: (n: number) => string;
+}) => {
   const shown = useAnimatedNumber(value);
   return (
     <span className={className}>
-      <span aria-hidden="true">{formatCurrency(shown)}</span>
-      <span className="sr-only">{formatCurrency(value)}</span>
+      <span aria-hidden="true">{format(shown)}</span>
+      <span className="sr-only">{format(value)}</span>
     </span>
   );
 };

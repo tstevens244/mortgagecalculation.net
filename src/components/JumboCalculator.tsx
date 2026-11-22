@@ -1,7 +1,6 @@
-import { useState, useMemo } from "react";
-import { Info, AlertTriangle } from "lucide-react";
+import { useMemo } from "react";
+import { AlertTriangle } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import PaymentBreakdown from "./PaymentBreakdown";
 import AmortizationSchedule from "./AmortizationSchedule";
@@ -11,7 +10,8 @@ import PercentInput from "./PercentInput";
 import { formatCurrency } from "@/lib/formatters";
 import { monthsUntilBalance } from "@/lib/mortgageMath";
 import StickyResult from "./StickyResult";
-import { AnimatedCurrency } from "@/components/AnimatedNumber";
+import { AnswerCard } from "./PaymentAnswer";
+import { useUrlState } from "@/lib/urlState";
 import { InputCard, FieldGrid, Field, TermChoice, MoreOptions, DownPaymentField, StartDateField, summarize } from "./calc/Form";
 import { CONFORMING_LIMIT, CONFORMING_LIMIT_HIGH_COST as HIGH_COST_LIMIT } from "@/lib/loanLimits";
 
@@ -32,7 +32,7 @@ const CONFORMING_LIMIT_STANDARD = CONFORMING_LIMIT;
 const CONFORMING_LIMIT_HIGH_COST = HIGH_COST_LIMIT;
 
 const JumboCalculator = () => {
-  const [inputs, setInputs] = useState<JumboInputs>({
+  const [inputs, setInputs] = useUrlState<JumboInputs>({
     homePrice: 1000000,
     downPayment: 200000, // 20% typical for jumbo
     downPaymentPercent: 20,
@@ -202,86 +202,28 @@ const JumboCalculator = () => {
         {/* Results Section */}
         <aside className="calc-results" aria-label="Calculation Results">
           <StickyResult targetId="calc-result" label={"Monthly payment"} value={formatCurrency(calculations.totalMonthly)} />
-          <div id="calc-result" className="result-highlight">
-            <p className="text-primary-foreground/80 text-sm font-medium uppercase tracking-wide">
-              Monthly Payment
-            </p>
-            <p className="text-4xl lg:text-5xl font-display font-bold mt-2">
-              <AnimatedCurrency value={calculations.totalMonthly} />
-            </p>
-            {calculations.isJumboLoan && (
-              <p className="text-primary-foreground/70 text-xs mt-1">Jumbo Loan</p>
-            )}
-          </div>
-
-          <div className="calculator-card p-6 space-y-4">
-            <h3 className="font-semibold text-lg">Payment Summary</h3>
-
-            <div className="space-y-3">
-              <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Loan Amount</span>
-                <span className="font-medium">{formatCurrency(calculations.loanAmount)}</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Conforming Limit</span>
-                <span className="font-medium">{formatCurrency(CONFORMING_LIMIT_STANDARD)}</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className={calculations.isJumboLoan ? "text-accent font-medium" : "text-muted-foreground"}>
-                  {calculations.isJumboLoan ? "Jumbo Amount" : "Under Limit"}
-                </span>
-                <span className={calculations.isJumboLoan ? "text-accent font-medium" : "font-medium"}>
-                  {calculations.isJumboLoan 
-                    ? formatCurrency(calculations.loanAmount - CONFORMING_LIMIT_STANDARD)
-                    : formatCurrency(CONFORMING_LIMIT_STANDARD - calculations.loanAmount)}
-                </span>
-              </div>
-              <hr className="border-border" />
-              <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Principal & Interest</span>
-                <span className="font-medium">{formatCurrency(calculations.monthlyPI)}</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Property Tax</span>
-                <span className="font-medium">{formatCurrency(calculations.monthlyTax)}</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Home Insurance</span>
-                <span className="font-medium">{formatCurrency(calculations.monthlyInsurance)}</span>
-              </div>
-              {calculations.monthlyPMI > 0 && (
-                <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground flex items-center gap-1">
-                    PMI
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Info className="h-3 w-3 text-muted-foreground cursor-help" />
-                      </TooltipTrigger>
-                      <TooltipContent className="max-w-xs">
-                        <p>PMI may be required for jumbo loans with less than 20% down payment.</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </span>
-                  <span className="font-medium">{formatCurrency(calculations.monthlyPMI)}</span>
-                </div>
-              )}
-              {calculations.monthlyHOA > 0 && (
-                <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">HOA Fees</span>
-                  <span className="font-medium">{formatCurrency(calculations.monthlyHOA)}</span>
-                </div>
-              )}
-              <hr className="border-border" />
-              <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Total Interest ({inputs.loanTerm} years)</span>
-                <span className="font-medium">{formatCurrency(calculations.totalInterest)}</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Total Cost of Loan</span>
-                <span className="font-medium">{formatCurrency(calculations.totalPayment)}</span>
-              </div>
-            </div>
-          </div>
+          <AnswerCard
+            label="Your jumbo payment"
+            total={calculations.totalMonthly}
+            context={`on a ${formatCurrency(calculations.loanAmount)} loan at ${inputs.interestRate}% for ${inputs.loanTerm} years`}
+            parts={[
+              { label: "Principal & interest", value: calculations.monthlyPI },
+              { label: "Tax", value: calculations.monthlyTax },
+              { label: "Insurance", value: calculations.monthlyInsurance },
+              { label: "PMI", value: calculations.monthlyPMI },
+              { label: "HOA", value: calculations.monthlyHOA },
+            ]}
+            stats={[
+              {
+                label: calculations.isJumboLoan ? "Above the conforming limit" : "Under the conforming limit",
+                value: formatCurrency(Math.abs(calculations.loanAmount - CONFORMING_LIMIT_STANDARD)),
+                hint: `limit ${formatCurrency(CONFORMING_LIMIT_STANDARD)}${calculations.isJumboLoan ? "" : " · not a jumbo loan"}`,
+              },
+              { label: "Total interest", value: formatCurrency(calculations.totalInterest), hint: `over ${inputs.loanTerm} years` },
+              { label: "Total of all payments", value: formatCurrency(calculations.totalPayment), hint: "incl. tax, insurance & fees" },
+              { label: "Paid off", value: amortizationData.length ? amortizationData[amortizationData.length - 1].date.toLocaleDateString("en-US", { month: "short", year: "numeric" }) : "—", hint: `${calculations.numPayments} payments` },
+            ]}
+          />
         </aside>
       </div>
 

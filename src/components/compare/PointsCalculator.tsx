@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { Coins } from "lucide-react";
 import CurrencyInput from "@/components/CurrencyInput";
 import PercentInput from "@/components/PercentInput";
@@ -7,6 +7,8 @@ import StickyResult from "@/components/StickyResult";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { formatCurrency } from "@/lib/formatters";
 import { pointsAnalysis } from "@/lib/compareMath";
+import { useUrlParam } from "@/lib/urlState";
+import { AnswerCard } from "@/components/PaymentAnswer";
 
 const yearsMonths = (months: number) => {
   const y = Math.floor(months / 12);
@@ -16,12 +18,12 @@ const yearsMonths = (months: number) => {
 
 /** Is paying discount points worth it? Cost, monthly savings, break-even and net savings over the years you keep the loan. */
 const PointsCalculator = () => {
-  const [loan, setLoan] = useState(320000);
-  const [rate, setRate] = useState(6.75);
-  const [points, setPoints] = useState(1);
-  const [perPoint, setPerPoint] = useState(0.25);
-  const [term, setTerm] = useState("30");
-  const [years, setYears] = useState("7");
+  const [loan, setLoan] = useUrlParam("loan", 320000);
+  const [rate, setRate] = useUrlParam("rate", 6.75);
+  const [points, setPoints] = useUrlParam("points", 1);
+  const [perPoint, setPerPoint] = useUrlParam("perPoint", 0.25);
+  const [term, setTerm] = useUrlParam("term", "30");
+  const [years, setYears] = useUrlParam("years", "7");
 
   const p = useMemo(
     () =>
@@ -119,17 +121,17 @@ const PointsCalculator = () => {
           label={worth ? "Points save you" : "Points cost you"}
           value={formatCurrency(Math.abs(p.netSavings))}
         />
-        <div id="calc-result" className="result-highlight">
-          <p className="text-sm font-medium uppercase tracking-wide text-primary-foreground/80">
-            {worth ? "Points save you" : "Points cost you"} over {years} years
-          </p>
-          <p className="mt-2 text-4xl font-display font-bold lg:text-5xl">{formatCurrency(Math.abs(p.netSavings))}</p>
-          <p className="mt-2 text-sm text-primary-foreground/80">
-            {worth
-              ? `Worth it if you keep the loan at least ${breakEven}.`
-              : `You'd need to keep the loan ${breakEven === "Never" ? "longer than the term" : `at least ${breakEven}`} to come out ahead.`}
-          </p>
-        </div>
+        <AnswerCard
+          label={`${worth ? "Points save you" : "Points cost you"} over ${years} years`}
+          total={Math.abs(p.netSavings)}
+          context={worth ? `Worth it if you keep the loan at least ${breakEven}.` : `You'd need to keep the loan ${breakEven === "Never" ? "longer than the term" : `at least ${breakEven}`} to come out ahead.`}
+          stats={[
+            { label: "Cost of points", value: formatCurrency(p.cost), hint: `${points} pt${points === 1 ? "" : "s"}` },
+            { label: "New rate", value: `${p.newRate.toFixed(3)}%`, hint: `was ${rate.toFixed(3)}%` },
+            { label: "Monthly savings", value: formatCurrency(p.monthlySavings) },
+            { label: "Break-even", value: breakEven },
+          ]}
+        />
 
         <div className="calculator-card space-y-2 p-4 text-sm sm:p-6">
           <h2 className="text-lg font-display font-semibold">How it's figured</h2>
