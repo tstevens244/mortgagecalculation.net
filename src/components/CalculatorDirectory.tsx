@@ -12,7 +12,8 @@ const CalculatorDirectory = () => (
       <p className="mt-2 text-muted-foreground">Pick what you're trying to do. Every calculator is free and runs in your browser.</p>
     </div>
 
-    <div className="grid gap-6 md:grid-cols-2">
+    {/* One group per row until each group is wide enough for two columns of links. */}
+    <div className="grid gap-6 lg:grid-cols-2">
       {calculatorGroups.map((group) => (
         <div key={group.id} className="calculator-card p-5 sm:p-6">
           <div className="mb-4 flex items-start justify-between gap-3">
@@ -22,7 +23,7 @@ const CalculatorDirectory = () => (
                   {group.title}
                 </Link>
               </h3>
-              <p className="text-sm text-muted-foreground">{group.description}</p>
+              <p className="mt-1 text-sm text-muted-foreground">{group.description}</p>
             </div>
             <Link
               to={group.hubPath}
@@ -33,7 +34,8 @@ const CalculatorDirectory = () => (
               <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
             </Link>
           </div>
-          <ul className="grid gap-2 sm:grid-cols-2" role="list">
+          {/* Two columns of links only when each link gets at least 15rem. */}
+          <ul className="grid gap-2 sm:grid-cols-[repeat(auto-fill,minmax(15rem,1fr))]" role="list">
             {group.calculators.map((calc) => (
               <li key={calc.path}>
                 <Link
@@ -44,9 +46,9 @@ const CalculatorDirectory = () => (
                     <calc.icon className="h-4 w-4" aria-hidden="true" />
                   </span>
                   <span className="min-w-0">
-                    <span className="flex items-center gap-1 text-sm font-semibold text-foreground">
+                    <span className="block text-sm font-semibold text-foreground">
                       {calc.name}
-                      <ArrowRight className="h-3.5 w-3.5 opacity-0 transition-opacity group-hover:opacity-100" aria-hidden="true" />
+                      <ArrowRight className="ml-1 inline h-3.5 w-3.5 align-[-2px] opacity-0 transition-opacity group-hover:opacity-100" aria-hidden="true" />
                     </span>
                     <span className="mt-0.5 block text-xs leading-snug text-muted-foreground">{calc.description}</span>
                   </span>
