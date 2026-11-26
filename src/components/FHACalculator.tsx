@@ -1,4 +1,6 @@
 import { useMemo } from "react";
+import LoanTypeSwitch from "@/components/calc/LoanTypeSwitch";
+import MarketRate from "@/components/calc/MarketRate";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import PaymentBreakdown from "./PaymentBreakdown";
 import AmortizationSchedule from "./AmortizationSchedule";
@@ -153,7 +155,7 @@ const FHACalculator = () => {
                 onPercent={(value) => updateInput("downPaymentPercent", value)}
                 info="FHA requires at least 3.5% down with a credit score of 580 or higher, or 10% with a score of 500 to 579."
               />
-              <Field id="interest-rate" label="Interest rate" info="Your quoted rate, not the APR. Rates change daily; check a few lenders.">
+              <Field id="interest-rate" label="Interest rate" info="Your quoted rate, not the APR. Rates change daily; check a few lenders." hint={<MarketRate term={inputs.loanTerm} value={inputs.interestRate} onUse={(r) => updateInput("interestRate", r)} note="Conventional average; FHA rates are often a little lower." />}>
                 <PercentInput id="interest-rate" value={inputs.interestRate} onChange={(value) => updateInput("interestRate", value)} min={0} max={30} decimalPlaces={3} />
               </Field>
               <Field id="loan-term" label="Loan term">
@@ -206,6 +208,7 @@ const FHACalculator = () => {
               { label: "Paid off", value: amortizationData.length ? amortizationData[amortizationData.length - 1].date.toLocaleDateString("en-US", { month: "short", year: "numeric" }) : "—", hint: `${calculations.numPayments} payments` },
             ]}
           />
+          <LoanTypeSwitch current="fha" price={inputs.homePrice} down={inputs.downPayment} rate={inputs.interestRate} term={inputs.loanTerm} />
         </aside>
       </div>
 

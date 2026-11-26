@@ -8,7 +8,8 @@ import TrustLine from "@/components/TrustLine";
 import GuideContents from "@/components/GuideContents";
 import RelatedCalculators from "@/components/RelatedCalculators";
 import { calculatorBreadcrumbSchema } from "@/lib/calculators";
-import { SITE_URL } from "@/lib/site";
+import { SITE_URL, webPageSchema } from "@/lib/site";
+import { FIGURES_REVIEWED } from "@/lib/loanLimits";
 
 export interface Faq {
   q: string;
@@ -33,6 +34,7 @@ interface CalculatorPageProps {
 const CalculatorPage = ({ path, title, description, heading, intro, calculator, children, faqs, featureList }: CalculatorPageProps) => {
   const url = `${SITE_URL}${path}`;
   const schemas = [
+    webPageSchema(url, title, FIGURES_REVIEWED),
     calculatorBreadcrumbSchema(path),
     {
       "@context": "https://schema.org",

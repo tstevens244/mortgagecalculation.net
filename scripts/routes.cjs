@@ -24,6 +24,7 @@ const routes = [
   { path: "/conventional-mortgage-calculator", sources: ["src/pages/Conventional.tsx", "src/components/MortgageCalculator.tsx"] },
   { path: "/fha-loan-calculator", sources: ["src/pages/FHA.tsx", "src/components/FHACalculator.tsx"] },
   { path: "/usda-loan-calculator", sources: ["src/pages/USDA.tsx", "src/components/USDACalculator.tsx"] },
+  { path: "/closing-cost-calculator", sources: ["src/pages/ClosingCosts.tsx", "src/components/ClosingCostCalculator.tsx", "src/lib/closingCosts.ts"] },
   { path: "/fha-mip-calculator", sources: ["src/pages/fees/FhaMip.tsx", "src/components/fees/FhaMipCalculator.tsx", "src/lib/feeMath.ts"] },
   { path: "/va-funding-fee-calculator", sources: ["src/pages/fees/VaFundingFee.tsx", "src/components/fees/VaFeeCalculator.tsx", "src/lib/feeMath.ts"] },
   { path: "/usda-funding-fee-calculator", sources: ["src/pages/fees/UsdaFundingFee.tsx", "src/components/fees/UsdaFeeCalculator.tsx", "src/lib/feeMath.ts"] },

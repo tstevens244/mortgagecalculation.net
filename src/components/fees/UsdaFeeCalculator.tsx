@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import MarketRate from "@/components/calc/MarketRate";
 import CurrencyInput from "@/components/CurrencyInput";
 import PercentInput from "@/components/PercentInput";
 import StickyResult from "@/components/StickyResult";
@@ -34,7 +35,7 @@ const UsdaFeeCalculator = () => {
             onPercent={(p) => setDown(Math.round((price * p) / 100))}
             info="Optional. A down payment lowers the loan, and both fees with it."
           />
-          <Field id="usda-fee-rate" label="Interest rate">
+          <Field id="usda-fee-rate" label="Interest rate" hint={<MarketRate term={30} value={rate} onUse={setRate} />}>
             <PercentInput id="usda-fee-rate" value={rate} onChange={setRate} min={0} max={20} decimalPlaces={3} />
           </Field>
           <Field id="usda-fee-financed" label="Pay the upfront fee" info="Most buyers add it to the loan. Paying it at closing avoids interest on it.">

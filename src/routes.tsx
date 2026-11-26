@@ -50,6 +50,7 @@ export const pages: { path: string; Component: LazyPage }[] = [
   { path: "/conventional-mortgage-calculator", Component: lazyPage(() => import("./pages/Conventional")) },
   { path: "/fha-loan-calculator", Component: lazyPage(() => import("./pages/FHA")) },
   { path: "/usda-loan-calculator", Component: lazyPage(() => import("./pages/USDA")) },
+  { path: "/closing-cost-calculator", Component: lazyPage(() => import("./pages/ClosingCosts")) },
   { path: "/fha-mip-calculator", Component: lazyPage(() => import("./pages/fees/FhaMip")) },
   { path: "/va-funding-fee-calculator", Component: lazyPage(() => import("./pages/fees/VaFundingFee")) },
   { path: "/usda-funding-fee-calculator", Component: lazyPage(() => import("./pages/fees/UsdaFundingFee")) },

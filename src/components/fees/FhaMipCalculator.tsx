@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import MarketRate from "@/components/calc/MarketRate";
 import CurrencyInput from "@/components/CurrencyInput";
 import PercentInput from "@/components/PercentInput";
 import StickyResult from "@/components/StickyResult";
@@ -38,7 +39,7 @@ const FhaMipCalculator = () => {
             info="FHA's minimum is 3.5%. With 10% or more down, annual MIP ends after 11 years instead of lasting for the life of the loan."
             hint={downPercent < 3.5 ? "FHA requires at least 3.5% down." : undefined}
           />
-          <Field id="fha-mip-rate" label="Interest rate">
+          <Field id="fha-mip-rate" label="Interest rate" hint={<MarketRate term={term} value={rate} onUse={setRate} />}>
             <PercentInput id="fha-mip-rate" value={rate} onChange={setRate} min={0} max={20} decimalPlaces={3} />
           </Field>
           <Field id="fha-mip-term" label="Loan term" info="15-year FHA loans have lower annual MIP rates.">

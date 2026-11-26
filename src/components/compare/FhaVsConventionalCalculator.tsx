@@ -1,4 +1,7 @@
 import { useMemo } from "react";
+import MarketRate from "@/components/calc/MarketRate";
+import { averageRate } from "@/lib/marketRates";
+import { CREDIT_TIERS, pmiRate as estimatePmiRate, tierLabel } from "@/lib/pmi";
 import { AlertTriangle, ArrowLeftRight } from "lucide-react";
 import CurrencyInput from "@/components/CurrencyInput";
 import PercentInput from "@/components/PercentInput";
@@ -22,9 +25,10 @@ const FhaVsConventionalCalculator = () => {
   const [price, setPrice] = useUrlParam("price", 400000);
   const [down, setDown] = useUrlParam("down", 5);
   const [term, setTerm] = useUrlParam("term", "30");
-  const [fhaRate, setFhaRate] = useUrlParam("fhaRate", 6.5);
-  const [convRate, setConvRate] = useUrlParam("convRate", 6.5);
-  const [pmiRate, setPmiRate] = useUrlParam("pmiRate", 0.5);
+  const [fhaRate, setFhaRate] = useUrlParam("fhaRate", averageRate(30));
+  const [convRate, setConvRate] = useUrlParam("convRate", averageRate(30));
+  const [credit, setCredit] = useUrlParam("credit", 740);
+  const [pmiRate, setPmiRate] = useUrlParam("pmiRate", estimatePmiRate(100 - 5, 740));
   const [years, setYears] = useUrlParam("years", "7");
 
   const r = useMemo(
@@ -100,13 +104,33 @@ const FhaVsConventionalCalculator = () => {
           <FormRow id="fvc-fha-rate" label="FHA rate" hint="FHA rates are often a little lower than conventional for the same borrower.">
             <PercentInput id="fvc-fha-rate" value={fhaRate} onChange={setFhaRate} min={0} max={20} decimalPlaces={3} aria-describedby="fvc-fha-rate-hint" />
           </FormRow>
-          <FormRow id="fvc-conv-rate" label="Conventional rate">
+          <FormRow id="fvc-conv-rate" label="Conventional rate" hint={<MarketRate term={Number(term)} value={convRate} onUse={setConvRate} />}>
             <PercentInput id="fvc-conv-rate" value={convRate} onChange={setConvRate} min={0} max={20} decimalPlaces={3} />
+          </FormRow>
+          <FormRow id="fvc-credit" label="Credit score" hint="Sets a typical PMI rate for your score and down payment.">
+            <Select
+              value={String(credit)}
+              onValueChange={(v) => {
+                setCredit(Number(v));
+                setPmiRate(estimatePmiRate(100 - down, Number(v)));
+              }}
+            >
+              <SelectTrigger id="fvc-credit" aria-describedby="fvc-credit-hint">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {CREDIT_TIERS.map((t) => (
+                  <SelectItem key={t.min} value={String(t.min)}>
+                    {t.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </FormRow>
           <FormRow
             id="fvc-pmi"
             label="Conventional PMI rate (per year)"
-            hint="Usually 0.3% to 1.5% of the loan a year. Lower with a higher credit score and more down; ask your lender."
+            hint={`Typical for ${tierLabel(credit)} credit with ${down}% down is ${estimatePmiRate(100 - down, credit).toFixed(2)}%. Ask your lender for a quote.`}
           >
             <PercentInput id="fvc-pmi" value={pmiRate} onChange={setPmiRate} min={0} max={3} decimalPlaces={2} aria-describedby="fvc-pmi-hint" />
           </FormRow>

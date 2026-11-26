@@ -9,7 +9,7 @@ import GuideContents from "@/components/GuideContents";
 import type { Faq } from "@/components/CalculatorPage";
 import { allCalculators } from "@/lib/calculators";
 import { GUIDES_PATH, guidePath, guides } from "@/lib/guides";
-import { SITE_NAME, SITE_URL, formatLongDate } from "@/lib/site";
+import { REVIEWER, SITE_NAME, SITE_URL, formatLongDate, webPageSchema } from "@/lib/site";
 
 interface GuidePageProps {
   slug: string;
@@ -31,6 +31,7 @@ const GuidePage = ({ slug, metaTitle, description, lead, children, faqs = [] }: 
   const others = guides.filter((g) => g.slug !== slug);
 
   const schemas = [
+    webPageSchema(url, title, guide.updated),
     {
       "@context": "https://schema.org",
       "@type": "BreadcrumbList",
@@ -93,6 +94,15 @@ const GuidePage = ({ slug, metaTitle, description, lead, children, faqs = [] }: 
               <h1 className="mb-3 text-center text-3xl font-display font-bold text-foreground sm:text-4xl">{guide.title}</h1>
               <p className="text-center text-sm text-muted-foreground">
                 Updated <time dateTime={guide.updated}>{formatLongDate(guide.updated)}</time> ·{" "}
+                {REVIEWER && (
+                  <>
+                    Reviewed by{" "}
+                    <Link to="/about/#expert-review" className="underline-offset-2 hover:underline">
+                      {REVIEWER.name}
+                    </Link>
+                    , {REVIEWER.credentials} ·{" "}
+                  </>
+                )}
                 <Link to="/methodology/" className="underline-offset-2 hover:underline">
                   How we calculate
                 </Link>

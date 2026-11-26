@@ -296,3 +296,47 @@ test("FHA MIP: upfront, annual rate and how long it lasts", () => {
   assert.equal(ten.byYear.length, 11);
   assert.ok(ten.totalMip < low.totalMip);
 });
+
+import { pmiRate, creditTier } from "../src/lib/pmi.ts";
+import { closingCosts, quickClosingCosts, defaultTitleAndSettlement, CLOSING_DEFAULTS } from "../src/lib/closingCosts.ts";
+import { averageRate } from "../src/lib/marketRates.ts";
+
+test("PMI rate by loan-to-value and credit score", () => {
+  assert.equal(pmiRate(80, 700), 0);
+  assert.equal(creditTier(745), 740);
+  assert.equal(creditTier(590), 620);
+  near(pmiRate(90, 780), 0.28);
+  near(pmiRate(95, 660), 1.24);
+  near(pmiRate(96.5, 720), 0.87);
+  // Worse credit or less equity never costs less.
+  assert.ok(pmiRate(95, 640) > pmiRate(95, 700));
+  assert.ok(pmiRate(97, 740) > pmiRate(90, 740));
+});
+
+test("closing costs follow the Loan Estimate sections", () => {
+  const c = closingCosts({
+    price: 400_000, down: 80_000, ratePercent: 7.3, annualTax: 4800, annualInsurance: 1800,
+    ...CLOSING_DEFAULTS, points: 1, titleAndSettlement: 2400, credits: 1000,
+  });
+  near(c.loan, 320_000);
+  const A = c.sections.find((s) => s.id === "A")!;
+  near(A.total, 320_000 * 0.0075 + 3200);
+  const F = c.sections.find((s) => s.id === "F")!;
+  near(F.total, 1800 + (320_000 * 0.073 / 365) * 15);
+  const G = c.sections.find((s) => s.id === "G")!;
+  near(G.total, 4800 / 4 + 1800 / 6);
+  near(c.total, c.loanCosts + c.otherCosts);
+  near(c.cashToClose, 80_000 + c.total - 1000);
+  // Zero lines are dropped (no transfer tax by default).
+  assert.ok(!c.sections.find((s) => s.id === "E")!.lines.some((l) => l.label.startsWith("Transfer")));
+  near(defaultTitleAndSettlement(320_000), 2400);
+  assert.ok(quickClosingCosts(400_000, 80_000, 7, 4800, 1800).percentOfPrice > 1);
+});
+
+test("average rate interpolates between the 15- and 30-year surveys", () => {
+  const r = { source: "", sourceUrl: "", asOf: "2026-01-01", rate30: 7, rate15: 6, prev30: 7, prev15: 6, history: [] };
+  near(averageRate(30, r), 7);
+  near(averageRate(15, r), 6);
+  near(averageRate(10, r), 6);
+  near(averageRate(20, r), 6.33);
+});

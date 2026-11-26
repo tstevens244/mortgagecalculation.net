@@ -1,4 +1,6 @@
 import { useMemo } from "react";
+import MarketRate from "@/components/calc/MarketRate";
+import { averageRate } from "@/lib/marketRates";
 import { rentVsBuy, rentVsBuyByYear } from "@/lib/rentVsBuy";
 import { crossingYear } from "@/lib/amortization";
 import VizCard, { StatRow } from "./viz/VizCard";
@@ -29,7 +31,7 @@ const RentOrBuyCalculator = () => {
 
   // Loan Information
   const [downPaymentPercent, setDownPaymentPercent] = useUrlParam("downPaymentPercent", 20);
-  const [interestRate, setInterestRate] = useUrlParam("interestRate", 6.5);
+  const [interestRate, setInterestRate] = useUrlParam("interestRate", averageRate(30));
   const [loanTerm, setLoanTerm] = useUrlParam("loanTerm", "30");
   const [annualPMIPercent, setAnnualPMIPercent] = useUrlParam("annualPMIPercent", 0.5);
 
@@ -89,7 +91,7 @@ const RentOrBuyCalculator = () => {
                 <Field id="rent-or-buy-down-payment" label="Down payment" unit="% of price">
                   <PercentInput id="rent-or-buy-down-payment" value={downPaymentPercent} onChange={setDownPaymentPercent} min={0} max={100} decimalPlaces={1} />
                 </Field>
-                <Field id="rent-or-buy-interest-rate" label="Interest rate">
+                <Field id="rent-or-buy-interest-rate" label="Interest rate" hint={<MarketRate term={Number(loanTerm)} value={interestRate} onUse={setInterestRate} />}>
                   <PercentInput id="rent-or-buy-interest-rate" value={interestRate} onChange={setInterestRate} min={0} max={20} decimalPlaces={3} />
                 </Field>
               <Field id="rent-or-buy-years-to-sell" label="Years you'd stay" info="How long until you'd sell. This matters most: buying's up-front costs take years to earn back." className="sm:col-span-2">

@@ -40,8 +40,9 @@ const bestIndex = (row: CompareRow) => {
   const valid = nums.filter((v): v is number => v !== null);
   if (valid.length < 2) return -1;
   const target = row.better === "lower" ? Math.min(...valid) : Math.max(...valid);
-  // No winner when the values are the same (to the dollar).
-  if (valid.every((v) => Math.round(v) === Math.round(target))) return -1;
+  // No winner when the values are the same: to the dollar, or to 0.001 for rates and other custom formats.
+  const tolerance = row.format ? 0.0005 : 0.5;
+  if (valid.every((v) => Math.abs(v - target) < tolerance)) return -1;
   return nums.findIndex((v) => v === target);
 };
 
