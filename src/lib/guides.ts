@@ -31,8 +31,8 @@ export const guides: GuideInfo[] = [
   },
   {
     slug: "how-to-get-rid-of-pmi",
-    title: "How to Get Rid of PMI",
-    summary: "When PMI ends on its own, how to cancel it sooner, and what's different for FHA loans.",
+    title: "How to Remove PMI From Your Mortgage",
+    summary: "How to remove PMI: when it ends on its own, how to cancel it sooner, and what's different for FHA loans.",
     published: "2026-11-17",
     updated: "2026-11-17",
     calculators: ["/extra-mortgage-payments-calculator/", "/second-mortgage-calculator/"],
@@ -59,7 +59,7 @@ export const guides: GuideInfo[] = [
     summary: "Income limits, the 1% and 0.35% fees, which homes qualify, and how much you can borrow by income.",
     published: "2026-11-22",
     updated: "2026-11-22",
-    calculators: ["/usda-loan-calculator/", "/house-affordability/"],
+    calculators: ["/usda-loan-calculator/", "/usda-funding-fee-calculator/"],
   },
   {
     slug: "how-adjustable-rate-mortgages-work",
@@ -91,7 +91,7 @@ export const guides: GuideInfo[] = [
     summary: "Upfront and annual MIP rates, how to calculate your premium, and when it ends.",
     published: "2026-11-22",
     updated: "2026-11-22",
-    calculators: ["/fha-loan-calculator/", "/fha-vs-conventional-calculator/"],
+    calculators: ["/fha-mip-calculator/", "/fha-loan-calculator/", "/fha-vs-conventional-calculator/"],
   },
   {
     slug: "jumbo-loan-requirements",
@@ -115,7 +115,7 @@ export const guides: GuideInfo[] = [
     summary: "Funding fee rates by down payment, who's exempt, and what financing the fee costs.",
     published: "2026-11-22",
     updated: "2026-11-22",
-    calculators: ["/va-loan-calculator/", "/fha-vs-conventional-calculator/"],
+    calculators: ["/va-funding-fee-calculator/", "/va-loan-calculator/"],
   },
 ];
 

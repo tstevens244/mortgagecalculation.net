@@ -6,6 +6,14 @@ import RelatedGuides from "./RelatedGuides";
 // Often-useful next steps, shown after the page's own group runs out.
 const FALLBACK = ["/house-affordability/", "/", "/refinance-calculator/", "/extra-mortgage-payments-calculator/"];
 
+// Loan programs and their fee calculators, shown first on each other's pages.
+const PAIRS: Record<string, string> = {
+  "/fha-loan-calculator/": "/fha-mip-calculator/",
+  "/va-loan-calculator/": "/va-funding-fee-calculator/",
+  "/usda-loan-calculator/": "/usda-funding-fee-calculator/",
+};
+for (const [a, b] of Object.entries(PAIRS)) PAIRS[b] = a;
+
 /** "Related calculators": others in the same group, then common next steps. */
 const RelatedCalculators = () => {
   const { pathname } = useLocation();
@@ -13,7 +21,9 @@ const RelatedCalculators = () => {
   if (!found) return null;
 
   const current = found.calculator.path;
+  const paired = PAIRS[current] ? allCalculators.filter((c) => c.path === PAIRS[current]) : [];
   const picks = [
+    ...paired,
     ...found.group.calculators.filter((c) => c.path !== current),
     ...FALLBACK.map((p) => allCalculators.find((c) => c.path === p)!).filter((c) => c && c.path !== current),
   ].filter((c, i, arr) => arr.findIndex((x) => x.path === c.path) === i).slice(0, 4);

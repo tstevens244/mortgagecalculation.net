@@ -262,6 +262,12 @@ const FHA = () => {
                   MIP can be removed after 11 years.
                 </li>
               </ul>
+              <p className="text-muted-foreground leading-relaxed mt-4">
+                To see your upfront and monthly MIP, how long it lasts and the total cost, use the 
+                <Link to="/fha-mip-calculator/" className="text-primary hover:underline">FHA MIP calculator</Link>. To check whether a conventional
+                loan would cost less, run both in the 
+                <Link to="/fha-vs-conventional-calculator/" className="text-primary hover:underline">FHA vs. conventional loan calculator</Link>.
+              </p>
 
               <h2 className="text-2xl font-display font-semibold mt-10 mb-4">Who Is an FHA Loan Best For?</h2>
               <p className="text-muted-foreground leading-relaxed mb-4">

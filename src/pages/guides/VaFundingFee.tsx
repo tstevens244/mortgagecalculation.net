@@ -125,7 +125,10 @@ const VaFundingFee = () => (
     </p>
 
     <h2>How to calculate the VA funding fee</h2>
-    <p>Multiply the loan amount by the rate for your situation.</p>
+    <p>
+      Multiply the loan amount by the rate for your situation, or let the{" "}
+      <Link to="/va-funding-fee-calculator/">VA funding fee calculator</Link> do it, including cash-out and IRRRL loans.
+    </p>
     <ul>
       <li>
         <strong>{formatCurrency(PRICE)} home, no down payment, first use:</strong> {formatCurrency(PRICE)} ×{" "}

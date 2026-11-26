@@ -203,7 +203,8 @@ const UsdaRequirements = () => (
     <p>
       At {RATE}% for 30 years, principal and interest on that {formatCurrency(loan)} loan is {formatCurrency(pi)} a
       month, so the payment before taxes and insurance is about {formatCurrency(pi + annualFeeMonthly)}.{" "}
-      <Link to={calcLink}>See this example in the USDA calculator</Link>.
+      <Link to={calcLink}>See this example in the USDA calculator</Link>, or work out the fees for your own loan with
+      the <Link to="/usda-funding-fee-calculator/">USDA funding fee calculator</Link>.
     </p>
     <p>
       Compared with FHA, the USDA annual fee is lower (FHA's is usually 0.55%) and the upfront fee is smaller (FHA's is

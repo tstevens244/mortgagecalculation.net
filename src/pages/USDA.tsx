@@ -305,7 +305,8 @@ const USDA = () => {
               <p className="text-muted-foreground leading-relaxed mt-4">
                 Unlike <Link to="/fha-loan-calculator/" className="text-primary hover:underline">FHA loans</Link> where 
                 MIP remains for the life of the loan, USDA's lower fee rates make it one of the most affordable 
-                government-backed loan options.
+                government-backed loan options. To work out both fees on their own, use the 
+                <Link to="/usda-funding-fee-calculator/" className="text-primary hover:underline">USDA funding fee calculator</Link>.
               </p>
 
               <h2 className="text-2xl font-display font-semibold mt-10 mb-4">Who Is a USDA Loan Best For?</h2>

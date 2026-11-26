@@ -19,8 +19,8 @@ const faqs = [
     a: "It varies by lender and by day, but one point often lowers the rate by about 0.25 percentage points. The lender's Loan Estimate or rate sheet shows the exact trade-off.",
   },
   {
-    q: "When are mortgage points worth it?",
-    a: "When you'll keep the loan past the break-even point: the cost of the points divided by the monthly savings. That's often 5 to 7 years. If you may sell or refinance sooner, points usually lose money.",
+    q: "Are mortgage points worth it?",
+    a: "They're worth it when you'll keep the loan past the break-even point: the cost of the points divided by the monthly savings. That's often 5 to 7 years. If you may sell or refinance sooner, points usually lose money.",
   },
   {
     q: "Are mortgage points tax deductible?",
@@ -31,13 +31,13 @@ const faqs = [
 const Points = () => (
   <CalculatorPage
     path="/mortgage-points-calculator/"
-    title="Mortgage Points Calculator: Is Buying Down Your Rate Worth It?"
-    description="Find out if mortgage discount points pay off: cost, new rate, monthly savings, break-even point and net savings over the years you keep the loan."
-    heading="Mortgage Points Calculator"
+    title="Mortgage Points Calculator: Are Points Worth It?"
+    description="Are mortgage points worth it? Enter your loan and rate to see what discount points cost, your monthly savings, the break-even point and net savings over the years you keep the loan."
+    heading="Mortgage Points Calculator: Are Points Worth It?"
     intro={
       <p>
-        Paying points up front lowers your rate. See how long it takes to earn the cost back, and whether you'll keep
-        the loan long enough for it to pay off.
+        Paying points up front lowers your rate. This mortgage points calculator shows how long it takes to earn the
+        cost back, and whether you'll keep the loan long enough for buying points to be worth it.
       </p>
     }
     calculator={<PointsCalculator />}
@@ -66,12 +66,19 @@ const Points = () => (
       </li>
     </ul>
 
-    <h2>When points make sense</h2>
+    <h2>Are mortgage points worth it?</h2>
+    <p>Points are usually worth it when:</p>
     <ul>
       <li>You expect to keep the loan well past the break-even point.</li>
       <li>You have cash left after the down payment, closing costs and an emergency fund.</li>
       <li>Rates aren't likely to drop enough for you to refinance soon.</li>
     </ul>
+    <p>
+      They're usually not worth it if you might move, sell or refinance within a few years, or if paying for them
+      would leave you short on cash. For the full trade-off with an example, see{" "}
+      <Link to="/guides/is-refinancing-worth-it/">whether refinancing is worth it</Link>, which uses the same
+      break-even math.
+    </p>
     <p>
       If you're short on cash, the reverse can help: a <strong>lender credit</strong> gives you money toward closing
       costs in exchange for a higher rate. To compare full offers with different rates and fees, use the{" "}
