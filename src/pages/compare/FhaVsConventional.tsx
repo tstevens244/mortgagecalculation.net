@@ -32,12 +32,12 @@ const FhaVsConventional = () => (
   <CalculatorPage
     path="/fha-vs-conventional-calculator/"
     title="FHA vs. Conventional Loan Calculator: Which Costs Less?"
-    description="Compare an FHA and a conventional loan for the same home: monthly payment, mortgage insurance, when it ends, and total cost over the years you keep the loan."
+    description="Free FHA vs. conventional loan calculator: compare monthly payment, MIP vs. PMI, when mortgage insurance ends, and total cost over the years you keep the loan."
     heading="FHA vs. Conventional Loan Calculator"
     intro={
       <p>
-        Run the same home through both loans and see which costs less for your down payment, credit and how long
-        you'll keep the loan.
+        This FHA vs. conventional loan calculator runs the same home through both loans and shows which costs less
+        for your down payment, credit score and how long you'll keep the loan, including mortgage insurance.
       </p>
     }
     calculator={<FhaVsConventionalCalculator />}

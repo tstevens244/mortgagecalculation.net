@@ -250,3 +250,49 @@ test("rent vs. buy by year reruns the model for each holding period", () => {
   near(series[0].rent, 12_000, 0.01);
   near(series[9].advantage, 120_000, 0.01); // rent paid, while cash buying costs nothing
 });
+
+import { usdaFees, vaFees, vaFeeRate, fhaMip } from "../src/lib/feeMath.ts";
+
+test("USDA guarantee fee: 1% upfront, 0.35% a year on the base loan's balance", () => {
+  const u = usdaFees({ price: 250_000, down: 0, ratePercent: 6.5, financed: true });
+  near(u.upfront, 2500);
+  near(u.loan, 252_500);
+  near(u.firstMonthly, (250_000 * 0.35) / 100 / 12); // $72.92
+  assert.equal(u.byYear.length, 30);
+  assert.ok(u.byYear[29].monthly < u.byYear[0].monthly / 5);
+  // Paid at closing: same fee, smaller loan, no financing cost.
+  const cash = usdaFees({ price: 250_000, down: 0, ratePercent: 6.5, financed: false });
+  near(cash.loan, 250_000);
+  assert.equal(cash.financing.monthly, 0);
+  near(u.financing.monthly, monthlyPayment(2500, 6.5, 360));
+});
+
+test("VA funding fee by purpose, use and down payment", () => {
+  near(vaFeeRate("purchase", true, 0, false), 2.15);
+  near(vaFeeRate("purchase", false, 0, false), 3.3);
+  near(vaFeeRate("purchase", false, 5, false), 1.5);
+  near(vaFeeRate("purchase", true, 10, false), 1.25);
+  near(vaFeeRate("cashout", false, 0, false), 3.3);
+  near(vaFeeRate("irrrl", false, 0, false), 0.5);
+  near(vaFeeRate("cashout", true, 0, true), 0);
+  const v = vaFees({ purpose: "purchase", amount: 350_000, down: 17_500, firstUse: true, exempt: false, financed: true, ratePercent: 6.25, termYears: 30 });
+  near(v.downPercent, 5);
+  near(v.fee, 332_500 * 0.015);
+  near(v.loan, 332_500 + 4987.5);
+  const refi = vaFees({ purpose: "irrrl", amount: 300_000, down: 50_000, firstUse: false, exempt: false, financed: false, ratePercent: 6, termYears: 30 });
+  near(refi.baseLoan, 300_000); // down payment ignored on a refinance
+  near(refi.fee, 1500);
+});
+
+test("FHA MIP: upfront, annual rate and how long it lasts", () => {
+  const low = fhaMip({ price: 400_000, down: 14_000, ratePercent: 6.5, termYears: 30 });
+  near(low.upfront, 386_000 * 0.0175);
+  near(low.annualRate, 0.55);
+  assert.ok(low.lifeOfLoan);
+  near(low.monthly, (386_000 * 0.55) / 100 / 12);
+  const ten = fhaMip({ price: 400_000, down: 40_000, ratePercent: 6.5, termYears: 30 });
+  near(ten.annualRate, 0.5);
+  assert.equal(ten.mipMonths, 132);
+  assert.equal(ten.byYear.length, 11);
+  assert.ok(ten.totalMip < low.totalMip);
+});

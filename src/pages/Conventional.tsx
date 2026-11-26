@@ -309,7 +309,8 @@ const Conventional = () => {
                 If your credit score is below 620 or you have limited savings, consider an 
                 <Link to="/fha-loan-calculator/" className="text-primary hover:underline"> FHA loan</Link>. 
                 Veterans should explore <Link to="/va-loan-calculator/" className="text-primary hover:underline">VA loans</Link> for 
-                0% down with no PMI.
+                0% down with no PMI. To compare the two side by side, use the 
+                <Link to="/fha-vs-conventional-calculator/" className="text-primary hover:underline">FHA vs. conventional loan calculator</Link>.
               </p>
 
               <h2 className="text-2xl font-display font-semibold mt-10 mb-4">How to Interpret Your Calculator Results</h2>

@@ -98,14 +98,14 @@ const SecondMortgage = () => {
   return (
     <>
       <Helmet>
-        <title>Piggyback Loan Calculator: 80/10/10 & 80/15/5 vs. PMI</title>
+        <title>Piggyback Loan Calculator: 80/10/10 Second Mortgage vs. PMI</title>
         <meta
           name="description"
           content="Free piggyback loan calculator for 80/10/10, 80/15/5 and 80/20 mortgages. Compare a piggyback second mortgage with paying PMI: monthly payment, total cost and which saves more."
         />
         <meta name="robots" content="index, follow" />
         <link rel="canonical" href={canonicalUrl} />
-        <meta property="og:title" content="Piggyback Loan Calculator: 80/10/10 vs. PMI" />
+        <meta property="og:title" content="Piggyback Loan Calculator: 80/10/10 Second Mortgage vs. PMI" />
         <meta
           property="og:description"
           content="Should you pay PMI or use an 80/10/10 piggyback loan? Compare payments and total cost for your home purchase."
@@ -113,7 +113,7 @@ const SecondMortgage = () => {
         <meta property="og:type" content="website" />
         <meta property="og:url" content={canonicalUrl} />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Piggyback Loan Calculator (80/10/10)" />
+        <meta name="twitter:title" content="Piggyback Second Mortgage Calculator (80/10/10)" />
         <meta
           name="twitter:description"
           content="Compare an 80/10/10 or 80/15/5 piggyback loan with paying PMI."
@@ -131,7 +131,7 @@ const SecondMortgage = () => {
             <header className="page-header">
               <Breadcrumbs />
               <h1 className="text-3xl sm:text-4xl lg:text-5xl font-display font-bold text-foreground mb-4">
-                Piggyback Loan Calculator (80/10/10)
+                Piggyback Loan Calculator: 80/10/10 Second Mortgage vs. PMI
               </h1>
               <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
                 Compare an 80/10/10, 80/15/5 or 80/20 piggyback second mortgage with putting less than 20% down and

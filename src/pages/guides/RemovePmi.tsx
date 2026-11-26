@@ -53,14 +53,14 @@ const faqs = [
 const RemovePmi = () => (
   <GuidePage
     slug="how-to-get-rid-of-pmi"
-    metaTitle="How to Get Rid of PMI: When It Ends and How to Cancel It Sooner"
-    description="PMI ends automatically at 78% loan-to-value. Learn how to request cancellation at 80%, use your home's appreciation, and what's different for FHA loans."
+    metaTitle="How to Remove PMI From Your Mortgage (and When It Ends)"
+    description="How to remove PMI from your mortgage: it ends automatically at 78% loan-to-value, you can request cancellation at 80%, and appreciation can get you there sooner. Plus FHA rules."
     faqs={faqs}
     lead={
       <p>
         Private mortgage insurance (PMI) on a conventional loan doesn't last forever. Federal law requires it to end
         automatically at <strong>78% loan-to-value</strong>, and you can ask to cancel it at <strong>80%</strong>.
-        With extra payments or a rise in your home's value, you can get there years sooner.
+        To remove PMI years sooner, make extra payments or use a rise in your home's value.
       </p>
     }
   >

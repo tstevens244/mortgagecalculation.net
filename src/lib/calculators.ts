@@ -2,6 +2,7 @@ import type { LucideIcon } from "lucide-react";
 import { SITE_URL } from "@/lib/site";
 import {
   Activity,
+  BadgePercent,
   Banknote,
   ArrowLeftRight,
   CalendarDays,
@@ -18,7 +19,9 @@ import {
   ListChecks,
   Medal,
   PiggyBank,
+  Receipt,
   RefreshCw,
+  ShieldCheck,
   Scale,
   Trees,
   Wallet,
@@ -78,6 +81,9 @@ export const calculatorGroups: CalculatorGroup[] = [
       { path: "/usda-loan-calculator/", name: "USDA Loan", shortName: "USDA", description: "0% down in eligible rural areas.", icon: Trees },
       { path: "/jumbo-loan-calculator/", name: "Jumbo Loan", shortName: "Jumbo", description: "Loans above the conforming limit.", icon: Gem },
       { path: "/adjustable-rate-mortgage-calculator/", name: "Adjustable-Rate Mortgage", shortName: "ARM", description: "How the payment changes after the fixed period.", icon: Activity },
+      { path: "/fha-mip-calculator/", name: "FHA MIP", shortName: "FHA MIP", description: "Upfront and monthly FHA mortgage insurance.", icon: ShieldCheck },
+      { path: "/va-funding-fee-calculator/", name: "VA Funding Fee", shortName: "VA Funding Fee", description: "Your fee for a purchase, cash-out or IRRRL.", icon: BadgePercent },
+      { path: "/usda-funding-fee-calculator/", name: "USDA Funding Fee", shortName: "USDA Fee", description: "The 1% upfront and 0.35% annual guarantee fee.", icon: Receipt },
     ],
   },
   {

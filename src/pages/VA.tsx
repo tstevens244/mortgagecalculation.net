@@ -310,6 +310,10 @@ const VA = () => {
                 <li>Surviving spouses of veterans who died in service or from service-connected disabilities</li>
                 <li>Active-duty service members who provide evidence of a Purple Heart award</li>
               </ul>
+              <p className="text-muted-foreground leading-relaxed mt-4">
+                To find your exact fee, including cash-out refinances and IRRRLs, use the{" "}
+                <Link to="/va-funding-fee-calculator/" className="text-primary hover:underline">VA funding fee calculator</Link>.
+              </p>
 
               <h2 className="text-2xl font-display font-semibold mt-10 mb-4">Who Is a VA Loan Best For?</h2>
               <p className="text-muted-foreground leading-relaxed mb-4">
