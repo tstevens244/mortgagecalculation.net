@@ -19,7 +19,7 @@ export const guides: GuideInfo[] = [
     summary: "Home prices you can afford at salaries from $40,000 to $250,000, using the rules lenders use.",
     published: "2026-11-17",
     updated: "2026-11-17",
-    calculators: ["/house-affordability/", "/mortgage-qualification-calculator/"],
+    calculators: ["/house-affordability/", "/mortgage-qualification-calculator/", "/closing-cost-calculator/"],
   },
   {
     slug: "mortgage-payment-by-home-price",

@@ -1,4 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { Link } from "react-router-dom";
+import { ArrowRight } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import PaymentBreakdown from "./PaymentBreakdown";
@@ -6,16 +8,27 @@ import AmortizationSchedule from "./AmortizationSchedule";
 import AmortizationChart from "./AmortizationChart";
 import CurrencyInput from "./CurrencyInput";
 import PercentInput from "./PercentInput";
-import { formatCurrency } from "@/lib/formatters";
-import { monthsUntilBalance } from "@/lib/mortgageMath";
 import StickyResult from "./StickyResult";
 import PaymentAnswer from "./PaymentAnswer";
+import MarketRate from "./calc/MarketRate";
+import LoanTypeSwitch from "./calc/LoanTypeSwitch";
+import SavedScenarios from "./calc/SavedScenarios";
+import ClosingCostTable from "./calc/ClosingCostTable";
+import VizCard from "./viz/VizCard";
+import { InputCard, FieldGrid, Field, TermChoice, MoreOptions, summarize } from "./calc/Form";
+import { formatCurrency } from "@/lib/formatters";
+import { monthlyPayment, monthsUntilBalance } from "@/lib/mortgageMath";
+import { averageRate } from "@/lib/marketRates";
+import { CREDIT_TIERS, creditTier, pmiRate, tierLabel } from "@/lib/pmi";
+import { quickClosingCosts } from "@/lib/closingCosts";
 import { readNumberParams, replaceUrl, urlWith } from "@/lib/shareUrl";
 
-const URL_KEYS = ["price", "down", "rate", "term", "tax", "ins", "pmi", "hoa"] as const;
-import { InputCard, FieldGrid, Field, TermChoice, MoreOptions, summarize } from "./calc/Form";
+const URL_KEYS = ["price", "down", "rate", "term", "tax", "ins", "pmi", "hoa", "credit", "extra"] as const;
+type Params = Partial<Record<(typeof URL_KEYS)[number], number>>;
 
 const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+const TERMS = [10, 15, 20, 30];
+const DEFAULT_CREDIT = 740;
 
 interface MortgageInputs {
   homePrice: number;
@@ -30,6 +43,10 @@ interface MortgageInputs {
   startDate: string;
   /** Property tax as % of price a year. While set, the tax follows the home price; typing a tax amount clears it. */
   taxRate: number | null;
+  /** Credit score tier (its lower bound), which sets the PMI estimate. */
+  credit: number;
+  /** Extra principal paid every month. */
+  extraMonthly: number;
 }
 
 export interface TaxArea {
@@ -48,35 +65,50 @@ interface MortgageCalculatorProps {
   taxAreaLabel?: string;
 }
 
+/** Annual PMI estimate for a conventional loan from the loan-to-value and credit tier. */
+const estimatePmi = (price: number, down: number, credit: number) => {
+  const loan = Math.max(0, price - down);
+  return price > 0 ? (loan * pmiRate((loan / price) * 100, credit)) / 100 : 0;
+};
+
+const fmtMonth = (d: Date) => d.toLocaleDateString("en-US", { month: "short", year: "numeric" });
+
 const MortgageCalculator = ({ initial, taxAreas, taxAreaLabel = "Area" }: MortgageCalculatorProps = {}) => {
   const startPrice = initial?.homePrice ?? 300000;
   const [areaIndex, setAreaIndex] = useState(0);
-  const [inputs, setInputs] = useState<MortgageInputs>(() => {
-    // A shared link (?price=…&down=…&rate=…) opens with that scenario.
-    const u = readNumberParams(URL_KEYS);
+
+  /** Inputs from URL-style parameters (a shared link or a saved scenario), with defaults for anything missing. */
+  const fromParams = (u: Params, startDate = new Date().toISOString().slice(0, 7)): MortgageInputs => {
     const homePrice = u.price && u.price > 0 ? u.price : startPrice;
     const downPayment = Math.min(u.down ?? homePrice * 0.2, homePrice);
     const downPaymentPercent = homePrice > 0 ? (downPayment / homePrice) * 100 : 20;
     const taxRate = u.tax !== undefined ? null : initial ? initial.propertyTaxRate : null;
+    const loanTerm = u.term && TERMS.includes(u.term) ? u.term : 30;
+    const credit = creditTier(u.credit ?? DEFAULT_CREDIT);
     return {
       homePrice,
       downPayment,
       downPaymentPercent,
-      loanTerm: u.term && [10, 15, 20, 30].includes(u.term) ? u.term : 30,
-      interestRate: u.rate !== undefined && u.rate <= 30 ? u.rate : 6.5,
+      loanTerm,
+      interestRate: u.rate !== undefined && u.rate <= 30 ? u.rate : averageRate(loanTerm),
       propertyTax: u.tax ?? (taxRate !== null ? Math.round((homePrice * taxRate) / 100) : 3600),
       taxRate,
       homeInsurance: u.ins ?? initial?.homeInsurance ?? 1200,
-      pmi: u.pmi ?? (downPaymentPercent < 20 ? (homePrice - downPayment) * 0.005 : 0),
+      pmi: u.pmi ?? estimatePmi(homePrice, downPayment, credit),
       hoaFees: u.hoa ?? 0,
-      startDate: new Date().toISOString().slice(0, 7),
+      startDate,
+      credit,
+      extraMonthly: u.extra ?? 0,
     };
-  });
+  };
+
+  // A shared link (?price=…&down=…&rate=…) opens with that scenario.
+  const [inputs, setInputs] = useState<MortgageInputs>(() => fromParams(readNumberParams(URL_KEYS)));
 
   // Keep the address bar in step with the inputs once someone changes them, so
   // the page can be bookmarked or shared. An untouched page keeps its clean URL.
   const touched = useRef(false);
-  const scenario = {
+  const scenario: Record<string, number> = {
     price: inputs.homePrice,
     down: Math.round(inputs.downPayment),
     rate: inputs.interestRate,
@@ -85,6 +117,8 @@ const MortgageCalculator = ({ initial, taxAreas, taxAreaLabel = "Area" }: Mortga
     ins: inputs.homeInsurance,
     pmi: Math.round(inputs.pmi),
     hoa: inputs.hoaFees,
+    credit: inputs.credit,
+    ...(inputs.extraMonthly > 0 ? { extra: inputs.extraMonthly } : {}),
   };
   const scenarioKey = JSON.stringify(scenario);
   useEffect(() => {
@@ -99,7 +133,7 @@ const MortgageCalculator = ({ initial, taxAreas, taxAreaLabel = "Area" }: Mortga
   const updateInput = (field: keyof MortgageInputs, value: number | string) => {
     setInputs((prev) => {
       const updated = { ...prev, [field]: value };
-      
+
       if (field === "propertyTax") {
         updated.taxRate = null;
       }
@@ -115,82 +149,91 @@ const MortgageCalculator = ({ initial, taxAreas, taxAreaLabel = "Area" }: Mortga
         updated.downPayment = (prev.downPaymentPercent / 100) * Number(value);
       }
 
-      // Estimate PMI (0.5% of the loan a year) when the price or down payment
-      // changes. A PMI amount the user typed is kept until one of those changes.
-      if (field === "homePrice" || field === "downPayment" || field === "downPaymentPercent") {
-        const loanAmount = updated.homePrice - updated.downPayment;
-        updated.pmi = updated.downPaymentPercent < 20 ? loanAmount * 0.005 : 0;
+      // Re-estimate PMI from the loan-to-value and credit score when any of them
+      // changes. A PMI amount the user typed is kept until then.
+      if (field === "homePrice" || field === "downPayment" || field === "downPaymentPercent" || field === "credit") {
+        updated.pmi = estimatePmi(updated.homePrice, updated.downPayment, updated.credit);
       }
 
       return updated;
     });
   };
 
-  const calculations = useMemo(() => {
-    const loanAmount = inputs.homePrice - inputs.downPayment;
+  const { calculations, amortizationData } = useMemo(() => {
+    const loanAmount = Math.max(0, inputs.homePrice - inputs.downPayment);
     const monthlyRate = inputs.interestRate / 100 / 12;
     const numPayments = inputs.loanTerm * 12;
-
-    // Monthly principal & interest
-    const monthlyPI =
-      monthlyRate > 0
-        ? (loanAmount * monthlyRate * Math.pow(1 + monthlyRate, numPayments)) /
-          (Math.pow(1 + monthlyRate, numPayments) - 1)
-        : loanAmount / numPayments;
+    const monthlyPI = monthlyPayment(loanAmount, inputs.interestRate, numPayments);
 
     const monthlyTax = inputs.propertyTax / 12;
     const monthlyInsurance = inputs.homeInsurance / 12;
     const monthlyPMI = inputs.pmi / 12;
     const monthlyHOA = inputs.hoaFees;
-
     const totalMonthly = monthlyPI + monthlyTax + monthlyInsurance + monthlyPMI + monthlyHOA;
-    const totalInterest = monthlyPI * numPayments - loanAmount;
-    // PMI ends automatically when the balance reaches 78% of the original value.
+
+    // Month-by-month schedule, with any extra principal paid each month.
+    const extra = Math.max(0, inputs.extraMonthly);
+    const schedule = [];
+    const startDate = new Date(inputs.startDate + "-01");
+    let balance = loanAmount;
+    let totalInterest = 0;
+    for (let i = 1; i <= numPayments && balance > 0.005; i++) {
+      const interest = balance * monthlyRate;
+      const principal = Math.min(monthlyPI - interest + extra, balance);
+      balance = Math.max(0, balance - principal);
+      totalInterest += interest;
+      const date = new Date(startDate);
+      date.setMonth(date.getMonth() + i);
+      schedule.push({ month: i, date, payment: interest + principal, principal, interest, balance });
+    }
+    const scheduledInterest = monthlyPI * numPayments - loanAmount;
+    const interestSaved = extra > 0 ? Math.max(0, scheduledInterest - totalInterest) : 0;
+    const monthsSaved = numPayments - schedule.length;
+
+    // PMI ends automatically when the balance is scheduled to reach 78% of the
+    // original value (Homeowners Protection Act). It's based on the original
+    // schedule, so extra payments don't move this date, though you can ask to
+    // cancel at 80% once your actual balance gets there.
     const pmiMonths = monthlyPMI > 0 ? monthsUntilBalance(loanAmount, inputs.interestRate, numPayments, inputs.homePrice * 0.78) : 0;
+    const months = schedule.length;
     const totalPayment =
-      (monthlyPI + monthlyTax + monthlyInsurance + monthlyHOA) * numPayments + monthlyPMI * pmiMonths;
+      loanAmount + totalInterest + (monthlyTax + monthlyInsurance + monthlyHOA) * months + monthlyPMI * Math.min(pmiMonths, months);
 
     return {
-      loanAmount,
-      monthlyPI,
-      monthlyTax,
-      monthlyInsurance,
-      monthlyPMI,
-      monthlyHOA,
-      totalMonthly,
-      totalInterest,
-      totalPayment,
-      pmiMonths,
-      numPayments,
+      calculations: {
+        loanAmount,
+        monthlyPI,
+        monthlyTax,
+        monthlyInsurance,
+        monthlyPMI,
+        monthlyHOA,
+        totalMonthly,
+        totalInterest,
+        interestSaved,
+        monthsSaved,
+        totalPayment,
+        pmiMonths,
+        numPayments,
+      },
+      amortizationData: schedule,
     };
   }, [inputs]);
 
-  const amortizationData = useMemo(() => {
-    const data = [];
-    let balance = calculations.loanAmount;
-    const monthlyRate = inputs.interestRate / 100 / 12;
-    const startDate = new Date(inputs.startDate + "-01");
+  const closing = useMemo(
+    () => quickClosingCosts(inputs.homePrice, inputs.downPayment, inputs.interestRate, inputs.propertyTax, inputs.homeInsurance),
+    [inputs.homePrice, inputs.downPayment, inputs.interestRate, inputs.propertyTax, inputs.homeInsurance],
+  );
 
-    for (let i = 1; i <= calculations.numPayments && balance > 0; i++) {
-      const interestPayment = balance * monthlyRate;
-      const principalPayment = Math.min(calculations.monthlyPI - interestPayment, balance);
-      balance = Math.max(0, balance - principalPayment);
+  const payoff = amortizationData.length ? fmtMonth(amortizationData[amortizationData.length - 1].date) : "—";
+  const yearsSaved = calculations.monthsSaved >= 12 ? `${Math.floor(calculations.monthsSaved / 12)} yr${calculations.monthsSaved % 12 ? ` ${calculations.monthsSaved % 12} mo` : ""}` : `${calculations.monthsSaved} mo`;
+  const pmiApplies = inputs.downPaymentPercent < 20;
+  const closingLink = `/closing-cost-calculator/?price=${inputs.homePrice}&down=${Math.round(inputs.downPayment)}&rate=${inputs.interestRate}&tax=${inputs.propertyTax}&ins=${inputs.homeInsurance}`;
 
-      const paymentDate = new Date(startDate);
-      paymentDate.setMonth(paymentDate.getMonth() + i);
-
-      data.push({
-        month: i,
-        date: paymentDate,
-        payment: calculations.monthlyPI,
-        principal: principalPayment,
-        interest: interestPayment,
-        balance,
-      });
-    }
-
-    return data;
-  }, [calculations, inputs.interestRate, inputs.startDate]);
+  const openScenario = (params: Record<string, number>) => {
+    setInputs(fromParams(params, inputs.startDate));
+    setAreaIndex(0);
+    document.getElementById("loan-details")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
 
   return (
     <div className="fade-in">
@@ -218,7 +261,12 @@ const MortgageCalculator = ({ initial, taxAreas, taxAreaLabel = "Area" }: Mortga
                 </div>
               </Field>
 
-              <Field id="interest-rate" label="Interest rate" info="Your quoted rate, not the APR. Rates change daily; check a few lenders.">
+              <Field
+                id="interest-rate"
+                label="Interest rate"
+                info="Your quoted rate, not the APR. Rates change daily; check a few lenders."
+                hint={<MarketRate term={inputs.loanTerm} value={inputs.interestRate} onUse={(r) => updateInput("interestRate", r)} />}
+              >
                 <PercentInput id="interest-rate" value={inputs.interestRate} onChange={(value) => updateInput("interestRate", value)} decimalPlaces={3} min={0} max={30} />
               </Field>
 
@@ -280,14 +328,45 @@ const MortgageCalculator = ({ initial, taxAreas, taxAreaLabel = "Area" }: Mortga
                   <CurrencyInput id="home-insurance" value={inputs.homeInsurance} onChange={(value) => updateInput("homeInsurance", value)} />
                 </Field>
 
+                {pmiApplies && (
+                  <Field
+                    id="credit-score"
+                    label="Credit score"
+                    info="PMI is priced mostly on your credit score and down payment. This sets a typical PMI rate; your lender's quote may differ."
+                  >
+                    <Select value={String(inputs.credit)} onValueChange={(v) => updateInput("credit", Number(v))}>
+                      <SelectTrigger id="credit-score">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {CREDIT_TIERS.map((t) => (
+                          <SelectItem key={t.min} value={String(t.min)}>
+                            {t.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </Field>
+                )}
+
                 <Field
                   id="pmi"
                   label="PMI"
                   unit="per year"
-                  tag={inputs.downPaymentPercent < 20 ? "Auto" : undefined}
-                  info="Estimated at 0.5% of the loan a year when you put down less than 20%. It ends once the balance reaches 78% of the price."
+                  tag={pmiApplies ? "Auto" : undefined}
+                  hint={
+                    pmiApplies && calculations.loanAmount > 0
+                      ? `${((inputs.pmi / calculations.loanAmount) * 100).toFixed(2)}% of the loan, typical for ${tierLabel(inputs.credit)} credit`
+                      : undefined
+                  }
+                  info="Estimated from your down payment and credit score when you put down less than 20%. It ends once the balance reaches 78% of the price."
                 >
-                  <CurrencyInput id="pmi" value={Math.round(inputs.pmi)} onChange={(value) => updateInput("pmi", value)} />
+                  <CurrencyInput
+                    id="pmi"
+                    value={Math.round(inputs.pmi)}
+                    onChange={(value) => updateInput("pmi", value)}
+                    aria-describedby={pmiApplies ? "pmi-hint" : undefined}
+                  />
                 </Field>
 
                 <Field id="hoa-fees" label="HOA dues" unit="per month">
@@ -333,6 +412,32 @@ const MortgageCalculator = ({ initial, taxAreas, taxAreaLabel = "Area" }: Mortga
                 </Field>
               </FieldGrid>
             </MoreOptions>
+
+            <MoreOptions
+              title="Pay extra"
+              summary={inputs.extraMonthly > 0 ? `${formatCurrency(inputs.extraMonthly)} a month toward principal` : "No extra payments"}
+            >
+              <FieldGrid>
+                <Field
+                  id="extra-monthly"
+                  label="Extra each month"
+                  hint={
+                    inputs.extraMonthly > 0
+                      ? `Saves ${formatCurrency(calculations.interestSaved)} in interest and pays the loan off ${yearsSaved} sooner.`
+                      : "Even $100 a month can take years off the loan."
+                  }
+                >
+                  <CurrencyInput id="extra-monthly" value={inputs.extraMonthly} onChange={(value) => updateInput("extraMonthly", value)} aria-describedby="extra-monthly-hint" />
+                </Field>
+              </FieldGrid>
+              <p className="mt-3 text-xs text-muted-foreground">
+                For lump sums, yearly extras or bi-weekly payments, use the{" "}
+                <Link to="/extra-mortgage-payments-calculator/" className="text-primary hover:underline">
+                  extra payments calculator
+                </Link>
+                .
+              </p>
+            </MoreOptions>
           </InputCard>
         </div>
 
@@ -341,7 +446,7 @@ const MortgageCalculator = ({ initial, taxAreas, taxAreaLabel = "Area" }: Mortga
           <StickyResult targetId="calc-result" label={"Monthly payment"} value={formatCurrency(calculations.totalMonthly)} />
           <PaymentAnswer
             total={calculations.totalMonthly}
-            context={`on a ${formatCurrency(calculations.loanAmount)} loan at ${inputs.interestRate}% for ${inputs.loanTerm} years`}
+            context={`on a ${formatCurrency(calculations.loanAmount)} loan at ${inputs.interestRate}% for ${inputs.loanTerm} years${inputs.extraMonthly > 0 ? `, plus ${formatCurrency(inputs.extraMonthly)} extra` : ""}`}
             parts={[
               { label: "Principal & interest", value: calculations.monthlyPI },
               { label: "Tax", value: calculations.monthlyTax },
@@ -350,19 +455,42 @@ const MortgageCalculator = ({ initial, taxAreas, taxAreaLabel = "Area" }: Mortga
               { label: "HOA", value: calculations.monthlyHOA },
             ]}
             stats={[
-              { label: "Loan amount", value: formatCurrency(calculations.loanAmount), hint: `${(100 - inputs.downPaymentPercent).toFixed(0)}% of the price` },
-              { label: "Total interest", value: formatCurrency(calculations.totalInterest), hint: `over ${inputs.loanTerm} years` },
+              { label: "Cash to close", value: formatCurrency(closing.cashToClose), hint: `${formatCurrency(inputs.downPayment)} down + ~${formatCurrency(closing.total)} costs` },
+              {
+                label: "Total interest",
+                value: formatCurrency(calculations.totalInterest),
+                hint: inputs.extraMonthly > 0 ? `${formatCurrency(calculations.interestSaved)} less with extra` : `over ${inputs.loanTerm} years`,
+              },
               {
                 label: "Paid off",
-                value: amortizationData.length ? amortizationData[amortizationData.length - 1].date.toLocaleDateString("en-US", { month: "short", year: "numeric" }) : "—",
-                hint: calculations.pmiMonths > 0 ? `PMI ends after ~${Math.ceil(calculations.pmiMonths / 12)} yrs` : "No PMI",
+                value: payoff,
+                hint: inputs.extraMonthly > 0 ? `${yearsSaved} early` : calculations.pmiMonths > 0 ? `PMI ends after ~${Math.ceil(calculations.pmiMonths / 12)} yrs` : "No PMI",
               },
-              { label: "Total of all payments", value: formatCurrency(calculations.totalPayment), hint: "incl. tax, insurance & fees" },
+              { label: "Loan amount", value: formatCurrency(calculations.loanAmount), hint: `${(100 - inputs.downPaymentPercent).toFixed(0)}% of the price` },
             ]}
             shareUrl={() => urlWith(scenario)}
           />
+          <LoanTypeSwitch current="conventional" price={inputs.homePrice} down={inputs.downPayment} rate={inputs.interestRate} term={inputs.loanTerm} />
         </aside>
       </div>
+
+      <SavedScenarios
+        current={{
+          params: scenario,
+          summary: {
+            price: inputs.homePrice,
+            down: inputs.downPayment,
+            rate: inputs.interestRate,
+            term: inputs.loanTerm,
+            monthly: calculations.totalMonthly,
+            loan: calculations.loanAmount,
+            totalInterest: calculations.totalInterest,
+            cashToClose: closing.cashToClose,
+            payoff,
+          },
+        }}
+        onOpen={openScenario}
+      />
 
       {/* Charts and Schedule */}
       <div className="mt-8">
@@ -371,6 +499,9 @@ const MortgageCalculator = ({ initial, taxAreas, taxAreaLabel = "Area" }: Mortga
             <TabsTrigger value="breakdown" className="flex-shrink-0 text-xs sm:text-sm px-2 sm:px-3">
               <span className="hidden sm:inline">Payment Breakdown</span>
               <span className="sm:hidden">Breakdown</span>
+            </TabsTrigger>
+            <TabsTrigger value="closing" className="flex-shrink-0 text-xs sm:text-sm px-2 sm:px-3">
+              Cash to Close
             </TabsTrigger>
             <TabsTrigger value="chart" className="flex-shrink-0 text-xs sm:text-sm px-2 sm:px-3">
               <span className="hidden sm:inline">Amortization Chart</span>
@@ -384,7 +515,7 @@ const MortgageCalculator = ({ initial, taxAreas, taxAreaLabel = "Area" }: Mortga
 
           <TabsContent value="breakdown">
             <PaymentBreakdown
-              principal={calculations.monthlyPI - (calculations.loanAmount * (inputs.interestRate / 100 / 12))}
+              principal={calculations.monthlyPI - calculations.loanAmount * (inputs.interestRate / 100 / 12)}
               interest={calculations.loanAmount * (inputs.interestRate / 100 / 12)}
               tax={calculations.monthlyTax}
               insurance={calculations.monthlyInsurance}
@@ -392,6 +523,23 @@ const MortgageCalculator = ({ initial, taxAreas, taxAreaLabel = "Area" }: Mortga
               hoa={calculations.monthlyHOA}
               pmiNote={calculations.pmiMonths > 0 ? `Ends after about ${Math.ceil(calculations.pmiMonths / 12)} years` : undefined}
             />
+          </TabsContent>
+
+          <TabsContent value="closing">
+            <VizCard
+              id="cash-to-close"
+              title="What you'll need at closing"
+              description="Your down payment plus typical closing costs, laid out like the Loan Estimate your lender sends."
+              footnote="Estimates with typical fees and no transfer tax or seller credits. Your Loan Estimate has the real figures."
+              actions={
+                <Link to={closingLink} className="inline-flex items-center gap-1 text-sm font-semibold text-primary hover:underline">
+                  Customize every fee
+                  <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+                </Link>
+              }
+            >
+              <ClosingCostTable result={closing} down={inputs.downPayment} detailed={false} />
+            </VizCard>
           </TabsContent>
 
           <TabsContent value="chart">

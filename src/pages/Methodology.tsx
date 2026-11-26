@@ -1,4 +1,6 @@
 import { Link } from "react-router-dom";
+import { MARKET_RATES, formatSurveyDate } from "@/lib/marketRates";
+import { CREDIT_TIERS, pmiRate } from "@/lib/pmi";
 import InfoPage from "@/components/InfoPage";
 import { formatCurrency } from "@/lib/formatters";
 import {
@@ -66,11 +68,40 @@ const Methodology = () => (
     <h2>Mortgage insurance and program fees</h2>
     <h3>Conventional PMI</h3>
     <p>
-      With less than 20% down, the{" "}
-      <Link to="/">mortgage calculator</Link> estimates private mortgage insurance at 0.5% of the loan amount per year.
-      Real PMI rates depend mainly on credit score and down payment and usually fall between about 0.3% and 1.5%.
-      You can enter your own figure. Lenders must cancel PMI automatically when the balance reaches 78% of the
-      original home value.
+      With less than 20% down, the <Link to="/">mortgage calculator</Link> estimates private mortgage insurance from
+      your down payment and credit score range, using typical borrower-paid monthly rates for a 30-year fixed loan
+      with standard coverage:
+    </p>
+    <div className="hub-table-wrap">
+      <table>
+        <caption className="sr-only">Typical annual PMI rates by credit score and down payment</caption>
+        <thead>
+          <tr>
+            <th scope="col">Credit score</th>
+            <th scope="col">15%+ down</th>
+            <th scope="col">10%–14.99%</th>
+            <th scope="col">5%–9.99%</th>
+            <th scope="col">3%–4.99%</th>
+          </tr>
+        </thead>
+        <tbody>
+          {CREDIT_TIERS.map((t) => (
+            <tr key={t.min}>
+              <th scope="row">{t.label}</th>
+              {[85, 90, 95, 97].map((ltv) => (
+                <td key={ltv} data-label={`${100 - ltv}% down`}>
+                  {pmiRate(ltv, t.min).toFixed(2)}%
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+    <p>
+      These come from the published rate cards of the large mortgage insurers and are estimates: actual quotes vary by
+      insurer, loan size and debt-to-income ratio. You can enter your own figure. Lenders must cancel PMI automatically
+      when the balance is scheduled to reach 78% of the original home value.
     </p>
     <h3>FHA mortgage insurance (MIP)</h3>
     <ul>
@@ -101,6 +132,27 @@ const Methodology = () => (
     <p>
       {USDA_UPFRONT_FEE_RATE}% upfront, usually financed, and {USDA_ANNUAL_FEE_RATE}% of the balance per year, paid
       monthly. Source: USDA Rural Development.
+    </p>
+
+    <h2>Today's average rates</h2>
+    <p>
+      "Use avg." under each interest rate fills in the national average from{" "}
+      <a href={MARKET_RATES.sourceUrl} target="_blank" rel="noopener noreferrer">
+        Freddie Mac's Primary Mortgage Market Survey
+      </a>
+      , which reports 30-year and 15-year fixed rates every week for borrowers with strong credit and 20% down. For 20-
+      and 25-year terms we interpolate between the two. The latest survey we use is from the week of{" "}
+      {formatSurveyDate(MARKET_RATES.asOf)}: {MARKET_RATES.rate30.toFixed(2)}% for 30 years and{" "}
+      {MARKET_RATES.rate15.toFixed(2)}% for 15. The site rebuilds automatically each week after Freddie Mac publishes.
+    </p>
+
+    <h2>Closing costs</h2>
+    <p>
+      The <Link to="/closing-cost-calculator/">closing cost calculator</Link> and the mortgage calculator's cash to close
+      tab follow the sections of the CFPB's Loan Estimate. Unless you change them, they assume a 0.75% origination fee,
+      $800 for the appraisal and other required services, lender's title and settlement of 0.5% of the loan plus $800,
+      $250 of recording fees, no transfer tax, 15 days of prepaid interest, the first year of homeowners insurance, and
+      escrow deposits of 3 months of property tax and 2 months of insurance.
     </p>
 
     <h2>How each calculator decides</h2>
@@ -157,7 +209,10 @@ const Methodology = () => (
     <h2>What the calculators don't do</h2>
     <ul>
       <li>They don't check your credit, verify income or offer a loan. A lender's Loan Estimate is the official figure.</li>
-      <li>Interest rates default to an example rate. Enter a rate you've been quoted for an accurate result.</li>
+      <li>
+        Interest rates default to this week's national average where one applies. Your rate depends on your credit,
+        down payment, loan type and points, so enter a rate you've been quoted for an accurate result.
+      </li>
       <li>Taxes and insurance are estimates. Both vary widely by location and property.</li>
       <li>County-specific FHA and conforming limits can be lower or higher than the national figures above.</li>
     </ul>

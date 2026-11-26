@@ -1,4 +1,6 @@
 import { useMemo } from "react";
+import LoanTypeSwitch from "@/components/calc/LoanTypeSwitch";
+import MarketRate from "@/components/calc/MarketRate";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import PaymentBreakdown from "./PaymentBreakdown";
 import AmortizationSchedule from "./AmortizationSchedule";
@@ -152,7 +154,7 @@ const VACalculator = () => {
                 onPercent={(value) => updateInput("downPaymentPercent", value)}
                 info="VA loans allow 0% down. Putting down 5% or more lowers the funding fee."
               />
-              <Field id="interest-rate" label="Interest rate" info="Your quoted rate, not the APR. Rates change daily; check a few lenders.">
+              <Field id="interest-rate" label="Interest rate" info="Your quoted rate, not the APR. Rates change daily; check a few lenders." hint={<MarketRate term={inputs.loanTerm} value={inputs.interestRate} onUse={(r) => updateInput("interestRate", r)} note="Conventional average; VA rates are often a little lower." />}>
                 <PercentInput id="interest-rate" value={inputs.interestRate} onChange={(value) => updateInput("interestRate", value)} min={0} max={30} decimalPlaces={3} />
               </Field>
               <Field id="loan-term" label="Loan term">
@@ -248,6 +250,7 @@ const VACalculator = () => {
               { label: "Paid off", value: amortizationData.length ? amortizationData[amortizationData.length - 1].date.toLocaleDateString("en-US", { month: "short", year: "numeric" }) : "—", hint: `${calculations.numPayments} payments` },
             ]}
           />
+          <LoanTypeSwitch current="va" price={inputs.homePrice} down={inputs.downPayment} rate={inputs.interestRate} term={inputs.loanTerm} />
         </aside>
       </div>
 

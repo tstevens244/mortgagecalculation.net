@@ -40,10 +40,22 @@ const About = () => (
 
     {REVIEWER && (
       <>
-        <h2>Expert review</h2>
+        <h2 id="expert-review">Expert review</h2>
         <p>
           The calculators and guides are reviewed by {REVIEWER.name}, {REVIEWER.credentials}.
         </p>
+        {REVIEWER.bio && <p>{REVIEWER.bio}</p>}
+        {REVIEWER.sameAs && REVIEWER.sameAs.length > 0 && (
+          <ul>
+            {REVIEWER.sameAs.map((u) => (
+              <li key={u}>
+                <a href={u} target="_blank" rel="noopener noreferrer">
+                  {new URL(u).hostname.replace(/^www\./, "")}
+                </a>
+              </li>
+            ))}
+          </ul>
+        )}
       </>
     )}
 

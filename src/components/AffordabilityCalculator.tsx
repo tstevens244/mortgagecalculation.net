@@ -1,4 +1,6 @@
 import { useMemo } from "react";
+import MarketRate from "@/components/calc/MarketRate";
+import { averageRate } from "@/lib/marketRates";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Select,
@@ -27,7 +29,7 @@ const AffordabilityCalculator = () => {
   // Income-based calculator state
   const [annualIncome, setAnnualIncome] = useUrlParam("annualIncome", 120000);
   const [loanTerm, setLoanTerm] = useUrlParam("loanTerm", "30");
-  const [interestRate, setInterestRate] = useUrlParam("interestRate", 6.5);
+  const [interestRate, setInterestRate] = useUrlParam("interestRate", averageRate(30));
   const [monthlyDebts, setMonthlyDebts] = useUrlParam("monthlyDebts", 500);
   const [downPaymentPercent, setDownPaymentPercent] = useUrlParam("downPaymentPercent", 20);
   const [propertyTaxRate, setPropertyTaxRate] = useUrlParam("propertyTaxRate", 1.5);
@@ -38,7 +40,7 @@ const AffordabilityCalculator = () => {
   // Budget-based calculator state
   const [monthlyBudget, setMonthlyBudget] = useUrlParam("monthlyBudget", 3500);
   const [budgetLoanTerm, setBudgetLoanTerm] = useUrlParam("budgetLoanTerm", "30");
-  const [budgetInterestRate, setBudgetInterestRate] = useUrlParam("budgetInterestRate", 6.5);
+  const [budgetInterestRate, setBudgetInterestRate] = useUrlParam("budgetInterestRate", averageRate(30));
   const [budgetDownPaymentPercent, setBudgetDownPaymentPercent] = useUrlParam("budgetDownPaymentPercent", 20);
   const [budgetPropertyTaxRate, setBudgetPropertyTaxRate] = useUrlParam("budgetPropertyTaxRate", 1.5);
   const [budgetHoaFee, setBudgetHoaFee] = useUrlParam("budgetHoaFee", 0);
@@ -284,7 +286,7 @@ const AffordabilityCalculator = () => {
                 <Field id="affordability-down-payment" label="Down payment" unit="% of price">
                   <PercentInput id="affordability-down-payment" value={downPaymentPercent} onChange={setDownPaymentPercent} min={0} max={100} decimalPlaces={1} />
                 </Field>
-                <Field id="affordability-interest-rate" label="Interest rate">
+                <Field id="affordability-interest-rate" label="Interest rate" hint={<MarketRate term={Number(loanTerm)} value={interestRate} onUse={setInterestRate} />}>
                   <PercentInput id="affordability-interest-rate" value={interestRate} onChange={setInterestRate} min={0} max={20} decimalPlaces={3} />
                 </Field>
               </FieldGrid>
@@ -349,7 +351,7 @@ const AffordabilityCalculator = () => {
                 <Field id="affordability-down-payment-2" label="Down payment" unit="% of price">
                   <PercentInput id="affordability-down-payment-2" value={budgetDownPaymentPercent} onChange={setBudgetDownPaymentPercent} min={0} max={100} decimalPlaces={1} />
                 </Field>
-                <Field id="affordability-interest-rate-2" label="Interest rate">
+                <Field id="affordability-interest-rate-2" label="Interest rate" hint={<MarketRate term={Number(budgetLoanTerm)} value={budgetInterestRate} onUse={setBudgetInterestRate} />}>
                   <PercentInput id="affordability-interest-rate-2" value={budgetInterestRate} onChange={setBudgetInterestRate} min={0} max={20} decimalPlaces={3} />
                 </Field>
               </FieldGrid>

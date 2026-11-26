@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import MarketRate from "@/components/calc/MarketRate";
 import CurrencyInput from "@/components/CurrencyInput";
 import PercentInput from "@/components/PercentInput";
 import StickyResult from "@/components/StickyResult";
@@ -109,7 +110,7 @@ const VaFeeCalculator = () => {
                   ]}
                 />
               </Field>
-              <Field id="va-fee-rate" label="Interest rate">
+              <Field id="va-fee-rate" label="Interest rate" hint={<MarketRate term={term} value={rate} onUse={setRate} />}>
                 <PercentInput id="va-fee-rate" value={rate} onChange={setRate} min={0} max={20} decimalPlaces={3} />
               </Field>
               <Field id="va-fee-term" label="Loan term">

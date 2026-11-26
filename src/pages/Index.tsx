@@ -1,4 +1,5 @@
 import { Helmet } from "react-helmet-async";
+import RatesThisWeek from "@/components/RatesThisWeek";
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import Header from "@/components/Header";
@@ -170,6 +171,8 @@ const Index = () => {
                 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
               </span>
             </Link>
+
+            <RatesThisWeek className="mt-8" />
 
             <CalculatorDirectory />
 

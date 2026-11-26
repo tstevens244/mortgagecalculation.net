@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import MarketRate from "@/components/calc/MarketRate";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import CurrencyInput from "./CurrencyInput";
@@ -286,7 +287,7 @@ const RefinanceCalculator = () => {
 
             <InputCard id="refinance" title="The new loan">
               <FieldGrid>
-                <Field id="refinance-new-interest-rate" label="New interest rate">
+                <Field id="refinance-new-interest-rate" label="New interest rate" hint={<MarketRate term={inputs.newLoanTerm} value={inputs.newInterestRate} onUse={(r) => updateInput("newInterestRate", r)} note="Refinance rates can run a bit higher" />}>
                   <PercentInput id="refinance-new-interest-rate" value={inputs.newInterestRate} onChange={(value) => updateInput("newInterestRate", value)} min={0} max={20} decimalPlaces={3} />
                 </Field>
                 <Field id="refinance-years-before-sell" label="Years you'll keep it" info="Until you expect to sell or refinance again. Refinancing only pays off if you keep the loan past the break-even point.">

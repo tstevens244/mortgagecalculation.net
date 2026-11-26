@@ -1,4 +1,6 @@
 import { useMemo } from "react";
+import MarketRate from "@/components/calc/MarketRate";
+import { averageRate } from "@/lib/marketRates";
 import { Card, CardContent } from "@/components/ui/card";
 import { AlertCircle } from "lucide-react";
 import VizCard from "./viz/VizCard";
@@ -16,7 +18,7 @@ const QualificationCalculator = () => {
   const [homeValue, setHomeValue] = useUrlParam("homeValue", 400000);
   const [downPayment, setDownPayment] = useUrlParam("downPayment", 80000);
   const [loanTerm, setLoanTerm] = useUrlParam("loanTerm", "30");
-  const [interestRate, setInterestRate] = useUrlParam("interestRate", 6.5);
+  const [interestRate, setInterestRate] = useUrlParam("interestRate", averageRate(30));
   const [annualTaxes, setAnnualTaxes] = useUrlParam("annualTaxes", 4800);
   const [annualInsurance, setAnnualInsurance] = useUrlParam("annualInsurance", 2400);
   const [annualPMI, setAnnualPMI] = useUrlParam("annualPMI", 0);
@@ -101,7 +103,7 @@ const QualificationCalculator = () => {
               <Field id="qualification-down-payment" label="Down payment" hint={`${results.downPaymentPercent.toFixed(1)}% of the price`}>
                 <CurrencyInput id="qualification-down-payment" value={downPayment} onChange={setDownPayment} aria-describedby="qualification-down-payment-hint" />
               </Field>
-              <Field id="qualification-interest-rate" label="Interest rate">
+              <Field id="qualification-interest-rate" label="Interest rate" hint={<MarketRate term={Number(loanTerm)} value={interestRate} onUse={setInterestRate} />}>
                 <PercentInput id="qualification-interest-rate" value={interestRate} onChange={setInterestRate} min={0} max={20} decimalPlaces={3} />
               </Field>
               <Field id="qualification-other-debts" label="Monthly debt payments" info="Car, student loan and credit card minimums, and other recurring debts. Not rent or utilities.">

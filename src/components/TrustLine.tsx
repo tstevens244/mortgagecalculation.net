@@ -16,7 +16,11 @@ const TrustLine = () => (
     {REVIEWER && (
       <span className="inline-flex items-center gap-1">
         <UserCheck className="h-4 w-4" aria-hidden="true" />
-        Reviewed by {REVIEWER.name}, {REVIEWER.credentials}
+        Reviewed by{" "}
+        <Link to="/about/#expert-review" className="hover:underline">
+          {REVIEWER.name}
+        </Link>
+        , {REVIEWER.credentials}
       </span>
     )}
     <Link to="/methodology/" className="inline-flex items-center gap-1 text-primary hover:underline">
