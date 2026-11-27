@@ -10,6 +10,7 @@ import RelatedCalculators from "@/components/RelatedCalculators";
 import { calculatorBreadcrumbSchema } from "@/lib/calculators";
 import { SITE_URL, webPageSchema } from "@/lib/site";
 import { FIGURES_REVIEWED } from "@/lib/loanLimits";
+import { FIGURES_UPDATED } from "@/lib/figuresDate";
 
 export interface Faq {
   q: string;
@@ -34,7 +35,7 @@ interface CalculatorPageProps {
 const CalculatorPage = ({ path, title, description, heading, intro, calculator, children, faqs, featureList }: CalculatorPageProps) => {
   const url = `${SITE_URL}${path}`;
   const schemas = [
-    webPageSchema(url, title, FIGURES_REVIEWED),
+    webPageSchema(url, title, FIGURES_REVIEWED, FIGURES_UPDATED),
     calculatorBreadcrumbSchema(path),
     {
       "@context": "https://schema.org",

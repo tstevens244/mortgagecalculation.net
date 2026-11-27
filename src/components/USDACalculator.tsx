@@ -11,6 +11,10 @@ import { formatCurrency } from "@/lib/formatters";
 import StickyResult from "./StickyResult";
 import { AnswerCard } from "./PaymentAnswer";
 import { useUrlState } from "@/lib/urlState";
+import { HOME_INPUT_KEYS, localInsurance, localTax, withLocalHome } from "@/lib/localCosts";
+import { useLocalCosts } from "@/lib/useLocalCosts";
+import { averageRate } from "@/lib/marketRates";
+import { INSURANCE_SOURCE, LocalFigure, LocalPrice, TAX_SOURCE, insuranceDetail, taxDetail } from "@/components/calc/LocalValue";
 import { InputCard, FieldGrid, Field, TermChoice, MoreOptions, DownPaymentField, StartDateField, summarize } from "./calc/Form";
 import { USDA_UPFRONT_FEE_RATE, USDA_ANNUAL_FEE_RATE } from "@/lib/loanLimits";
 import { totalBalanceBasedFee } from "@/lib/mortgageMath";
@@ -36,12 +40,14 @@ const USDACalculator = () => {
     downPayment: 0, // USDA allows 0% down
     downPaymentPercent: 0,
     loanTerm: 30,
-    interestRate: 6.25,
+    interestRate: averageRate(30),
     propertyTax: 3000,
     homeInsurance: 1200,
     hoaFees: 0,
     startDate: new Date().toISOString().slice(0, 7),
   });
+
+  const { costs } = useLocalCosts((c) => setInputs((prev) => withLocalHome(prev, c, "entry")), { keys: HOME_INPUT_KEYS });
 
   const updateInput = (field: keyof USDAInputs, value: number | string) => {
     setInputs((prev) => {
@@ -145,8 +151,8 @@ const USDACalculator = () => {
         <div>
           <InputCard id="loan-details" title="Your USDA loan" description="Start with these four. Taxes, insurance and the rest are filled in for you below.">
             <FieldGrid>
-              <Field id="home-price" label="Home price">
-                <CurrencyInput id="home-price" value={inputs.homePrice} onChange={(value) => updateInput("homePrice", value)} />
+              <Field id="home-price" label="Home price" hint={<LocalPrice costs={costs} kind="entry" downPercent={inputs.downPaymentPercent} value={inputs.homePrice} onUse={(v) => updateInput("homePrice", v)} />}>
+                <CurrencyInput id="home-price" value={inputs.homePrice} onChange={(value) => updateInput("homePrice", value)} aria-describedby="home-price-hint" />
               </Field>
               <DownPaymentField
                 amount={inputs.downPayment}
@@ -172,10 +178,10 @@ const USDACalculator = () => {
               )}
             >
               <FieldGrid>
-                <Field id="property-tax" label="Property tax" unit="per year">
+                <Field id="property-tax" label="Property tax" unit="per year" hint={<LocalFigure costs={costs} figure={localTax(costs, inputs.homePrice)} value={inputs.propertyTax} onUse={(v) => updateInput("propertyTax", v)} detail={taxDetail(costs)} source={TAX_SOURCE} />}>
                   <CurrencyInput id="property-tax" value={inputs.propertyTax} onChange={(value) => updateInput("propertyTax", value)} />
                 </Field>
-                <Field id="home-insurance" label="Home insurance" unit="per year">
+                <Field id="home-insurance" label="Home insurance" unit="per year" hint={<LocalFigure costs={costs} figure={localInsurance(costs, inputs.homePrice)} value={inputs.homeInsurance} onUse={(v) => updateInput("homeInsurance", v)} detail={insuranceDetail(costs)} source={INSURANCE_SOURCE} />}>
                   <CurrencyInput id="home-insurance" value={inputs.homeInsurance} onChange={(value) => updateInput("homeInsurance", value)} />
                 </Field>
                 <Field id="hoa-fees" label="HOA dues" unit="per month">

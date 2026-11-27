@@ -9,6 +9,10 @@ import { monthlyPayment, usdaMaxPrice } from "@/lib/mortgageMath";
 import { USDA_ANNUAL_FEE_RATE, USDA_UPFRONT_FEE_RATE } from "@/lib/loanLimits";
 import { useUrlParam } from "@/lib/urlState";
 import { AnswerCard } from "./PaymentAnswer";
+import { useLocalCosts } from "@/lib/useLocalCosts";
+import { averageRate } from "@/lib/marketRates";
+import { localInsurance, localPrice } from "@/lib/localCosts";
+import { INSURANCE_SOURCE, LocalFigure, TAX_SOURCE } from "@/components/calc/LocalValue";
 
 // Approximate 2026 USDA guaranteed-loan income limits in standard-cost counties.
 // Many counties are higher; the USDA lookup has the exact figure.
@@ -18,10 +22,17 @@ const INCOME_LIMIT = { small: 119_850, large: 158_250 };
 const USDAQualifier = () => {
   const [income, setIncome] = useUrlParam("income", 72000);
   const [debts, setDebts] = useUrlParam("debts", 400);
-  const [rate, setRate] = useUrlParam("rate", 6.5);
+  const [rate, setRate] = useUrlParam("rate", averageRate(30));
   const [taxRate, setTaxRate] = useUrlParam("taxRate", 1);
   const [insurance, setInsurance] = useUrlParam("insurance", 1500);
   const [hoa, setHoa] = useUrlParam("hoa", 0);
+  const { costs: local } = useLocalCosts(
+    (c) => {
+      if (c.taxRate !== null) setTaxRate(c.taxRate);
+      setInsurance(localInsurance(c, localPrice(c, "entry")) ?? insurance);
+    },
+    { keys: ["taxRate", "insurance"] },
+  );
   const [household, setHousehold] = useUrlParam<"small" | "large">("household", "small");
 
   const r = useMemo(() => {
@@ -79,10 +90,10 @@ const USDAQualifier = () => {
           <FormRow id="usdaq-rate" label="Interest rate">
             <PercentInput id="usdaq-rate" value={rate} onChange={setRate} min={0} max={20} decimalPlaces={3} />
           </FormRow>
-          <FormRow id="usdaq-tax" label="Property tax rate (per year)">
+          <FormRow id="usdaq-tax" label="Property tax rate (per year)" hint={<LocalFigure costs={local} figure={local.taxRate} value={taxRate} onUse={setTaxRate} format={(v) => `${v.toFixed(2)}%`} detail="average effective rate" source={TAX_SOURCE} />}>
             <PercentInput id="usdaq-tax" value={taxRate} onChange={setTaxRate} min={0} max={5} decimalPlaces={2} />
           </FormRow>
-          <FormRow id="usdaq-ins" label="Home insurance (per year)">
+          <FormRow id="usdaq-ins" label="Home insurance (per year)" hint={<LocalFigure costs={local} figure={localInsurance(local, localPrice(local, "entry"))} value={insurance} onUse={setInsurance} detail="average premium on an entry-level home" source={INSURANCE_SOURCE} />}>
             <CurrencyInput id="usdaq-ins" value={insurance} onChange={setInsurance} allowDecimals={false} />
           </FormRow>
           <FormRow id="usdaq-hoa" label="HOA dues (per month)">

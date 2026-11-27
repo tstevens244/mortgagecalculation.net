@@ -38,7 +38,7 @@ export interface Reviewer {
 export const REVIEWER: Reviewer | null = null;
 
 /** schema.org WebPage for a calculator or guide: when it was last reviewed and, if set, by whom. */
-export function webPageSchema(url: string, name: string, lastReviewed: string) {
+export function webPageSchema(url: string, name: string, lastReviewed: string, dateModified?: string) {
   return {
     "@context": "https://schema.org",
     "@type": "WebPage",
@@ -46,6 +46,7 @@ export function webPageSchema(url: string, name: string, lastReviewed: string) {
     url,
     name,
     lastReviewed,
+    ...(dateModified ? { dateModified } : {}),
     ...(REVIEWER
       ? {
           reviewedBy: {

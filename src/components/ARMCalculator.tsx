@@ -11,6 +11,9 @@ import { armSchedule } from "@/lib/mortgageMath";
 import StickyResult from "./StickyResult";
 import { AnswerCard } from "./PaymentAnswer";
 import { useUrlState } from "@/lib/urlState";
+import { HOME_INPUT_KEYS, localInsurance, localTax, withLocalHome } from "@/lib/localCosts";
+import { useLocalCosts } from "@/lib/useLocalCosts";
+import { INSURANCE_SOURCE, LocalFigure, LocalPrice, TAX_SOURCE, insuranceDetail, taxDetail } from "@/components/calc/LocalValue";
 import { InputCard, FieldGrid, Field, TermChoice, MoreOptions, DownPaymentField, StartDateField, summarize, Choice } from "./calc/Form";
 
 interface ARMInputs {
@@ -62,6 +65,8 @@ const ARMCalculator = () => {
     expectedSubsequentAdjustment: 0.25,
     lifetimeCap: 5.0,
   });
+
+  const { costs } = useLocalCosts((c) => setInputs((prev) => withLocalHome(prev, c, "typical")), { keys: HOME_INPUT_KEYS });
 
   const updateInput = (field: keyof ARMInputs, value: number | string) => {
     setInputs((prev) => {
@@ -199,8 +204,8 @@ const ARMCalculator = () => {
         <div>
           <InputCard id="loan-details" title="Your ARM" description="Pick the ARM type and enter the basics. Rate changes, taxes and fees are filled in for you below.">
             <FieldGrid>
-              <Field id="home-price" label="Home price">
-                <CurrencyInput id="home-price" value={inputs.homePrice} onChange={(value) => updateInput("homePrice", value)} />
+              <Field id="home-price" label="Home price" hint={<LocalPrice costs={costs} kind="typical" downPercent={inputs.downPaymentPercent} value={inputs.homePrice} onUse={(v) => updateInput("homePrice", v)} />}>
+                <CurrencyInput id="home-price" value={inputs.homePrice} onChange={(value) => updateInput("homePrice", value)} aria-describedby="home-price-hint" />
               </Field>
               <DownPaymentField
                 amount={inputs.downPayment}
@@ -293,10 +298,10 @@ const ARMCalculator = () => {
               )}
             >
               <FieldGrid>
-                <Field id="property-tax" label="Property tax" unit="per year">
+                <Field id="property-tax" label="Property tax" unit="per year" hint={<LocalFigure costs={costs} figure={localTax(costs, inputs.homePrice)} value={inputs.propertyTax} onUse={(v) => updateInput("propertyTax", v)} detail={taxDetail(costs)} source={TAX_SOURCE} />}>
                   <CurrencyInput id="property-tax" value={inputs.propertyTax} onChange={(value) => updateInput("propertyTax", value)} />
                 </Field>
-                <Field id="home-insurance" label="Home insurance" unit="per year">
+                <Field id="home-insurance" label="Home insurance" unit="per year" hint={<LocalFigure costs={costs} figure={localInsurance(costs, inputs.homePrice)} value={inputs.homeInsurance} onUse={(v) => updateInput("homeInsurance", v)} detail={insuranceDetail(costs)} source={INSURANCE_SOURCE} />}>
                   <CurrencyInput id="home-insurance" value={inputs.homeInsurance} onChange={(value) => updateInput("homeInsurance", value)} />
                 </Field>
                 <Field id="pmi-rate" label="PMI rate" unit="% of loan per year" info="Charged only when you put down less than 20%.">

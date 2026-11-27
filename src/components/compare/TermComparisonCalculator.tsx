@@ -9,6 +9,10 @@ import { termComparison } from "@/lib/compareMath";
 import { monthsToPayoff, totalPaidOnBalance } from "@/lib/mortgageMath";
 import { useUrlParam } from "@/lib/urlState";
 import { AnswerCard } from "@/components/PaymentAnswer";
+import { useLocalCosts } from "@/lib/useLocalCosts";
+import { averageRate } from "@/lib/marketRates";
+import { HOME_VALUES, formatValueMonth, localLoan } from "@/lib/localCosts";
+import { LocalFigure } from "@/components/calc/LocalValue";
 
 const yearsMonths = (months: number) => {
   const y = Math.floor(months / 12);
@@ -19,8 +23,9 @@ const yearsMonths = (months: number) => {
 /** 15-year vs. 30-year fixed: payment, interest, equity, and paying a 30-year loan like a 15. */
 const TermComparisonCalculator = () => {
   const [loan, setLoan] = useUrlParam("loan", 320000);
-  const [rate30, setRate30] = useUrlParam("rate30", 6.5);
-  const [rate15, setRate15] = useUrlParam("rate15", 5.75);
+  const [rate30, setRate30] = useUrlParam("rate30", averageRate(30));
+  const [rate15, setRate15] = useUrlParam("rate15", averageRate(15));
+  const { costs: local } = useLocalCosts((c) => setLoan(localLoan(c)), { keys: ["loan"] });
 
   const c = useMemo(() => {
     const t = termComparison(loan, rate30, rate15);
@@ -43,7 +48,7 @@ const TermComparisonCalculator = () => {
           Your loan
         </h2>
         <div className="grid items-start gap-4 sm:grid-cols-[repeat(auto-fill,minmax(14rem,1fr))]">
-          <FormRow id="term-loan" label="Loan amount">
+          <FormRow id="term-loan" label="Loan amount" hint={<LocalFigure costs={local} figure={localLoan(local)} value={loan} onUse={setLoan} detail={`typical home value with 20% down, ${formatValueMonth(HOME_VALUES.asOf)}`} source={{ label: "Zillow", href: HOME_VALUES.sourceUrl }} />}>
             <CurrencyInput id="term-loan" value={loan} onChange={setLoan} allowDecimals={false} />
           </FormRow>
           <FormRow id="term-rate30" label="30-year rate">

@@ -9,6 +9,10 @@ import { formatCurrency } from "@/lib/formatters";
 import { pointsAnalysis } from "@/lib/compareMath";
 import { useUrlParam } from "@/lib/urlState";
 import { AnswerCard } from "@/components/PaymentAnswer";
+import { useLocalCosts } from "@/lib/useLocalCosts";
+import { averageRate } from "@/lib/marketRates";
+import { HOME_VALUES, formatValueMonth, localLoan } from "@/lib/localCosts";
+import { LocalFigure } from "@/components/calc/LocalValue";
 
 const yearsMonths = (months: number) => {
   const y = Math.floor(months / 12);
@@ -19,11 +23,12 @@ const yearsMonths = (months: number) => {
 /** Is paying discount points worth it? Cost, monthly savings, break-even and net savings over the years you keep the loan. */
 const PointsCalculator = () => {
   const [loan, setLoan] = useUrlParam("loan", 320000);
-  const [rate, setRate] = useUrlParam("rate", 6.75);
+  const [rate, setRate] = useUrlParam("rate", averageRate(30));
   const [points, setPoints] = useUrlParam("points", 1);
   const [perPoint, setPerPoint] = useUrlParam("perPoint", 0.25);
   const [term, setTerm] = useUrlParam("term", "30");
   const [years, setYears] = useUrlParam("years", "7");
+  const { costs: local } = useLocalCosts((c) => setLoan(localLoan(c)), { keys: ["loan"] });
 
   const p = useMemo(
     () =>
@@ -49,7 +54,7 @@ const PointsCalculator = () => {
           Your loan and points
         </h2>
         <div className="grid items-start gap-4 sm:grid-cols-[repeat(auto-fill,minmax(14rem,1fr))]">
-          <FormRow id="pts-loan" label="Loan amount">
+          <FormRow id="pts-loan" label="Loan amount" hint={<LocalFigure costs={local} figure={localLoan(local)} value={loan} onUse={setLoan} detail={`typical home value with 20% down, ${formatValueMonth(HOME_VALUES.asOf)}`} source={{ label: "Zillow", href: HOME_VALUES.sourceUrl }} />}>
             <CurrencyInput id="pts-loan" value={loan} onChange={setLoan} allowDecimals={false} />
           </FormRow>
           <FormRow id="pts-rate" label="Rate without points">

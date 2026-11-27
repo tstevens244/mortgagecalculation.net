@@ -9,13 +9,25 @@ import FeeSchedule from "./FeeSchedule";
 import { formatCurrency } from "@/lib/formatters";
 import { usdaFees } from "@/lib/feeMath";
 import { useUrlParam } from "@/lib/urlState";
+import { useLocalCosts } from "@/lib/useLocalCosts";
+import { averageRate } from "@/lib/marketRates";
+import { localPrice } from "@/lib/localCosts";
+import { LocalPrice } from "@/components/calc/LocalValue";
 
 /** USDA guarantee fee ("funding fee"): the 1% upfront fee, the 0.35% annual fee and what they add to the payment. */
 const UsdaFeeCalculator = () => {
   const [price, setPrice] = useUrlParam("price", 250000);
   const [down, setDown] = useUrlParam("down", 0);
-  const [rate, setRate] = useUrlParam("rate", 6.5);
+  const [rate, setRate] = useUrlParam("rate", averageRate(30));
   const [financed, setFinanced] = useUrlParam("financed", true);
+  const { costs: local } = useLocalCosts(
+    (c) => {
+      const p = localPrice(c, "entry");
+      setDown(Math.round((down / price) * p));
+      setPrice(p);
+    },
+    { keys: ["price", "down"] },
+  );
 
   const u = useMemo(() => usdaFees({ price, down, ratePercent: rate, financed }), [price, down, rate, financed]);
   const downPercent = price > 0 ? (down / price) * 100 : 0;
@@ -24,7 +36,7 @@ const UsdaFeeCalculator = () => {
     <div className="fade-in calc-layout">
       <InputCard id="usda-fee-inputs" title="Your USDA loan" description="USDA loans are 30-year fixed, with no down payment required.">
         <FieldGrid>
-          <Field id="usda-fee-price" label="Home price">
+          <Field id="usda-fee-price" label="Home price" hint={<LocalPrice costs={local} kind="entry" value={price} onUse={setPrice} />}>
             <CurrencyInput id="usda-fee-price" value={price} onChange={setPrice} allowDecimals={false} />
           </Field>
           <DownPaymentField

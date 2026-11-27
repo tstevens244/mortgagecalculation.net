@@ -10,7 +10,7 @@
 // - County figures in src/data/states/*.json: Tax Foundation county table (ACS 2020–2024 5-year):
 //   [name, median home value, median property taxes paid, effective rate %].
 
-import { monthlyPayment } from "@/lib/mortgageMath";
+import { monthlyPayment } from "./mortgageMath.ts";
 
 export interface StateInfo {
   name: string;

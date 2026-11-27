@@ -21,6 +21,8 @@ import StickyResult from "./StickyResult";
 import { InputCard, FieldGrid, Field, TermChoice, MoreOptions, summarize } from "./calc/Form";
 import { useUrlParam } from "@/lib/urlState";
 import { AnswerCard } from "./PaymentAnswer";
+import { useLocalCosts } from "@/lib/useLocalCosts";
+import { INSURANCE_SOURCE, LocalFigure, TAX_SOURCE } from "@/components/calc/LocalValue";
 
 // Estimated PMI, % of the loan per year, applied when the down payment is under 20%.
 const PMI_RATE = 0.5;
@@ -45,6 +47,19 @@ const AffordabilityCalculator = () => {
   const [budgetPropertyTaxRate, setBudgetPropertyTaxRate] = useUrlParam("budgetPropertyTaxRate", 1.5);
   const [budgetHoaFee, setBudgetHoaFee] = useUrlParam("budgetHoaFee", 0);
   const [budgetInsuranceRate, setBudgetInsuranceRate] = useUrlParam("budgetInsuranceRate", 0.5);
+  const { costs: local } = useLocalCosts(
+    (c) => {
+      if (c.taxRate !== null) {
+        setPropertyTaxRate(c.taxRate);
+        setBudgetPropertyTaxRate(c.taxRate);
+      }
+      if (c.insuranceRate !== null) {
+        setInsuranceRate(c.insuranceRate);
+        setBudgetInsuranceRate(c.insuranceRate);
+      }
+    },
+    { keys: ["propertyTaxRate", "insuranceRate", "budgetPropertyTaxRate", "budgetInsuranceRate"] },
+  );
 
   // Income-based calculation
   const incomeResults = useMemo(() => {
@@ -319,10 +334,10 @@ const AffordabilityCalculator = () => {
                       </SelectContent>
                     </Select>
                   </Field>
-                  <Field id="affordability-property-tax-rate-per-year" label="Property tax rate" unit="per year" info="As a % of the home price. The U.S. average is about 0.9%; it varies a lot by county.">
+                  <Field id="affordability-property-tax-rate-per-year" label="Property tax rate" unit="per year" hint={<LocalFigure costs={local} figure={local.taxRate} value={propertyTaxRate} onUse={setPropertyTaxRate} format={(v) => `${v.toFixed(2)}%`} detail="average effective rate" source={TAX_SOURCE} />} info="As a % of the home price. The U.S. average is about 0.9%; it varies a lot by county.">
                     <PercentInput id="affordability-property-tax-rate-per-year" value={propertyTaxRate} onChange={setPropertyTaxRate} min={0} max={5} decimalPlaces={2} />
                   </Field>
-                  <Field id="affordability-home-insurance-rate-per-year" label="Home insurance rate" unit="per year" info="As a % of the home price. About 0.4% to 0.6% is typical.">
+                  <Field id="affordability-home-insurance-rate-per-year" label="Home insurance rate" unit="per year" hint={<LocalFigure costs={local} figure={local.insuranceRate} value={insuranceRate} onUse={setInsuranceRate} format={(v) => `${v.toFixed(2)}%`} detail="average premium as a share of home value" source={INSURANCE_SOURCE} />} info="As a % of the home price. About 0.4% to 0.6% is typical.">
                     <PercentInput id="affordability-home-insurance-rate-per-year" value={insuranceRate} onChange={setInsuranceRate} min={0} max={3} decimalPlaces={2} />
                   </Field>
                   <Field id="affordability-hoa-fee-per-year" label="HOA dues" unit="per month">
@@ -368,10 +383,10 @@ const AffordabilityCalculator = () => {
                   <Field id="affordability-loan-term-2" label="Loan term">
                     <TermChoice id="affordability-loan-term-2" value={Number(budgetLoanTerm)} onChange={(y) => setBudgetLoanTerm(String(y))} />
                   </Field>
-                  <Field id="affordability-property-tax-rate-per-year-2" label="Property tax rate" unit="per year" info="As a % of the home price. The U.S. average is about 0.9%; it varies a lot by county.">
+                  <Field id="affordability-property-tax-rate-per-year-2" label="Property tax rate" unit="per year" hint={<LocalFigure costs={local} figure={local.taxRate} value={budgetPropertyTaxRate} onUse={setBudgetPropertyTaxRate} format={(v) => `${v.toFixed(2)}%`} detail="average effective rate" source={TAX_SOURCE} />} info="As a % of the home price. The U.S. average is about 0.9%; it varies a lot by county.">
                     <PercentInput id="affordability-property-tax-rate-per-year-2" value={budgetPropertyTaxRate} onChange={setBudgetPropertyTaxRate} min={0} max={5} decimalPlaces={2} />
                   </Field>
-                  <Field id="affordability-home-insurance-rate-per-year-2" label="Home insurance rate" unit="per year" info="As a % of the home price. About 0.4% to 0.6% is typical.">
+                  <Field id="affordability-home-insurance-rate-per-year-2" label="Home insurance rate" unit="per year" hint={<LocalFigure costs={local} figure={local.insuranceRate} value={budgetInsuranceRate} onUse={setBudgetInsuranceRate} format={(v) => `${v.toFixed(2)}%`} detail="average premium as a share of home value" source={INSURANCE_SOURCE} />} info="As a % of the home price. About 0.4% to 0.6% is typical.">
                     <PercentInput id="affordability-home-insurance-rate-per-year-2" value={budgetInsuranceRate} onChange={setBudgetInsuranceRate} min={0} max={3} decimalPlaces={2} />
                   </Field>
                   <Field id="affordability-hoa-fee-per-year-2" label="HOA dues" unit="per month">

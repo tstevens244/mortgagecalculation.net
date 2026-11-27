@@ -39,6 +39,17 @@ const Privacy = () => (
         statement for details.
       </li>
       <li>
+        <strong>Your approximate location.</strong> To start the calculators with your state's home prices, taxes and
+        insurance, your browser asks{" "}
+        <a href="https://www.geojs.io/" target="_blank" rel="noopener noreferrer">
+          GeoJS
+        </a>
+        , a free lookup service, which state your IP address is in. GeoJS receives your IP address to answer; we don't
+        receive or store it. The state is remembered in your browser (local storage) for a week, or until you pick
+        another one. If your browser sends a Global Privacy Control signal, the lookup is skipped and you can pick your
+        state yourself.
+      </li>
+      <li>
         <strong>No cookies for tracking.</strong> We don't use advertising or analytics cookies.
       </li>
     </ul>

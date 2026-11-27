@@ -10,17 +10,29 @@ import StickyResult from "./StickyResult";
 import { AnswerCard } from "./PaymentAnswer";
 import { InputCard, FieldGrid, Field, TermChoice } from "./calc/Form";
 import { useUrlParam } from "@/lib/urlState";
+import { useLocalCosts } from "@/lib/useLocalCosts";
+import { averageRate } from "@/lib/marketRates";
+import { localPrice } from "@/lib/localCosts";
+import { LocalPrice } from "@/components/calc/LocalValue";
 
 const ExtraPaymentsCalculator = () => {
   // Loan Information
   const [homePrice, setHomePrice] = useUrlParam("homePrice", 400000);
   const [downPayment, setDownPayment] = useUrlParam("downPayment", 80000);
-  const [interestRate, setInterestRate] = useUrlParam("interestRate", 6.5);
+  const [interestRate, setInterestRate] = useUrlParam("interestRate", averageRate(30));
   const [loanTerm, setLoanTerm] = useUrlParam("loanTerm", "30");
 
   // Extra Payments
   const [initialExtraPayment, setInitialExtraPayment] = useUrlParam("initialExtraPayment", 0);
   const [monthlyExtraPayment, setMonthlyExtraPayment] = useUrlParam("monthlyExtraPayment", 200);
+  const { costs: local } = useLocalCosts(
+    (c) => {
+      const p = localPrice(c, "typical");
+      setDownPayment(Math.round((downPayment / homePrice) * p));
+      setHomePrice(p);
+    },
+    { keys: ["homePrice", "downPayment"] },
+  );
 
   const loanAmount = Math.max(0, homePrice - downPayment);
 
@@ -179,7 +191,7 @@ const ExtraPaymentsCalculator = () => {
         <div className="contents">
           <InputCard id="loan-details" title="Your loan and extra payments" description="Enter your loan, then how much extra you'd pay.">
             <FieldGrid>
-              <Field id="extra-payments-home-price" label="Home price">
+              <Field id="extra-payments-home-price" label="Home price" hint={<LocalPrice costs={local} kind="typical" value={homePrice} onUse={setHomePrice} />}>
                 <CurrencyInput id="extra-payments-home-price" value={homePrice} onChange={setHomePrice} />
               </Field>
               <Field id="extra-payments-down-payment" label="Down payment" hint={`Loan amount: ${formatCurrency(loanAmount)}`}>

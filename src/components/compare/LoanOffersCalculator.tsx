@@ -11,6 +11,9 @@ import { compareOffers, type Offer } from "@/lib/compareMath";
 import { cn } from "@/lib/utils";
 import { useUrlParam } from "@/lib/urlState";
 import { AnswerCard } from "@/components/PaymentAnswer";
+import { useLocalCosts } from "@/lib/useLocalCosts";
+import { HOME_VALUES, formatValueMonth, localLoan } from "@/lib/localCosts";
+import { LocalFigure } from "@/components/calc/LocalValue";
 
 const NAMES = ["Offer A", "Offer B", "Offer C"];
 
@@ -19,6 +22,7 @@ const LoanOffersCalculator = () => {
   const [loan, setLoan] = useUrlParam("loan", 320000);
   const [term, setTerm] = useUrlParam("term", "30");
   const [years, setYears] = useUrlParam("years", "7");
+  const { costs: local } = useLocalCosts((c) => setLoan(localLoan(c)), { keys: ["loan"] });
   const [offers, setOffers] = useState<Offer[]>([
     { rate: 6.5, upfront: 4000 },
     { rate: 6.75, upfront: 0 },
@@ -44,7 +48,7 @@ const LoanOffersCalculator = () => {
           Your loan
         </h2>
         <div className="grid items-start gap-4 sm:grid-cols-[repeat(auto-fill,minmax(14rem,1fr))]">
-          <FormRow id="offers-loan" label="Loan amount">
+          <FormRow id="offers-loan" label="Loan amount" hint={<LocalFigure costs={local} figure={localLoan(local)} value={loan} onUse={setLoan} detail={`typical home value with 20% down, ${formatValueMonth(HOME_VALUES.asOf)}`} source={{ label: "Zillow", href: HOME_VALUES.sourceUrl }} />}>
             <CurrencyInput id="offers-loan" value={loan} onChange={setLoan} allowDecimals={false} />
           </FormRow>
           <FormRow id="offers-term" label="Loan term">

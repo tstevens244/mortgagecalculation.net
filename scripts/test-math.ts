@@ -340,3 +340,44 @@ test("average rate interpolates between the 15- and 30-year surveys", () => {
   near(averageRate(10, r), 6);
   near(averageRate(20, r), 6.33);
 });
+
+import { localCosts, localPrice, localTax, localInsurance, localLoan, withLocalHome, HOME_VALUES } from "../src/lib/localCosts.ts";
+import { CONFORMING_LIMIT, CONFORMING_LIMIT_HIGH_COST, FHA_LIMIT_FLOOR } from "../src/lib/loanLimits.ts";
+import { states } from "../src/lib/states.ts";
+
+test("local costs: each calculator gets a price that fits its loan type", () => {
+  for (const s of states) {
+    const c = localCosts(s.code);
+    const v = c.values;
+    assert.ok(v.entry < v.typical && v.typical < v.upper, `${s.code} tiers in order`);
+    near(localPrice(c, "typical"), v.typical);
+    near(localPrice(c, "entry"), v.entry);
+    // Jumbo: the loan with the down payment is always above the conforming limit.
+    for (const down of [10, 20, 30]) {
+      const limit = s.code === "AK" || s.code === "HI" ? CONFORMING_LIMIT_HIGH_COST : CONFORMING_LIMIT;
+      const jumbo = localPrice(c, "jumbo", down);
+      assert.ok(jumbo * (1 - down / 100) > limit, `${s.code} jumbo loan above the limit at ${down}% down`);
+      assert.ok(jumbo >= v.upper);
+    }
+    // FHA: the 3.5%-down loan fits under the floor limit (outside AK/HI).
+    if (s.code !== "AK" && s.code !== "HI") assert.ok(localPrice(c, "fha") * 0.965 <= FHA_LIMIT_FLOOR, `${s.code} FHA under limit`);
+  }
+  const ca = localCosts("CA");
+  assert.ok(localPrice(ca, "jumbo") > localPrice(ca, "typical"));
+});
+
+test("local tax and insurance scale with the price", () => {
+  const tx = localCosts("TX");
+  near(localTax(tx, 300_000)!, 4200); // 1.40%
+  const ins = localInsurance(tx, 300_000)!;
+  assert.ok(Math.abs(ins - (2864 / 313200) * 300_000) <= 10);
+  assert.ok(localInsurance(tx, 600_000)! > ins * 1.9);
+  // U.S.: no single tax figure, so calculators keep their own.
+  const us = localCosts(null);
+  assert.equal(localTax(us, 300_000), null);
+  assert.equal(us.values, HOME_VALUES.national);
+  const kept = withLocalHome({ homePrice: 1, downPayment: 0, downPaymentPercent: 10, propertyTax: 3600, homeInsurance: 1200 }, us, "typical");
+  near(kept.propertyTax, 3600);
+  near(kept.downPayment, Math.round(us.values.typical * 0.1));
+  assert.equal(localLoan(tx) % 5000, 0);
+});

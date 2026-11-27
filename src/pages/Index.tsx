@@ -1,5 +1,6 @@
 import { Helmet } from "react-helmet-async";
 import RatesThisWeek from "@/components/RatesThisWeek";
+import LocalCostsCard from "@/components/LocalCostsCard";
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import Header from "@/components/Header";
@@ -173,6 +174,7 @@ const Index = () => {
             </Link>
 
             <RatesThisWeek className="mt-8" />
+            <LocalCostsCard className="mt-6" />
 
             <CalculatorDirectory />
 

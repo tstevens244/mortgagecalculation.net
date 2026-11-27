@@ -11,11 +11,15 @@ import { formatCurrency } from "@/lib/formatters";
 import { averageRate } from "@/lib/marketRates";
 import { CLOSING_DEFAULTS, closingCosts, defaultTitleAndSettlement } from "@/lib/closingCosts";
 import { useUrlParam } from "@/lib/urlState";
+import { useLocalCosts } from "@/lib/useLocalCosts";
+import { localPrice } from "@/lib/localCosts";
+import { LocalPrice } from "@/components/calc/LocalValue";
 
 // -1 means "estimate it for me" for inputs whose typical value depends on the price.
 const AUTO = -1;
-const TAX_RATE = 1.1; // % of price a year, near the U.S. average effective rate
-const INSURANCE_RATE = 0.5; // % of price a year
+// Used for "Auto" tax and insurance until the visitor's state is known.
+const US_TAX_RATE = 1.1; // % of price a year, near the U.S. average effective rate
+const US_INSURANCE_RATE = 0.5; // % of price a year
 
 /** Closing costs and cash to close, laid out like the Loan Estimate. */
 const ClosingCostCalculator = () => {
@@ -34,6 +38,16 @@ const ClosingCostCalculator = () => {
   const [escTax, setEscTax] = useUrlParam("escTax", CLOSING_DEFAULTS.escrowTaxMonths);
   const [escIns, setEscIns] = useUrlParam("escIns", CLOSING_DEFAULTS.escrowInsuranceMonths);
   const [credits, setCredits] = useUrlParam("credits", CLOSING_DEFAULTS.credits);
+  const { costs: local } = useLocalCosts(
+    (c) => {
+      const p = localPrice(c, "typical");
+      setDown(Math.round((down / price) * p));
+      setPrice(p);
+    },
+    { keys: ["price", "down"] },
+  );
+  const TAX_RATE = local.taxRate ?? US_TAX_RATE;
+  const INSURANCE_RATE = local.insuranceRate ?? US_INSURANCE_RATE;
 
   const loan = Math.max(0, price - down);
   const annualTax = tax === AUTO ? Math.round((price * TAX_RATE) / 100) : tax;
@@ -66,7 +80,7 @@ const ClosingCostCalculator = () => {
     <div className="fade-in calc-layout">
       <InputCard id="closing-inputs" title="Your purchase" description="Start with these. Every fee below has a typical estimate you can change to match your Loan Estimate.">
         <FieldGrid>
-          <Field id="cc-price" label="Home price">
+          <Field id="cc-price" label="Home price" hint={<LocalPrice costs={local} kind="typical" value={price} onUse={setPrice} />}>
             <CurrencyInput id="cc-price" value={price} onChange={setPrice} allowDecimals={false} />
           </Field>
           <DownPaymentField

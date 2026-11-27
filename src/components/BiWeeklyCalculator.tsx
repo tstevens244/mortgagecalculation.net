@@ -10,16 +10,28 @@ import StickyResult from "./StickyResult";
 import { AnswerCard } from "./PaymentAnswer";
 import { InputCard, FieldGrid, Field, TermChoice, MoreOptions } from "./calc/Form";
 import { useUrlParam } from "@/lib/urlState";
+import { useLocalCosts } from "@/lib/useLocalCosts";
+import { averageRate } from "@/lib/marketRates";
+import { localPrice } from "@/lib/localCosts";
+import { LocalPrice } from "@/components/calc/LocalValue";
 
 const BiWeeklyCalculator = () => {
   // Loan Information
   const [homePrice, setHomePrice] = useUrlParam("homePrice", 400000);
   const [downPayment, setDownPayment] = useUrlParam("downPayment", 80000);
-  const [interestRate, setInterestRate] = useUrlParam("interestRate", 6.5);
+  const [interestRate, setInterestRate] = useUrlParam("interestRate", averageRate(30));
   const [loanTerm, setLoanTerm] = useUrlParam("loanTerm", "30");
 
   // Tax Info
   const [taxRate, setTaxRate] = useUrlParam("taxRate", 0);
+  const { costs: local } = useLocalCosts(
+    (c) => {
+      const p = localPrice(c, "typical");
+      setDownPayment(Math.round((downPayment / homePrice) * p));
+      setHomePrice(p);
+    },
+    { keys: ["homePrice", "downPayment"] },
+  );
 
   const loanAmount = Math.max(0, homePrice - downPayment);
 
@@ -185,7 +197,7 @@ const BiWeeklyCalculator = () => {
         <div className="contents">
           <InputCard id="loan-details" title="Your loan" description="Bi-weekly payments are half your monthly payment every two weeks.">
             <FieldGrid>
-              <Field id="bi-weekly-home-price" label="Home price">
+              <Field id="bi-weekly-home-price" label="Home price" hint={<LocalPrice costs={local} kind="typical" value={homePrice} onUse={setHomePrice} />}>
                 <CurrencyInput id="bi-weekly-home-price" value={homePrice} onChange={setHomePrice} />
               </Field>
               <Field id="bi-weekly-down-payment" label="Down payment" hint={`Loan amount: ${formatCurrency(loanAmount)}`}>

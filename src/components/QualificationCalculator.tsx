@@ -13,6 +13,9 @@ import StickyResult from "./StickyResult";
 import { InputCard, FieldGrid, Field, TermChoice, MoreOptions, Choice, summarize } from "./calc/Form";
 import { useUrlParam } from "@/lib/urlState";
 import { AnswerCard } from "./PaymentAnswer";
+import { useLocalCosts } from "@/lib/useLocalCosts";
+import { localInsurance, localPrice, localTax } from "@/lib/localCosts";
+import { INSURANCE_SOURCE, LocalFigure, LocalPrice, TAX_SOURCE, insuranceDetail, taxDetail } from "@/components/calc/LocalValue";
 
 const QualificationCalculator = () => {
   const [homeValue, setHomeValue] = useUrlParam("homeValue", 400000);
@@ -24,6 +27,16 @@ const QualificationCalculator = () => {
   const [annualPMI, setAnnualPMI] = useUrlParam("annualPMI", 0);
   const [frontEndRatio, setFrontEndRatio] = useUrlParam("frontEndRatio", 28);
   const [backEndRatio, setBackEndRatio] = useUrlParam("backEndRatio", 36);
+  const { costs: local } = useLocalCosts(
+    (c) => {
+      const p = localPrice(c, "typical");
+      setDownPayment(Math.round((downPayment / homeValue) * p));
+      setHomeValue(p);
+      setAnnualTaxes(localTax(c, p) ?? annualTaxes);
+      setAnnualInsurance(localInsurance(c, p) ?? annualInsurance);
+    },
+    { keys: ["homeValue", "downPayment", "annualTaxes", "annualInsurance"] },
+  );
   const [monthlyDebts, setMonthlyDebts] = useUrlParam("monthlyDebts", 500);
 
   const results = useMemo(() => {
@@ -97,7 +110,7 @@ const QualificationCalculator = () => {
         <div>
           <InputCard id="qualification-inputs" title="The home and your debts" description="See the income a lender would want for this home.">
             <FieldGrid>
-              <Field id="qualification-home-value" label="Home price">
+              <Field id="qualification-home-value" label="Home price" hint={<LocalPrice costs={local} kind="typical" value={homeValue} onUse={setHomeValue} />}>
                 <CurrencyInput id="qualification-home-value" value={homeValue} onChange={setHomeValue} />
               </Field>
               <Field id="qualification-down-payment" label="Down payment" hint={`${results.downPaymentPercent.toFixed(1)}% of the price`}>
@@ -143,10 +156,10 @@ const QualificationCalculator = () => {
                 <Field id="qualification-loan-term" label="Loan term">
                   <TermChoice id="qualification-loan-term" value={Number(loanTerm)} onChange={(y) => setLoanTerm(String(y))} />
                 </Field>
-                <Field id="qualification-property-tax" label="Property tax" unit="per year">
+                <Field id="qualification-property-tax" label="Property tax" unit="per year" hint={<LocalFigure costs={local} figure={localTax(local, homeValue)} value={annualTaxes} onUse={setAnnualTaxes} detail={taxDetail(local)} source={TAX_SOURCE} />}>
                   <CurrencyInput id="qualification-property-tax" value={annualTaxes} onChange={setAnnualTaxes} />
                 </Field>
-                <Field id="qualification-insurance" label="Home insurance" unit="per year">
+                <Field id="qualification-insurance" label="Home insurance" unit="per year" hint={<LocalFigure costs={local} figure={localInsurance(local, homeValue)} value={annualInsurance} onUse={setAnnualInsurance} detail={insuranceDetail(local)} source={INSURANCE_SOURCE} />}>
                   <CurrencyInput id="qualification-insurance" value={annualInsurance} onChange={setAnnualInsurance} />
                 </Field>
                 <Field id="qualification-annual-pmi" label="PMI" unit="per year" info="Usually required when you put down less than 20%. About 0.5% of the loan a year is typical.">

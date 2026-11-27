@@ -1,17 +1,17 @@
 import { Link } from "react-router-dom";
 import { CalendarCheck, BookOpen, UserCheck } from "lucide-react";
-import { FIGURES_REVIEWED } from "@/lib/loanLimits";
+import { FIGURES_UPDATED } from "@/lib/figuresDate";
 import { REVIEWER, formatLongDate } from "@/lib/site";
 
 /**
- * Shown under each calculator's heading: when the loan figures were last
- * checked, who reviewed the page (if anyone has), and a link to the methodology.
+ * Shown under each calculator's heading: when the figures (rates, home values,
+ * loan limits) last changed, who reviewed the page (if anyone has), and a link to the methodology.
  */
 const TrustLine = () => (
   <p className="mt-4 flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-sm text-muted-foreground">
     <span className="inline-flex items-center gap-1">
       <CalendarCheck className="h-4 w-4" aria-hidden="true" />
-      Figures reviewed <time dateTime={FIGURES_REVIEWED}>{formatLongDate(FIGURES_REVIEWED)}</time>
+      Figures updated <time dateTime={FIGURES_UPDATED}>{formatLongDate(FIGURES_UPDATED)}</time>
     </span>
     {REVIEWER && (
       <span className="inline-flex items-center gap-1">

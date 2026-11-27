@@ -53,9 +53,27 @@ function scheduleWrite() {
   }, 400);
 }
 
+let quiet = false;
+
 function markTouched() {
-  touched = true;
+  if (!quiet) touched = true;
 }
+
+/**
+ * Run setters without counting as an edit, for values filled in automatically
+ * (such as local home prices). The URL stays clean until the visitor changes something.
+ */
+export function quietly(fn: () => void) {
+  quiet = true;
+  try {
+    fn();
+  } finally {
+    quiet = false;
+  }
+}
+
+/** Whether the visitor has changed any input on this page yet. */
+export const isTouched = () => touched;
 
 /** A single input stored in the URL under `key`. */
 export function useUrlParam(key: string, initial: number): [number, Dispatch<SetStateAction<number>>];

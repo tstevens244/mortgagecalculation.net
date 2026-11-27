@@ -13,6 +13,9 @@ import { fhaVsConventional } from "@/lib/compareMath";
 import { CONFORMING_LIMIT, FHA_LIMIT_CEILING, FHA_LIMIT_FLOOR, FHA_UPFRONT_MIP_RATE } from "@/lib/loanLimits";
 import { useUrlParam } from "@/lib/urlState";
 import { AnswerCard } from "@/components/PaymentAnswer";
+import { useLocalCosts } from "@/lib/useLocalCosts";
+import { localPrice } from "@/lib/localCosts";
+import { LocalPrice } from "@/components/calc/LocalValue";
 
 const yearsMonths = (months: number) => {
   const y = Math.floor(months / 12);
@@ -30,6 +33,7 @@ const FhaVsConventionalCalculator = () => {
   const [credit, setCredit] = useUrlParam("credit", 740);
   const [pmiRate, setPmiRate] = useUrlParam("pmiRate", estimatePmiRate(100 - 5, 740));
   const [years, setYears] = useUrlParam("years", "7");
+  const { costs: local } = useLocalCosts((c) => setPrice(localPrice(c, "fha")), { keys: ["price"] });
 
   const r = useMemo(
     () =>
@@ -84,7 +88,7 @@ const FhaVsConventionalCalculator = () => {
           Your home and loans
         </h2>
         <div className="grid items-start gap-4 sm:grid-cols-[repeat(auto-fill,minmax(14rem,1fr))]">
-          <FormRow id="fvc-price" label="Home price">
+          <FormRow id="fvc-price" label="Home price" hint={<LocalPrice costs={local} kind="fha" value={price} onUse={setPrice} />}>
             <CurrencyInput id="fvc-price" value={price} onChange={setPrice} allowDecimals={false} />
           </FormRow>
           <FormRow id="fvc-down" label="Down payment" hint={`${formatCurrency((price * down) / 100)} down; loan ${formatCurrency(r.base)}`}>

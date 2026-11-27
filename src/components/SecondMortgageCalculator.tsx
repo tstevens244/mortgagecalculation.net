@@ -12,6 +12,10 @@ import { monthsUntilBalance } from "@/lib/mortgageMath";
 import StickyResult from "./StickyResult";
 import { InputCard, FieldGrid, Field, MoreOptions, Choice, DownPaymentField, summarize } from "./calc/Form";
 import { useUrlState } from "@/lib/urlState";
+import { localInsurance, localPrice, localTax } from "@/lib/localCosts";
+import { useLocalCosts } from "@/lib/useLocalCosts";
+import { pmiRate } from "@/lib/pmi";
+import { INSURANCE_SOURCE, LocalFigure, LocalPrice, TAX_SOURCE, insuranceDetail, taxDetail } from "@/components/calc/LocalValue";
 import { AnswerCard } from "./PaymentAnswer";
 
 interface SecondMortgageInputs {
@@ -44,7 +48,7 @@ const SecondMortgageCalculator = () => {
     homeValue: 400000,
     downPayment: 20000,
     downPaymentPercent: 5,
-    annualPMI: 0.5,
+    annualPMI: pmiRate(95, 740), // 5% down, 740 credit
     propertyTax: 2700,
     homeInsurance: 2400,
     hoaFees: 0,
@@ -64,6 +68,21 @@ const SecondMortgageCalculator = () => {
     secondMortDiscountPoints: 1.0,
     secondMortClosingCosts: 1000,
   });
+
+  const { costs: local } = useLocalCosts(
+    (c) =>
+      setInputs((prev) => {
+        const homeValue = localPrice(c, "typical");
+        return {
+          ...prev,
+          homeValue,
+          downPayment: Math.round((prev.downPaymentPercent / 100) * homeValue),
+          propertyTax: localTax(c, homeValue) ?? prev.propertyTax,
+          homeInsurance: localInsurance(c, homeValue) ?? prev.homeInsurance,
+        };
+      }),
+    { keys: ["homeValue", "downPayment", "downPaymentPercent", "propertyTax", "homeInsurance"] },
+  );
 
   const updateInput = (field: keyof SecondMortgageInputs, value: number) => {
     setInputs((prev) => {
@@ -208,7 +227,7 @@ const SecondMortgageCalculator = () => {
         <TabsContent value="calculator" className="space-y-6">
           <InputCard id="piggyback-inputs" title="The home and both options" description="Compare one loan with PMI against an 80% first mortgage plus a second loan.">
             <FieldGrid>
-              <Field id="second-mortgage-home-value" label="Home price">
+              <Field id="second-mortgage-home-value" label="Home price" hint={<LocalPrice costs={local} value={inputs.homeValue} onUse={(v) => updateInput("homeValue", v)} />}>
                 <CurrencyInput id="second-mortgage-home-value" value={inputs.homeValue} onChange={(value) => updateInput("homeValue", value)} />
               </Field>
               <Field
@@ -397,10 +416,10 @@ const SecondMortgageCalculator = () => {
                 <Field id="second-mortgage-annual-pmi-rate" label="PMI rate" unit="% of loan per year" info="For the single loan. PMI ends once the balance reaches 78% of the price.">
                   <PercentInput id="second-mortgage-annual-pmi-rate" value={inputs.annualPMI} onChange={(value) => updateInput("annualPMI", value)} min={0} max={5} decimalPlaces={2} />
                 </Field>
-                <Field id="second-mortgage-annual-property-tax" label="Property tax" unit="per year">
+                <Field id="second-mortgage-annual-property-tax" label="Property tax" unit="per year" hint={<LocalFigure costs={local} figure={localTax(local, inputs.homeValue)} value={inputs.propertyTax} onUse={(v) => updateInput("propertyTax", v)} detail={taxDetail(local)} source={TAX_SOURCE} />}>
                   <CurrencyInput id="second-mortgage-annual-property-tax" value={inputs.propertyTax} onChange={(value) => updateInput("propertyTax", value)} />
                 </Field>
-                <Field id="second-mortgage-annual-insurance" label="Home insurance" unit="per year">
+                <Field id="second-mortgage-annual-insurance" label="Home insurance" unit="per year" hint={<LocalFigure costs={local} figure={localInsurance(local, inputs.homeValue)} value={inputs.homeInsurance} onUse={(v) => updateInput("homeInsurance", v)} detail={insuranceDetail(local)} source={INSURANCE_SOURCE} />}>
                   <CurrencyInput id="second-mortgage-annual-insurance" value={inputs.homeInsurance} onChange={(value) => updateInput("homeInsurance", value)} />
                 </Field>
                 <Field id="second-mortgage-monthly-hoa" label="HOA dues" unit="per month">

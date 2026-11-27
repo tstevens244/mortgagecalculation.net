@@ -5,7 +5,8 @@ on:
     branches: [main]
   workflow_dispatch:
   # Freddie Mac publishes its weekly rate survey on Thursdays at noon ET (Wednesdays
-  # in holiday weeks). Rebuild afterwards so "today's average rate" stays current.
+  # in holiday weeks). Rebuild afterwards so "today's average rate" stays current; the
+  # same run picks up Zillow's monthly home values and moves the "Figures updated" date.
   schedule:
     - cron: "30 18 * * 3,4"
 
@@ -43,8 +44,8 @@ jobs:
         with:
           chrome-version: stable
 
-      - name: Fetch this week's average mortgage rates
-        run: node scripts/fetch-rates.cjs
+      - name: Fetch this week's average mortgage rates and home values
+        run: npm run rates
 
       - name: Build
         run: npm run build

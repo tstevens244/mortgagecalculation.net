@@ -15,6 +15,9 @@ import StickyResult from "./StickyResult";
 import { InputCard, FieldGrid, Field, TermChoice, MoreOptions, Choice, summarize } from "./calc/Form";
 import { useUrlParam } from "@/lib/urlState";
 import { AnswerCard } from "./PaymentAnswer";
+import { useLocalCosts } from "@/lib/useLocalCosts";
+import { localPrice } from "@/lib/localCosts";
+import { INSURANCE_SOURCE, LocalFigure, LocalPrice, TAX_SOURCE } from "@/components/calc/LocalValue";
 
 const RentOrBuyCalculator = () => {
   // Rent Info
@@ -42,6 +45,14 @@ const RentOrBuyCalculator = () => {
 
   // Tax Info
   const [incomeTaxRate, setIncomeTaxRate] = useUrlParam("incomeTaxRate", 0);
+  const { costs: local } = useLocalCosts(
+    (c) => {
+      setHomePrice(localPrice(c, "typical"));
+      if (c.taxRate !== null) setAnnualPropertyTaxRate(c.taxRate);
+      if (c.insuranceRate !== null) setAnnualInsuranceRate(c.insuranceRate);
+    },
+    { keys: ["homePrice", "annualPropertyTaxRate", "annualInsuranceRate"] },
+  );
 
   const { results, byYear } = useMemo(() => {
     const base = {
@@ -85,7 +96,7 @@ const RentOrBuyCalculator = () => {
               <Field id="rent-or-buy-monthly-rent" label="Monthly rent">
                 <CurrencyInput id="rent-or-buy-monthly-rent" value={monthlyRent} onChange={setMonthlyRent} />
               </Field>
-              <Field id="rent-or-buy-home-price" label="Home price">
+              <Field id="rent-or-buy-home-price" label="Home price" hint={<LocalPrice costs={local} kind="typical" value={homePrice} onUse={setHomePrice} />}>
                 <CurrencyInput id="rent-or-buy-home-price" value={homePrice} onChange={setHomePrice} />
               </Field>
                 <Field id="rent-or-buy-down-payment" label="Down payment" unit="% of price">
@@ -152,10 +163,10 @@ const RentOrBuyCalculator = () => {
               )}
             >
               <FieldGrid>
-                <Field id="rent-or-buy-property-tax" label="Property tax" unit="% of price per year">
+                <Field id="rent-or-buy-property-tax" label="Property tax" unit="% of price per year" hint={<LocalFigure costs={local} figure={local.taxRate} value={annualPropertyTaxRate} onUse={setAnnualPropertyTaxRate} format={(v) => `${v.toFixed(2)}%`} detail="average effective rate" source={TAX_SOURCE} />}>
                   <PercentInput id="rent-or-buy-property-tax" value={annualPropertyTaxRate} onChange={setAnnualPropertyTaxRate} min={0} max={5} decimalPlaces={2} />
                 </Field>
-                <Field id="rent-or-buy-insurance" label="Home insurance" unit="% of price per year">
+                <Field id="rent-or-buy-insurance" label="Home insurance" unit="% of price per year" hint={<LocalFigure costs={local} figure={local.insuranceRate} value={annualInsuranceRate} onUse={setAnnualInsuranceRate} format={(v) => `${v.toFixed(2)}%`} detail="average premium as a share of home value" source={INSURANCE_SOURCE} />}>
                   <PercentInput id="rent-or-buy-insurance" value={annualInsuranceRate} onChange={setAnnualInsuranceRate} min={0} max={3} decimalPlaces={2} />
                 </Field>
                 <Field id="rent-or-buy-maintenance" label="Maintenance" unit="per year" info="Repairs and upkeep. About 1% of the home's value a year is a common rule.">

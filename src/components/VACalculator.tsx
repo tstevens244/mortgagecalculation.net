@@ -11,6 +11,10 @@ import { formatCurrency } from "@/lib/formatters";
 import StickyResult from "./StickyResult";
 import { AnswerCard } from "./PaymentAnswer";
 import { useUrlState } from "@/lib/urlState";
+import { HOME_INPUT_KEYS, localInsurance, localTax, withLocalHome } from "@/lib/localCosts";
+import { useLocalCosts } from "@/lib/useLocalCosts";
+import { averageRate } from "@/lib/marketRates";
+import { INSURANCE_SOURCE, LocalFigure, LocalPrice, TAX_SOURCE, insuranceDetail, taxDetail } from "@/components/calc/LocalValue";
 import { InputCard, FieldGrid, Field, TermChoice, MoreOptions, DownPaymentField, StartDateField, summarize, Choice } from "./calc/Form";
 import { vaFundingFeeRate } from "@/lib/loanLimits";
 
@@ -35,7 +39,7 @@ const VACalculator = () => {
     downPayment: 0,
     downPaymentPercent: 0,
     loanTerm: 30,
-    interestRate: 6.25,
+    interestRate: averageRate(30),
     propertyTax: 4800,
     homeInsurance: 1500,
     hoaFees: 0,
@@ -44,6 +48,8 @@ const VACalculator = () => {
     hasDisability: false,
     financeFundingFee: true,
   });
+
+  const { costs } = useLocalCosts((c) => setInputs((prev) => withLocalHome(prev, c, "typical")), { keys: HOME_INPUT_KEYS });
 
   const updateInput = (field: keyof VAInputs, value: number | string | boolean) => {
     setInputs((prev) => {
@@ -144,8 +150,8 @@ const VACalculator = () => {
         <div>
           <InputCard id="loan-details" title="Your VA loan" description="Start with these four. Taxes, insurance and the rest are filled in for you below.">
             <FieldGrid>
-              <Field id="home-price" label="Home price">
-                <CurrencyInput id="home-price" value={inputs.homePrice} onChange={(value) => updateInput("homePrice", value)} />
+              <Field id="home-price" label="Home price" hint={<LocalPrice costs={costs} kind="typical" downPercent={inputs.downPaymentPercent} value={inputs.homePrice} onUse={(v) => updateInput("homePrice", v)} />}>
+                <CurrencyInput id="home-price" value={inputs.homePrice} onChange={(value) => updateInput("homePrice", value)} aria-describedby="home-price-hint" />
               </Field>
               <DownPaymentField
                 amount={inputs.downPayment}
@@ -211,10 +217,10 @@ const VACalculator = () => {
               )}
             >
               <FieldGrid>
-                <Field id="property-tax" label="Property tax" unit="per year">
+                <Field id="property-tax" label="Property tax" unit="per year" hint={<LocalFigure costs={costs} figure={localTax(costs, inputs.homePrice)} value={inputs.propertyTax} onUse={(v) => updateInput("propertyTax", v)} detail={taxDetail(costs)} source={TAX_SOURCE} />}>
                   <CurrencyInput id="property-tax" value={inputs.propertyTax} onChange={(value) => updateInput("propertyTax", value)} />
                 </Field>
-                <Field id="home-insurance" label="Home insurance" unit="per year">
+                <Field id="home-insurance" label="Home insurance" unit="per year" hint={<LocalFigure costs={costs} figure={localInsurance(costs, inputs.homePrice)} value={inputs.homeInsurance} onUse={(v) => updateInput("homeInsurance", v)} detail={insuranceDetail(costs)} source={INSURANCE_SOURCE} />}>
                   <CurrencyInput id="home-insurance" value={inputs.homeInsurance} onChange={(value) => updateInput("homeInsurance", value)} />
                 </Field>
                 <Field id="hoa-fees" label="HOA dues" unit="per month">

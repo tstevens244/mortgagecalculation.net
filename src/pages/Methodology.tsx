@@ -1,3 +1,7 @@
+import { HOME_VALUES, formatValueMonth } from "@/lib/localCosts";
+import { INSURANCE_DATA_YEAR, STATE_DATA_YEAR } from "@/lib/states";
+import { INSURANCE_SOURCE, TAX_SOURCE } from "@/components/calc/LocalValue";
+import { FIGURES_UPDATED } from "@/lib/figuresDate";
 import { Link } from "react-router-dom";
 import { MARKET_RATES, formatSurveyDate } from "@/lib/marketRates";
 import { CREDIT_TIERS, pmiRate } from "@/lib/pmi";
@@ -10,7 +14,6 @@ import {
   FHA_LIMIT_FLOOR,
   FHA_MIP_LARGE_LOAN_THRESHOLD,
   FHA_UPFRONT_MIP_RATE,
-  FIGURES_REVIEWED,
   LIMITS_YEAR,
   USDA_ANNUAL_FEE_RATE,
   USDA_UPFRONT_FEE_RATE,
@@ -22,7 +25,7 @@ const Methodology = () => (
     title="How Our Mortgage Calculators Work | Formulas & Sources"
     description="The formulas, assumptions and official sources behind every MortgageCalculation.net calculator, including 2026 loan limits, FHA MIP, VA funding fee and USDA fees."
     heading="How our calculators work"
-    updated={FIGURES_REVIEWED}
+    updated={FIGURES_UPDATED}
     breadcrumbName="Methodology"
   >
     <p>
@@ -146,6 +149,49 @@ const Methodology = () => (
       {MARKET_RATES.rate15.toFixed(2)}% for 15. The site rebuilds automatically each week after Freddie Mac publishes.
     </p>
 
+    <h2>Local home prices, taxes and insurance</h2>
+    <p>
+      Each calculator starts with figures for your state, found from your approximate location (you can pick another
+      state under the home price field or on the home page):
+    </p>
+    <ul>
+      <li>
+        <strong>Home price:</strong> the{" "}
+        <a href={HOME_VALUES.sourceUrl} target="_blank" rel="noopener noreferrer">
+          Zillow Home Value Index
+        </a>{" "}
+        for the state, {formatValueMonth(HOME_VALUES.asOf)}. Most calculators use the typical home value (the middle
+        third of homes). USDA uses the entry-level value (the bottom third), since USDA loans are for modest homes in
+        rural areas. FHA uses the typical value, capped so the loan fits under the FHA limit most counties use. Jumbo
+        uses the upper-tier value (the top third), raised where needed so the loan is at least 15% above the
+        conforming limit, since a smaller loan wouldn't be a jumbo loan. Refinance and equity calculators use the
+        typical value as your home's value, and loan comparisons use 80% of it as the loan amount.
+      </li>
+      <li>
+        <strong>Property tax:</strong> the state's effective rate (taxes paid as a share of home value) from the{" "}
+        <a href={TAX_SOURCE.href} target="_blank" rel="noopener noreferrer">
+          Tax Foundation
+        </a>
+        , based on Census data for {STATE_DATA_YEAR}.
+      </li>
+      <li>
+        <strong>Home insurance:</strong> the state's average HO-3 premium from the{" "}
+        <a href={INSURANCE_SOURCE.href} target="_blank" rel="noopener noreferrer">
+          NAIC
+        </a>{" "}
+        ({INSURANCE_DATA_YEAR} data), divided by the state's median home value to get a rate, so a pricier home gets a
+        higher premium.
+      </li>
+      <li>
+        <strong>PMI</strong> isn't regional: it comes from your down payment and credit score (see above).{" "}
+        <strong>HOA dues</strong> depend on the property, so they start at $0.
+      </li>
+    </ul>
+    <p>
+      A link with its own numbers always opens with those numbers. Home values refresh weekly along with rates
+      (Zillow publishes monthly); tax rates and insurance premiums are updated once a year.
+    </p>
+
     <h2>Closing costs</h2>
     <p>
       The <Link to="/closing-cost-calculator/">closing cost calculator</Link> and the mortgage calculator's cash to close
@@ -221,7 +267,8 @@ const Methodology = () => (
     <p>
       Loan limits and fee schedules live in one file in our code, so every calculator and guide updates together. We
       review them each year when FHFA and HUD publish new limits (usually late November) and whenever an agency
-      changes a fee. The figures on this site were last reviewed on the date shown at the top of this page.
+      changes a fee. Average rates and home values refresh automatically every week, and the date at the top of this
+      page (and under each calculator) moves forward when they do.
     </p>
     <p>
       Found an error? See the <Link to="/about/">About page</Link> for how to reach us.

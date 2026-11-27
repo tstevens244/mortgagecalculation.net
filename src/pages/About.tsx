@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import InfoPage from "@/components/InfoPage";
 import { CONTACT_EMAIL, REVIEWER, SITE_NAME } from "@/lib/site";
-import { FIGURES_REVIEWED } from "@/lib/loanLimits";
+import { FIGURES_UPDATED } from "@/lib/figuresDate";
 
 const About = () => (
   <InfoPage
@@ -9,7 +9,7 @@ const About = () => (
     title="About MortgageCalculation.net | Free, Independent Mortgage Calculators"
     description="MortgageCalculation.net offers free, independent mortgage calculators. We don't sell loans or your data. Learn how the calculators are built and kept up to date."
     heading={`About ${SITE_NAME}`}
-    updated={FIGURES_REVIEWED}
+    updated={FIGURES_UPDATED}
     breadcrumbName="About"
   >
     <p>

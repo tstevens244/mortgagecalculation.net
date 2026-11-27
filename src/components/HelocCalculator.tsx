@@ -7,6 +7,9 @@ import { InputCard, FieldGrid, Field, MoreOptions, Choice, summarize } from "./c
 import { formatCurrency } from "@/lib/formatters";
 import { useUrlParam } from "@/lib/urlState";
 import { AnswerCard } from "./PaymentAnswer";
+import { useLocalCosts } from "@/lib/useLocalCosts";
+import { localPrice, round5k } from "@/lib/localCosts";
+import { LocalPrice } from "@/components/calc/LocalValue";
 
 const monthlyPayment = (principal: number, annualRatePercent: number, months: number) => {
   if (principal <= 0 || months <= 0) return 0;
@@ -27,6 +30,15 @@ const HelocCalculator = () => {
   const [rate, setRate] = useUrlParam("rate", 8);
   const [drawYears, setDrawYears] = useUrlParam("drawYears", "10");
   const [repayYears, setRepayYears] = useUrlParam("repayYears", "20");
+  const { costs: local } = useLocalCosts(
+    (c) => {
+      const v = localPrice(c, "typical");
+      setMortgageBalance(round5k((mortgageBalance / homeValue) * v));
+      setAmountToBorrow(round5k((amountToBorrow / homeValue) * v));
+      setHomeValue(v);
+    },
+    { keys: ["homeValue", "mortgageBalance", "amountToBorrow"] },
+  );
 
   const c = useMemo(() => {
     const cltvLimit = Number(maxCltv) / 100;
@@ -69,7 +81,7 @@ const HelocCalculator = () => {
         description="HELOC rates are variable, usually prime plus a margin. The default rate is an example; enter the rate a lender quotes you."
       >
         <FieldGrid>
-          <Field id="heloc-home-value" label="Home value">
+          <Field id="heloc-home-value" label="Home value" hint={<LocalPrice costs={local} kind="typical" value={homeValue} onUse={setHomeValue} />}>
             <CurrencyInput id="heloc-home-value" value={homeValue} onChange={setHomeValue} allowDecimals={false} />
           </Field>
           <Field id="heloc-mortgage-balance" label="Mortgage balance">

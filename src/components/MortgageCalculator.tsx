@@ -22,6 +22,9 @@ import { averageRate } from "@/lib/marketRates";
 import { CREDIT_TIERS, creditTier, pmiRate, tierLabel } from "@/lib/pmi";
 import { quickClosingCosts } from "@/lib/closingCosts";
 import { readNumberParams, replaceUrl, urlWith } from "@/lib/shareUrl";
+import { localInsurance, localPrice, localTax, type LocalCosts } from "@/lib/localCosts";
+import { useLocalCosts } from "@/lib/useLocalCosts";
+import { LocalFigure, LocalPrice, INSURANCE_SOURCE, TAX_SOURCE, insuranceDetail, taxDetail } from "./calc/LocalValue";
 
 const URL_KEYS = ["price", "down", "rate", "term", "tax", "ins", "pmi", "hoa", "credit", "extra"] as const;
 type Params = Partial<Record<(typeof URL_KEYS)[number], number>>;
@@ -71,6 +74,20 @@ const estimatePmi = (price: number, down: number, credit: number) => {
   return price > 0 ? (loan * pmiRate((loan / price) * 100, credit)) / 100 : 0;
 };
 
+/** The inputs as URL parameters (shared links and saved scenarios). */
+const toScenario = (inputs: MortgageInputs): Record<string, number> => ({
+  price: inputs.homePrice,
+  down: Math.round(inputs.downPayment),
+  rate: inputs.interestRate,
+  term: inputs.loanTerm,
+  tax: inputs.propertyTax,
+  ins: inputs.homeInsurance,
+  pmi: Math.round(inputs.pmi),
+  hoa: inputs.hoaFees,
+  credit: inputs.credit,
+  ...(inputs.extraMonthly > 0 ? { extra: inputs.extraMonthly } : {}),
+});
+
 const fmtMonth = (d: Date) => d.toLocaleDateString("en-US", { month: "short", year: "numeric" });
 
 const MortgageCalculator = ({ initial, taxAreas, taxAreaLabel = "Area" }: MortgageCalculatorProps = {}) => {
@@ -108,34 +125,51 @@ const MortgageCalculator = ({ initial, taxAreas, taxAreaLabel = "Area" }: Mortga
   // Keep the address bar in step with the inputs once someone changes them, so
   // the page can be bookmarked or shared. An untouched page keeps its clean URL.
   const touched = useRef(false);
-  const scenario: Record<string, number> = {
-    price: inputs.homePrice,
-    down: Math.round(inputs.downPayment),
-    rate: inputs.interestRate,
-    term: inputs.loanTerm,
-    tax: inputs.propertyTax,
-    ins: inputs.homeInsurance,
-    pmi: Math.round(inputs.pmi),
-    hoa: inputs.hoaFees,
-    credit: inputs.credit,
-    ...(inputs.extraMonthly > 0 ? { extra: inputs.extraMonthly } : {}),
-  };
+  const scenario = toScenario(inputs);
   const scenarioKey = JSON.stringify(scenario);
+  // Local figures filled in automatically don't count as a change: the URL stays clean.
+  const autoKey = useRef<string | null>(null);
+  const edited = useRef(false);
   useEffect(() => {
     if (!touched.current) {
       touched.current = true;
       return;
     }
+    if (scenarioKey === autoKey.current) return;
     const t = window.setTimeout(() => replaceUrl(JSON.parse(scenarioKey)), 400);
     return () => window.clearTimeout(t);
   }, [scenarioKey]);
 
+  /** Local home price, tax rate and insurance for the visitor's state. Not on state pages, which have their own. */
+  const applyLocal = (c: LocalCosts, byUser: boolean) => {
+    const homePrice = localPrice(c, "typical");
+    const downPayment = (inputs.downPaymentPercent / 100) * homePrice;
+    const taxRate = c.taxRate ?? inputs.taxRate;
+    const next: MortgageInputs = {
+      ...inputs,
+      homePrice,
+      downPayment,
+      taxRate,
+      propertyTax: taxRate !== null ? Math.round((homePrice * taxRate) / 100) : inputs.propertyTax,
+      homeInsurance: localInsurance(c, homePrice) ?? inputs.homeInsurance,
+      pmi: estimatePmi(homePrice, downPayment, inputs.credit),
+    };
+    autoKey.current = byUser ? null : JSON.stringify(toScenario(next));
+    setInputs(next);
+  };
+  const { costs } = useLocalCosts(applyLocal, { keys: [...URL_KEYS], enabled: !initial, untouched: () => !edited.current });
+  const local = !initial && costs.code !== null;
+
   const updateInput = (field: keyof MortgageInputs, value: number | string) => {
+    edited.current = true;
     setInputs((prev) => {
       const updated = { ...prev, [field]: value };
 
       if (field === "propertyTax") {
         updated.taxRate = null;
+      }
+      if (field === "taxRate") {
+        updated.propertyTax = Math.round((prev.homePrice * Number(value)) / 100);
       }
       if (field === "homePrice" && prev.taxRate !== null) {
         updated.propertyTax = Math.round((Number(value) * prev.taxRate) / 100);
@@ -242,8 +276,8 @@ const MortgageCalculator = ({ initial, taxAreas, taxAreaLabel = "Area" }: Mortga
         <div>
           <InputCard id="loan-details" title="Your loan" description="Start with these four. Taxes, insurance and fees are filled in for you below.">
             <FieldGrid>
-              <Field id="home-price" label="Home price">
-                <CurrencyInput id="home-price" value={inputs.homePrice} onChange={(value) => updateInput("homePrice", value)} />
+              <Field id="home-price" label="Home price" hint={initial ? undefined : <LocalPrice costs={costs} value={inputs.homePrice} onUse={(v) => updateInput("homePrice", v)} />}>
+                <CurrencyInput id="home-price" value={inputs.homePrice} onChange={(value) => updateInput("homePrice", value)} aria-describedby={initial ? undefined : "home-price-hint"} />
               </Field>
 
               <Field id="down-payment" label="Down payment" info="Putting down 20% or more avoids PMI. The percent and dollar amount stay in sync.">
@@ -314,7 +348,13 @@ const MortgageCalculator = ({ initial, taxAreas, taxAreaLabel = "Area" }: Mortga
                   id="property-tax"
                   label="Property tax"
                   unit="per year"
-                  hint={inputs.taxRate !== null ? `${inputs.taxRate.toFixed(2)}% of the home price` : undefined}
+                  hint={
+                    local && costs.taxRate !== null && inputs.taxRate !== costs.taxRate ? (
+                      <LocalFigure costs={costs} figure={localTax(costs, inputs.homePrice)} value={inputs.propertyTax} onUse={() => updateInput("taxRate", costs.taxRate!)} detail={taxDetail(costs)} source={TAX_SOURCE} />
+                    ) : inputs.taxRate !== null ? (
+                      `${inputs.taxRate.toFixed(2)}% of the home price${local ? `, the ${costs.name} average` : ""}`
+                    ) : undefined
+                  }
                 >
                   <CurrencyInput
                     id="property-tax"
@@ -324,7 +364,12 @@ const MortgageCalculator = ({ initial, taxAreas, taxAreaLabel = "Area" }: Mortga
                   />
                 </Field>
 
-                <Field id="home-insurance" label="Home insurance" unit="per year">
+                <Field
+                  id="home-insurance"
+                  label="Home insurance"
+                  unit="per year"
+                  hint={local ? <LocalFigure costs={costs} figure={localInsurance(costs, inputs.homePrice)} value={inputs.homeInsurance} onUse={(v) => updateInput("homeInsurance", v)} detail={insuranceDetail(costs)} source={INSURANCE_SOURCE} /> : undefined}
+                >
                   <CurrencyInput id="home-insurance" value={inputs.homeInsurance} onChange={(value) => updateInput("homeInsurance", value)} />
                 </Field>
 

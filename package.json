@@ -6,8 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "rates": "node scripts/fetch-rates.cjs",
-    "build:static": "node scripts/fetch-rates.cjs && vite build && node scripts/prerender.cjs && node scripts/generate-sitemap.cjs && node scripts/check-seo.cjs",
+    "rates": "node scripts/fetch-rates.cjs && node scripts/fetch-home-values.cjs",
+    "build:static": "npm run rates && vite build && node scripts/prerender.cjs && node scripts/generate-sitemap.cjs && node scripts/check-seo.cjs",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
     "preview": "vite preview",

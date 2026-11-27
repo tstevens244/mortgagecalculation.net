@@ -9,13 +9,25 @@ import FeeSchedule from "./FeeSchedule";
 import { formatCurrency } from "@/lib/formatters";
 import { fhaMip } from "@/lib/feeMath";
 import { useUrlParam } from "@/lib/urlState";
+import { useLocalCosts } from "@/lib/useLocalCosts";
+import { averageRate } from "@/lib/marketRates";
+import { localPrice } from "@/lib/localCosts";
+import { LocalPrice } from "@/components/calc/LocalValue";
 
 /** FHA mortgage insurance: upfront MIP, the monthly premium, how long it lasts and what it costs in total. */
 const FhaMipCalculator = () => {
   const [price, setPrice] = useUrlParam("price", 350000);
   const [down, setDown] = useUrlParam("down", 12250);
-  const [rate, setRate] = useUrlParam("rate", 6.5);
+  const [rate, setRate] = useUrlParam("rate", averageRate(30));
   const [term, setTerm] = useUrlParam("term", 30);
+  const { costs: local } = useLocalCosts(
+    (c) => {
+      const p = localPrice(c, "fha");
+      setDown(Math.round((down / price) * p));
+      setPrice(p);
+    },
+    { keys: ["price", "down"] },
+  );
 
   const m = useMemo(() => fhaMip({ price, down, ratePercent: rate, termYears: term }), [price, down, rate, term]);
   const downPercent = price > 0 ? (down / price) * 100 : 0;
@@ -27,7 +39,7 @@ const FhaMipCalculator = () => {
     <div className="fade-in calc-layout">
       <InputCard id="fha-mip-inputs" title="Your FHA loan">
         <FieldGrid>
-          <Field id="fha-mip-price" label="Home price">
+          <Field id="fha-mip-price" label="Home price" hint={<LocalPrice costs={local} kind="fha" value={price} onUse={setPrice} />}>
             <CurrencyInput id="fha-mip-price" value={price} onChange={setPrice} allowDecimals={false} />
           </Field>
           <DownPaymentField

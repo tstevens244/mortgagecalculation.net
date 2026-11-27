@@ -9,15 +9,28 @@ import StickyResult from "./StickyResult";
 import { InputCard, FieldGrid, Field, TermChoice, MoreOptions, Choice, summarize } from "./calc/Form";
 import { useUrlParam } from "@/lib/urlState";
 import { AnswerCard } from "./PaymentAnswer";
+import { useLocalCosts } from "@/lib/useLocalCosts";
+import { averageRate } from "@/lib/marketRates";
+import { localPrice, round5k } from "@/lib/localCosts";
+import { LocalPrice } from "@/components/calc/LocalValue";
 
 const CashOutRefiCalculator = () => {
   const [homeValue, setHomeValue] = useUrlParam("homeValue", 400000);
   const [currentMortgageBalance, setCurrentMortgageBalance] = useUrlParam("currentMortgageBalance", 200000);
   const [loanTerm, setLoanTerm] = useUrlParam("loanTerm", "30");
-  const [interestRate, setInterestRate] = useUrlParam("interestRate", 6.5);
+  const [interestRate, setInterestRate] = useUrlParam("interestRate", averageRate(30));
   const [desiredCashOut, setDesiredCashOut] = useUrlParam("desiredCashOut", 50000);
   const [refinanceFees, setRefinanceFees] = useUrlParam("refinanceFees", 5000);
   const [rollFeesIntoLoan, setRollFeesIntoLoan] = useUrlParam("rollFeesIntoLoan", false);
+  const { costs: local } = useLocalCosts(
+    (c) => {
+      const v = localPrice(c, "typical");
+      setCurrentMortgageBalance(round5k((currentMortgageBalance / homeValue) * v));
+      setDesiredCashOut(round5k((desiredCashOut / homeValue) * v));
+      setHomeValue(v);
+    },
+    { keys: ["homeValue", "currentMortgageBalance", "desiredCashOut"] },
+  );
 
   const results = useMemo(() => {
     // Maximum LTV is typically 80% for cash-out refi
@@ -85,7 +98,7 @@ const CashOutRefiCalculator = () => {
         {/* Input Section */}
         <InputCard id="cash-out-inputs" title="Your home and new loan">
           <FieldGrid>
-            <Field id="cash-out-refi-home-value" label="Home value">
+            <Field id="cash-out-refi-home-value" label="Home value" hint={<LocalPrice costs={local} kind="typical" value={homeValue} onUse={setHomeValue} />}>
               <CurrencyInput id="cash-out-refi-home-value" value={homeValue} onChange={setHomeValue} />
             </Field>
             <Field id="cash-out-refi-current-balance" label="Mortgage balance" info="What you still owe on your current mortgage.">

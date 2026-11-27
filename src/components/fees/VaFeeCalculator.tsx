@@ -8,6 +8,10 @@ import { InputCard, FieldGrid, Field, Choice, TermChoice, DownPaymentField, More
 import { formatCurrency } from "@/lib/formatters";
 import { vaFees, vaFeeRate, type VaPurpose } from "@/lib/feeMath";
 import { useUrlParam } from "@/lib/urlState";
+import { useLocalCosts } from "@/lib/useLocalCosts";
+import { averageRate } from "@/lib/marketRates";
+import { localPrice } from "@/lib/localCosts";
+import { LocalPrice } from "@/components/calc/LocalValue";
 
 const PURPOSES: { value: VaPurpose; label: string }[] = [
   { value: "purchase", label: "Purchase" },
@@ -25,8 +29,16 @@ const VaFeeCalculator = () => {
   const [firstUse, setFirstUse] = useUrlParam("first", true);
   const [exempt, setExempt] = useUrlParam("exempt", false);
   const [financed, setFinanced] = useUrlParam("financed", true);
-  const [rate, setRate] = useUrlParam("rate", 6.25);
+  const [rate, setRate] = useUrlParam("rate", averageRate(30));
   const [term, setTerm] = useUrlParam("term", 30);
+  const { costs: local } = useLocalCosts(
+    (c) => {
+      const p = localPrice(c, "typical");
+      setDown(Math.round((down / amount) * p));
+      setAmount(p);
+    },
+    { keys: ["amount", "down"] },
+  );
 
   const purchase = purpose === "purchase";
   const v = useMemo(
@@ -47,7 +59,7 @@ const VaFeeCalculator = () => {
           <Field id="va-fee-purpose" label="Loan type" className="sm:col-span-full">
             <Choice id="va-fee-purpose" label="Loan type" value={purpose} onChange={setPurpose} options={PURPOSES} />
           </Field>
-          <Field id="va-fee-amount" label={purchase ? "Home price" : "New loan amount"}>
+          <Field id="va-fee-amount" label={purchase ? "Home price" : "New loan amount"} hint={purchase ? <LocalPrice costs={local} value={amount} onUse={setAmount} /> : undefined}>
             <CurrencyInput id="va-fee-amount" value={amount} onChange={setAmount} allowDecimals={false} />
           </Field>
           {purchase && (
